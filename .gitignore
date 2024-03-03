@@ -1,0 +1,7 @@
+deps
+objs
+
+*.d
+*.o
+webserv
+
