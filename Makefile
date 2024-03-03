@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/03/03 13:20:58 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/03/03 16:51:27 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,19 +34,24 @@ NAME		=	webserv
 
 SRCS_DIR	=	src
 INCS_DIR	=	inc
+INCS_DIR	+=	libs/Libft/inc
 OBJS_DIR	=	.objs
 DEPS_DIR	=	.deps
 
-SRCS		=	src/main.cpp
+LIB_FT		=	libs/Libft
+LIBS_LIBS	=	libs/Libft/libft.a
+LIB_LINKS	=	-L ./$(LIB_FT)
+
+SRCS		=	src/webserver.cpp
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))
 
 CPPFLAGS	+=	-Wall -Werror -Wextra -std=c++98 $(addprefix -I , $(INCS_DIR))
 CPPFLAGS	+=	-MMD -MP -MF $(DEPS_DIR)/$*.d
-# If we wanna be more strit in cpp standard uncomment next line
+# If you wanna be more strit in cpp standard uncomment next line
 #CPPFLAGS	+=  -pedantic-errors
 
-CXX		=	c++
+CXX			=	c++
 RM			=	rm -rf
 MKDIR		=	mkdir -p
 MAKE		=	make --no-print-directory
@@ -58,7 +63,8 @@ $(OBJS_DIR)/%.o		:	$(SRCS_DIR)/%.cpp
 all		:	directories $(NAME)
 
 $(NAME)	:	$(OBJS)
-	@$(CXX) $^ -o $@
+	@$(MAKE) -C $(LIB_FT)
+	@$(CXX) $(LIB_LINKS) $^ -o $@ -lft
 	@echo "$(MAGENTA)Executable $@ compiled$(DEF_COLOR)"
 
 directories:
