@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/03/03 16:51:27 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/03/03 18:11:23 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ LIBS_LIBS	=	libs/Libft/libft.a
 LIB_LINKS	=	-L ./$(LIB_FT)
 
 SRCS		=	src/webserver.cpp
+SRCS		+=	src/readfile.cpp
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))
 
