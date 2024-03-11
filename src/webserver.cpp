@@ -6,11 +6,12 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/03/03 18:09:22 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/03/11 20:22:20 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
+#include "ConfigurationFile.hpp"
 
 bool checkArgs(int argc, char **argv)
 {
@@ -36,6 +37,9 @@ int main(int argc, char *argv[]) {
 
     if (!checkArgs(argc, argv))
         exit(1);
-    readfile(argv[1]);
+    ConfigFile configFile(argv[1]);
+
+    std::cout << configFile.getValue("ping") << std::endl;
+    // readfile(argv[1]);
 
 }

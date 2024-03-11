@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/03/03 18:11:23 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/03/11 20:01:52 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,12 +44,13 @@ LIB_LINKS	=	-L ./$(LIB_FT)
 
 SRCS		=	src/webserver.cpp
 SRCS		+=	src/readfile.cpp
+SRCS		+=	src/ConfigurationFile.cpp
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))
 
 CPPFLAGS	+=	-Wall -Werror -Wextra -std=c++98 $(addprefix -I , $(INCS_DIR))
 CPPFLAGS	+=	-MMD -MP -MF $(DEPS_DIR)/$*.d
-# If you wanna be more strit in cpp standard uncomment next line
+# If you wanna be more strict in cpp standard uncomment next line
 #CPPFLAGS	+=  -pedantic-errors
 
 CXX			=	c++
