@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/03/11 19:59:03 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/03/23 18:00:10 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <fcntl.h>
-#include "ConfigurationFile.hpp"
+#include "Config.hpp"
 extern "C" {
 #include "libft.h"
 }

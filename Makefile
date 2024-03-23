@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/03/11 20:01:52 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/03/23 20:38:44 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ DARK_YELLOW		=	\033[38;5;143m
 NAME		=	webserv
 
 SRCS_DIR	=	src
+CONFIG_DIR  =   $(SRCS_DIR)/configFile
 INCS_DIR	=	inc
 INCS_DIR	+=	libs/Libft/inc
 OBJS_DIR	=	.objs
@@ -43,8 +44,8 @@ LIBS_LIBS	=	libs/Libft/libft.a
 LIB_LINKS	=	-L ./$(LIB_FT)
 
 SRCS		=	src/webserver.cpp
-SRCS		+=	src/readfile.cpp
-SRCS		+=	src/ConfigurationFile.cpp
+SRCS		+=	src/configuration/Config.cpp
+SRCS		+=	src/configuration/parse.cpp
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))
 
@@ -58,9 +59,17 @@ RM			=	rm -rf
 MKDIR		=	mkdir -p
 MAKE		=	make --no-print-directory
 
-$(OBJS_DIR)/%.o		:	$(SRCS_DIR)/%.cpp
-	@$(CXX) $(CPPFLAGS) -c $< -o $@
+
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
+	@$(MKDIR) $(dir $@)
+	@$(MKDIR) $(dir $(DEPS_DIR)/$*)
+	@$(CXX) $(CPPFLAGS) -c $< -o $@ -MF $(DEPS_DIR)/$*.d
 	@echo "$(GREEN)$(patsubst $(SRCS_DIR)/%,%, $<)" | awk '{printf "%-50s\tcompiled ✓$(DEF_COLOR)\n", $$0;}'
+
+	
+#$(OBJS_DIR)/%.o		:	$(SRCS_DIR)/%.cpp
+#	$(CXX) $(CPPFLAGS) -c $< -o $@
+#	@echo "$(GREEN)$(patsubst $(SRCS_DIR)/%,%, $<)" | awk '{printf "%-50s\tcompiled ✓$(DEF_COLOR)\n", $$0;}'
 
 all		:	directories $(NAME)
 
