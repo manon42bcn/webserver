@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/03/23 20:44:53 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/03/23 20:52:02 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void Config::parseConfigFile() {
         {
             configMap[key] = value;
             if (value == "{")
-                std::cout << key << std::endl;
+                std::cout << "\033[0;95m" << key << "\033[0;39m" << std::endl;
             else
                 std::cout << "Key: [" << key << "], Value: [" << value << "]" << std::endl;
         }
