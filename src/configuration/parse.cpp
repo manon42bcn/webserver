@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/03/23 20:52:02 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/03/24 17:13:48 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ std::string Config::cleanLine(std::string line)
 }
 
 void Config::parseConfigFile() {
-    std::cout << "parseConfigFile: " << this->configFilePath << std::endl; 
-
     std::ifstream file(configFilePath);
     std::string line;
     while (getline(file, line)) {
@@ -51,10 +49,10 @@ void Config::parseConfigFile() {
         if (std::getline(iss >> std::ws, key, ' ') && std::getline(iss >> std::ws, value))
         {
             configMap[key] = value;
-            if (value == "{")
-                std::cout << "\033[0;95m" << key << "\033[0;39m" << std::endl;
-            else
-                std::cout << "Key: [" << key << "], Value: [" << value << "]" << std::endl;
+            // if (value == "{" || value.back() == '{')
+            //     std::cout << "\033[0;95m" << key << "\033[0;39m" << std::endl;
+            // else
+            //     std::cout << "Key: [" << key << "], Value: [" << value << "]" << std::endl;
         }
     }
 }

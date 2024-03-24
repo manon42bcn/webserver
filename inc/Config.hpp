@@ -16,6 +16,11 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include "webserver.hpp"
+
+struct MainContext {
+    std::map<std::string, std::string> mainContext;
+};
 
 class Config {
 
@@ -31,10 +36,6 @@ private:
 
     void parseConfigFile();
     std::string cleanLine(std::string line);
-
-    struct MainContext {
-    std::map<std::string, std::string> mainContext;
-    };
 
     MainContext mainContext;
 

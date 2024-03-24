@@ -16,9 +16,7 @@ Config::Config(const std::string& filePath) : configFilePath(filePath) {
     parseConfigFile();
 }
 
-Config::~Config() {
-    std::cout << "ConfigFile is destroyed." << std::endl;
-}
+Config::~Config() { }
 
 std::string Config::getValue(const std::string& key) {
     if (configMap.find(key) != configMap.end()) {
