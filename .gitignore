@@ -1,6 +1,7 @@
 deps
 objs
-
+.idea/
+.DS_Store
 *.d
 *.o
 webserv
