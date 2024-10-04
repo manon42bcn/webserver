@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webserver.cpp                                      :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/03/24 18:47:49 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/04 16:33:47 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,19 @@ int main(int argc, char *argv[]) {
     bool debug = true;
     if (!checkArgs(argc, argv))
         exit(1);
-    Config config(argv[1]);
+    Config config;
+
+    try {
+        config.parseConfigFile(argv[1]);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
+
+    std::cout << config;
+
+    exit(0);
 
     // std::cout << config.getValue("error_page") << std::endl;
     

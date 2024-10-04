@@ -12,16 +12,40 @@
 
 #include "Config.hpp"
 
-Config::Config(const std::string& filePath) : configFilePath(filePath) {
-    parseConfigFile();
+Config::Config() { }
+
+Config::Config(const std::string& filePath) : _configFilePath(filePath) {
+    parseConfigFile(filePath);
 }
 
 Config::~Config() { }
 
-std::string Config::getValue(const std::string& key) {
-    if (configMap.find(key) != configMap.end()) {
-        return configMap[key];
-    }
-    return "";
+void Config::setServers(std::vector<Server> servers) {
+    _servers = servers;
 }
 
+std::vector<Server> Config::getServers() const {
+    return _servers;
+}
+
+int Config::getNumServers() const {
+    return _numServers;
+}
+
+std::string Config::getConfigFilePath() const {
+    return _configFilePath;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const Config& config) {
+    os << YELLOW << "Config file path: " << DEF_COLOR << config.getConfigFilePath() << std::endl;
+    os << YELLOW << "Number of servers: " << DEF_COLOR << config.getNumServers() << std::endl;
+    if (config.getNumServers() > 0) {
+        os << YELLOW << "Servers: " << DEF_COLOR << std::endl;
+        const std::vector<Server>& servers = config.getServers();
+        for (std::vector<Server>::const_iterator it = servers.begin(); it != servers.end(); ++it) {
+            os << *it << std::endl;
+        }
+    }
+    return os;
+}

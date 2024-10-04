@@ -17,28 +17,38 @@
 #include <fstream>
 #include <sstream>
 #include "webserver.hpp"
+#include "Server.hpp"
 
-struct MainContext {
-    std::map<std::string, std::string> mainContext;
-};
-
-class Config {
+class Config
+{
 
 public:
 
-    Config(const std::string& filePath);
+    Config();
+    Config(const std::string &filePath); // Necesary (?)
     ~Config();
-    std::string getValue(const std::string& key);
+
+    void parseConfigFile(const std::string &filePath);
+
+    std::string getConfigFilePath() const;
+
+    void setServers(std::vector<Server> servers);
+    std::vector<Server> getServers() const;
+    int getNumServers() const;
     
+    std::string getValue(std::string line, const std::string &key);
+
 private:
-    std::map<std::string, std::string> configMap;
-    std::string configFilePath;
 
-    void parseConfigFile();
+    std::vector<Server> _servers;
+    std::string _configFilePath;
+    int _numServers;
+
+    Server parseServerBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+
     std::string cleanLine(std::string line);
-
-    MainContext mainContext;
-
 };
+
+std::ostream &operator<<(std::ostream &os, const Config &config);
 
 #endif
