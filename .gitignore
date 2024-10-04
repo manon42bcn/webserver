@@ -5,3 +5,5 @@ objs
 *.o
 webserv
 
+.DS_Store
+.vscode
