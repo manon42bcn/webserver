@@ -31,14 +31,16 @@ public:
     void setErrorPage(std::string error_page);
     void setClientMaxBodySize(std::string client_max_body_size);
     void setAutoindex(std::string autoindex);
-
+    void setRoot(std::string root);
+    void setLocations(std::map<std::string, std::string> locations);
     std::string getHost() const;
     std::string getPort() const;
     std::string getServerName() const;
     std::string getErrorPage() const;
     std::string getClientMaxBodySize() const;
     std::string getAutoindex() const;
-
+    std::string getRoot() const;
+    std::map<std::string, std::string> getLocations() const;
     bool checkObligatoryParams();
 
     void throwError(const std::string& errorMessage);
@@ -51,6 +53,8 @@ private:
     std::string _error_page;
     std::string _client_max_body_size;
     std::string _autoindex;
+    std::string _root;
+    std::map<std::string, std::string> _locations;
 
 };
 

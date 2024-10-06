@@ -38,11 +38,14 @@ public:
     
     std::string getValue(std::string line, const std::string &key);
 
+    void handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+
 private:
 
     std::vector<Server> _servers;
     std::string _configFilePath;
     int _numServers;
+    std::map<std::string, std::string> _locations;
 
     Server parseServerBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
 

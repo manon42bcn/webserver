@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/10/04 11:26:52 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/10/06 11:57:34 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ SRCS		=	src/main.cpp
 SRCS		+=	src/configuration/Config.cpp
 SRCS		+=	src/configuration/parse.cpp
 SRCS		+=	src/configuration/Server.cpp
+SRCS		+=	src/configuration/Location.cpp
 
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))

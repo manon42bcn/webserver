@@ -6,43 +6,34 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/04 16:33:17 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:57:49 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "Server.hpp"
+#include "Location.hpp"
 
-std::string Config::cleanLine(std::string line)
-{
-    std::string::size_type start_pos = line.find_first_not_of(" \t");
-    if (start_pos != std::string::npos)
-        line.erase(0, start_pos);
+void Config::handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
+    std::map<std::string, std::string> locations;
+    Location location;
 
-    std::string::size_type end_pos = line.find_last_not_of(" \t");
+    std::cout << "Location block found" << std::endl;
+    for (std::vector<std::string>::iterator it = start; it != end; it++) {
+        std::cout << "Location block line: " <<RED << *it << DEF_COLOR << std::endl;
+        if (it->find("location") != std::string::npos)
+            location.setPath(getValue(cleanLine(*it), "location"));
 
-    if (end_pos != std::string::npos)
-        line.erase(end_pos + 1, line.length() - end_pos - 1);
-    if (!line.empty() && line[line.size() - 1] == ';')
-        line.erase(line.size() - 1);
-    if (line.empty() || line[0] == '#')
-        return "";
 
-    return line;
-}
 
-std::string Config::getValue(std::string line, const std::string& key) {
-    std::string::size_type keyPos = line.find(key);
-    if (keyPos != std::string::npos) {
-        std::string::size_type valueStart = line.find_first_not_of(" \t", keyPos + key.length());
-        if (valueStart != std::string::npos) {
-            std::string::size_type valueEnd = line.find_last_not_of(" \t");
-            if (valueEnd != std::string::npos && valueEnd >= valueStart) {
-                return line.substr(valueStart, valueEnd - valueStart + 1);
-            }
-        }
+        if (it->find("}") != std::string::npos)
+            break;
     }
-    return "";
+    std::cout << "Location block end" << std::endl;
+    // for (std::map<std::string, std::string>::iterator it = locations.begin(); it != locations.end(); it++) {
+    //     std::cout << "Location block: " << it->first << " - " << it->second << std::endl;
+    // }
+    std::cout << location << std::endl;
 }
 
 Server Config::parseServerBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
@@ -61,16 +52,36 @@ Server Config::parseServerBlock(std::vector<std::string>::iterator start, std::v
             server.setClientMaxBodySize(getValue(*it, "client_max_body_size"));
         if (it->find("autoindex") != std::string::npos)
             server.setAutoindex(getValue(*it, "autoindex"));
+        if (it->find("location") != std::string::npos)
+            handleLocationBlock(it, end);
+        if (it->find("root") != std::string::npos)
+            server.setRoot(getValue(*it, "root"));
     }
 
     if (server.getServerName() == "")
         server.setServerName("Default server name " + std::to_string(this->getNumServers()));
-        
+ 
     // if (!server.checkObligatoryParams())
     //     throw std::runtime_error("Obligatory parameters are missing in server block in server " + server.getServerName());
-    
+
     _numServers++;
     return server;
+}
+
+std::vector<std::string>::iterator findServerBlockEnd(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
+    int bracketCount = 0;
+    for (std::vector<std::string>::iterator it = start; it != end; ++it) {
+        if (it->find("{") != std::string::npos) {
+            bracketCount++;
+        }
+        if (it->find("}") != std::string::npos) {
+            bracketCount--;
+            if (bracketCount == 0) {
+                return it;
+            }
+        }
+    }
+    return end;
 }
 
 void Config::parseConfigFile(const std::string &filePath) {
@@ -93,14 +104,19 @@ void Config::parseConfigFile(const std::string &filePath) {
     for (std::vector<std::string>::iterator it = rawLines.begin(); it != rawLines.end(); it++) {
         if (it->find("server") != std::string::npos && it->find("server_name") == std::string::npos) {
             start = it;
-            for (std::vector<std::string>::iterator it = rawLines.begin(); it != rawLines.end(); it++) {
-                if (it->find("}") != std::string::npos) {
-                    end = it;
-                    server = parseServerBlock(start, end);
-                    servers.push_back(server);
-                    break;
-                }
-            }
+            end = findServerBlockEnd(start, rawLines.end());
+
+            server = parseServerBlock(start, end);
+
+            end = findServerBlockEnd(start, rawLines.end());
+            // for (std::vector<std::string>::iterator it = start; it != rawLines.end(); it++) {
+            //     if (it->find("}") != std::string::npos) {
+            //         end = it;
+            //         server = parseServerBlock(start, end);
+            //         servers.push_back(server);
+            //         break;
+            //     }
+            // }
         }
     }
     setServers(servers);

@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/04 11:09:51 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/04 16:51:51 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,9 @@
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
 
-
+// Necesary (?
 extern "C" {
 #include "libft.h"
 }
-
-
-void readfile(char *file);
 
 #endif

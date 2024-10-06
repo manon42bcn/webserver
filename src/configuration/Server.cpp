@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/04 16:22:06 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:21:58 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,14 @@ void Server::setAutoindex(std::string autoindex) {
     this->_autoindex = autoindex;
 }
 
+void Server::setRoot(std::string root) {
+    this->_root = root;
+}
+
+void Server::setLocations(std::map<std::string, std::string> locations) {
+    this->_locations = locations;
+}
+
 std::string Server::getHost() const {
     return this->_host;
 }
@@ -65,6 +73,14 @@ std::string Server::getAutoindex() const {
     return this->_autoindex;
 }
 
+std::string Server::getRoot() const {
+    return this->_root;
+}
+
+std::map<std::string, std::string> Server::getLocations() const {
+    return this->_locations;
+}
+
 bool Server::checkObligatoryParams() {
     if (this->_host.empty() || this->_port.empty() || this->_error_page.empty() || this->_client_max_body_size.empty() || this->_autoindex.empty())
         return false;
@@ -78,5 +94,8 @@ std::ostream& operator<<(std::ostream& os, const Server& server) {
     os << GREEN << "Error page: " << DEF_COLOR << server.getErrorPage() << std::endl;
     os << GREEN << "Client max body size: " << DEF_COLOR << server.getClientMaxBodySize() << std::endl;
     os << GREEN << "Autoindex: " << DEF_COLOR << server.getAutoindex() << std::endl;
+    os << GREEN << "Root: " << DEF_COLOR << server.getRoot() << std::endl;
+    // os << GREEN << "Locations: " << DEF_COLOR << server.getLocations() << std::endl;
+    
     return os;
 }
