@@ -6,14 +6,18 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/06 12:55:05 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 20:04:34 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "Server.hpp"
+#include <iostream>
 
-Server::Server() { }
+Server::Server() {
+    this->_num_locations = 0;
+    // this->_locations = std::map<std::string, Location>();
+}
 
 Server::~Server() { }
 
@@ -45,8 +49,8 @@ void Server::setRoot(std::string root) {
     this->_root = root;
 }
 
-void Server::setLocations(std::map<std::string, std::string> locations) {
-    this->_locations = locations;
+void Server::setLocations(const std::string& path, Location location) {
+    this->_locations.insert(std::make_pair(path, location));
 }
 
 void Server::setNumLocations(int num_locations) {
@@ -82,11 +86,15 @@ std::string Server::getRoot() const {
 }
 
 std::map<std::string, std::string> Server::getLocations() const {
-    return this->_locations;
+    return std::map<std::string, std::string>();
 }
 
 int Server::getNumLocations() const {
     return this->_num_locations;
+}
+
+void Server::sumNumLocations() {
+    this->_num_locations++;
 }
 
 bool Server::checkObligatoryParams() {

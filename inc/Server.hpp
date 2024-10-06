@@ -12,7 +12,7 @@
 
 #ifndef SERVER_H
 #define SERVER_H
-
+#include "Location.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -32,8 +32,9 @@ public:
     void setClientMaxBodySize(std::string client_max_body_size);
     void setAutoindex(std::string autoindex);
     void setRoot(std::string root);
-    void setLocations(std::map<std::string, std::string> locations);
+    void setLocations(const std::string& path, Location location);
     void setNumLocations(int num_locations);
+    void sumNumLocations();
 
     std::string getHost() const;
     std::string getPort() const;
@@ -43,10 +44,12 @@ public:
     std::string getAutoindex() const;
     std::string getRoot() const;
     std::map<std::string, std::string> getLocations() const;
+
     int getNumLocations() const;
     bool checkObligatoryParams();
 
     void throwError(const std::string& errorMessage);
+    std::map<std::string, Location> _locations;
 
 private:
 
@@ -57,7 +60,6 @@ private:
     std::string _client_max_body_size;
     std::string _autoindex;
     std::string _root;
-    std::map<std::string, std::string> _locations;
     int _num_locations;
 
 };

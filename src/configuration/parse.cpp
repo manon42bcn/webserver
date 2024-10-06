@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/06 12:58:05 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 20:09:13 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ Location Config::handleLocationBlock(std::vector<std::string>::iterator start, s
     std::map<std::string, std::string> locations;
     Location location;
 
-    std::cout << "Location block found" << std::endl;
     for (std::vector<std::string>::iterator it = start; it != end; it++) {
-        std::cout << "Location block line: " <<RED << *it << DEF_COLOR << std::endl;
         if (it->find("location") != std::string::npos)
             location.setPath(getValue(*it, "location"));
         if (it->find("path") != std::string::npos)
@@ -43,11 +41,7 @@ Location Config::handleLocationBlock(std::vector<std::string>::iterator start, s
         if (it->find("}") != std::string::npos)
             break;
     }
-    std::cout << "Location block end" << std::endl;
-    // for (std::map<std::string, std::string>::iterator it = locations.begin(); it != locations.end(); it++) {
-    //     std::cout << "Location block: " << it->first << " - " << it->second << std::endl;
-    // }
-    std::cout << location << std::endl;
+    
     return location;
 }
 
@@ -70,7 +64,8 @@ Server Config::parseServerBlock(std::vector<std::string>::iterator start, std::v
         if (it->find("location") != std::string::npos)
         {
             Location location = handleLocationBlock(it, end);
-            // server.setLocations(location);
+            server.setLocations(location.getPath(), location);
+            server.sumNumLocations();
         }
         if (it->find("root") != std::string::npos)
             server.setRoot(getValue(*it, "root"));
@@ -124,8 +119,18 @@ void Config::parseConfigFile(const std::string &filePath) {
             start = it;
             end = findServerBlockEnd(start, rawLines.end());
             server = parseServerBlock(start, end);
-            servers.push_back(server);  
+            servers.push_back(server);
+            it = end;
         }
     }
+
+    // for (std::vector<Server>::iterator it = servers.begin(); it != servers.end(); ++it) {
+    //     std::cout << RED << "Server: " << DEF_COLOR << it->getServerName() << std::endl;
+    //     for (std::map<std::string, Location>::const_iterator locIt = it->_locations.begin(); locIt != it->_locations.end(); ++locIt) {
+    //         std::cout << RED << "Location: " << DEF_COLOR << locIt->first <<std::endl;
+    //     }
+    //     std::cout << std::endl;
+    // }
+        
     setServers(servers);
 }
