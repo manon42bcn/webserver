@@ -18,7 +18,7 @@
 #include <sstream>
 #include "webserver.hpp"
 #include "Server.hpp"
-
+#include "Location.hpp"
 class Config
 {
 
@@ -38,7 +38,7 @@ public:
     
     std::string getValue(std::string line, const std::string &key);
 
-    void handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+    Location handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
 
 private:
 

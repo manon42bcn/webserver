@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/06 11:21:58 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 12:55:05 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ void Server::setLocations(std::map<std::string, std::string> locations) {
     this->_locations = locations;
 }
 
+void Server::setNumLocations(int num_locations) {
+    this->_num_locations = num_locations;
+}
+
 std::string Server::getHost() const {
     return this->_host;
 }
@@ -81,6 +85,10 @@ std::map<std::string, std::string> Server::getLocations() const {
     return this->_locations;
 }
 
+int Server::getNumLocations() const {
+    return this->_num_locations;
+}
+
 bool Server::checkObligatoryParams() {
     if (this->_host.empty() || this->_port.empty() || this->_error_page.empty() || this->_client_max_body_size.empty() || this->_autoindex.empty())
         return false;
@@ -96,6 +104,6 @@ std::ostream& operator<<(std::ostream& os, const Server& server) {
     os << GREEN << "Autoindex: " << DEF_COLOR << server.getAutoindex() << std::endl;
     os << GREEN << "Root: " << DEF_COLOR << server.getRoot() << std::endl;
     // os << GREEN << "Locations: " << DEF_COLOR << server.getLocations() << std::endl;
-    
+    os << GREEN << "Number of locations: " << DEF_COLOR << server.getNumLocations() << std::endl;
     return os;
 }

@@ -27,7 +27,7 @@ public:
     void setRoot(std::string root);
     void setIndexFile(std::string indexFile);
     void setAutoIndex(bool autoIndex);
-    void setAllowedMethods(std::vector<std::string> allowedMethods);
+    void setAllowedMethods(std::string allowedMethods);
     void setRedirect(std::string redirect);
 
     std::string getPath() const;

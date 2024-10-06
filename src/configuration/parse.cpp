@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/06 11:57:49 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/06 12:58:05 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "Server.hpp"
 #include "Location.hpp"
 
-void Config::handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
+Location Config::handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     std::map<std::string, std::string> locations;
     Location location;
 
@@ -22,10 +22,24 @@ void Config::handleLocationBlock(std::vector<std::string>::iterator start, std::
     for (std::vector<std::string>::iterator it = start; it != end; it++) {
         std::cout << "Location block line: " <<RED << *it << DEF_COLOR << std::endl;
         if (it->find("location") != std::string::npos)
-            location.setPath(getValue(cleanLine(*it), "location"));
-
-
-
+            location.setPath(getValue(*it, "location"));
+        if (it->find("path") != std::string::npos)
+            location.setPath(getValue(*it, "path"));
+        if (it->find("index") != std::string::npos)
+            location.setIndexFile(getValue(*it, "index"));
+        if (it->find("root") != std::string::npos)
+            location.setRoot(getValue(*it, "root"));
+        if (it->find("autoindex") != std::string::npos)
+        {
+            if (getValue(*it, "autoindex") == "on") {
+                location.setAutoIndex(true);
+            }
+            else {
+                location.setAutoIndex(false);
+            }
+        }
+        if (it->find("allowedMethods") != std::string::npos)
+            location.setAllowedMethods(getValue(*it, "allowedMethods"));
         if (it->find("}") != std::string::npos)
             break;
     }
@@ -34,6 +48,7 @@ void Config::handleLocationBlock(std::vector<std::string>::iterator start, std::
     //     std::cout << "Location block: " << it->first << " - " << it->second << std::endl;
     // }
     std::cout << location << std::endl;
+    return location;
 }
 
 Server Config::parseServerBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
@@ -53,7 +68,10 @@ Server Config::parseServerBlock(std::vector<std::string>::iterator start, std::v
         if (it->find("autoindex") != std::string::npos)
             server.setAutoindex(getValue(*it, "autoindex"));
         if (it->find("location") != std::string::npos)
-            handleLocationBlock(it, end);
+        {
+            Location location = handleLocationBlock(it, end);
+            // server.setLocations(location);
+        }
         if (it->find("root") != std::string::npos)
             server.setRoot(getValue(*it, "root"));
     }
@@ -105,18 +123,8 @@ void Config::parseConfigFile(const std::string &filePath) {
         if (it->find("server") != std::string::npos && it->find("server_name") == std::string::npos) {
             start = it;
             end = findServerBlockEnd(start, rawLines.end());
-
             server = parseServerBlock(start, end);
-
-            end = findServerBlockEnd(start, rawLines.end());
-            // for (std::vector<std::string>::iterator it = start; it != rawLines.end(); it++) {
-            //     if (it->find("}") != std::string::npos) {
-            //         end = it;
-            //         server = parseServerBlock(start, end);
-            //         servers.push_back(server);
-            //         break;
-            //     }
-            // }
+            servers.push_back(server);  
         }
     }
     setServers(servers);

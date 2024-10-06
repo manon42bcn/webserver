@@ -33,6 +33,8 @@ public:
     void setAutoindex(std::string autoindex);
     void setRoot(std::string root);
     void setLocations(std::map<std::string, std::string> locations);
+    void setNumLocations(int num_locations);
+
     std::string getHost() const;
     std::string getPort() const;
     std::string getServerName() const;
@@ -41,6 +43,7 @@ public:
     std::string getAutoindex() const;
     std::string getRoot() const;
     std::map<std::string, std::string> getLocations() const;
+    int getNumLocations() const;
     bool checkObligatoryParams();
 
     void throwError(const std::string& errorMessage);
@@ -55,6 +58,7 @@ private:
     std::string _autoindex;
     std::string _root;
     std::map<std::string, std::string> _locations;
+    int _num_locations;
 
 };
 
