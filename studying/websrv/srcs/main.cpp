@@ -18,15 +18,18 @@
 #include <fcntl.h>
 #include <cstring>
 #include <cstdlib>
+#include <poll.h>
+
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
-#include <poll.h>
+#include "HttpResponseHandler.hpp"
 
 int main() {
 	SocketHandler server_socket(8080);
 	server_socket.configure();
 
 	HttpRequestHandler request_handler;
+	HttpResponseHandler response_handler;
 
 	struct pollfd poll_fds[100];
 	int nfds = 1;
@@ -53,6 +56,7 @@ int main() {
 		for (int i = 1; i < nfds; ++i) {
 			if (poll_fds[i].revents & POLLIN) {
 				request_handler.handle_request(poll_fds[i].fd);
+				response_handler.send_response(poll_fds[i].fd, 200, "Hello, this is the response!");
 				close(poll_fds[i].fd);
 				poll_fds[i] = poll_fds[nfds - 1];
 				nfds--;

@@ -10,7 +10,7 @@
 /**
  * @brief Class to handle HTTP requests.
  *
- * HttpRequestHandler encapsulates methods to handle HTTP requests froma socket.
+ * HttpRequestHandler encapsulates methods to handle HTTP requests from a socket.
  * Parse payload an different HTTP methods (GET, POST)
  */
 class HttpRequestHandler {

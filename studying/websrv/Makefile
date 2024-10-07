@@ -13,10 +13,12 @@
 SRCS_FILES		=	main.cpp \
 					SocketHandler.cpp \
 					HttpRequestHandler.cpp \
+					HttpResponseHandler.cpp \
 					webserver.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					HttpRequestHandler.hpp \
+					HttpResponseHandler.hpp \
 					SocketHandler.hpp
 SRCS_DIR		=	srcs
 OBJS_DIR		=	obj
