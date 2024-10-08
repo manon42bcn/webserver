@@ -23,47 +23,17 @@
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
 #include "HttpResponseHandler.hpp"
+#include "ServerManager.hpp"
 
 int main() {
-	SocketHandler server_socket(8080);
-	server_socket.configure();
+	ServerManager server_manager;
 
-	HttpRequestHandler request_handler;
-	HttpResponseHandler response_handler;
+	// Agregar servidores en los puertos 8080 y 9090
+	server_manager.add_server(8080);
+	server_manager.add_server(9090);
 
-	struct pollfd poll_fds[100];
-	int nfds = 1;
+	// Iniciar el ciclo de eventos
+	server_manager.run();
 
-	poll_fds[0].fd = server_socket.get_socket_fd();
-	poll_fds[0].events = POLLIN;
-
-	while (true) {
-		int poll_count = poll(poll_fds, nfds, -1);
-		if (poll_count < 0) {
-			std::cerr << "Error en poll()" << std::endl;
-			exit(EXIT_FAILURE);
-		}
-
-		if (poll_fds[0].revents & POLLIN) {
-			int new_client_fd = server_socket.accept_connection();
-			if (new_client_fd > 0) {
-				poll_fds[nfds].fd = new_client_fd;
-				poll_fds[nfds].events = POLLIN;
-				nfds++;
-			}
-		}
-
-		for (int i = 1; i < nfds; ++i) {
-			if (poll_fds[i].revents & POLLIN) {
-				request_handler.handle_request(poll_fds[i].fd);
-				response_handler.send_response(poll_fds[i].fd, 200, "Hello, this is the response!");
-				close(poll_fds[i].fd);
-				poll_fds[i] = poll_fds[nfds - 1];
-				nfds--;
-			}
-		}
-	}
-
-	server_socket.close_socket();
 	return 0;
 }
