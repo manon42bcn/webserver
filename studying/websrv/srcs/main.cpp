@@ -26,11 +26,24 @@
 #include "ServerManager.hpp"
 
 int main() {
-	ServerManager server_manager;
+	std::vector<ServerConfig> configs;
 
-	// Agregar servidores en los puertos 8080 y 9090
-	server_manager.add_server(8080);
-	server_manager.add_server(9090);
+	// Configuración del servidor en el puerto 8080
+	ServerConfig server1;
+	server1.port = 8080;
+	server1.server_name = "localhost";
+	server1.document_root = "/var/www/html";
+	server1.error_pages[404] = "/404.html";
+	configs.push_back(server1);
+
+	// Configuración del servidor en el puerto 9090
+	ServerConfig server2;
+	server2.port = 9090;
+	server2.server_name = "localhost";
+	server2.document_root = "/var/www/site";
+	server2.error_pages[404] = "/404.html";
+	configs.push_back(server2);
+	ServerManager server_manager(configs);
 
 	// Iniciar el ciclo de eventos
 	server_manager.run();

@@ -8,8 +8,11 @@
  *
  * Create a vector to reserve enough poll_fds.
  */
-ServerManager::ServerManager() {
+ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
 	poll_fds.reserve(100);
+	for (size_t i = 0; i < configs.size(); ++i) {
+		add_server(configs[i].port);
+	}
 }
 
 /**
