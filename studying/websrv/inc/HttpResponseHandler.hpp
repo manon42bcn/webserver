@@ -1,6 +1,7 @@
 #ifndef HTTPRESPONSEHANDLER_HPP
 #define HTTPRESPONSEHANDLER_HPP
 
+#include "webserver.hpp"
 #include <string>
 #include <unistd.h>
 #include <string>

@@ -20,10 +20,11 @@
 #include <cstdlib>
 #include <poll.h>
 
-#include "SocketHandler.hpp"
-#include "HttpRequestHandler.hpp"
-#include "HttpResponseHandler.hpp"
+#include "webserver.hpp"
+//#include "HttpRequestHandler.hpp"
+//#include "HttpResponseHandler.hpp"
 #include "ServerManager.hpp"
+//#include "SocketHandler.hpp"
 
 int main() {
 	std::vector<ServerConfig> configs;
@@ -34,6 +35,8 @@ int main() {
 	server1.server_name = "localhost";
 	server1.document_root = "/var/www/html";
 	server1.error_pages[404] = "/404.html";
+	server1.locations = std::map<std::string, std::string>();
+	server1.default_pages.push_back("index.html");
 	configs.push_back(server1);
 
 	// Configuración del servidor en el puerto 9090
@@ -42,6 +45,8 @@ int main() {
 	server2.server_name = "localhost";
 	server2.document_root = "/var/www/site";
 	server2.error_pages[404] = "/404.html";
+	server2.locations = std::map<std::string, std::string>();
+	server2.default_pages.push_back("index.html");
 	configs.push_back(server2);
 	ServerManager server_manager(configs);
 

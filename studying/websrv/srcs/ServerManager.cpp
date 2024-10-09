@@ -1,74 +1,63 @@
+#include "webserver.hpp"
 #include "ServerManager.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
 
+
 /**
- * @brief Sever Manager Constructor.
+ * @brief Constructor of ServerManager Class.
  *
- * Create a vector to reserve enough poll_fds.
+ * @param configs vector with ServerConfig structs that include server configuration
  */
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
 	poll_fds.reserve(100);
+
 	for (size_t i = 0; i < configs.size(); ++i) {
-		add_server(configs[i].port);
+		add_server(configs[i].port, configs[i]);
 	}
 }
 
 /**
- * @brief ServerManager Destructor
+ * @brief Add a new server in a given port
  *
- * Closes all sockets, and free reserved memory for SocketHandler instances.
+ * @param port Port to listen
+ * @param config ServerConfig struct with Server configuration
  */
-ServerManager::~ServerManager() {
-	for (size_t i = 0; i < poll_fds.size(); ++i) {
-		close(poll_fds[i].fd);
-	}
-	for (size_t i = 0; i < servers.size(); ++i) {
-		delete servers[i];
-	}
-}
-
-/**
- * @brief Creates and attach a server, listen in a especific port.
- *
- * @param port Port to listen.
- */
-void ServerManager::add_server(int port) {
-	SocketHandler* server = new SocketHandler(port);
-	server->configure();
+void ServerManager::add_server(int port, const ServerConfig& config) {
+	SocketHandler* server = new SocketHandler(port, config);
 	servers.push_back(server);
 	add_server_to_poll(server->get_socket_fd());
 }
 
 /**
- * @brief Add socket fd to poll_fds vector.
+ * @brief Añade el descriptor del socket del servidor al vector poll_fds.
  *
- * @param server_fd socket fd
+ * @param server_fd Descriptor del socket del servidor.
  */
 void ServerManager::add_server_to_poll(int server_fd) {
 	struct pollfd pfd;
 	pfd.fd = server_fd;
-	pfd.events = POLLIN;
+	pfd.events = POLLIN;  // Estamos interesados en las operaciones de lectura
 	pfd.revents = 0;
 	poll_fds.push_back(pfd);
 }
 
 /**
- * @brief Add client fd to poll_fd vector.
+ * @brief Añade el descriptor del socket del cliente al vector poll_fds.
  *
- * @param client_fd client fd.
+ * @param client_fd Descriptor del socket del cliente.
  */
 void ServerManager::add_client_to_poll(int client_fd) {
 	struct pollfd pfd;
 	pfd.fd = client_fd;
-	pfd.events = POLLIN;
+	pfd.events = POLLIN;  // También queremos leer desde los clientes
 	pfd.revents = 0;
 	poll_fds.push_back(pfd);
 }
 
 /**
- * @brief Start the loop to listen and handle connections and requests.
+ * @brief Loop of events to handle listen, get request and send responses
  */
 void ServerManager::run() {
 	while (true) {
@@ -83,41 +72,27 @@ void ServerManager::run() {
 			if (poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
 
-				// Check, the fd belongs to server.
+				SocketHandler* server = nullptr;
 				for (size_t s = 0; s < servers.size(); ++s) {
 					if (poll_fds[i].fd == servers[s]->get_socket_fd()) {
 						is_server = true;
+						server = servers[s];
 						break;
 					}
 				}
 
 				if (is_server) {
-					// Accept new connection
-					SocketHandler* server = nullptr;
-					for (size_t s = 0; s < servers.size(); ++s) {
-						if (poll_fds[i].fd == servers[s]->get_socket_fd()) {
-							server = servers[s];
-							break;
-						}
-					}
-
-					if (server) {
-						int new_client_fd = server->accept_connection();
-						if (new_client_fd > 0) {
-							add_client_to_poll(new_client_fd);
-							std::cout << "Nueva conexión aceptada en el puerto "
-							          << server->get_socket_fd() << std::endl;
-						}
+					// Aceptar una nueva conexión
+					int new_client_fd = server->accept_connection();
+					if (new_client_fd > 0) {
+						add_client_to_poll(new_client_fd);
+						std::cout << "Nueva conexión aceptada en el puerto "
+						          << server->get_socket_fd() << std::endl;
 					}
 				} else {
-					// Handle request
+					// Manejar la solicitud del cliente
 					HttpRequestHandler request_handler;
-					HttpResponseHandler response_handler;
-
-					request_handler.handle_request(poll_fds[i].fd);
-
-					// Aquí manejamos que tipo de respuesta entregar, por ahora, fija.
-					response_handler.send_response(poll_fds[i].fd, 200, "Hello, world!");
+					request_handler.handle_request(poll_fds[i].fd, server->get_config()); // Obtener config desde SocketHandler
 
 					// Cerrar la conexión del cliente
 					close(poll_fds[i].fd);
@@ -125,7 +100,7 @@ void ServerManager::run() {
 					// Eliminar el descriptor de cliente del vector poll_fds
 					poll_fds[i] = poll_fds[poll_fds.size() - 1];
 					poll_fds.pop_back();
-					--i;
+					--i; // Ajustar el índice para verificar el nuevo descriptor en esta posición
 				}
 			}
 		}

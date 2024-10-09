@@ -1,23 +1,13 @@
 #ifndef SERVERMANAGER_HPP
 #define SERVERMANAGER_HPP
-
-#include "SocketHandler.hpp"
-#include "HttpRequestHandler.hpp"
-#include "HttpResponseHandler.hpp"
+#include "webserver.hpp"
 #include <vector>
 #include <poll.h>
 #include <map>
+#include "HttpRequestHandler.hpp"
+#include "HttpResponseHandler.hpp"
+#include "SocketHandler.hpp"
 
-/**
- * This struct is her just to test the workflow
- */
-struct ServerConfig {
-	int port;                            ///< Puerto en el que el servidor escuchará.
-	std::string server_name;             ///< Nombre del servidor.
-	std::string document_root;           ///< Directorio raíz de los archivos servidos.
-	std::map<int, std::string> error_pages; ///< Páginas de error personalizadas.
-	std::map<std::string, std::string> locations; ///< Mapeo de rutas a directorios o permisos.
-};
 /**
  * @brief Class to handle multiple instances of the server, to listen different ports
  *
@@ -27,15 +17,14 @@ struct ServerConfig {
  */
 class ServerManager {
 private:
-		std::vector<SocketHandler*> servers;
-//		HttpRequestHandler request_handler;
-//		HttpResponseHandler response_handler;
+		std::vector<SocketHandler*> servers;           ///< Vector de punteros a SocketHandler.
+		std::vector<ServerConfig> server_configs;      ///< Vector que contiene la configuración de los servidores.
 		std::vector<struct pollfd> poll_fds;
 
-	public:
+public:
 		ServerManager(const std::vector<ServerConfig>& configs);
-		~ServerManager();
-		void add_server(int port);
+//		~ServerManager();
+		void add_server(int port, const ServerConfig& config);
 		void run();
 
 	private:
