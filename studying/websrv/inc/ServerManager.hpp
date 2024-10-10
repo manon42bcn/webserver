@@ -1,35 +1,27 @@
 #ifndef SERVERMANAGER_HPP
 #define SERVERMANAGER_HPP
-#include "webserver.hpp"
+
 #include <vector>
 #include <poll.h>
-#include <map>
-#include "HttpRequestHandler.hpp"
-#include "HttpResponseHandler.hpp"
 #include "SocketHandler.hpp"
+#include "HttpRequestHandler.hpp"
+#include "webserver.hpp"
 
 /**
- * @brief Class to handle multiple instances of the server, to listen different ports
- *
- * Allows the creation of multiple instances to listen on different ports
- * handling petitions and responses.
- * Poll() function to multiplexer I/O.
+ * @brief Manages multiple server sockets and handles incoming connections.
  */
 class ServerManager {
 private:
-		std::vector<SocketHandler*> servers;           ///< Vector de punteros a SocketHandler.
-		std::vector<ServerConfig> server_configs;      ///< Vector que contiene la configuración de los servidores.
-		std::vector<struct pollfd> poll_fds;
+	std::vector<struct pollfd> poll_fds;           ///< Vector of file descriptors for poll().
+	std::vector<SocketHandler*> servers;           ///< Vector of server socket handlers (one per port).
+	std::vector<const ServerConfig> client_configs; ///< Vector to store configurations associated with clients.
 
 public:
-		ServerManager(const std::vector<ServerConfig>& configs);
-//		~ServerManager();
-		void add_server(int port, const ServerConfig& config);
-		void run();
-
-	private:
-		void add_server_to_poll(int server_fd);
-		void add_client_to_poll(int client_fd);
+	ServerManager(std::vector<ServerConfig> configs);
+	void run();
+	void add_server(int port, ServerConfig config);
+	void add_client_to_poll(int client_fd);
+	void add_server_to_poll(int server_fd);
 };
 
 #endif

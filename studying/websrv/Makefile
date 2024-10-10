@@ -10,7 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		=	main.cpp \
+SRCS_FILES		=	webserver.cpp \
+					main.cpp \
 					SocketHandler.cpp \
 					HttpRequestHandler.cpp \
 					HttpResponseHandler.cpp \
