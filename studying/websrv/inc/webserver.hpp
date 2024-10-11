@@ -3,7 +3,9 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <sstream>
 
+std::string int_to_string(int number);
 struct ServerConfig {
 	int port;                            ///< Puerto en el que el servidor escuchará.
 	std::string server_name;             ///< Nombre del servidor.

@@ -85,7 +85,7 @@ void ServerManager::run() {
 					// Accept a new connection
 					int new_client_fd = server->accept_connection();
 					if (new_client_fd > 0) {
-						add_client_to_poll(new_client_fd);  // No need to pass config here
+						add_client_to_poll(new_client_fd);
 						std::cout << "New connection accepted on port "
 						          << server->get_socket_fd() << std::endl;
 					}

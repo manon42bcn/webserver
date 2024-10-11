@@ -178,7 +178,7 @@ void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig c
 
 	// Si no se encontró el archivo, enviar un texto predeterminado
 	if (!file_found) {
-		std::string default_text = "Error " + std::to_string(error_code) + " - Error page not found.";
+		std::string default_text = "Error " + int_to_string(error_code) + " - Error page not found.";
 		std::string response = response_header(error_code, "Error", default_text.length(), "text/plain");
 		response += default_text;
 
@@ -198,8 +198,8 @@ std::string HttpRequestHandler::response_header(int code,
 												size_t content_size,
 												std::string mime)
 {
-	std::string header = "HTTP/1.1 " + std::to_string(code) + " " + result + "\r\n";
-	header += "Content-Length: " + std::to_string(content_size) + "\r\n";
+	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + result + "\r\n";
+	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
 	header += "Content-Type: \"" + mime + "\"\r\n";
 	header += "\r\n";
 	return (header);

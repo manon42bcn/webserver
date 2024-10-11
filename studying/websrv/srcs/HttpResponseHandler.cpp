@@ -37,8 +37,8 @@ std::string HttpResponseHandler::generate_headers(int status_code, size_t conten
 	std::string status_message = get_status_message(status_code);
 
 	std::string headers =
-			"HTTP/1.1 " + std::to_string(status_code) + " " + status_message + "\r\n" +
-			"Content-Length: " + std::to_string(content_length) + "\r\n" +
+			"HTTP/1.1 " + int_to_string(status_code) + " " + status_message + "\r\n" +
+			"Content-Length: " + int_to_string(content_length) + "\r\n" +
 			"Content-Type: text/html\r\n" +
 			"Connection: close\r\n\r\n";
 

@@ -60,6 +60,12 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 		print_server_config(config[i], location);
 }
 
+std::string int_to_string(int number) {
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
+
 
 int main() {
 	std::vector<ServerConfig> configs;
