@@ -16,7 +16,6 @@
 SocketHandler::SocketHandler(int port, const ServerConfig& config)
 		:socket_fd(-1), config(config) {
 	// Crear el socket
-	print_server_config(config, "Socket Handler");
 	socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (socket_fd < 0) {
 		std::cerr << "Error al crear el socket" << std::endl;

@@ -14,7 +14,6 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
 	}
-	print_vector_config(configs, "HERE WE ARE");
 }
 
 /**
@@ -37,7 +36,7 @@ void ServerManager::add_server(int port, const ServerConfig& config) {
 void ServerManager::add_server_to_poll(int server_fd) {
 	struct pollfd pfd;
 	pfd.fd = server_fd;
-	pfd.events = POLLIN;  // Monitor for incoming connections
+	pfd.events = POLLIN;
 	pfd.revents = 0;
 	poll_fds.push_back(pfd);
 }
@@ -57,7 +56,7 @@ void ServerManager::add_client_to_poll(int client_fd) {
 }
 
 /**
- * @brief Starts the event loop to handle incoming connections and requests.
+ * @brief Main event loop for handling incoming connections and client requests.
  */
 void ServerManager::run() {
 	while (true) {
@@ -71,8 +70,9 @@ void ServerManager::run() {
 		for (size_t i = 0; i < poll_fds.size(); ++i) {
 			if (poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
-
 				SocketHandler* server = nullptr;
+
+				// Check if the descriptor corresponds to a server socket
 				for (size_t s = 0; s < servers.size(); ++s) {
 					if (poll_fds[i].fd == servers[s]->get_socket_fd()) {
 						is_server = true;
@@ -82,29 +82,54 @@ void ServerManager::run() {
 				}
 
 				if (is_server) {
-					// Aceptar una nueva conexión
+					// Accept a new connection
 					int new_client_fd = server->accept_connection();
 					if (new_client_fd > 0) {
-						add_client_to_poll(new_client_fd);
+						ClientInfo client_info;
+						client_info.server = server;
+						client_info.client_fd.fd = new_client_fd;
+						client_info.client_fd.events = POLLIN;
+
+						// Add client info to clients and poll list
+						clients.push_back(client_info);
+						poll_fds.push_back(client_info.client_fd);
+
 						std::cout << "New connection accepted on port "
 						          << server->get_socket_fd() << std::endl;
 					}
 				} else {
-					// Manejar la solicitud del cliente
-					HttpRequestHandler request_handler;
-					request_handler.handle_request(poll_fds[i].fd, server->get_config());
+					// Handle client request
+					ClientInfo* client_info = nullptr;
 
-					// Cerrar la conexión del cliente
+					// Find the corresponding client in the clients vector
+					for (size_t c = 0; c < clients.size(); ++c) {
+						if (poll_fds[i].fd == clients[c].client_fd.fd) {
+							client_info = &clients[c];
+							break;
+						}
+					}
+
+					if (client_info != nullptr) {
+						HttpRequestHandler request_handler;
+						request_handler.handle_request(poll_fds[i].fd, client_info->server->get_config());
+
+						// Remove the client info from the clients vector BEFORE closing the connection
+						for (size_t c = 0; c < clients.size(); ++c) {
+							if (clients[c].client_fd.fd == poll_fds[i].fd) {
+								clients.erase(clients.begin() + (int)c);
+								break;
+							}
+						}
+					}
+
+					// Close the client connection
 					close(poll_fds[i].fd);
 
-					// Eliminar el descriptor de cliente de poll_fds
-					poll_fds[i] = poll_fds[poll_fds.size() - 1];
-					poll_fds.pop_back();
-					--i;  // Ajustar el índice para verificar el nuevo descriptor en esta posición
+					// Remove the client descriptor from poll_fds
+					poll_fds.erase(poll_fds.begin() + (int)i);
+					--i;  // Adjust index to check the new descriptor in this position
 				}
 			}
 		}
 	}
 }
-
-

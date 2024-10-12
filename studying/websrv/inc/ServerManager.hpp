@@ -8,13 +8,21 @@
 #include "webserver.hpp"
 
 /**
+ * @brief Structure to associate a client with the server that accepted the connection.
+ */
+struct ClientInfo {
+	SocketHandler* server;
+	struct pollfd client_fd;
+};
+
+/**
  * @brief Manages multiple server sockets and handles incoming connections.
  */
 class ServerManager {
 private:
-	std::vector<struct pollfd> poll_fds;           ///< Vector of file descriptors for poll().
-	std::vector<SocketHandler*> servers;           ///< Vector of server socket handlers (one per port).
-	std::vector<const ServerConfig> client_configs; ///< Vector to store configurations associated with clients.
+	std::vector<struct pollfd> poll_fds;  ///< Vector of file descriptors for poll()
+	std::vector<SocketHandler*> servers;  ///< Vector of server socket handlers (one per port)
+	std::vector<ClientInfo> clients;      ///< Vector of clients with their associated servers
 
 public:
 	ServerManager(const std::vector<ServerConfig>& configs);

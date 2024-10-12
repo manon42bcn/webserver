@@ -51,6 +51,12 @@ std::pair<std::string, std::string> HttpRequestHandler::parse_request(const std:
 	return std::make_pair(method, path);
 }
 
+/**
+ * @brief Direct each HTTP method to its own handler
+ *
+ * @param client_socket Client FD.
+ * @param config const reference to ServerConfig struct
+ */
 void HttpRequestHandler::handle_request(int client_socket, const ServerConfig& config) {
 	std::string request = read_http_request(client_socket);
 	std::pair<std::string, std::string> method_and_path = parse_request(request);
@@ -58,13 +64,91 @@ void HttpRequestHandler::handle_request(int client_socket, const ServerConfig& c
 	std::string requested_path = method_and_path.second;
 
 	if (method == "GET") {
-		// Handle GET requests (serving files, etc.)
+		handle_get(client_socket, config, requested_path);
 	} else if (method == "POST") {
-		// Handle POST requests (processing form data, etc.)
+		handle_post(client_socket, config, requested_path);
 	} else if (method == "DELETE") {
-		// Handle DELETE requests (deleting files, etc.)
+		handle_delete(client_socket, config, requested_path);
 	} else {
 		send_error_response(client_socket, config, 405);  // Method Not Allowed
+	}
+}
+
+/**
+ * @brief GET HTTP method handler
+ *
+ * @param client_socket Client FD
+ * @param config const reference to ServerConfig struct
+ * @param requested_path full path from petition
+ */
+void HttpRequestHandler::handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path) {
+	std::string full_path = config.document_root + requested_path;
+	std::ifstream file(full_path.c_str(), std::ios::binary);
+	std::string content = "HELLO USING GET! from port: ";
+	content += int_to_string(config.port);
+	std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
+	response += content;
+	send(client_socket, response.c_str(), response.length(), 0);
+//	if (file.is_open()) {
+//		std::stringstream file_content;
+//		file_content << file.rdbuf();
+//		std::string content = file_content.str();
+//
+//		std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
+//		response += content;
+//
+//		send(client_socket, response.c_str(), response.length(), 0);
+//		file.close();
+//	} else {
+//		send_error_response(client_socket, config, 404);  // File Not Found
+//	}
+}
+
+/**
+ * @brief POST HTTP method handler
+ *
+ * @param client_socket Client FD
+ * @param config const reference to ServerConfig struct
+ * @param requested_path full path from petition
+ */
+void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path) {
+	// Read the request body (assuming it's after the headers)
+	std::string body = read_http_request(client_socket);  // Could be refined to separate headers and body
+
+	// For simplicity, we'll just store the body in a file
+	std::string full_path = config.document_root + requested_path + "_post_data.txt";  // Save the body as a file
+	std::ofstream file(full_path.c_str());
+
+	if (file.is_open()) {
+		file << body;
+		file.close();
+
+		// Respond to the client with a success message
+		std::string response = response_header(200, "OK", body.length(), "text/plain");
+		response += "POST data received and saved.\n";
+		send(client_socket, response.c_str(), response.length(), 0);
+	} else {
+		send_error_response(client_socket, config, 500);  // Internal Server Error if unable to save file
+	}
+}
+
+/**
+ * @brief DELETE HTTP method handler
+ *
+ * @param client_socket Client FD
+ * @param config const reference to ServerConfig struct
+ * @param requested_path full path from petition
+ */
+void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path) {
+	std::string full_path = config.document_root + requested_path;
+
+	// Try to delete the file
+	if (remove(full_path.c_str()) == 0) {
+		std::string response = response_header(200, "OK", 0, "text/plain");
+		response += "File deleted successfully.\n";
+		send(client_socket, response.c_str(), response.length(), 0);
+	} else {
+		send_error_response(client_socket, config, 404);  // File Not Found
 	}
 }
 
