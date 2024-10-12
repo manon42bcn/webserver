@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 
 std::string int_to_string(int number);
 struct ServerConfig {

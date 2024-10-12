@@ -70,7 +70,7 @@ void ServerManager::run() {
 		for (size_t i = 0; i < poll_fds.size(); ++i) {
 			if (poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
-				SocketHandler* server = nullptr;
+				SocketHandler* server = NULL;
 
 				// Check if the descriptor corresponds to a server socket
 				for (size_t s = 0; s < servers.size(); ++s) {
@@ -99,7 +99,7 @@ void ServerManager::run() {
 					}
 				} else {
 					// Handle client request
-					ClientInfo* client_info = nullptr;
+					ClientInfo* client_info = NULL;
 
 					// Find the corresponding client in the clients vector
 					for (size_t c = 0; c < clients.size(); ++c) {
@@ -109,7 +109,7 @@ void ServerManager::run() {
 						}
 					}
 
-					if (client_info != nullptr) {
+					if (client_info != NULL) {
 						HttpRequestHandler request_handler;
 						request_handler.handle_request(poll_fds[i].fd, client_info->server->get_config());
 
