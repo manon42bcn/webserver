@@ -13,7 +13,7 @@
  * @param port Número del puerto en el que el servidor escuchará.
  * @param config Configuración asociada a este servidor.
  */
-SocketHandler::SocketHandler(int port, const ServerConfig config)
+SocketHandler::SocketHandler(int port, const ServerConfig& config)
 		:socket_fd(-1), config(config) {
 	// Crear el socket
 	print_server_config(config, "Socket Handler");

@@ -6,10 +6,10 @@
 class SocketHandler {
 private:
 	int socket_fd;
-	ServerConfig config;
+	const ServerConfig& config;
 
 public:
-	SocketHandler(int port, const ServerConfig config);
+	SocketHandler(int port, const ServerConfig& config);
 	int accept_connection();
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;

@@ -17,9 +17,9 @@ private:
 	std::vector<const ServerConfig> client_configs; ///< Vector to store configurations associated with clients.
 
 public:
-	ServerManager(std::vector<ServerConfig> configs);
+	ServerManager(const std::vector<ServerConfig>& configs);
 	void run();
-	void add_server(int port, ServerConfig config);
+	void add_server(int port, const ServerConfig& config);
 	void add_client_to_poll(int client_fd);
 	void add_server_to_poll(int server_fd);
 };

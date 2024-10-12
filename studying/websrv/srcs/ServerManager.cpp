@@ -8,13 +8,13 @@
  *
  * @param configs Vector with the configurations of the servers.
  */
-ServerManager::ServerManager(const std::vector<ServerConfig> configs) {
+ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
 	poll_fds.reserve(100);  // Reserve space for poll descriptors
-
 	// Create servers based on the configurations
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
 	}
+	print_vector_config(configs, "HERE WE ARE");
 }
 
 /**
@@ -23,7 +23,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig> configs) {
  * @param port Port number where the server will listen.
  * @param config Configuration of the server.
  */
-void ServerManager::add_server(int port, const ServerConfig config) {
+void ServerManager::add_server(int port, const ServerConfig& config) {
 	SocketHandler* server = new SocketHandler(port, config);
 	servers.push_back(server);
 	add_server_to_poll(server->get_socket_fd());
@@ -82,7 +82,7 @@ void ServerManager::run() {
 				}
 
 				if (is_server) {
-					// Accept a new connection
+					// Aceptar una nueva conexión
 					int new_client_fd = server->accept_connection();
 					if (new_client_fd > 0) {
 						add_client_to_poll(new_client_fd);
@@ -90,22 +90,21 @@ void ServerManager::run() {
 						          << server->get_socket_fd() << std::endl;
 					}
 				} else {
-					// Handle the client's request
+					// Manejar la solicitud del cliente
 					HttpRequestHandler request_handler;
-					if (server != nullptr) {
-						request_handler.handle_request(poll_fds[i].fd, server->get_config());  // Use server config directly
-					}
+					request_handler.handle_request(poll_fds[i].fd, server->get_config());
 
-					// Close the client connection
+					// Cerrar la conexión del cliente
 					close(poll_fds[i].fd);
 
-					// Remove client descriptor from poll_fds
+					// Eliminar el descriptor de cliente de poll_fds
 					poll_fds[i] = poll_fds[poll_fds.size() - 1];
 					poll_fds.pop_back();
-					--i;  // Adjust index to check the new descriptor in this position
+					--i;  // Ajustar el índice para verificar el nuevo descriptor en esta posición
 				}
 			}
 		}
 	}
 }
+
 

@@ -58,8 +58,15 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 {
 	for (size_t i = 0; i < config.size(); i++)
 		print_server_config(config[i], location);
+	exit(0);
 }
 
+/**
+ * @brief Converts an integer to a string.
+ *
+ * @param number The integer to convert.
+ * @return A string representation of the integer.
+ */
 std::string int_to_string(int number) {
 	std::stringstream ss;
 	ss << number;
