@@ -35,7 +35,7 @@ std::string HttpRequestHandler::normalize_request_path(std::string& requested_pa
 		return (eval_path);
 	if (is_dir(eval_path))
 	{
-		if (eval_path.back() != '/')
+		if (eval_path[eval_path.size() - 1] != '/')
 			eval_path += "/";
 		for (size_t i = 0; i < config.default_pages.size(); i++)
 		{
