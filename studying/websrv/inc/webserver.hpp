@@ -22,6 +22,8 @@ void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
 bool is_file(std::string ruta);
 bool is_dir(std::string ruta);
+std::string html_codes(int code);
+
 //void print_server_config(const ServerConfig& config) {
 //	std::cout << "Server Configuration:" << std::endl;
 //	std::cout << "  Port: " << config.port << std::endl;

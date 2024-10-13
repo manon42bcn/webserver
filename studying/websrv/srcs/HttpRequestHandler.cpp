@@ -13,12 +13,25 @@ void HttpRequestHandler::send_detailed_response(std::string method, const Server
 	content += int_to_string(config.port);
 	content += " and getting path " + requested_path + "!";
 	content += " with full path " + config.server_root + requested_path;
-	content += "  and it was evaluated as " + normalize_request_path(requested_path, config);
+	content += "  and it was evaluated as " + normalize_request_path(requested_path, config).path;
+
 	std::string header = response_header(200, "OK", content.length(), "text/plain");
 	std::string response = header + content;
 	send(client_socket, response.c_str(), response.length(), 0);
 }
 
+/**
+ * @brief Returns a path to get an error page
+ *
+ * @param requested_path path parsed from request
+ * @param config ServerConfig struct
+ * TODO: WIP
+ * @return t_path struct, that include status and path.
+ */
+//s_path find_error(const ServerConfig& config)
+//{
+//
+//}
 
 /**
  * @brief Returns a real path, fetching to the document
@@ -26,13 +39,13 @@ void HttpRequestHandler::send_detailed_response(std::string method, const Server
  * @param requested_path path parsed from request
  * @param config ServerConfig struct
  * TODO: it may be useful return something different, or create a previous check...
- * @return The full HTTP request as a string.
+ * @return t_path struct, that include status and path.
  */
-std::string HttpRequestHandler::normalize_request_path(std::string& requested_path, const ServerConfig& config)
+s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, const ServerConfig& config)
 {
 	std::string eval_path = config.server_root + requested_path;
 	if (is_file(eval_path))
-		return (eval_path);
+		return (s_path(200, eval_path));
 	if (is_dir(eval_path))
 	{
 		if (eval_path[eval_path.size() - 1] != '/')
@@ -40,10 +53,10 @@ std::string HttpRequestHandler::normalize_request_path(std::string& requested_pa
 		for (size_t i = 0; i < config.default_pages.size(); i++)
 		{
 			if (is_file(eval_path + config.default_pages[i]))
-				return (eval_path + config.default_pages[i]);
+				return (s_path(200, eval_path + config.default_pages[i]));
 		}
 	}
-	return ("NONE");
+	return (s_path(false, "NONE"));
 }
 
 /**
@@ -225,7 +238,7 @@ std::string HttpRequestHandler::response_header(int code, std::string result, si
 	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
 	header += "Content-Type: " + mime + "\r\n";
 	header += "\r\n";
-	return header;
+	return (header);
 }
 
 /**
@@ -244,7 +257,7 @@ std::map<std::string, std::string> HttpRequestHandler::create_mime_types() {
 	mime_types[".gif"] = "image/gif";
 	mime_types[".json"] = "application/json";
 	mime_types[".txt"] = "text/plain";
-	return mime_types;
+	return (mime_types);
 }
 
 /**

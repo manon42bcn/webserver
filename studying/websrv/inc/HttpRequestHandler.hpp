@@ -10,6 +10,14 @@ typedef enum s_is_file {
 	NONE_IS = 3
 } t_is_file;
 
+typedef int t_code;
+typedef struct s_path {
+	t_code      code;
+	std::string path;
+	s_path(t_code c, const std::string p) : code(c), path(p) {}
+} t_path;
+
+
 class HttpRequestHandler {
 public:
 	/**
@@ -22,7 +30,7 @@ public:
 	//	Temporal Method to debug responses for each method
 	void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
 private:
-	std::string normalize_request_path(std::string& requested_path, const ServerConfig& config);
+	s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
 	std::string read_http_request(int client_socket);
 	std::pair<std::string, std::string> parse_request(const std::string& request);
 	void send_error_response(int client_fd, const ServerConfig& config, int error_code);

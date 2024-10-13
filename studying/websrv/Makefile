@@ -29,7 +29,7 @@ SRCS 			=	$(addprefix $(SRCS_DIR)/,$(SRCS_FILES))
 OBJS			=	$(addprefix $(OBJS_DIR)/,$(SRCS_FILES:.cpp=.o))
 CC				=	c++
 RM				= 	rm -rf
-CFLAGS			=	-std=c++98 -Wall -Wextra -Werror -g
+CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
 
 all: $(OBJS_DIR) $(NAME)

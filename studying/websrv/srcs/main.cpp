@@ -93,6 +93,24 @@ std::string int_to_string(int number) {
 	return ss.str();
 }
 
+std::string html_codes(int code) {
+	static std::map<int, std::string> html_codes;
+
+	if (html_codes.empty()) {
+		html_codes[403] = "Forbidden";
+		html_codes[400] = "Bad Request";
+		html_codes[500] = "Internal Server Error";
+		html_codes[503] = "Service Unavailable";
+		html_codes[502] = "Bad Gateway";
+		html_codes[504] = "Gateway Timeout";
+		html_codes[401] = "Unauthorized";
+		html_codes[405] = "Method Not Allowed";
+		html_codes[416] = "Range Not Satisfiable";
+		html_codes[413] = "Payload Too Large";
+	}
+
+	return (html_codes[code]);
+}
 
 int main() {
 	std::vector<ServerConfig> configs;
