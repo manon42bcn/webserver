@@ -19,6 +19,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <poll.h>
+#include <sys/stat.h>
 
 #include "webserver.hpp"
 //#include "HttpRequestHandler.hpp"
@@ -61,6 +62,25 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 	exit(0);
 }
 
+bool is_dir(std::string ruta)
+{
+	struct stat s;
+
+	if (stat(ruta.c_str(), &s) == 0) {
+		return S_ISDIR(s.st_mode);
+	}
+	return false;
+}
+
+bool is_file(std::string ruta) {
+	struct stat s;
+
+	if (stat(ruta.c_str(), &s) == 0) {
+		return S_ISREG(s.st_mode);
+	}
+	return false;
+}
+
 /**
  * @brief Converts an integer to a string.
  *
@@ -94,6 +114,8 @@ int main() {
 	server2.error_pages[404] = "/404.html";
 	server2.locations = std::map<std::string, std::string>();
 	server2.default_pages.push_back("index.html");
+	server2.default_pages.push_back("home.html");
+	server2.default_pages.push_back("index.htm");
 	configs.push_back(server2);
 	ServerManager server_manager(configs);
 

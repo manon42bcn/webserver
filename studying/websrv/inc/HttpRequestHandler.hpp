@@ -4,23 +4,11 @@
 #include "webserver.hpp"
 #include <string>
 
-///**
-// * @brief Class to encapsulate HTTP request handler functionality.
-// */
-//class HttpRequestHandler {
-//public:
-//	void handle_request(int client_socket, const ServerConfig config);
-//
-//private:
-//	// Aux functions to get mime type
-//	std::map<std::string, std::string> create_mime_types(void);
-//	std::string get_mime_type(const std::string& path);
-//	// ---
-//	std::string parse_requested_path(const std::string& request);
-//	std::string read_http_request(int client_socket);
-//	void send_error_response(int client_fd, const ServerConfig config, int error_code);
-//	static std::string response_header(int code, std::string result, size_t content_size, std::string mime);
-//};
+typedef enum s_is_file {
+	DIR_IS = 0,
+	FILE_IS = 1,
+	NONE_IS = 3
+} t_is_file;
 
 class HttpRequestHandler {
 public:
@@ -31,9 +19,10 @@ public:
 	 * @param config The server configuration for this request.
 	 */
 	void handle_request(int client_socket, const ServerConfig& config);
-
+	//	Temporal Method to debug responses for each method
+	void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
 private:
-
+	std::string normalize_request_path(std::string requested_path, const ServerConfig& config);
 	std::string read_http_request(int client_socket);
 	std::pair<std::string, std::string> parse_request(const std::string& request);
 	void send_error_response(int client_fd, const ServerConfig& config, int error_code);
