@@ -10,10 +10,13 @@ std::string int_to_string(int number);
 struct ServerConfig {
 	int port;                            ///< Puerto en el que el servidor escuchará.
 	std::string server_name;             ///< Nombre del servidor.
-	std::string document_root;           ///< Directorio raíz de los archivos servidos.
+	std::string server_root;           ///< Directorio raíz de los archivos servidos.
 	std::map<int, std::string> error_pages; ///< Páginas de error personalizadas.
 	std::map<std::string, std::string> locations; ///< Mapeo de rutas a directorios o permisos.
 	std::vector<std::string> default_pages; ///< Páginas predeterminadas (e.g., index.html, home.html).
+//	------>>> General config, apply to all servers. Here to make it faster at exec
+	std::string ws_root;
+	std::string ws_errors_root;
 };
 void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
@@ -23,7 +26,7 @@ bool is_dir(std::string ruta);
 //	std::cout << "Server Configuration:" << std::endl;
 //	std::cout << "  Port: " << config.port << std::endl;
 //	std::cout << "  Server Name: " << config.server_name << std::endl;
-//	std::cout << "  Document Root: " << config.document_root << std::endl;
+//	std::cout << "  Document Root: " << config.server_root << std::endl;
 //
 //	// Imprimir las páginas de error personalizadas
 //	std::cout << "  Error Pages: " << std::endl;

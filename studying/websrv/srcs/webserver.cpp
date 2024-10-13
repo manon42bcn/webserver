@@ -4,7 +4,7 @@
 //	std::cout << "Server Configuration:" << std::endl;
 //	std::cout << "  Port: " << config.port << std::endl;
 //	std::cout << "  Server Name: " << config.server_name << std::endl;
-//	std::cout << "  Document Root: " << config.document_root << std::endl;
+//	std::cout << "  Document Root: " << config.server_root << std::endl;
 //
 //	// Imprimir las páginas de error personalizadas
 //	std::cout << "  Error Pages: " << std::endl;

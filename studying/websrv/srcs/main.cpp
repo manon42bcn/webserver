@@ -32,7 +32,7 @@ void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "Server Configuration:" << std::endl;
 	std::cout << "  Port: " << config.port << std::endl;
 	std::cout << "  Server Name: " << config.server_name << std::endl;
-	std::cout << "  Document Root: " << config.document_root << std::endl;
+	std::cout << "  Document Root: " << config.server_root << std::endl;
 
 	// Imprimir las páginas de error personalizadas
 	std::cout << "  Error Pages: " << std::endl;
@@ -101,21 +101,25 @@ int main() {
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
-	server1.document_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server1.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server1.error_pages[404] = "/404.html";
 	server1.locations = std::map<std::string, std::string>();
 	server1.default_pages.push_back("index.html");
+	server1.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server1.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
 	configs.push_back(server1);
 
 	ServerConfig server2;
 	server2.port = 9090;
 	server2.server_name = "localhost";
-	server2.document_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server2.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data/9090";
 	server2.error_pages[404] = "/404.html";
 	server2.locations = std::map<std::string, std::string>();
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");
+	server2.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
 	configs.push_back(server2);
 	ServerManager server_manager(configs);
 

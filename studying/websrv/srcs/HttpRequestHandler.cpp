@@ -6,22 +6,31 @@
 #include <iostream>
 #include <sys/socket.h>
 
+// Temporal method, to send a fix message without further actions, to debug dir and files checks
 void HttpRequestHandler::send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
 {
 	std::string content = "HELLO USING " + method + " FROM PORT : ";
 	content += int_to_string(config.port);
 	content += " and getting path " + requested_path + "!";
-	content += " with full path " + config.document_root + requested_path;
+	content += " with full path " + config.server_root + requested_path;
 	content += "  and it was evaluated as " + normalize_request_path(requested_path, config);
 	std::string header = response_header(200, "OK", content.length(), "text/plain");
 	std::string response = header + content;
 	send(client_socket, response.c_str(), response.length(), 0);
 }
 
-std::string HttpRequestHandler::normalize_request_path(std::string requested_path, const ServerConfig& config)
+
+/**
+ * @brief Returns a real path, fetching to the document
+ *
+ * @param requested_path path parsed from request
+ * @param config ServerConfig struct
+ * TODO: it may be useful return something different, or create a previous check...
+ * @return The full HTTP request as a string.
+ */
+std::string HttpRequestHandler::normalize_request_path(std::string& requested_path, const ServerConfig& config)
 {
-	//	TODO: so far UI to navigate dirs is not implemented. This is the point where we should include it.
-	std::string eval_path = config.document_root + requested_path;
+	std::string eval_path = config.server_root + requested_path;
 	if (is_file(eval_path))
 		return (eval_path);
 	if (is_dir(eval_path))
@@ -113,7 +122,8 @@ void HttpRequestHandler::handle_request(int client_socket, const ServerConfig& c
  * @param requested_path full path from petition
  */
 void HttpRequestHandler::handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path) {
-	std::string full_path = config.document_root + requested_path;
+	//	TODO: This point, each method returns a message (WIP).
+	std::string full_path = config.server_root + requested_path;
 	std::ifstream file(full_path.c_str(), std::ios::binary);
 	send_detailed_response("GET", config, requested_path, client_socket);
 //	std::string content = "HELLO USING GET! from port: ";
@@ -149,7 +159,7 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
 	std::string body = read_http_request(client_socket);  // Could be refined to separate headers and body
 
 	// For simplicity, we'll just store the body in a file
-	std::string full_path = config.document_root + requested_path + "_post_data.txt";  // Save the body as a file
+	std::string full_path = config.server_root + requested_path + "_post_data.txt";  // Save the body as a file
 	std::ofstream file(full_path.c_str());
 
 	if (file.is_open()) {
@@ -173,7 +183,7 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
  * @param requested_path full path from petition
  */
 void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path) {
-	std::string full_path = config.document_root + requested_path;
+	std::string full_path = config.server_root + requested_path;
 
 	// Try to delete the file
 	if (remove(full_path.c_str()) == 0) {
@@ -308,7 +318,7 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 //	// Manejo de la solicitud para el root "/"
 //	if (requested_path == "/") {
 //		for (size_t i = 0; i < config.default_pages.size(); ++i) {
-//			std::string full_path = config.document_root + "/" + config.default_pages[i];
+//			std::string full_path = config.server_root + "/" + config.default_pages[i];
 //			std::ifstream file(full_path.c_str(), std::ios::binary);
 //			if (file.is_open()) {
 //				// Leer y enviar el archivo encontrado
@@ -328,7 +338,7 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 //	// Manejo de solicitudes a subdirectorios "/casos/"
 //	if (requested_path.back() == '/') {
 //		for (size_t i = 0; i < config.default_pages.size(); ++i) {
-//			std::string full_path = config.document_root + requested_path + config.default_pages[i];
+//			std::string full_path = config.server_root + requested_path + config.default_pages[i];
 //			std::ifstream file(full_path.c_str(), std::ios::binary);
 //			if (file.is_open()) {
 //				// Leer y enviar el archivo encontrado
@@ -346,7 +356,7 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 //	}
 //
 //	// Manejo de solicitudes a archivos específicos
-//	std::string full_path = config.document_root + requested_path;
+//	std::string full_path = config.server_root + requested_path;
 //	std::ifstream file(full_path.c_str(), std::ios::binary);
 //
 //	if (file.is_open()) {
@@ -381,7 +391,7 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 //
 //	// Intentar obtener la página de error del archivo
 //	if (config.error_pages.find(error_code) != config.error_pages.end()) {
-//		error_page_path = config.document_root + config.error_pages.at(error_code);
+//		error_page_path = config.server_root + config.error_pages.at(error_code);
 //		std::ifstream file(error_page_path.c_str(), std::ios::binary);
 //		if (file.is_open()) {
 //			// Leer y enviar el archivo de error
