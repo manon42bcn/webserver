@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <poll.h>
 #include <sys/stat.h>
+#include <map>
 
 #include "webserver.hpp"
 //#include "HttpRequestHandler.hpp"
@@ -46,11 +47,11 @@ void print_server_config(const ServerConfig& config, std::string location) {
 		std::cout << "    " << *it << std::endl;
 	}
 
-	// Imprimir las rutas configuradas en 'locations'
-	std::cout << "  Locations: " << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it = config.locations.begin(); it != config.locations.end(); ++it) {
-		std::cout << "    Path: " << it->first << ", Directory: " << it->second << std::endl;
-	}
+//	// Imprimir las rutas configuradas en 'locations'
+//	std::cout << "  Locations: " << std::endl;
+//	for (std::map<std::string, std::string>::const_iterator it = config.locations.begin(); it != config.locations.end(); ++it) {
+//		std::cout << "    Path: " << it->first << ", Directory: " << it->second << std::endl;
+//	}
 
 	std::cout << "------------------"  << std::endl;
 }
@@ -116,6 +117,15 @@ std::string html_codes(int code) {
 	return (it->second);
 }
 
+// WIP: Starts_with to compare a given path with each locations key...
+bool starts_with(const std::string& str, const std::string& prefix) {
+	if (str.size() < prefix.size()) {
+		return (false);
+	}
+	return (str.compare(0, prefix.size(), prefix) == 0);
+}
+
+
 int main() {
 	std::vector<ServerConfig> configs;
 
@@ -125,7 +135,7 @@ int main() {
 	server1.server_name = "localhost";
 	server1.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server1.error_pages[404] = "/404.html";
-	server1.locations = std::map<std::string, std::string>();
+	server1.locations = std::map<std::string, LocationConfig>();
 	server1.default_pages.push_back("index.html");
 	server1.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server1.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
@@ -136,7 +146,7 @@ int main() {
 	server2.server_name = "localhost";
 	server2.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data/9090";
 	server2.error_pages[404] = "/404.html";
-	server2.locations = std::map<std::string, std::string>();
+	server2.locations = std::map<std::string, LocationConfig>();
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");

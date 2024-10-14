@@ -23,8 +23,8 @@
  * @brief Structure to associate a client with the server that accepted the connection.
  */
 struct ClientInfo {
-	SocketHandler* server;
-	struct pollfd client_fd;
+	SocketHandler*  server;
+	struct pollfd   client_fd;
 };
 
 /**

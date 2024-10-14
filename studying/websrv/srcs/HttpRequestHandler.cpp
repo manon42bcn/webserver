@@ -19,7 +19,16 @@
 #include <sys/socket.h>
 
 
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config): _client_socket(client_socket), _config(config)
+{
+	_access = ACCESS_FORBIDDEN;
+	_request = read_http_request();
+	std::pair<std::string, std::string> method_and_path = parse_request();
+	_method = method_and_path.first;
+	_path = method_and_path.second;
 
+	handle_request();
+}
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
 void HttpRequestHandler::send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
 {
@@ -79,12 +88,12 @@ s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, c
  * @param client_socket The file descriptor of the client.
  * @return The full HTTP request as a string.
  */
-std::string HttpRequestHandler::read_http_request(int client_socket) {
+std::string HttpRequestHandler::read_http_request() {
 	char buffer[1024];
 	std::string request;
 	int valread;
 
-	while ((valread = read(client_socket, buffer, sizeof(buffer) - 1)) > 0) {
+	while ((valread = read(_client_socket, buffer, sizeof(buffer) - 1)) > 0) {
 		buffer[valread] = '\0';
 		request += buffer;
 		if (request.find("\r\n\r\n") != std::string::npos) {
@@ -101,17 +110,17 @@ std::string HttpRequestHandler::read_http_request(int client_socket) {
  * @param request The HTTP request as a string.
  * @return A pair where the first element is the HTTP method (e.g., "GET") and the second is the requested path.
  */
-std::pair<std::string, std::string> HttpRequestHandler::parse_request(const std::string& request) {
+std::pair<std::string, std::string> HttpRequestHandler::parse_request() {
 	std::string method;
 	std::string path;
 
-	std::cout << request << std::endl;
-	size_t method_end = request.find(" ");
+	std::cout << _request << std::endl;
+	size_t method_end = _request.find(" ");
 	if (method_end != std::string::npos) {
-		method = request.substr(0, method_end);
-		size_t path_end = request.find(" ", method_end + 1);
+		method = _request.substr(0, method_end);
+		size_t path_end = _request.find(" ", method_end + 1);
 		if (path_end != std::string::npos) {
-			path = request.substr(method_end + 1, path_end - method_end - 1);
+			path = _request.substr(method_end + 1, path_end - method_end - 1);
 		}
 	}
 
@@ -124,20 +133,16 @@ std::pair<std::string, std::string> HttpRequestHandler::parse_request(const std:
  * @param client_socket Client FD.
  * @param config const reference to ServerConfig struct
  */
-void HttpRequestHandler::handle_request(int client_socket, const ServerConfig& config) {
-	std::string request = read_http_request(client_socket);
-	std::pair<std::string, std::string> method_and_path = parse_request(request);
-	std::string method = method_and_path.first;
-	std::string requested_path = method_and_path.second;
+void HttpRequestHandler::handle_request() {
 
-	if (method == "GET") {
-		handle_get(client_socket, config, requested_path);
-	} else if (method == "POST") {
-		handle_post(client_socket, config, requested_path);
-	} else if (method == "DELETE") {
-		handle_delete(client_socket, config, requested_path);
+	if (_method == "GET") {
+		handle_get(_client_socket, _config, _path);
+	} else if (_method == "POST") {
+		handle_post(_client_socket, _config, _path);
+	} else if (_method == "DELETE") {
+		handle_delete(_client_socket, _config, _path);
 	} else {
-		send_error_response(client_socket, config, 405);  // Method Not Allowed
+		send_error_response(_client_socket, _config, 405);  // Method Not Allowed
 	}
 }
 
@@ -183,7 +188,7 @@ void HttpRequestHandler::handle_get(int client_socket, const ServerConfig& confi
  */
 void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path) {
 	// Read the request body (assuming it's after the headers)
-	std::string body = read_http_request(client_socket);  // Could be refined to separate headers and body
+	std::string body = read_http_request();  // Could be refined to separate headers and body
 
 	// For simplicity, we'll just store the body in a file
 	std::string full_path = config.server_root + requested_path + "_post_data.txt";  // Save the body as a file

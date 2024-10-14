@@ -122,8 +122,8 @@ void ServerManager::run() {
 					}
 
 					if (client_info != NULL) {
-						HttpRequestHandler request_handler;
-						request_handler.handle_request(_poll_fds[i].fd, client_info->server->get_config());
+						HttpRequestHandler request_handler(_poll_fds[i].fd, client_info->server->get_config());
+//						request_handler.handle_request(_poll_fds[i].fd, client_info->server->get_config());
 
 						// Remove the client info from the _clients vector BEFORE closing the connection
 						for (size_t c = 0; c < _clients.size(); ++c) {

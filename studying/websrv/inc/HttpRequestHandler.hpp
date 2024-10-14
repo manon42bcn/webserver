@@ -34,24 +34,32 @@ typedef struct s_path {
  *
  */
 class HttpRequestHandler {
-public:
-	void handle_request(int client_socket, const ServerConfig& config);
-	//	Temporal Method to debug responses for each method
-	void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
-private:
-	s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
-	std::string read_http_request(int client_socket);
-	std::pair<std::string, std::string> parse_request(const std::string& request);
-	std::string default_plain_error(int error_code);
-	void send_error_response(int client_fd, const ServerConfig& config, int error_code);
-	static std::string response_header(int code, size_t content_size, std::string mime);
-	// Handle different methods
-	void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
-	void handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path);
-	void handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path);
-	// Additional helper methods to handle file serving and MIME types (optional to include here)
-	std::map<std::string, std::string> create_mime_types();
-	std::string get_mime_type(const std::string& path);
+	private:
+		int                 _client_socket;
+		std::string         _request;
+		std::string         _method;
+		e_access            _access;
+		std::string         _path;
+		const ServerConfig& _config;
+
+		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
+		std::string read_http_request();
+		std::pair<std::string, std::string> parse_request();
+		std::string default_plain_error(int error_code);
+		void send_error_response(int client_fd, const ServerConfig& config, int error_code);
+		static std::string response_header(int code, size_t content_size, std::string mime);
+		// Handle different methods
+		void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
+		void handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path);
+		void handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path);
+		// Additional helper methods to handle file serving and MIME types (optional to include here)
+		std::map<std::string, std::string> create_mime_types();
+		std::string get_mime_type(const std::string& path);
+	public:
+		HttpRequestHandler(int client_socket, const ServerConfig& config);
+		void handle_request();
+		//	Temporal Method to debug responses for each method
+		void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
 };
 
 

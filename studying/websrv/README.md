@@ -75,21 +75,29 @@ Entiendo que locations debería funcionar igual, con lo que podríamos tener dos
         path: /home/var/foo
     }
 ``` 
-Entonces, aquí no sé muy bien como apañarmelas, tengo varias ideas... iré informando ;-D.
+Entonces, aquí no sé muy bien como apañarmelas, tengo varias ideas... Primero implementaré esta manera que parece sencilla...
 
 Como comentamos la idea es que, antes de ejecutar, podamos contar con una cosa tipo (WIP total):
 
 ```c++
 std::vector<ServerConfig> servers;
-// Vector de estructuras:
+
+struct LocationConfig {
+	std::string                 loc_root;
+	e_access                    loc_access;
+	std::vector<std::string>    loc_default_pages;
+	t_mode                      loc_error_mode;
+	std::map<int, std::string>  loc_error_pages;
+};
+
 struct ServerConfig {
-	int                                 port;
-	std::string                         server_name;
-	std::string                         server_root;
-	t_mode                              error_mode;
-	std::map<int, std::string>          error_pages;
-	std::map<std::string, std::string>  locations;
-	std::vector<std::string>            default_pages;
+	int port;
+	std::string                                   server_name;
+	std::string                                   server_root;
+	t_mode                                        error_mode;
+	std::map<int, std::string>                    error_pages;
+	std::map<std::string, struct LocationConfig>  locations;
+	std::vector<std::string>                      default_pages;
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
 	std::string ws_errors_root;

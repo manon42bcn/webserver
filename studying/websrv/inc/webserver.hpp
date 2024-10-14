@@ -18,28 +18,37 @@
 #include <sstream>
 #include <cstdlib>
 
+#define NO_LOCATION -1
+
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1
 } t_mode;
 typedef enum e_access {
-
+	ACCESS_FORBIDDEN=0,
+	ACCESS_READ=1,
+	ACCESS_WRITE=2
 } t_access;
 
 std::string int_to_string(int number);
 struct LocationConfig {
-	std::string location_root;
-
+	std::string                 loc_root;
+	e_access                    loc_access;
+	std::vector<std::string>    loc_default_pages;
+	t_mode                      loc_error_mode;
+	std::map<int, std::string>  loc_error_pages;
+	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
+	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
 };
 
 struct ServerConfig {
 	int port;
-	std::string                 server_name;
-	std::string                 server_root;
-	t_mode                      error_mode;
-	std::map<int, std::string>  error_pages;
-	std::map<std::string, std::string> locations;
-	std::vector<std::string>    default_pages;
+	std::string                                   server_name;
+	std::string                                   server_root;
+	t_mode                                        error_mode;
+	std::map<int, std::string>                    error_pages;
+	std::map<std::string, struct LocationConfig>  locations;
+	std::vector<std::string>                      default_pages;
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
 	std::string ws_errors_root;
