@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:08:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/14 13:53:14 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,12 @@ typedef struct s_path {
 	s_path(t_code c, const std::string p) : code(c), path(p) {}
 } t_path;
 
-
+/**
+ * @brief Class to encapsulates the logic of get a request, process it and send a response/error
+ *
+ */
 class HttpRequestHandler {
 public:
-	/**
-	 * @brief Handles an HTTP request from a client.
-	 *
-	 * @param client_socket The file descriptor of the client.
-	 * @param config The server configuration for this request.
-	 */
 	void handle_request(int client_socket, const ServerConfig& config);
 	//	Temporal Method to debug responses for each method
 	void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
