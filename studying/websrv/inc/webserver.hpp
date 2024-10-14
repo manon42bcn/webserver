@@ -18,17 +18,32 @@
 #include <sstream>
 #include <cstdlib>
 
+typedef enum e_mode {
+	TEMPLATE=0,
+	LITERAL=1
+} t_mode;
+typedef enum e_access {
+
+} t_access;
+
 std::string int_to_string(int number);
+struct LocationConfig {
+	std::string location_root;
+
+};
+
 struct ServerConfig {
-	int port;                            ///< Puerto en el que el servidor escuchará.
-	std::string server_name;             ///< Nombre del servidor.
-	std::string server_root;           ///< Directorio raíz de los archivos servidos.
-	std::map<int, std::string> error_pages; ///< Páginas de error personalizadas.
-	std::map<std::string, std::string> locations; ///< Mapeo de rutas a directorios o permisos.
-	std::vector<std::string> default_pages; ///< Páginas predeterminadas (e.g., index.html, home.html).
+	int port;
+	std::string                 server_name;
+	std::string                 server_root;
+	t_mode                      error_mode;
+	std::map<int, std::string>  error_pages;
+	std::map<std::string, std::string> locations;
+	std::vector<std::string>    default_pages;
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
 	std::string ws_errors_root;
+	t_mode      ws_error_mode;
 };
 void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
