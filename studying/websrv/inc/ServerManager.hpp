@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 11:07:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:04:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ struct ClientInfo {
  */
 class ServerManager {
 	private:
-		std::vector<struct pollfd> poll_fds;  ///< Vector of file descriptors for poll()
-		std::vector<SocketHandler*> servers;  ///< Vector of server socket handlers (one per port)
-		std::vector<ClientInfo> clients;      ///< Vector of clients with their associated servers
+		std::vector<struct pollfd> _poll_fds;  ///< Vector of file descriptors for poll()
+		std::vector<SocketHandler*> _servers;  ///< Vector of server socket handlers (one per port)
+		std::vector<ClientInfo> _clients;      ///< Vector of clients with their associated servers
 
 public:
 		ServerManager(const std::vector<ServerConfig>& configs);

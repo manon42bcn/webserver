@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 11:07:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:04:16 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
  * @param configs Vector with the configurations of the servers.
  */
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
-	poll_fds.reserve(100);  // Reserve space for poll descriptors
+	_poll_fds.reserve(100);  // Reserve space for poll descriptors
 	// Create servers based on the configurations
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
@@ -36,7 +36,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
  */
 void ServerManager::add_server(int port, const ServerConfig& config) {
 	SocketHandler* server = new SocketHandler(port, config);
-	servers.push_back(server);
+	_servers.push_back(server);
 	add_server_to_poll(server->get_socket_fd());
 }
 
@@ -50,7 +50,7 @@ void ServerManager::add_server_to_poll(int server_fd) {
 	pfd.fd = server_fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;
-	poll_fds.push_back(pfd);
+	_poll_fds.push_back(pfd);
 }
 
 /**
@@ -64,7 +64,7 @@ void ServerManager::add_client_to_poll(int client_fd) {
 	pfd.fd = client_fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;
-	poll_fds.push_back(pfd);
+	_poll_fds.push_back(pfd);
 }
 
 /**
@@ -72,23 +72,23 @@ void ServerManager::add_client_to_poll(int client_fd) {
  */
 void ServerManager::run() {
 	while (true) {
-		int poll_count = poll(&poll_fds[0], poll_fds.size(), -1);
+		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 
 		if (poll_count < 0) {
 			std::cerr << "Error in poll()" << std::endl;
 			exit(EXIT_FAILURE);
 		}
 
-		for (size_t i = 0; i < poll_fds.size(); ++i) {
-			if (poll_fds[i].revents & POLLIN) {
+		for (size_t i = 0; i < _poll_fds.size(); ++i) {
+			if (_poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
 				SocketHandler* server = NULL;
 
 				// Check if the descriptor corresponds to a server socket
-				for (size_t s = 0; s < servers.size(); ++s) {
-					if (poll_fds[i].fd == servers[s]->get_socket_fd()) {
+				for (size_t s = 0; s < _servers.size(); ++s) {
+					if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
 						is_server = true;
-						server = servers[s];
+						server = _servers[s];
 						break;
 					}
 				}
@@ -103,8 +103,8 @@ void ServerManager::run() {
 						client_info.client_fd.events = POLLIN;
 
 						// Add client info to clients and poll list
-						clients.push_back(client_info);
-						poll_fds.push_back(client_info.client_fd);
+						_clients.push_back(client_info);
+						_poll_fds.push_back(client_info.client_fd);
 
 						std::cout << "New connection accepted on port "
 						          << server->get_socket_fd() << std::endl;
@@ -114,31 +114,31 @@ void ServerManager::run() {
 					ClientInfo* client_info = NULL;
 
 					// Find the corresponding client in the clients vector
-					for (size_t c = 0; c < clients.size(); ++c) {
-						if (poll_fds[i].fd == clients[c].client_fd.fd) {
-							client_info = &clients[c];
+					for (size_t c = 0; c < _clients.size(); ++c) {
+						if (_poll_fds[i].fd == _clients[c].client_fd.fd) {
+							client_info = &_clients[c];
 							break;
 						}
 					}
 
 					if (client_info != NULL) {
 						HttpRequestHandler request_handler;
-						request_handler.handle_request(poll_fds[i].fd, client_info->server->get_config());
+						request_handler.handle_request(_poll_fds[i].fd, client_info->server->get_config());
 
-						// Remove the client info from the clients vector BEFORE closing the connection
-						for (size_t c = 0; c < clients.size(); ++c) {
-							if (clients[c].client_fd.fd == poll_fds[i].fd) {
-								clients.erase(clients.begin() + (int)c);
+						// Remove the client info from the _clients vector BEFORE closing the connection
+						for (size_t c = 0; c < _clients.size(); ++c) {
+							if (_clients[c].client_fd.fd == _poll_fds[i].fd) {
+								_clients.erase(_clients.begin() + (int)c);
 								break;
 							}
 						}
 					}
 
 					// Close the client connection
-					close(poll_fds[i].fd);
+					close(_poll_fds[i].fd);
 
-					// Remove the client descriptor from poll_fds
-					poll_fds.erase(poll_fds.begin() + (int)i);
+					// Remove the client descriptor from _poll_fds
+					_poll_fds.erase(_poll_fds.begin() + (int)i);
 					--i;  // Adjust index to check the new descriptor in this position
 				}
 			}
