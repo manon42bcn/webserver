@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   HttpRequestHandler.cpp                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 13:49:40 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "HttpRequestHandler.hpp"
 #include <unistd.h>
 #include <fstream>
@@ -5,6 +17,8 @@
 #include <fcntl.h>
 #include <iostream>
 #include <sys/socket.h>
+
+
 
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
 void HttpRequestHandler::send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
@@ -15,7 +29,7 @@ void HttpRequestHandler::send_detailed_response(std::string method, const Server
 	content += " with full path " + config.server_root + requested_path;
 	content += "  and it was evaluated as " + normalize_request_path(requested_path, config).path;
 
-	std::string header = response_header(200, "OK", content.length(), "text/plain");
+	std::string header = response_header(200, content.length(), "text/plain");
 	std::string response = header + content;
 	send(client_socket, response.c_str(), response.length(), 0);
 }
@@ -180,7 +194,7 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
 		file.close();
 
 		// Respond to the client with a success message
-		std::string response = response_header(200, "OK", body.length(), "text/plain");
+		std::string response = response_header(200, body.length(), "text/plain");
 		response += "POST data received and saved.\n";
 		send(client_socket, response.c_str(), response.length(), 0);
 	} else {
@@ -200,12 +214,30 @@ void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& co
 
 	// Try to delete the file
 	if (remove(full_path.c_str()) == 0) {
-		std::string response = response_header(200, "OK", 0, "text/plain");
+		std::string response = response_header(200, 0, "text/plain");
 		response += "File deleted successfully.\n";
 		send(client_socket, response.c_str(), response.length(), 0);
 	} else {
 		send_error_response(client_socket, config, 404);  // File Not Found
 	}
+}
+
+/**
+ * @brief Creates a default error body response.
+ *
+ * @param error_code error code to include at response
+ * @return a basic html with error code and detail
+ */
+std::string HttpRequestHandler::default_plain_error(int error_code)
+{
+	std::string content = "<!DOCTYPE html>\n";
+	content += "<html>\n<head>\n";
+	content += "<title>Webserver - Error</title>\n";
+	content += "</head>\n<body>\n";
+	content += "<h1>Something went wrong...</h1>\n";
+	content += "<h2>" + int_to_string(error_code) + " - " + html_codes(error_code) + "</h2>\n";
+	content += "</body>\n</html>\n";
+	return (content);
 }
 
 /**
@@ -216,11 +248,32 @@ void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& co
  * @param error_code The HTTP error code to send (e.g., 404).
  */
 void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig& config, int error_code) {
-	if (config.error_pages.empty())
-		std::cout << "NOTHING HERE" << std::endl;
-	std::string error_message = "Error " + int_to_string(error_code) + " - Not Found";
-	std::string response = response_header(error_code, "Error", error_message.length(), "text/plain");
-	response += error_message;
+	std::string content;
+	std::string response;
+	std::string type = "text/html";
+	std::map<int, std::string>::const_iterator it = config.error_pages.find(error_code);
+	if (config.error_pages.empty()) {
+	//	Here I just have to handle the logic of "server without err pages -> using webserver defaults
+	//	This point I just will send a plain text.
+		content = default_plain_error(error_code);
+	}
+	else if (it != config.error_pages.end())
+	{
+		std::string error_path = config.server_root + it->second;
+		std::ifstream file(error_path.c_str(), std::ios::binary);
+
+		if (file.is_open()) {
+			std::stringstream file_content;
+			file_content << file.rdbuf();
+			file.close();
+			content = file_content.str();
+			type = get_mime_type(error_path);
+		} else {
+			content = default_plain_error(error_code);
+		}
+	}
+	response = response_header(error_code, content.length(), type);
+	response += content;
 	send(client_fd, response.c_str(), response.length(), 0);
 }
 
@@ -233,8 +286,8 @@ void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig& 
  * @param mime The MIME type of the content.
  * @return The HTTP response header as a string.
  */
-std::string HttpRequestHandler::response_header(int code, std::string result, size_t content_size, std::string mime) {
-	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + result + "\r\n";
+std::string HttpRequestHandler::response_header(int code, size_t content_size, std::string mime) {
+	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + html_codes(code) + "\r\n";
 	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
 	header += "Content-Type: " + mime + "\r\n";
 	header += "\r\n";

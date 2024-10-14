@@ -1,15 +1,15 @@
-///* ************************************************************************** */
-///*                                                                            */
-///*                                                        :::      ::::::::   */
-///*   main.cpp                                           :+:      :+:    :+:   */
-///*                                                    +:+ +:+         +:+     */
-///*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
-///*                                                +#+#+#+#+#+   +#+           */
-///*   Created: 2024/09/24 23:49:21 by mac               #+#    #+#             */
-///*   Updated: 2024/09/24 23:49:24 by mac              ###   ########.fr       */
-///*                                                                            */
-///* ************************************************************************** */
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 13:50:25 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -97,6 +97,7 @@ std::string html_codes(int code) {
 	static std::map<int, std::string> html_codes;
 
 	if (html_codes.empty()) {
+		html_codes[200] = "OK";
 		html_codes[403] = "Forbidden";
 		html_codes[400] = "Bad Request";
 		html_codes[500] = "Internal Server Error";
@@ -108,8 +109,11 @@ std::string html_codes(int code) {
 		html_codes[416] = "Range Not Satisfiable";
 		html_codes[413] = "Payload Too Large";
 	}
-
-	return (html_codes[code]);
+	std::map<int, std::string >::const_iterator it = html_codes.find(code);
+	//	TODO: This behaviour should be controlled. Each error that can be handle should have its code
+	if (it == html_codes.end())
+		return ("NO INFO");
+	return (it->second);
 }
 
 int main() {

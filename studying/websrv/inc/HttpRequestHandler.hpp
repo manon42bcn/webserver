@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   HttpRequestHandler.hpp                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 13:08:25 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef HTTPREQUESTHANDLER_HPP
 #define HTTPREQUESTHANDLER_HPP
 
@@ -33,8 +45,9 @@ private:
 	s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
 	std::string read_http_request(int client_socket);
 	std::pair<std::string, std::string> parse_request(const std::string& request);
+	std::string default_plain_error(int error_code);
 	void send_error_response(int client_fd, const ServerConfig& config, int error_code);
-	static std::string response_header(int code, std::string result, size_t content_size, std::string mime);
+	static std::string response_header(int code, size_t content_size, std::string mime);
 	// Handle different methods
 	void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
 	void handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path);
