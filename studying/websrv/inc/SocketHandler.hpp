@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 11:07:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:07:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 class SocketHandler {
 private:
-	int socket_fd;
-	const ServerConfig& config;
+	int _socket_fd;
+	const ServerConfig& _config;
 
 public:
 	SocketHandler(int port, const ServerConfig& config);

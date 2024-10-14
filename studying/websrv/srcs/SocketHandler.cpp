@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 11:07:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:07:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
  * @param config Configuración asociada a este servidor.
  */
 SocketHandler::SocketHandler(int port, const ServerConfig& config)
-		:socket_fd(-1), config(config) {
+		:_socket_fd(-1), _config(config) {
 	// Crear el socket
-	socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket_fd < 0) {
+	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (_socket_fd < 0) {
 		std::cerr << "Error al crear el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -41,19 +41,19 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config)
 	server_addr.sin_port = htons(port);
 
 	// Enlazar el socket
-	if (bind(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 		std::cerr << "Error al enlazar el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	// Poner el socket en modo escucha
-	if (listen(socket_fd, 10) < 0) {
+	if (listen(_socket_fd, 10) < 0) {
 		std::cerr << "Error al escuchar en el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	// Configurar el socket como no bloqueante
-	set_nonblocking(socket_fd);
+	set_nonblocking(_socket_fd);
 
 	std::cout << "Servidor configurado y escuchando en el puerto " << port << std::endl;
 }
@@ -64,7 +64,7 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config)
  * @return Descriptor del socket del cliente.
  */
 int SocketHandler::accept_connection() {
-	int client_fd = accept(socket_fd, NULL, NULL);
+	int client_fd = accept(_socket_fd, NULL, NULL);
 	if (client_fd < 0) {
 		std::cerr << "Error al aceptar la conexión" << std::endl;
 	} else {
@@ -79,7 +79,7 @@ int SocketHandler::accept_connection() {
  * @return int Descriptor del socket.
  */
 int SocketHandler::get_socket_fd() const {
-	return socket_fd;
+	return (_socket_fd);
 }
 
 /**
@@ -88,7 +88,7 @@ int SocketHandler::get_socket_fd() const {
  * @return ServerConfig Estructura con la configuración del servidor.
  */
 const ServerConfig& SocketHandler::get_config() const {
-	return config;
+	return (_config);
 }
 
 /**
