@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 18:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/04 16:51:51 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/15 23:50:40 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,25 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include "Config.hpp"
-#include "Server.hpp"
+#include <stdlib.h>
+#include <ctype.h>
+#include <iostream>
+#include <cstring>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <vector>
+#include <map>
+#include <string>
+#include <sstream> 
+
 
 #define DEL_LINE		"\033[2K"
 #define ITALIC			"\033[3m"
 #define BOLD			"\033[1m"
-#define DEF_COLOR		"\033[0;39m"
+#define RESET			"\033[0;39m"
 #define GRAY			"\033[0;90m"
 #define RED				"\033[0;91m"
 #define GREEN			"\033[0;92m"
@@ -45,9 +57,52 @@
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
 
-// Necesary (?
-extern "C" {
-#include "libft.h"
-}
+typedef enum e_mode {
+	TEMPLATE=0,
+	LITERAL=1
+} t_mode;
+typedef enum e_access {
+	ACCESS_FORBIDDEN=0,
+	ACCESS_READ=1,
+	ACCESS_WRITE=2
+} t_access;
+
+std::string int_to_string(int number);
+struct LocationConfig {
+	std::string                 loc_root;
+	e_access                    loc_access;
+	std::vector<std::string>    loc_default_pages;
+	t_mode                      loc_error_mode;
+	std::vector<std::string>                      default_pages;
+	std::map<int, std::string>  loc_error_pages;
+	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
+	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
+};
+
+struct ServerConfig {
+	int                                           port;	// Done
+	std::string                                   server_name; // Done
+	std::string                                   server_root; // Done
+	t_mode                                        error_mode; 
+	std::map<int, std::string>                    error_pages; // Done
+	std::map<std::string, struct LocationConfig>  locations;
+	std::vector<std::string>                      default_pages; // Done
+    std::string                                   client_max_body_size; //Done
+    bool                                          autoindex; //Done
+//	------>>> General config, apply to all servers. Here to make it faster at exec
+	std::string ws_root;
+	std::string ws_errors_root;
+	t_mode      ws_error_mode;
+};
+
+void parse_file(std::string file);
+bool check_args(int argc, char **argv);
+std::string getValue(std::string line, const std::string& key);
+std::string cleanLine(std::string line);
+int check_port(std::string port);
+bool check_server_name(std::string server_name);
+bool check_error_page(std::string error_page);
+bool check_default_page(std::string default_page);
+
 
 #endif
