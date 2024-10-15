@@ -16,6 +16,11 @@
 #include "webserver.hpp"
 #include <string>
 
+typedef enum s_state_request {
+	RS_READING = 0,
+	RS_PARSING = 1
+} t_state_request;
+
 typedef enum s_is_file {
 	DIR_IS = 0,
 	FILE_IS = 1,
@@ -36,15 +41,14 @@ typedef struct s_path {
 class HttpRequestHandler {
 	private:
 		int                 _client_socket;
-		std::string         _request;
-		std::string         _method;
-		e_access            _access;
-		std::string         _path;
 		const ServerConfig& _config;
+		e_access            _access;
+
+
 
 		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
 		std::string read_http_request();
-		std::pair<std::string, std::string> parse_request();
+		std::pair<std::string, std::string> parse_request(const std::string& request);
 		std::string default_plain_error(int error_code);
 		void send_error_response(int client_fd, const ServerConfig& config, int error_code);
 		static std::string response_header(int code, size_t content_size, std::string mime);
@@ -57,9 +61,9 @@ class HttpRequestHandler {
 		std::string get_mime_type(const std::string& path);
 	public:
 		HttpRequestHandler(int client_socket, const ServerConfig& config);
-		void handle_request();
+		void handle_request(const std::string method, const std::string path);
 		//	Temporal Method to debug responses for each method
-		void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
+		void send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
 };
 
 
