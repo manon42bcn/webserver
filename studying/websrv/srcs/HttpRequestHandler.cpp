@@ -18,11 +18,43 @@
 #include <iostream>
 #include <sys/socket.h>
 
+/**
+ * @brief Get location info using request path
+ *
+ * Iterates over server location, and evaluate which location config
+ * should apply to current request. Load _access and _location_key attributes
+ * to make it easier further access.
+ *
+ * @param path path parsed from request
+ */
+void HttpRequestHandler::get_location_from_path(const std::string& path)
+{
+//	TODO: WIP, this method should work with a non heap pointer...
+	std::map<std::string, LocationConfig> locations = _config.locations;
+	std::string saved_key;
+	LocationConfig* result = NULL;
 
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config): _client_socket(client_socket), _config(config), _access(ACCESS_FORBIDDEN)
+	for (std::map<std::string, LocationConfig>::iterator it = locations.begin(); it != locations.end(); ++it) {
+		const std::string& key = it->first;
+		if (starts_with(path, key)) {
+			if (key.length() > saved_key.length()) {
+				result = &it->second;
+				saved_key = key;
+				_access = it->second.loc_access;
+			}
+		}
+	}
+	_location_key = saved_key;
+	_location = result;
+}
+
+
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config): _client_socket(client_socket), _config(config), _access(ACCESS_BAD_REQUEST), _location(NULL)
 {
 	std::string request = read_http_request();
 	std::pair<std::string, std::string> method_and_path = parse_request(request);
+//	const LocationConfig& path_config =
+	get_location_from_path(method_and_path.second);
 	handle_request(method_and_path.first, method_and_path.second);
 }
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
@@ -33,6 +65,7 @@ void HttpRequestHandler::send_detailed_response(const std::string method, const 
 	content += " and getting path " + requested_path + "!";
 	content += " with full path " + config.server_root + requested_path;
 	content += "  and it was evaluated as " + normalize_request_path(requested_path, config).path;
+	content += " location found " + _location_key;
 
 	std::string header = response_header(200, content.length(), "text/plain");
 	std::string response = header + content;
@@ -129,7 +162,10 @@ std::pair<std::string, std::string> HttpRequestHandler::parse_request(const std:
  * @param config const reference to ServerConfig struct
  */
 void HttpRequestHandler::handle_request(const std::string method, const std::string path) {
-	_access = ACCESS_WRITE;
+	if (_location != NULL)
+	{
+		std::cout << "parece que si " << _location->loc_root << std::endl;
+	}
 	if (method == "GET") {
 		handle_get(_client_socket, _config, path);
 	} else if (method == "POST") {

@@ -25,9 +25,10 @@ typedef enum e_mode {
 	LITERAL=1
 } t_mode;
 typedef enum e_access {
-	ACCESS_FORBIDDEN=0,
-	ACCESS_READ=1,
-	ACCESS_WRITE=2
+	ACCESS_BAD_REQUEST = 0,
+	ACCESS_FORBIDDEN = 1,
+	ACCESS_READ = 2,
+	ACCESS_WRITE = 3
 } t_access;
 
 std::string int_to_string(int number);
@@ -38,7 +39,7 @@ struct LocationConfig {
 	t_mode                      loc_error_mode;
 	std::map<int, std::string>  loc_error_pages;
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
-	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
+			loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
 };
 
 struct ServerConfig {
@@ -47,7 +48,7 @@ struct ServerConfig {
 	std::string                                   server_root;
 	t_mode                                        error_mode;
 	std::map<int, std::string>                    error_pages;
-	std::map<std::string, struct LocationConfig>  locations;
+	std::map<std::string, LocationConfig>         locations;
 	std::vector<std::string>                      default_pages;
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
@@ -59,7 +60,7 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 bool is_file(std::string ruta);
 bool is_dir(std::string ruta);
 std::string html_codes(int code);
-
+bool starts_with(const std::string& str, const std::string& prefix);
 //void print_server_config(const ServerConfig& config) {
 //	std::cout << "Server Configuration:" << std::endl;
 //	std::cout << "  Port: " << config.port << std::endl;

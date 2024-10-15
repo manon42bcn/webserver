@@ -43,6 +43,8 @@ class HttpRequestHandler {
 		int                 _client_socket;
 		const ServerConfig& _config;
 		e_access            _access;
+		std::string         _location_key;
+		LocationConfig*     _location;
 
 
 
@@ -60,6 +62,7 @@ class HttpRequestHandler {
 		std::map<std::string, std::string> create_mime_types();
 		std::string get_mime_type(const std::string& path);
 	public:
+		void get_location_from_path(const std::string& path);
 		HttpRequestHandler(int client_socket, const ServerConfig& config);
 		void handle_request(const std::string method, const std::string path);
 		//	Temporal Method to debug responses for each method
