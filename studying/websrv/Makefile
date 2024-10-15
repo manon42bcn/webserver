@@ -10,18 +10,18 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		=	main.cpp \
+SRCS_FILES		=	webserver.cpp \
+					main.cpp \
 					SocketHandler.cpp \
 					HttpRequestHandler.cpp \
 					HttpResponseHandler.cpp \
-					ServerManager.cpp \
-					webserver.cpp
+					ServerManager.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					SocketHandler.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \
-					ServerManager.hpp \
-					SocketHandler.hpp
+					ServerManager.hpp
 SRCS_DIR		=	srcs
 OBJS_DIR		=	obj
 HEADERS			=	$(wildcard $(HEADER_DIR)/*.hpp)
@@ -29,7 +29,7 @@ SRCS 			=	$(addprefix $(SRCS_DIR)/,$(SRCS_FILES))
 OBJS			=	$(addprefix $(OBJS_DIR)/,$(SRCS_FILES:.cpp=.o))
 CC				=	c++
 RM				= 	rm -rf
-CFLAGS			=	-std=c++98 -Wall -Wextra -Werror
+CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
 
 all: $(OBJS_DIR) $(NAME)

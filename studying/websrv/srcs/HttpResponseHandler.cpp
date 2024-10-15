@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   HttpResponseHandler.cpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 13:50:15 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "HttpResponseHandler.hpp"
 
 /**
@@ -20,7 +32,9 @@ void HttpResponseHandler::send_response(int client_socket, int status_code, cons
  * @param client_socket Client Socket FD.
  * @param error_code HTTP status code
  */
-void HttpResponseHandler::send_error_page(int client_socket, int error_code) {
+void HttpResponseHandler::send_error_page(int client_socket, int error_code)
+{
+
 	std::string error_message = get_status_message(error_code);
 	std::string content = "<html><body><h1>" + error_message + "</h1></body></html>";
 	send_response(client_socket, error_code, content);
@@ -37,8 +51,8 @@ std::string HttpResponseHandler::generate_headers(int status_code, size_t conten
 	std::string status_message = get_status_message(status_code);
 
 	std::string headers =
-			"HTTP/1.1 " + std::to_string(status_code) + " " + status_message + "\r\n" +
-			"Content-Length: " + std::to_string(content_length) + "\r\n" +
+			"HTTP/1.1 " + int_to_string(status_code) + " " + status_message + "\r\n" +
+			"Content-Length: " + int_to_string(content_length) + "\r\n" +
 			"Content-Type: text/html\r\n" +
 			"Connection: close\r\n\r\n";
 

@@ -1,109 +1,109 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   SocketHandler.cpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 14:07:40 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "SocketHandler.hpp"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <iostream>
+#include <cstring>
 
 /**
- * @brief SocketHandler Constructor
+ * @brief Constructor de SocketHandler que acepta configuración de servidor.
  *
- * Set port and fd for socket. -1 means that the fd has been not set yet.
- *
- * @param port Port that the socket will hear.
+ * @param port Número del puerto en el que el servidor escuchará.
+ * @param config Configuración asociada a este servidor.
  */
-SocketHandler::SocketHandler(int port) : port(port), socket_fd(-1) {}
-
-/**
- * @brief Configures the socket for listening on the specified port.
- *
- * This function creates a socket, sets it to non-blocking mode,
- * and binds it to the specified port.
- *
- * @param port The port number to listen on.
- */
-void SocketHandler::configure() {
-	socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (socket_fd == 0) {
-		std::cerr << "Error: " << SOCKET_CREATE << std::endl;
+SocketHandler::SocketHandler(int port, const ServerConfig& config)
+		:_socket_fd(-1), _config(config) {
+	// Crear el socket
+	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (_socket_fd < 0) {
+		std::cerr << "Error al crear el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	int opt = 1;
-	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
-		std::cerr << "Error: " << SOCKET_CONFIG << std::endl;
-		close(socket_fd);
+	// Configurar la dirección del servidor
+	sockaddr_in server_addr;
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = INADDR_ANY;
+	server_addr.sin_port = htons(port);
+
+	// Enlazar el socket
+	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+		std::cerr << "Error al enlazar el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(port);
-
-	if (bind(socket_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-		std::cerr << "Error: " << SOCKET_BIND << port << std::endl;
-		close(socket_fd);
+	// Poner el socket en modo escucha
+	if (listen(_socket_fd, 10) < 0) {
+		std::cerr << "Error al escuchar en el socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	if (listen(socket_fd, 3) < 0) {
-		std::cerr << "Error: " << SOCKET_LISTEN << port << std::endl;
-		close(socket_fd);
-		exit(EXIT_FAILURE);
-	}
-	set_nonblocking(socket_fd);
+	// Configurar el socket como no bloqueante
+	set_nonblocking(_socket_fd);
 
-	std::cout << SERVER_LISTEN << port << std::endl;
+	std::cout << "Servidor configurado y escuchando en el puerto " << port << std::endl;
 }
+
 /**
- * @brief Accepts an incoming connection on the listening socket.
+ * @brief Acepta una nueva conexión.
  *
- * This function accepts a new connection from a client and returns
- * the file descriptor of the new socket.
- *
- * @return The file descriptor of the new socket, or -1 if an error occurred.
+ * @return Descriptor del socket del cliente.
  */
 int SocketHandler::accept_connection() {
-	int new_socket;
-	socklen_t addrlen = sizeof(address);
-	new_socket = accept(socket_fd, (struct sockaddr *)&address, &addrlen);
-	if (new_socket < 0) {
-		std::cerr << "Error :" << CONN_ACCEPTED << std::endl;
-		return (-1);
+	int client_fd = accept(_socket_fd, NULL, NULL);
+	if (client_fd < 0) {
+		std::cerr << "Error al aceptar la conexión" << std::endl;
+	} else {
+		set_nonblocking(client_fd);  // Asegurarse de que el socket del cliente sea no bloqueante
 	}
-
-	set_nonblocking(new_socket);
-	return (new_socket);
+	return client_fd;
 }
 
 /**
- * @brief Gets the file descriptor of the listening socket.
+ * @brief Devuelve el descriptor del socket.
  *
- * @return The file descriptor of the listening socket.
+ * @return int Descriptor del socket.
  */
 int SocketHandler::get_socket_fd() const {
-	return (socket_fd);
+	return (_socket_fd);
 }
 
 /**
- * @brief Closes the listening socket.
+ * @brief Devuelve la configuración del servidor.
+ *
+ * @return ServerConfig Estructura con la configuración del servidor.
  */
-void SocketHandler::close_socket() {
-	close(socket_fd);
+const ServerConfig& SocketHandler::get_config() const {
+	return (_config);
 }
 
 /**
- * @brief Sets the specified file descriptor to non-blocking mode.
+ * @brief Configura el socket como no bloqueante.
  *
- * Non blocking mode, means that the workflow will not be affected if
- * A read/write process is not finished.
- *
- * @param fd The file descriptor to set to non-blocking mode.
+ * @param fd Descriptor del socket.
  */
 void SocketHandler::set_nonblocking(int fd) {
 	int flags = fcntl(fd, F_GETFL, 0);
 	if (flags == -1) {
-		std::cerr << "Error: " << SOCKET_FLAGS << std::endl;
+		std::cerr << "Error al obtener las banderas del socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		std::cerr << "Error: " << SOCKET_NON_BLOCK << std::endl;
+		std::cerr << "Error al configurar el socket como no bloqueante" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }

@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   HttpResponseHandler.hpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/14 11:33:32 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef HTTPRESPONSEHANDLER_HPP
 #define HTTPRESPONSEHANDLER_HPP
 
+#include "webserver.hpp"
 #include <string>
 #include <unistd.h>
 #include <string>
