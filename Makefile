@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/10/15 21:33:32 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/10/16 21:19:30 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ SRCS		=	src/main.cpp
 SRCS		+=	src/parse/file.cpp
 SRCS		+=	src/parse/checkArgs.cpp
 SRCS		+=	src/parse/utils.cpp
+SRCS		+=	src/parse/print.cpp
 
 
 # SRCS		+=	src/configuration/Config.cpp

@@ -6,13 +6,26 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/15 23:49:05 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/16 22:28:25 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 
-bool canOpenFile(const char* filename)
+bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
+{
+    int bracketCount = 0;
+    for (std::vector<std::string>::iterator it = start; it != end; ++it)
+    {
+        if (it->find("{") != std::string::npos)
+            bracketCount++;
+        if (it->find("}") != std::string::npos)
+            bracketCount--;
+    }
+    return bracketCount == 0;
+}
+
+bool can_open_file(const char* filename)
 {
     std::ifstream file(filename);
     return file.is_open();
@@ -38,7 +51,7 @@ bool check_args(int argc, char **argv)
         return false;
     }
 
-    if (!canOpenFile(argv[1]))
+    if (!can_open_file(argv[1]))
     {
         std::cout << "Error: file \"" << argv[1] << "\" can't be opened." << std::endl;
         return false;
@@ -141,7 +154,7 @@ bool check_default_page(std::string default_page)
     std::string page;
     while (iss >> page) {
         if (!is_valid_filename(page)) {
-            std::cout << "Error: Página por defecto inválida: " << page << std::endl;
+            std::cout << RED << "Error: Página por defecto inválida: " << page << RESET << std::endl;
             return false;
         }
     }
