@@ -17,13 +17,18 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-
+#include "http_enum_codes.hpp"
 #define NO_LOCATION -1
+
+// Methods included at http_codes_helper.cpp
+e_methods method_string_to_enum(const std::string& method);
+std::string http_status_description(e_http_sts code);
 
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1
 } t_mode;
+
 typedef enum e_access {
 	ACCESS_BAD_REQUEST = 0,
 	ACCESS_FORBIDDEN = 1,

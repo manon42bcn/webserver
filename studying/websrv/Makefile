@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
+					http_codes_helper.cpp \
 					main.cpp \
 					SocketHandler.cpp \
 					HttpRequestHandler.cpp \
@@ -18,6 +19,7 @@ SRCS_FILES		=	webserver.cpp \
 					ServerManager.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					http_enum_codes.hpp \
 					SocketHandler.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \

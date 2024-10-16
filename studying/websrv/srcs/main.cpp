@@ -94,29 +94,6 @@ std::string int_to_string(int number) {
 	return ss.str();
 }
 
-std::string html_codes(int code) {
-	static std::map<int, std::string> html_codes;
-
-	if (html_codes.empty()) {
-		html_codes[200] = "OK";
-		html_codes[403] = "Forbidden";
-		html_codes[400] = "Bad Request";
-		html_codes[500] = "Internal Server Error";
-		html_codes[503] = "Service Unavailable";
-		html_codes[502] = "Bad Gateway";
-		html_codes[504] = "Gateway Timeout";
-		html_codes[401] = "Unauthorized";
-		html_codes[405] = "Method Not Allowed";
-		html_codes[416] = "Range Not Satisfiable";
-		html_codes[413] = "Payload Too Large";
-	}
-	std::map<int, std::string >::const_iterator it = html_codes.find(code);
-	//	TODO: This behaviour should be controlled. Each error that can be handle should have its code
-	if (it == html_codes.end())
-		return ("NO INFO");
-	return (it->second);
-}
-
 // WIP: Starts_with to compare a given path with each locations key...
 bool starts_with(const std::string& str, const std::string& prefix) {
 	if (str.size() < prefix.size()) {

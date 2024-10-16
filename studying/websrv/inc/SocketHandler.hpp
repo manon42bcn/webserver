@@ -13,6 +13,7 @@
 #ifndef SOCKETHANDLER_HPP
 #define SOCKETHANDLER_HPP
 #include "webserver.hpp"
+#include "http_enum_codes.hpp"
 #include <string>
 
 class SocketHandler {
