@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:49:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 11:08:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ std::string HttpRequestHandler::read_http_request() {
 			break;
 		}
 	}
-
+	_state = ST_READING;
 	return (request);
 }
 
@@ -107,6 +107,7 @@ std::string HttpRequestHandler::parse_request_and_method(const std::string& requ
 	} else {
 		_method = METHOD_ERR;
 		_http_status = HTTP_BAD_REQUEST;
+		_state = -ST_PARSING;
 	}
 	return (path);
 }
@@ -125,7 +126,8 @@ void HttpRequestHandler::get_location_config(const std::string& path)
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	_state = ST_LOAD_LOCATION;
+	if (_state < ST_INIT)
+		return;
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin(); it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
 		if (starts_with(path, key)) {
@@ -140,12 +142,12 @@ void HttpRequestHandler::get_location_config(const std::string& path)
 		_location = result;
 		_http_status = HTTP_CONTINUE;
 		_access = result->loc_access;
+		_state = ST_LOAD_LOCATION;
 	}
 	else
 	{
 		_location = NULL;
-		_state = -_state;
-		_http_status = HTTP_BAD_REQUEST;
+		_state = -ST_LOAD_LOCATION;
 	}
 }
 
@@ -177,15 +179,16 @@ s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, c
 }
 
 
-
 /**
  * @brief Direct each HTTP method to its own handler
  *
  * @param client_socket Client FD.
  * @param config const reference to ServerConfig struct
  */
-void HttpRequestHandler::handle_request(const std::string path) {
-
+bool HttpRequestHandler::handle_request(const std::string path)
+{
+	if (_state < ST_INIT)
+		return (send_error_response(_http_status));
 	switch ((int)_method) {
 		case METHOD_GET:
 			handle_get(_client_socket, _config, path);
@@ -197,6 +200,7 @@ void HttpRequestHandler::handle_request(const std::string path) {
 			_http_status = HTTP_METHOD_NOT_ALLOWED;
 			send_error_response(HTTP_METHOD_NOT_ALLOWED);
 	}
+	return (true);
 }
 
 /**
@@ -321,7 +325,7 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
  * @param config The server configuration.
  * @param error_code The HTTP error code to send (e.g., 404).
  */
-void HttpRequestHandler::send_error_response(int error_code) {
+bool HttpRequestHandler::send_error_response(int error_code) {
 	std::string content;
 	std::string response;
 	std::string type = "text/html";
@@ -361,7 +365,9 @@ void HttpRequestHandler::send_error_response(int error_code) {
 
 	response = response_header(error_code, content.length(), type);
 	response += content;
-	send(_client_socket, response.c_str(), response.length(), 0);
+	if (send(_client_socket, response.c_str(), response.length(), 0) == -1)
+		return (false);
+	return (true);
 }
 
 /**

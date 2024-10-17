@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:53:14 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 11:06:54 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ enum e_rqs_state {
 	ST_READING = 2,
 	ST_PARSING = 3,
 	ST_LOAD_FILE = 4,
-	ST_ERROR_READING = 5
+	ST_ERROR_READING = 5,
+	ST_ERROR_PROCESS = 6,
+	ST_METHOD_PATH = 7
 };
 
 typedef enum s_is_file {
@@ -59,10 +61,10 @@ class HttpRequestHandler {
 		std::string parse_request_and_method(const std::string& request);
 		void get_location_config(const std::string& path);
 		// Entrypoint to workflow
-		void handle_request(const std::string path);
+		bool handle_request(const std::string path);
 		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
 		std::string default_plain_error();
-		void send_error_response(int error_code);
+		bool send_error_response(int error_code);
 		std::string get_file_content(const std::string& path);
 		static std::string response_header(int code, size_t content_size, std::string mime);
 		// Handle different methods
