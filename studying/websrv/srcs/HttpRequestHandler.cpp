@@ -196,10 +196,13 @@ bool HttpRequestHandler::handle_request(const std::string& path)
 	switch ((int)_method) {
 		case METHOD_GET:
 			handle_get(path);
+			break;
 		case METHOD_POST:
 			handle_post(path);
+			break;
 		case METHOD_DELETE:
 			handle_delete(path);
+			break;
 		default:
 			_http_status = HTTP_METHOD_NOT_ALLOWED;
 			send_error_response(HTTP_METHOD_NOT_ALLOWED);

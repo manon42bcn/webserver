@@ -27,9 +27,8 @@ std::string method_enum_to_string(int method)
 			return ("POST");
 		case METHOD_DELETE:
 			return ("DELETE");
-		default:
-			return ("NO METHOD");
 	}
+	return ("NO METHOD");
 }
 
 /**
