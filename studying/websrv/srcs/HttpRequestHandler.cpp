@@ -306,12 +306,6 @@ std::string HttpRequestHandler::default_plain_error()
 	return (content);
 }
 
-
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <iostream>
-
 /**
  * @brief Reads the contents of a file and returns it as a string.
  *
@@ -359,9 +353,6 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
 
 	return (content);
 }
-
-
-
 
 /**
  * @brief Sends an error response to the client.
