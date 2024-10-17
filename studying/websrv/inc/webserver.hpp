@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:50:38 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:25:12 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #define NO_LOCATION -1
 
 // Methods included at http_codes_helper.cpp
+std::string method_enum_to_string(int method);
 e_methods method_string_to_enum(const std::string& method);
 std::string http_status_description(e_http_sts code);
 

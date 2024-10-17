@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 11:06:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:16:16 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,23 +61,23 @@ class HttpRequestHandler {
 		std::string parse_request_and_method(const std::string& request);
 		void get_location_config(const std::string& path);
 		// Entrypoint to workflow
-		bool handle_request(const std::string path);
-		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
+		bool handle_request(const std::string& path);
+		s_path normalize_request_path(const std::string& requested_path) const;
 		std::string default_plain_error();
 		bool send_error_response(int error_code);
 		std::string get_file_content(const std::string& path);
 		static std::string response_header(int code, size_t content_size, std::string mime);
 		// Handle different methods
-		void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
-		void handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path);
-		void handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path);
+		void handle_get(const std::string& requested_path);
+		void handle_post(const std::string& requested_path);
+		void handle_delete(const std::string& requested_path);
 		// Additional helper methods to handle file serving and MIME types (optional to include here)
 		std::map<std::string, std::string> create_mime_types();
 		std::string get_mime_type(const std::string& path);
 	public:
 		HttpRequestHandler(int client_socket, const ServerConfig& config);
 		//	Temporal Method to debug responses for each method
-		void send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
+		void send_detailed_response(std::string requested_path);
 };
 
 

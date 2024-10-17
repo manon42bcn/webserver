@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 11:08:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:46:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@
 
 
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
-void HttpRequestHandler::send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
+void HttpRequestHandler::send_detailed_response(std::string requested_path)
 {
-	std::string content = "HELLO USING " + method + " FROM PORT : ";
-	content += int_to_string(config.port);
+	std::string content = "HELLO USING " + method_enum_to_string(_method)+ " FROM PORT : ";
+	content += int_to_string(_config.port);
 	content += " and getting path " + requested_path + "!";
-	content += " with full path " + config.server_root + requested_path;
-	content += "  and it was evaluated as " + normalize_request_path(requested_path, config).path;
+	content += " with full path " + _config.server_root + requested_path;
+	content += "  and it was evaluated as " + normalize_request_path(requested_path).path;
 	content += " location found " + _location->loc_root;
 
 	std::string header = response_header(200, content.length(), "text/plain");
 	std::string response = header + content;
-	send(client_socket, response.c_str(), response.length(), 0);
+	send(_client_socket, response.c_str(), response.length(), 0);
 }
 // -----------------------------------------------------------------
 /**
@@ -160,22 +160,25 @@ void HttpRequestHandler::get_location_config(const std::string& path)
  * TODO: it may be useful return something different, or create a previous check...
  * @return t_path struct, that include status and path.
  */
-s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, const ServerConfig& config)
+s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const
 {
-	std::string eval_path = config.server_root + requested_path;
-	if (is_file(eval_path))
-		return (s_path(200, eval_path));
+	//TODO: importante. Estamos asumiendo que location tendrá default pages. Si por config no se especifican, deberá copiar de default..
+
+	std::string eval_path = _location->loc_root + requested_path;
+
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path))
+		return (s_path(HTTP_OK, eval_path));
 	if (is_dir(eval_path))
 	{
 		if (eval_path[eval_path.size() - 1] != '/')
 			eval_path += "/";
-		for (size_t i = 0; i < config.default_pages.size(); i++)
+		for (size_t i = 0; i < _location->loc_default_pages.size(); i++)
 		{
-			if (is_file(eval_path + config.default_pages[i]))
-				return (s_path(200, eval_path + config.default_pages[i]));
+			if (is_file(eval_path + _location->loc_default_pages[i]))
+				return (s_path(200, eval_path + _location->loc_default_pages[i]));
 		}
 	}
-	return (s_path(false, "NONE"));
+	return (s_path(HTTP_NOT_FOUND, requested_path));
 }
 
 
@@ -185,17 +188,18 @@ s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, c
  * @param client_socket Client FD.
  * @param config const reference to ServerConfig struct
  */
-bool HttpRequestHandler::handle_request(const std::string path)
+bool HttpRequestHandler::handle_request(const std::string& path)
 {
 	if (_state < ST_INIT)
 		return (send_error_response(_http_status));
+	s_path requested_path = normalize_request_path(path);
 	switch ((int)_method) {
 		case METHOD_GET:
-			handle_get(_client_socket, _config, path);
+			handle_get(path);
 		case METHOD_POST:
-			handle_post(_client_socket, _config, path);
+			handle_post(path);
 		case METHOD_DELETE:
-			handle_delete(_client_socket, _config, path);
+			handle_delete(path);
 		default:
 			_http_status = HTTP_METHOD_NOT_ALLOWED;
 			send_error_response(HTTP_METHOD_NOT_ALLOWED);
@@ -210,11 +214,11 @@ bool HttpRequestHandler::handle_request(const std::string path)
  * @param config const reference to ServerConfig struct
  * @param requested_path full path from petition
  */
-void HttpRequestHandler::handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path) {
+void HttpRequestHandler::handle_get(const std::string& requested_path) {
 	//	TODO: This point, each method returns a message (WIP).
-	std::string full_path = config.server_root + requested_path;
+	std::string full_path = _config.server_root + requested_path;
 	std::ifstream file(full_path.c_str(), std::ios::binary);
-	send_detailed_response("GET", config, requested_path, client_socket);
+	send_detailed_response( requested_path);
 //	std::string content = "HELLO USING GET! from port: ";
 //	content += int_to_string(config.port);
 //	content += " and getting path " + requested_path;
@@ -243,12 +247,12 @@ void HttpRequestHandler::handle_get(int client_socket, const ServerConfig& confi
  * @param config const reference to ServerConfig struct
  * @param requested_path full path from petition
  */
-void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path) {
+void HttpRequestHandler::handle_post(const std::string& requested_path) {
 	// Read the request body (assuming it's after the headers)
 	std::string body = read_http_request();  // Could be refined to separate headers and body
 
 	// For simplicity, we'll just store the body in a file
-	std::string full_path = config.server_root + requested_path + "_post_data.txt";  // Save the body as a file
+	std::string full_path = _config.server_root + requested_path + "_post_data.txt";  // Save the body as a file
 	std::ofstream file(full_path.c_str());
 
 	if (file.is_open()) {
@@ -258,7 +262,7 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
 		// Respond to the client with a success message
 		std::string response = response_header(200, body.length(), "text/plain");
 		response += "POST data received and saved.\n";
-		send(client_socket, response.c_str(), response.length(), 0);
+		send(_client_socket, response.c_str(), response.length(), 0);
 	} else {
 		send_error_response(500);  // Internal Server Error if unable to save file
 	}
@@ -271,14 +275,14 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
  * @param config const reference to ServerConfig struct
  * @param requested_path full path from petition
  */
-void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path) {
-	std::string full_path = config.server_root + requested_path;
+void HttpRequestHandler::handle_delete(const std::string& requested_path) {
+	std::string full_path = _config.server_root + requested_path;
 
 	// Try to delete the file
 	if (remove(full_path.c_str()) == 0) {
 		std::string response = response_header(200, 0, "text/plain");
 		response += "File deleted successfully.\n";
-		send(client_socket, response.c_str(), response.length(), 0);
+		send(_client_socket, response.c_str(), response.length(), 0);
 	} else {
 		send_error_response(404);  // File Not Found
 	}
@@ -302,19 +306,27 @@ std::string HttpRequestHandler::default_plain_error()
 	return (content);
 }
 
+
 std::string HttpRequestHandler::get_file_content(const std::string& path)
 {
 	std::string content;
 	std::ifstream file(path.c_str(), std::ios::binary);
-
+	_state = -ST_LOAD_FILE;
+	if (file.fail())
+		_http_status = HTTP_FORBIDDEN;
 	if (file.is_open()) {
 		std::stringstream file_content;
 		file_content << file.rdbuf();
-		content = file_content.str();
+		if (file.bad()){
+			_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		} else {
+			content = file_content.str();
+		}
+		_state = ST_LOAD_FILE;
 		file.close();
-	} else {
-		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 	}
+	else
+		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 	return (content);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 23:33:40 by mac               #+#    #+#             */
-/*   Updated: 2024/10/16 23:33:42 by mac              ###   ########.fr       */
+/*   Updated: 2024/10/17 15:24:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,20 @@
 #include "HttpRequestHandler.hpp"
 #include <map>
 #include <iostream>
+// Método temporal, para facilitar el debug únicamente
+std::string method_enum_to_string(int method)
+{
+	switch (method) {
+		case METHOD_GET:
+			return ("GET");
+		case METHOD_POST:
+			return ("POST");
+		case METHOD_DELETE:
+			return ("DELETE");
+		default:
+			return ("NO METHOD");
+	}
+}
 
 /**
  * @brief Get a standard message for a http code
