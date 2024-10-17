@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:53:14 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 11:06:54 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,19 @@
 #define HTTPREQUESTHANDLER_HPP
 
 #include "webserver.hpp"
+#include "http_enum_codes.hpp"
 #include <string>
+
+enum e_rqs_state {
+	ST_INIT = 0,
+	ST_LOAD_LOCATION = 1,
+	ST_READING = 2,
+	ST_PARSING = 3,
+	ST_LOAD_FILE = 4,
+	ST_ERROR_READING = 5,
+	ST_ERROR_PROCESS = 6,
+	ST_METHOD_PATH = 7
+};
 
 typedef enum s_is_file {
 	DIR_IS = 0,
@@ -33,20 +45,27 @@ typedef struct s_path {
  * @brief Class to encapsulates the logic of get a request, process it and send a response/error
  *
  */
+// TODO: state and access are wip.. just explore differents ways to use them
 class HttpRequestHandler {
 	private:
-		int                 _client_socket;
-		std::string         _request;
-		std::string         _method;
-		e_access            _access;
-		std::string         _path;
-		const ServerConfig& _config;
+		int                     _client_socket;
+		const ServerConfig&     _config;
+		const LocationConfig*   _location;
+		int                      _state;
+		e_access                _access;
+		e_http_sts              _http_status;
+		e_methods               _method;
 
-		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
+		// Init request handler
 		std::string read_http_request();
-		std::pair<std::string, std::string> parse_request();
-		std::string default_plain_error(int error_code);
-		void send_error_response(int client_fd, const ServerConfig& config, int error_code);
+		std::string parse_request_and_method(const std::string& request);
+		void get_location_config(const std::string& path);
+		// Entrypoint to workflow
+		bool handle_request(const std::string path);
+		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
+		std::string default_plain_error();
+		bool send_error_response(int error_code);
+		std::string get_file_content(const std::string& path);
 		static std::string response_header(int code, size_t content_size, std::string mime);
 		// Handle different methods
 		void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
@@ -57,9 +76,8 @@ class HttpRequestHandler {
 		std::string get_mime_type(const std::string& path);
 	public:
 		HttpRequestHandler(int client_socket, const ServerConfig& config);
-		void handle_request();
 		//	Temporal Method to debug responses for each method
-		void send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
+		void send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
 };
 
 

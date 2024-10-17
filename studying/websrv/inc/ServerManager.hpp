@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <poll.h>
+#include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
 #include "webserver.hpp"

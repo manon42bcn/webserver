@@ -14,6 +14,7 @@
 #define HTTPRESPONSEHANDLER_HPP
 
 #include "webserver.hpp"
+#include "http_enum_codes.hpp"
 #include <string>
 #include <unistd.h>
 #include <string>

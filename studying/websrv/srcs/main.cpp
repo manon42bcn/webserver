@@ -94,29 +94,6 @@ std::string int_to_string(int number) {
 	return ss.str();
 }
 
-std::string html_codes(int code) {
-	static std::map<int, std::string> html_codes;
-
-	if (html_codes.empty()) {
-		html_codes[200] = "OK";
-		html_codes[403] = "Forbidden";
-		html_codes[400] = "Bad Request";
-		html_codes[500] = "Internal Server Error";
-		html_codes[503] = "Service Unavailable";
-		html_codes[502] = "Bad Gateway";
-		html_codes[504] = "Gateway Timeout";
-		html_codes[401] = "Unauthorized";
-		html_codes[405] = "Method Not Allowed";
-		html_codes[416] = "Range Not Satisfiable";
-		html_codes[413] = "Payload Too Large";
-	}
-	std::map<int, std::string >::const_iterator it = html_codes.find(code);
-	//	TODO: This behaviour should be controlled. Each error that can be handle should have its code
-	if (it == html_codes.end())
-		return ("NO INFO");
-	return (it->second);
-}
-
 // WIP: Starts_with to compare a given path with each locations key...
 bool starts_with(const std::string& str, const std::string& prefix) {
 	if (str.size() < prefix.size()) {
@@ -125,17 +102,37 @@ bool starts_with(const std::string& str, const std::string& prefix) {
 	return (str.compare(0, prefix.size(), prefix) == 0);
 }
 
+struct LocationTest {
+	const std::string& saludo;
+	LocationTest(const std::string& s) : saludo(s){};
+};
+
 
 int main() {
 	std::vector<ServerConfig> configs;
+//	std::vector<LocationConfig> locations;
+	std::map<std::string, LocationConfig> locations;
 
+	// Datos de prueba
+	std::vector<std::string> default_pages;
+	default_pages.push_back("index.html");
+	default_pages.push_back("home.html");
+	std::map<int, std::string> error_pages;
+	error_pages[404] = "404.html";
+
+	// Insertar datos en el vector
+	locations.insert(std::make_pair("/", LocationConfig("/", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
+	locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
 
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
 	server1.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server1.error_pages[404] = "/404.html";
-	server1.locations = std::map<std::string, LocationConfig>();
+	server1.locations = locations;
 	server1.default_pages.push_back("index.html");
 	server1.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server1.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
@@ -146,7 +143,7 @@ int main() {
 	server2.server_name = "localhost";
 	server2.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data/9090";
 	server2.error_pages[404] = "/404.html";
-	server2.locations = std::map<std::string, LocationConfig>();
+	server2.locations = locations;
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");
@@ -154,6 +151,7 @@ int main() {
 	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
 	configs.push_back(server2);
 	ServerManager server_manager(configs);
+
 
 	// Iniciar el ciclo de eventos
 	server_manager.run();

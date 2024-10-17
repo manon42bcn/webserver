@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:49:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 11:08:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,42 +19,138 @@
 #include <sys/socket.h>
 
 
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config): _client_socket(client_socket), _config(config)
-{
-	_access = ACCESS_FORBIDDEN;
-	_request = read_http_request();
-	std::pair<std::string, std::string> method_and_path = parse_request();
-	_method = method_and_path.first;
-	_path = method_and_path.second;
-
-	handle_request();
-}
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
-void HttpRequestHandler::send_detailed_response(std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
+void HttpRequestHandler::send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket)
 {
 	std::string content = "HELLO USING " + method + " FROM PORT : ";
 	content += int_to_string(config.port);
 	content += " and getting path " + requested_path + "!";
 	content += " with full path " + config.server_root + requested_path;
 	content += "  and it was evaluated as " + normalize_request_path(requested_path, config).path;
+	content += " location found " + _location->loc_root;
 
 	std::string header = response_header(200, content.length(), "text/plain");
 	std::string response = header + content;
 	send(client_socket, response.c_str(), response.length(), 0);
 }
+// -----------------------------------------------------------------
+/**
+ * @brief HttpRequestHandler constructor
+ *
+ * Instance and start the lifetime of a HTTP request.
+ * For safety issues, all attributes are initiated with wrong request
+ * related data.
+ *
+ * @param client_socket fd client socket.
+ * @param config ServerConfig struct.
+ */
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config):
+	_client_socket(client_socket),
+	_config(config),
+	_location(NULL),
+	_state(ST_INIT),
+	_access(ACCESS_FORBIDDEN),
+	_http_status(HTTP_CONTINUE),
+	_method(METHOD_TO_PARSE)
+{
+	std::string request = read_http_request();
+	std::string path = parse_request_and_method(request);
+	// Validate path using locations map and load its configuration as attribute.
+	get_location_config(path);
+	// Start request process.
+	handle_request(path);
+}
 
 /**
- * @brief Returns a path to get an error page
+ * @brief Reads the entire HTTP request from the client socket.
  *
- * @param requested_path path parsed from request
- * @param config ServerConfig struct
- * TODO: WIP
- * @return t_path struct, that include status and path.
+ * @param client_socket The file descriptor of the client.
+ * @return The full HTTP request as a string.
  */
-//s_path find_error(const ServerConfig& config)
-//{
-//
-//}
+std::string HttpRequestHandler::read_http_request() {
+	char buffer[1024];
+	std::string request;
+	int valread;
+
+	while ((valread = read(_client_socket, buffer, sizeof(buffer) - 1)) > 0) {
+		buffer[valread] = '\0';
+		request += buffer;
+		if (request.find("\r\n\r\n") != std::string::npos) {
+			break;
+		}
+	}
+	_state = ST_READING;
+	return (request);
+}
+
+/**
+ * @brief Parses the HTTP request to extract the method and requested path.
+ *
+ * This method will parse request, load method to _method, and return path.
+ * On error will save Bad Request as http_status.
+ *
+ * @param request The HTTP request as a string.
+ * @return requested path.
+ */
+std::string HttpRequestHandler::parse_request_and_method(const std::string& request) {
+	std::string method;
+	std::string path;
+
+	size_t method_end = request.find(' ');
+	if (method_end != std::string::npos) {
+		method = request.substr(0, method_end);
+		_method = method_string_to_enum(method);
+		size_t path_end = request.find(' ', method_end + 1);
+		if (path_end != std::string::npos) {
+			path = request.substr(method_end + 1, path_end - method_end - 1);
+		}
+	} else {
+		_method = METHOD_ERR;
+		_http_status = HTTP_BAD_REQUEST;
+		_state = -ST_PARSING;
+	}
+	return (path);
+}
+
+/**
+ * @brief Get location info using request path
+ *
+ * Iterates over server location, and evaluate which location config
+ * should apply to current request. Load _access state and the pointer
+ * to the LocationConfig structure that should be apply to the request.
+ *
+ * @param path path parsed from request
+ */
+void HttpRequestHandler::get_location_config(const std::string& path)
+{
+	std::string saved_key;
+	const LocationConfig* result = NULL;
+
+	if (_state < ST_INIT)
+		return;
+	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin(); it != _config.locations.end(); ++it) {
+		const std::string& key = it->first;
+		if (starts_with(path, key)) {
+			if (key.length() > saved_key.length()) {
+				result = &it->second;
+				saved_key = key;
+			}
+		}
+	}
+	if (result)
+	{
+		_location = result;
+		_http_status = HTTP_CONTINUE;
+		_access = result->loc_access;
+		_state = ST_LOAD_LOCATION;
+	}
+	else
+	{
+		_location = NULL;
+		_state = -ST_LOAD_LOCATION;
+	}
+}
+
 
 /**
  * @brief Returns a real path, fetching to the document
@@ -82,50 +178,6 @@ s_path HttpRequestHandler::normalize_request_path(std::string& requested_path, c
 	return (s_path(false, "NONE"));
 }
 
-/**
- * @brief Reads the entire HTTP request from the client socket.
- *
- * @param client_socket The file descriptor of the client.
- * @return The full HTTP request as a string.
- */
-std::string HttpRequestHandler::read_http_request() {
-	char buffer[1024];
-	std::string request;
-	int valread;
-
-	while ((valread = read(_client_socket, buffer, sizeof(buffer) - 1)) > 0) {
-		buffer[valread] = '\0';
-		request += buffer;
-		if (request.find("\r\n\r\n") != std::string::npos) {
-			break;
-		}
-	}
-
-	return request;
-}
-
-/**
- * @brief Parses the HTTP request to extract the method and requested path.
- *
- * @param request The HTTP request as a string.
- * @return A pair where the first element is the HTTP method (e.g., "GET") and the second is the requested path.
- */
-std::pair<std::string, std::string> HttpRequestHandler::parse_request() {
-	std::string method;
-	std::string path;
-
-	std::cout << _request << std::endl;
-	size_t method_end = _request.find(" ");
-	if (method_end != std::string::npos) {
-		method = _request.substr(0, method_end);
-		size_t path_end = _request.find(" ", method_end + 1);
-		if (path_end != std::string::npos) {
-			path = _request.substr(method_end + 1, path_end - method_end - 1);
-		}
-	}
-
-	return std::make_pair(method, path);
-}
 
 /**
  * @brief Direct each HTTP method to its own handler
@@ -133,17 +185,22 @@ std::pair<std::string, std::string> HttpRequestHandler::parse_request() {
  * @param client_socket Client FD.
  * @param config const reference to ServerConfig struct
  */
-void HttpRequestHandler::handle_request() {
-
-	if (_method == "GET") {
-		handle_get(_client_socket, _config, _path);
-	} else if (_method == "POST") {
-		handle_post(_client_socket, _config, _path);
-	} else if (_method == "DELETE") {
-		handle_delete(_client_socket, _config, _path);
-	} else {
-		send_error_response(_client_socket, _config, 405);  // Method Not Allowed
+bool HttpRequestHandler::handle_request(const std::string path)
+{
+	if (_state < ST_INIT)
+		return (send_error_response(_http_status));
+	switch ((int)_method) {
+		case METHOD_GET:
+			handle_get(_client_socket, _config, path);
+		case METHOD_POST:
+			handle_post(_client_socket, _config, path);
+		case METHOD_DELETE:
+			handle_delete(_client_socket, _config, path);
+		default:
+			_http_status = HTTP_METHOD_NOT_ALLOWED;
+			send_error_response(HTTP_METHOD_NOT_ALLOWED);
 	}
+	return (true);
 }
 
 /**
@@ -203,7 +260,7 @@ void HttpRequestHandler::handle_post(int client_socket, const ServerConfig& conf
 		response += "POST data received and saved.\n";
 		send(client_socket, response.c_str(), response.length(), 0);
 	} else {
-		send_error_response(client_socket, config, 500);  // Internal Server Error if unable to save file
+		send_error_response(500);  // Internal Server Error if unable to save file
 	}
 }
 
@@ -223,7 +280,7 @@ void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& co
 		response += "File deleted successfully.\n";
 		send(client_socket, response.c_str(), response.length(), 0);
 	} else {
-		send_error_response(client_socket, config, 404);  // File Not Found
+		send_error_response(404);  // File Not Found
 	}
 }
 
@@ -233,15 +290,31 @@ void HttpRequestHandler::handle_delete(int client_socket, const ServerConfig& co
  * @param error_code error code to include at response
  * @return a basic html with error code and detail
  */
-std::string HttpRequestHandler::default_plain_error(int error_code)
+std::string HttpRequestHandler::default_plain_error()
 {
 	std::string content = "<!DOCTYPE html>\n";
 	content += "<html>\n<head>\n";
 	content += "<title>Webserver - Error</title>\n";
 	content += "</head>\n<body>\n";
 	content += "<h1>Something went wrong...</h1>\n";
-	content += "<h2>" + int_to_string(error_code) + " - " + html_codes(error_code) + "</h2>\n";
+	content += "<h2>" + int_to_string(_http_status) + " - " + http_status_description(_http_status) + "</h2>\n";
 	content += "</body>\n</html>\n";
+	return (content);
+}
+
+std::string HttpRequestHandler::get_file_content(const std::string& path)
+{
+	std::string content;
+	std::ifstream file(path.c_str(), std::ios::binary);
+
+	if (file.is_open()) {
+		std::stringstream file_content;
+		file_content << file.rdbuf();
+		content = file_content.str();
+		file.close();
+	} else {
+		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+	}
 	return (content);
 }
 
@@ -252,34 +325,49 @@ std::string HttpRequestHandler::default_plain_error(int error_code)
  * @param config The server configuration.
  * @param error_code The HTTP error code to send (e.g., 404).
  */
-void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig& config, int error_code) {
+bool HttpRequestHandler::send_error_response(int error_code) {
 	std::string content;
 	std::string response;
 	std::string type = "text/html";
-	std::map<int, std::string>::const_iterator it = config.error_pages.find(error_code);
-	if (config.error_pages.empty()) {
-	//	Here I just have to handle the logic of "server without err pages -> using webserver defaults
-	//	This point I just will send a plain text.
-		content = default_plain_error(error_code);
-	}
-	else if (it != config.error_pages.end())
-	{
-		std::string error_path = config.server_root + it->second;
-		std::ifstream file(error_path.c_str(), std::ios::binary);
+	std::string error_file;
 
+	std::map<int, std::string>::const_iterator it;
+	const std::map<int, std::string>* error_pages;
+
+	error_pages = &_config.error_pages;
+	it = error_pages->find(error_code);
+	if (error_pages->empty() || it == error_pages->end())
+		error_file = _config.server_root + it->second;
+	if (_location != NULL)
+	{
+		error_pages = &_location->loc_error_pages;
+		it = error_pages->find(error_code);
+		if (error_pages->empty() || it == error_pages->end())
+			error_file = _location->loc_root + it->second;
+	}
+	if (!error_file.empty()) {
+		std::ifstream file(error_file.c_str(), std::ios::binary);
+		content = get_file_content(error_file);
+
+		type = get_mime_type(error_file);
 		if (file.is_open()) {
 			std::stringstream file_content;
 			file_content << file.rdbuf();
 			file.close();
 			content = file_content.str();
-			type = get_mime_type(error_path);
+			type = get_mime_type(error_file);
 		} else {
-			content = default_plain_error(error_code);
+			content = default_plain_error();
 		}
+	} else {
+		content = default_plain_error();
 	}
+
 	response = response_header(error_code, content.length(), type);
 	response += content;
-	send(client_fd, response.c_str(), response.length(), 0);
+	if (send(_client_socket, response.c_str(), response.length(), 0) == -1)
+		return (false);
+	return (true);
 }
 
 /**
@@ -292,7 +380,7 @@ void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig& 
  * @return The HTTP response header as a string.
  */
 std::string HttpRequestHandler::response_header(int code, size_t content_size, std::string mime) {
-	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + html_codes(code) + "\r\n";
+	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + http_status_description((e_http_sts)code) + "\r\n";
 	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
 	header += "Content-Type: " + mime + "\r\n";
 	header += "\r\n";
@@ -336,174 +424,3 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 	}
 	return ("text/plain");
 }
-//
-///**
-// * @brief Read the request from the socket.
-// *
-// * @param client_socket Client FD
-// * @return std::string Full request string format.
-// */
-//std::string HttpRequestHandler::read_http_request(int client_socket) {
-//	char buffer[1024];
-//	std::string request;
-//	int valread;
-//
-//	while ((valread = read(client_socket, buffer, sizeof(buffer) - 1)) > 0) {
-//		buffer[valread] = '\0';
-//		request += buffer;
-//		if (request.find("\r\n\r\n") != std::string::npos) {
-//			break;
-//		}
-//	}
-//
-//	return (request);
-//}
-//
-///**
-// * @brief Parse requested route
-// *
-// * @param request Request string format
-// * @return std::string Requested route
-// */
-//std::string HttpRequestHandler::parse_requested_path(const std::string& request) {
-//	size_t pos = request.find(" ");
-//	if (pos != std::string::npos) {
-//		size_t end_pos = request.find(" ", pos + 1);
-//		if (end_pos != std::string::npos) {
-//			return request.substr(pos + 1, end_pos - pos - 1);
-//		}
-//	}
-//	return "/";
-//}
-//
-///**
-// * @brief HTTP Request handler
-// *
-// * @param client_socket Client FD.
-// * @param config Server config struct
-// */
-//void HttpRequestHandler::handle_request(int client_socket, const ServerConfig config) {
-//	std::string request = read_http_request(client_socket);
-//	std::string requested_path = parse_requested_path(request);
-//
-//	// Manejo de la solicitud para el root "/"
-//	if (requested_path == "/") {
-//		for (size_t i = 0; i < config.default_pages.size(); ++i) {
-//			std::string full_path = config.server_root + "/" + config.default_pages[i];
-//			std::ifstream file(full_path.c_str(), std::ios::binary);
-//			if (file.is_open()) {
-//				// Leer y enviar el archivo encontrado
-//				std::stringstream file_content;
-//				file_content << file.rdbuf();
-//				std::string content = file_content.str();
-//
-//				std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
-//				response += content;
-//				send(client_socket, response.c_str(), response.length(), 0);
-//				file.close();
-//				return;
-//			}
-//		}
-//	}
-//
-//	// Manejo de solicitudes a subdirectorios "/casos/"
-//	if (requested_path.back() == '/') {
-//		for (size_t i = 0; i < config.default_pages.size(); ++i) {
-//			std::string full_path = config.server_root + requested_path + config.default_pages[i];
-//			std::ifstream file(full_path.c_str(), std::ios::binary);
-//			if (file.is_open()) {
-//				// Leer y enviar el archivo encontrado
-//				std::stringstream file_content;
-//				file_content << file.rdbuf();
-//				std::string content = file_content.str();
-//
-//				std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
-//				response += content;
-//				send(client_socket, response.c_str(), response.length(), 0);
-//				file.close();
-//				return;
-//			}
-//		}
-//	}
-//
-//	// Manejo de solicitudes a archivos específicos
-//	std::string full_path = config.server_root + requested_path;
-//	std::ifstream file(full_path.c_str(), std::ios::binary);
-//
-//	if (file.is_open()) {
-//		// Leer y enviar el archivo solicitado
-//		std::stringstream file_content;
-//		file_content << file.rdbuf();
-//		std::string content = file_content.str();
-//
-//		std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
-//		response += content;
-//
-//		send(client_socket, response.c_str(), response.length(), 0);
-//		file.close();
-//	} else {
-//		send_error_response(client_socket, config, 404);
-//	}
-//}
-//
-//
-///**
-// * @brief Send an error page to the client
-// *
-// * If the error page does not exist, it will send a text to avoid server silent
-// *
-// * @param client_fd client FD
-// * @param config ServerConfig struct
-// * @param error_code Error code.
-// */
-//void HttpRequestHandler::send_error_response(int client_fd, const ServerConfig config, int error_code) {
-//	std::string error_page_path;
-//	bool file_found = false;
-//
-//	// Intentar obtener la página de error del archivo
-//	if (config.error_pages.find(error_code) != config.error_pages.end()) {
-//		error_page_path = config.server_root + config.error_pages.at(error_code);
-//		std::ifstream file(error_page_path.c_str(), std::ios::binary);
-//		if (file.is_open()) {
-//			// Leer y enviar el archivo de error
-//			std::stringstream file_content;
-//			file_content << file.rdbuf();
-//			std::string content = file_content.str();
-//
-//			std::string response = response_header(error_code, "Error", content.length(), "text/plain");
-//			response += content;
-//
-//			send(client_fd, response.c_str(), response.length(), 0);
-//			file.close();
-//			file_found = true;
-//		}
-//	}
-//
-//	// Si no se encontró el archivo, enviar un texto predeterminado
-//	if (!file_found) {
-//		std::string default_text = "Error " + int_to_string(error_code) + " - Error page not found.";
-//		std::string response = response_header(error_code, "Error", default_text.length(), "text/plain");
-//		response += default_text;
-//
-//		send(client_fd, response.c_str(), response.length(), 0);
-//	}
-//}
-//
-///**
-// * @brief Creates the normal header to include at response
-// *
-// * @param code HTML status code to include (200, 404, etc)
-// * @param result Verbose details to include with status code (OK, Error..)
-// * @param content_size len of content to include at response
-// */
-//std::string HttpRequestHandler::response_header(int code,
-//												std::string result,
-//												size_t content_size,
-//												std::string mime)
-//{
-//	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + result + "\r\n";
-//	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
-//	header += "Content-Type: \"" + mime + "\"\r\n";
-//	header += "\r\n";
-//	return (header);
-//}
