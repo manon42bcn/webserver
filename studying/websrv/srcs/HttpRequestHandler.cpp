@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 15:46:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/17 19:14:28 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,17 +307,42 @@ std::string HttpRequestHandler::default_plain_error()
 }
 
 
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <iostream>
+
+/**
+ * @brief Reads the contents of a file and returns it as a string.
+ *
+ * This function attempts to open and read the file specified by the given path.
+ * If successful, the content is returned as a string. In case of failure to open
+ * the file (e.g., due to lack of permissions), the function sets the HTTP status to
+ * `HTTP_FORBIDDEN`. If a reading error occurs, it sets the HTTP status to
+ * `HTTP_INTERNAL_SERVER_ERROR`.
+ *
+ * @param path The file path to read from.
+ * @return A string containing the content of the file. If the file cannot be opened
+ *         or an error occurs, an empty string is returned and the HTTP status is set accordingly.
+ *
+ * @exception std::ios_base::failure Thrown if a file I/O error occurs during reading.
+ * @exception std::exception Catches any other unexpected standard exception.
+ */
 std::string HttpRequestHandler::get_file_content(const std::string& path)
 {
 	std::string content;
-	std::ifstream file(path.c_str(), std::ios::binary);
 	_state = -ST_LOAD_FILE;
-	if (file.fail())
-		_http_status = HTTP_FORBIDDEN;
-	if (file.is_open()) {
+
+	try {
+		std::ifstream file(path.c_str(), std::ios::binary);
+
+		if (!file.is_open() || file.fail()) {
+			_http_status = HTTP_FORBIDDEN;
+			return (content);
+		}
 		std::stringstream file_content;
 		file_content << file.rdbuf();
-		if (file.bad()){
+		if (file.bad()) {
 			_http_status = HTTP_INTERNAL_SERVER_ERROR;
 		} else {
 			content = file_content.str();
@@ -325,10 +350,22 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
 		_state = ST_LOAD_FILE;
 		file.close();
 	}
-	else
+	catch (const std::ios_base::failure& e) {
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-	return (content);
+		// Puedes registrar el error usando un sistema de logging, si está disponible:
+		// context.logger.error("I/O error: ", e.what());
+	}
+	catch (const std::exception& e) {
+		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		// Captura cualquier otra excepción estándar.
+		// context.logger.error("Unexpected error: ", e.what());
+	}
+
+	return content;
 }
+
+
+
 
 /**
  * @brief Sends an error response to the client.
