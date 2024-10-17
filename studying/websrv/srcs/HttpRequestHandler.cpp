@@ -352,16 +352,12 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
 	}
 	catch (const std::ios_base::failure& e) {
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-		// Puedes registrar el error usando un sistema de logging, si está disponible:
-		// context.logger.error("I/O error: ", e.what());
 	}
 	catch (const std::exception& e) {
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-		// Captura cualquier otra excepción estándar.
-		// context.logger.error("Unexpected error: ", e.what());
 	}
 
-	return content;
+	return (content);
 }
 
 
@@ -380,38 +376,25 @@ bool HttpRequestHandler::send_error_response(int error_code) {
 	std::string type = "text/html";
 	std::string error_file;
 
-	std::map<int, std::string>::const_iterator it;
-	const std::map<int, std::string>* error_pages;
-
-	error_pages = &_config.error_pages;
-	it = error_pages->find(error_code);
-	if (error_pages->empty() || it == error_pages->end())
-		error_file = _config.server_root + it->second;
-	if (_location != NULL)
+	content = default_plain_error();
+	if (_state != -ST_LOAD_LOCATION)
 	{
-		error_pages = &_location->loc_error_pages;
+		std::map<int, std::string>::const_iterator it;
+		const std::map<int, std::string>* error_pages = &_location->loc_error_pages;
+
 		it = error_pages->find(error_code);
-		if (error_pages->empty() || it == error_pages->end())
-			error_file = _location->loc_root + it->second;
-	}
-	if (!error_file.empty()) {
-		std::ifstream file(error_file.c_str(), std::ios::binary);
-		content = get_file_content(error_file);
-
-		type = get_mime_type(error_file);
-		if (file.is_open()) {
-			std::stringstream file_content;
-			file_content << file.rdbuf();
-			file.close();
-			content = file_content.str();
-			type = get_mime_type(error_file);
-		} else {
-			content = default_plain_error();
+		if (!error_pages->empty() || it != error_pages->end())
+		{
+			std::string file_content = get_file_content(error_file);
+			if (file_content.empty())
+				content = default_plain_error();
+			else
+			{
+				content = file_content;
+				type = get_mime_type(error_file);
+			}
 		}
-	} else {
-		content = default_plain_error();
 	}
-
 	response = response_header(error_code, content.length(), type);
 	response += content;
 	if (send(_client_socket, response.c_str(), response.length(), 0) == -1)
