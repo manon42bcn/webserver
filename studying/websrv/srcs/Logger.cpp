@@ -94,3 +94,19 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 		return;
 	}
 }
+
+/**
+ * @brief Public method to log an error message and exit from current execution.
+ *
+ * @warning this method will log and FATAL ERROR log, and exit(1).
+ * 			It will ignore debug level set.
+ * 			It will also shown the error message using std::cerr
+ *
+ * @param module Name of the module that is logging.
+ * @param message Detail of the log.
+ */
+ void Logger::fatal_log(const std::string &module, const std::string &message) const {
+	*(_log_out) << "[FATAL ERROR][" << module << "]: " << message << std::endl;
+	std::cerr << "[FATAL ERROR][" << module << "]: " << message << std::endl;
+	exit(1);
+ }

@@ -49,6 +49,7 @@ public:
 	Logger(int level, bool log_to_file);
 	~Logger();
 	void log(int level, const std::string& module, const std::string& message) const;
+	void fatal_log(const std::string& module, const std::string& message) const;
 };
 
 #endif

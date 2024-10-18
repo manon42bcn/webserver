@@ -39,7 +39,8 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, Logger* l
 void ServerManager::add_server(int port, const ServerConfig& config) {
 	SocketHandler* server = new SocketHandler(port, config);
 	_servers.push_back(server);
-	_log->log(LOG_DEBUG, _module, "SocketHandler instance created and append to _servers.");
+	_log->log(LOG_DEBUG, _module,
+			  "SocketHandler instance created and append to _servers.");
 	add_server_to_poll(server->get_socket_fd());
 }
 
@@ -60,6 +61,7 @@ void ServerManager::add_server_to_poll(int server_fd) {
 /**
  * @brief Adds a new client to the poll set and associates it with a server configuration.
  *
+ * @todo this method and next will be reviewed to refactor.
  * @param client_fd File descriptor of the client.
  * @param config Server configuration associated with this client.
  */
@@ -73,24 +75,47 @@ void ServerManager::add_client_to_poll(int client_fd) {
 }
 
 /**
- * @brief Main event loop for handling incoming connections and client requests.
+ * @brief Runs the main event loop for the server, handling client connections and requests.
+ *
+ * This method starts an infinite loop that monitors server and client file descriptors
+ * using the `poll()` system call. When a server file descriptor signals an incoming
+ * connection, the method accepts the connection and adds the new client to the list of
+ * monitored clients. When a client file descriptor signals activity, the method creates
+ * an `HttpRequestHandler` instance to process the client's request.
+ *
+ * @details
+ * - Server sockets are identified by comparing file descriptors with those stored in the
+ *   `_servers` vector. If a match is found, the socket is assumed to be a server socket,
+ *   and a new client connection is accepted.
+ * - Client file descriptors are handled by looking them up in the `_clients` vector.
+ * - After a client request is processed, the client connection is closed, and the client
+ *   is removed from the `_poll_fds` and `_clients` vectors.
+ *
+ * Error handling:
+ * - If `poll()` fails, a fatal log is generated and the server will be terminatet.
+ * - If `accept_connection()` returns an invalid file descriptor, the connection is rejected.
+ *
+ * @todo check for fd leaks, may be is important to close gently the server on error.
+ * @note This method currently handles only `POLLIN` events, which means it only reacts to
+ * readable events. Future extensions could include handling other events, such as `POLLOUT`
+ * for writable sockets.
+ *
+ * @exception None directly thrown by this method, but low-level system errors could cause
+ * the server to log fatal messages and possibly terminate.
+ *
+ * @param None
+ * @return None
  */
 void ServerManager::run() {
 	_log->log(LOG_DEBUG, _module, "Event loop started.");
 	while (true) {
 		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
-
-		if (poll_count < 0) {
-			_log->log(LOG_ERROR, _module, "Error in poll()");
-			std::cerr << "Error in poll()" << std::endl;
-			exit(EXIT_FAILURE);
-		}
-
+		if (poll_count < 0)
+			_log->fatal_log(_module, "error in poll process.");
 		for (size_t i = 0; i < _poll_fds.size(); ++i) {
 			if (_poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
 				SocketHandler* server = NULL;
-
 				// Check if the descriptor corresponds to a server socket
 				for (size_t s = 0; s < _servers.size(); ++s) {
 					if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {

@@ -42,8 +42,8 @@ class ServerManager {
 		Logger*						_log;
 public:
 		ServerManager(const std::vector<ServerConfig>& configs, Logger* logger);
-		void run();
 		void add_server(int port, const ServerConfig& config);
+		void run();
 		void add_client_to_poll(int client_fd);
 		void add_server_to_poll(int server_fd);
 };
