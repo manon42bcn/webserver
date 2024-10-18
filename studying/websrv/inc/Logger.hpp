@@ -6,7 +6,7 @@
 /*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 21:36:54 by mac               #+#    #+#             */
-/*   Updated: 2024/10/17 21:36:55 by mac              ###   ########.fr       */
+/*   Updated: 2024/10/18 13:24:20 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef __LOGGER_HPP__
@@ -15,7 +15,6 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <vector>
 
 enum e_logger {
 	LOG_DEBUG = 0,
@@ -35,25 +34,21 @@ enum e_logger_module {
  * @brief Logger class for logging messages to a file.
  *
  * This class provides functionality to log messages at different levels
- * (INFO, ERROR) into a specified log file.
+ * (INFO, ERROR, etc) to a log file o std::cout.
+ *
  */
 class Logger {
 private:
-	typedef void (Logger::*logging)(const std::string&, const std::string& ) const;
 	int                         _level;
-	bool                        _log_file;
+	bool                        _log_to_file;
 	std::ofstream               _out_file;
 	std::ostream*               _log_out;
-	std::vector<logging>        _log;
-	std::vector<std::string>    _modules;
+	std::string 				_log_level[4];
+
 public:
-	Logger(bool log_to_file, std::vector<std::string> modules, int level);
+	Logger(int level, bool log_to_file);
 	~Logger();
-	void log(int module, int level, const std::string& message);
-	void log_debug(const std::string& module, const std::string& message) const ;
-	void log_info(const std::string& module, const std::string& message) const ;
-	void log_warning(const std::string& module, const std::string& message) const ;
-	void log_error(const std::string& module, const std::string& message) const ;
+	void log(int level, const std::string& module, const std::string& message) const;
 };
 
 #endif
