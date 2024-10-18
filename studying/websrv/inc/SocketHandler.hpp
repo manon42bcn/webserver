@@ -14,21 +14,25 @@
 #define SOCKETHANDLER_HPP
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "Logger.hpp"
 #include <string>
 
 class SocketHandler {
 private:
-	int _socket_fd;
+	int                 _socket_fd;
 	const ServerConfig& _config;
+	const Logger*       _log;
+	const std::string   _module;
 
 public:
-	SocketHandler(int port, const ServerConfig& config);
+	SocketHandler(int port, const ServerConfig& config, const Logger* logger);
+	~SocketHandler();
 	int accept_connection();
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;
 
 private:
-	void set_nonblocking(int fd);
+	bool set_nonblocking(int fd);
 };
 
 #endif

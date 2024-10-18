@@ -20,7 +20,7 @@
  *
  * @param configs Vector with the configurations of the servers.
  */
-ServerManager::ServerManager(const std::vector<ServerConfig>& configs, Logger* logger):
+ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
 							_module("ServerManager"),
 							_log(logger) {
 	_poll_fds.reserve(100);
@@ -37,7 +37,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, Logger* l
  * @param config Configuration of the server.
  */
 void ServerManager::add_server(int port, const ServerConfig& config) {
-	SocketHandler* server = new SocketHandler(port, config);
+	SocketHandler* server = new SocketHandler(port, config, _log);
 	_servers.push_back(server);
 	_log->log(LOG_DEBUG, _module,
 			  "SocketHandler instance created and append to _servers.");
