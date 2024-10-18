@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 14:04:16 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/18 15:11:53 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@
  *
  * @param configs Vector with the configurations of the servers.
  */
-ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
-	_poll_fds.reserve(100);  // Reserve space for poll descriptors
-	// Create servers based on the configurations
+ServerManager::ServerManager(const std::vector<ServerConfig>& configs, Logger* logger):
+							_module("ServerManager"),
+							_log(logger) {
+	_poll_fds.reserve(100);
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
 	}
+	_log->log(LOG_DEBUG, _module, "instance init and ready.");
 }
 
 /**
@@ -37,6 +39,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs) {
 void ServerManager::add_server(int port, const ServerConfig& config) {
 	SocketHandler* server = new SocketHandler(port, config);
 	_servers.push_back(server);
+	_log->log(LOG_DEBUG, _module, "SocketHandler instance created and append to _servers.");
 	add_server_to_poll(server->get_socket_fd());
 }
 
@@ -51,6 +54,7 @@ void ServerManager::add_server_to_poll(int server_fd) {
 	pfd.events = POLLIN;
 	pfd.revents = 0;
 	_poll_fds.push_back(pfd);
+	_log->log(LOG_DEBUG, _module, "server fd add to _polls_fds.");
 }
 
 /**
@@ -65,16 +69,19 @@ void ServerManager::add_client_to_poll(int client_fd) {
 	pfd.events = POLLIN;
 	pfd.revents = 0;
 	_poll_fds.push_back(pfd);
+	_log->log(LOG_DEBUG, _module, "client fd add to _polls_fds.");
 }
 
 /**
  * @brief Main event loop for handling incoming connections and client requests.
  */
 void ServerManager::run() {
+	_log->log(LOG_DEBUG, _module, "Event loop started.");
 	while (true) {
 		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 
 		if (poll_count < 0) {
+			_log->log(LOG_ERROR, _module, "Error in poll()");
 			std::cerr << "Error in poll()" << std::endl;
 			exit(EXIT_FAILURE);
 		}
@@ -87,6 +94,7 @@ void ServerManager::run() {
 				// Check if the descriptor corresponds to a server socket
 				for (size_t s = 0; s < _servers.size(); ++s) {
 					if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
+						_log->log(LOG_DEBUG, _module, "fd belongs to a server.");
 						is_server = true;
 						server = _servers[s];
 						break;
@@ -105,9 +113,8 @@ void ServerManager::run() {
 						// Add client info to clients and poll list
 						_clients.push_back(client_info);
 						_poll_fds.push_back(client_info.client_fd);
-
-						std::cout << "New connection accepted on port "
-						          << server->get_socket_fd() << std::endl;
+						_log->log(LOG_DEBUG, _module,
+								  "New connection accepted on port " + int_to_string(server->get_socket_fd()));
 					}
 				} else {
 					// Handle client request
@@ -129,6 +136,7 @@ void ServerManager::run() {
 						for (size_t c = 0; c < _clients.size(); ++c) {
 							if (_clients[c].client_fd.fd == _poll_fds[i].fd) {
 								_clients.erase(_clients.begin() + (int)c);
+								_log->log(LOG_DEBUG, _module, "client remove from _client vector.");
 								break;
 							}
 						}
@@ -136,9 +144,10 @@ void ServerManager::run() {
 
 					// Close the client connection
 					close(_poll_fds[i].fd);
-
+					_log->log(LOG_DEBUG, _module, "close connection: " + int_to_string((int)i));
 					// Remove the client descriptor from _poll_fds
 					_poll_fds.erase(_poll_fds.begin() + (int)i);
+					_log->log(LOG_DEBUG, _module, "fd remove from _polls_fds vector: " + int_to_string((int)i));
 					--i;  // Adjust index to check the new descriptor in this position
 				}
 			}

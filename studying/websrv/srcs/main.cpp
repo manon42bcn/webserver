@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:50:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/18 13:44:19 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,8 @@ int main() {
 	server2.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
 	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
 	configs.push_back(server2);
-	ServerManager server_manager(configs);
+	Logger logger(LOG_DEBUG, false);
+	ServerManager server_manager(configs, &logger);
 
 
 	// Iniciar el ciclo de eventos
