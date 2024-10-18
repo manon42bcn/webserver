@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKETHANDLER_HPP
-#define SOCKETHANDLER_HPP
-#include "webserver.hpp"
-#include "http_enum_codes.hpp"
-#include "Logger.hpp"
-#include <string>
+#ifndef _SOCKETHANDLER_HPP_
+# define _SOCKETHANDLER_HPP_
+# include "webserver.hpp"
+# include "http_enum_codes.hpp"
+# include "Logger.hpp"
+# include <string>
 
 class SocketHandler {
 private:

@@ -16,14 +16,33 @@
 #include <cstring>
 
 /**
- * @brief Constructor of ServerManager that receives server configurations.
+ * @brief Constructs a new ServerManager instance.
  *
- * @param configs Vector with the configurations of the servers.
+ * This constructor initializes the `ServerManager` by setting up server instances
+ * for each configuration provided in the `configs` vector. It reserves space for
+ * polling file descriptors (_poll_fds) and associates a logger for logging activities
+ * related to server management.
+ *
+ * @param configs A vector of `ServerConfig` structures that define the configurations
+ * for each server (such as port, document root, error pages, etc.).
+ * @param logger A pointer to a `Logger` instance used for logging server events.
+ *
+ * @details
+ * - The constructor reserves space for polling file descriptors to optimize memory
+ *   allocations, especially if a large number of servers is expected.
+ * - Each server is added by calling `add_server()`, which creates and binds the server
+ *   sockets.
+ * - If any errors occur during the server setup, they are logged.
+ *
+ * @exception None explicitly thrown, but the logger may handle critical errors that could
+ * result in the program terminating.
  */
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
 							_module("ServerManager"),
 							_log(logger) {
-	_poll_fds.reserve(100);
+	if (_log == NULL)
+          std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
+        _poll_fds.reserve(100);
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
 	}
@@ -31,32 +50,107 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Log
 }
 
 /**
- * @brief Adds a new server with the specified port.
+ * @brief Destructor for the ServerManager class.
  *
- * @param port Port number where the server will listen.
- * @param config Configuration of the server.
+ * This destructor ensures that all resources are properly cleaned up
+ * when the server shuts down, including:
+ * - Closing all _poll_fds descriptors.
+ * - Deleting dynamically allocated objects like SocketHandlers and Logger.
+ *
+ * This destructor should be explicitly called when the server is about to exit
+ * to ensure proper cleanup, especially if `exit()` or a similar function is used,
+ * as destructors will not be called automatically in those cases.
+ *
+ * @param None
+ * @return None
  */
-void ServerManager::add_server(int port, const ServerConfig& config) {
-	SocketHandler* server = new SocketHandler(port, config, _log);
-	_servers.push_back(server);
-	_log->log(LOG_DEBUG, _module,
-			  "SocketHandler instance created and append to _servers.");
-	add_server_to_poll(server->get_socket_fd());
+
+ServerManager::~ServerManager() {
+	for (size_t i = 0; i < _poll_fds.size(); i++)
+	{
+		if (_poll_fds[i].fd >= 0) {
+			close(_poll_fds[i].fd);
+		}
+	}
+	for (size_t i = 0; i < _servers.size(); i++)
+		delete _servers[i];
+	_log->log(LOG_DEBUG, _module, "ServerManager resources cleaned up.");
 }
 
 /**
- * @brief Adds a server socket to the poll set to monitor its activity.
+ * @brief Adds a new server to the `ServerManager`.
  *
- * @param server_fd File descriptor of the server socket.
+ * This method creates a new `SocketHandler` instance for the specified port and configuration.
+ * The server is added to the `_servers` vector and its file descriptor is added to the poll list
+ * (_poll_fds) for event monitoring.
+ *
+ * @details
+ * - If an error occurs while creating the `SocketHandler` or adding the server to the poll list,
+ *   an error log is generated. In such cases, the server instance is deleted to avoid memory leaks.
+ * - Future extensions could include checking for duplicate servers on the same port before adding
+ *   a new one.
+ *
+ * @param port The port number on which the new server will listen.
+ * @param config The configuration object (`ServerConfig`) for the server.
+ *
+ * @return None
  */
-void ServerManager::add_server_to_poll(int server_fd) {
+void ServerManager::add_server(int port, const ServerConfig& config) {
+	try {
+		SocketHandler* server = new SocketHandler(port, config, _log);
+		_servers.push_back(server);
+		_log->log(LOG_DEBUG, _module,
+		          "SocketHandler instance created and added to _servers.");
+
+		if (!add_server_to_poll(server->get_socket_fd())) {
+			_log->log(LOG_ERROR, _module, "Failed to add server to poll list.");
+			_servers.pop_back();
+			delete server;
+		}
+	} catch (const std::exception& e) {
+		_log->log(LOG_ERROR, _module, "Error creating or adding SocketHandler: " + std::string(e.what()));
+	}
+}
+
+
+/**
+ * @brief Adds a server's file descriptor to the poll list.
+ *
+ * This method adds a server's file descriptor to the `_poll_fds` vector to monitor it for incoming
+ * connections using the `poll()` system call.
+ *
+ * @details
+ * - Before adding the file descriptor, the method checks if it is already present in the `_poll_fds`
+ *   vector to avoid duplicates.
+ * - It logs an error if the file descriptor is invalid (less than 0) or if the descriptor is already
+ *   in the poll list.
+ *
+ * @param server_fd The file descriptor of the server socket to be monitored.
+ * @return bool True if the file descriptor was successfully added, false otherwise.
+ */
+bool ServerManager::add_server_to_poll(int server_fd) {
+	if (server_fd < 0) {
+    _log->log(LOG_ERROR, _module, "Invalid server file descriptor.");
+    return (false);
+    }
+	// Verificar si el fd ya está en _poll_fds ? Review doc para ver si es realmente necesario.
+	for (size_t i = 0; i < _poll_fds.size(); ++i) {
+		if (_poll_fds[i].fd == server_fd) {
+		  _log->log(LOG_WARNING, _module, "Server fd already in _poll_fds.");
+		  return (false);
+		}
+	}
+
 	struct pollfd pfd;
 	pfd.fd = server_fd;
 	pfd.events = POLLIN;
 	pfd.revents = 0;
+
 	_poll_fds.push_back(pfd);
-	_log->log(LOG_DEBUG, _module, "server fd add to _polls_fds.");
+	_log->log(LOG_DEBUG, _module, "Server fd added to _poll_fds.");
+	return (true);
 }
+
 
 /**
  * @brief Adds a new client to the poll set and associates it with a server configuration.

@@ -35,17 +35,18 @@ struct ClientInfo {
  */
 class ServerManager {
 	private:
-		std::vector<struct pollfd> 	_poll_fds;
-		std::vector<SocketHandler*> _servers;
-		std::vector<ClientInfo> 	_clients;
-		const std::string			_module;
-		const Logger*				_log;
+		std::vector<struct pollfd> 	    _poll_fds;
+		std::vector<SocketHandler*>     _servers;
+		std::vector<ClientInfo> 	    _clients;
+		const std::string	            _module;
+		const Logger*			        _log;
 public:
 		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);
-		void add_server(int port, const ServerConfig& config);
+	    ~ServerManager();
+	    void add_server(int port, const ServerConfig& config);
 		void run();
 		void add_client_to_poll(int client_fd);
-		void add_server_to_poll(int server_fd);
+		bool add_server_to_poll(int server_fd);
 };
 
 #endif
