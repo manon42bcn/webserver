@@ -151,11 +151,11 @@ int main() {
 	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
 	configs.push_back(server2);
 	Logger logger(LOG_DEBUG, false);
-	ServerManager server_manager(configs, &logger);
-
-
-	// Iniciar el ciclo de eventos
-	server_manager.run();
-
+	try {
+		ServerManager server_manager(configs, &logger);
+		server_manager.run();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	}
 	return 0;
 }
