@@ -40,8 +40,10 @@
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
 							_module("ServerManager"),
 							_log(logger) {
-	if (_log == NULL)
-          std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
+	if (_log == NULL) {
+		std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
+		exit(1);
+	}
         _poll_fds.reserve(100);
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);

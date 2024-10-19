@@ -37,8 +37,13 @@
  * @exception None directly thrown, but the logger may exit the program on fatal errors.
  */
 
-SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger* logger)
-		:_socket_fd(-1), _config(config), _log(logger), _module("SocketHandler") {
+SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger* logger):
+		_socket_fd(-1),
+        _config(config),
+        _log(logger),
+        _module("SocketHandler") {
+	if (_log == NULL)
+		std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
 	_log->log(LOG_DEBUG, _module, "Creating Sockets.");
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0)

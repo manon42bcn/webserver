@@ -35,43 +35,73 @@ void HttpRequestHandler::send_detailed_response(std::string requested_path)
 }
 // -----------------------------------------------------------------
 /**
- * @brief HttpRequestHandler constructor
+ * @brief Constructor for the HttpRequestHandler class.
  *
- * Instance and start the lifetime of a HTTP request.
- * For safety issues, all attributes are initiated with wrong request
- * related data.
+ * This constructor initializes the `HttpRequestHandler` by reading the client's HTTP request,
+ * parsing the method and requested path, and loading the corresponding location configuration
+ * for further processing.
  *
- * @param client_socket fd client socket.
- * @param config ServerConfig struct.
+ * @details
+ * - The constructor reads the HTTP request from the client socket.
+ * - The requested path is parsed, and the corresponding location configuration is loaded from
+ *   the server configuration.
+ * - After the request and path are validated, the request processing begins by calling `handle_request()`.
+ *
+ * @param client_socket The socket file descriptor for the connected client.
+ * @param config The configuration of the server (`ServerConfig`) used to process the request.
+ * @param log A pointer to the logger instance used to record request processing activity.
+ *
+ * @exception none No exception will be thrown, but exit process if the provided logger pointer is null.
  */
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config):
+
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config, Logger* log):
 	_client_socket(client_socket),
 	_config(config),
 	_location(NULL),
+	_log(log),
+	_module("HttpRequestHandler"),
 	_state(ST_INIT),
 	_access(ACCESS_FORBIDDEN),
 	_http_status(HTTP_CONTINUE),
 	_method(METHOD_TO_PARSE)
 {
+	if (_log == NULL) {
+		std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
+		exit(1);
+	}
 	std::string request = read_http_request();
 	std::string path = parse_request_and_method(request);
 	// Validate path using locations map and load its configuration as attribute.
 	get_location_config(path);
+	_log->log(LOG_DEBUG, _module, "Workflow to handle request. Start");
 	// Start request process.
 	handle_request(path);
 }
 
 /**
- * @brief Reads the entire HTTP request from the client socket.
+ * @brief Reads an HTTP request from the client socket.
  *
- * @param client_socket The file descriptor of the client.
- * @return The full HTTP request as a string.
+ * This method reads data from the client socket in chunks and accumulates it in a string
+ * until the full HTTP request is received, or an error occurs.
+ *
+ * @details
+ * - The method looks for the end of the HTTP headers (denoted by `\r\n\r\n`) to stop reading.
+ * @todo - If the request size exceeds a predefined limit (e.g., 8192 bytes), an error is logged,
+ *   and the method returns an empty string.
+ * - If an error occurs during the `read()` system call, the method logs the error and returns
+ *   an empty string.
+ * @todo: - If the client disconnects without sending any data, the method logs an error and returns
+ *   an empty string.
+ *
+ * @return std::string The full HTTP request as a string, or an empty string if an error occurs.
  */
+
 std::string HttpRequestHandler::read_http_request() {
 	char buffer[1024];
 	std::string request;
 	int valread;
 
+	_log->log(LOG_DEBUG, _module, "Reading http request");
 	while ((valread = read(_client_socket, buffer, sizeof(buffer) - 1)) > 0) {
 		buffer[valread] = '\0';
 		request += buffer;
@@ -79,6 +109,7 @@ std::string HttpRequestHandler::read_http_request() {
 			break;
 		}
 	}
+	_log->log(LOG_INFO, _module, "Request read.");
 	_state = ST_READING;
 	return (request);
 }
@@ -86,31 +117,52 @@ std::string HttpRequestHandler::read_http_request() {
 /**
  * @brief Parses the HTTP request to extract the method and requested path.
  *
- * This method will parse request, load method to _method, and return path.
- * On error will save Bad Request as http_status.
+ * This method parses the HTTP request string to identify the HTTP method (e.g., GET, POST) and the
+ * requested path. It converts the method to an enumerated value and validates the path.
  *
- * @param request The HTTP request as a string.
- * @return requested path.
+ * @details
+ * - The method also checks if the path exceeds a predefined limit (e.g., 2048 characters) to avoid
+ *   possible attacks. If the path is too long, the method logs an error and sets the HTTP status
+ *   to `HTTP_URI_TOO_LONG`.
+ * - In case of any parsing error, an appropriate HTTP status is set, and an empty string is returned.
+ *
+ * @param request The raw HTTP request string received from the client.
+ * @return std::string The extracted path, or an empty string if an error occurs.
  */
 std::string HttpRequestHandler::parse_request_and_method(const std::string& request) {
 	std::string method;
 	std::string path;
-
+	_log->log(LOG_DEBUG, _module, "Parsing Request to get path and method.");
 	size_t method_end = request.find(' ');
 	if (method_end != std::string::npos) {
 		method = request.substr(0, method_end);
 		_method = method_string_to_enum(method);
+
 		size_t path_end = request.find(' ', method_end + 1);
 		if (path_end != std::string::npos) {
 			path = request.substr(method_end + 1, path_end - method_end - 1);
+
+			if (path.size() > 2048) {
+				_log->log(LOG_ERROR, _module, "Request path too long.");
+				_http_status = HTTP_URI_TOO_LONG;
+				return ("");
+			}
+			_log->log(LOG_DEBUG, _module, "Request parsed.");
+		} else {
+			_log->log(LOG_ERROR, _module, "Error parsing request: missing path.");
+			_http_status = HTTP_BAD_REQUEST;
+			_state = ST_PARSING;
+			return ("");
 		}
 	} else {
+		_log->log(LOG_ERROR, _module, "Error parsing request: missing method.");
 		_method = METHOD_ERR;
 		_http_status = HTTP_BAD_REQUEST;
-		_state = -ST_PARSING;
+		_state = ST_PARSING;
 	}
 	return (path);
 }
+
 
 /**
  * @brief Get location info using request path
@@ -121,14 +173,18 @@ std::string HttpRequestHandler::parse_request_and_method(const std::string& requ
  *
  * @param path path parsed from request
  */
-void HttpRequestHandler::get_location_config(const std::string& path)
-{
+void HttpRequestHandler::get_location_config(const std::string& path) {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	if (_state < ST_INIT)
+	if (_state < ST_INIT) {
+		_log->log(LOG_WARNING, _module, "Invalid state for location lookup.");
 		return;
-	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin(); it != _config.locations.end(); ++it) {
+	}
+
+	_log->log(LOG_DEBUG, _module, "Searching related location.");
+	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
+	     it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
 		if (starts_with(path, key)) {
 			if (key.length() > saved_key.length()) {
@@ -137,57 +193,82 @@ void HttpRequestHandler::get_location_config(const std::string& path)
 			}
 		}
 	}
-	if (result)
-	{
+	if (result) {
+		_log->log(LOG_DEBUG, _module, "Location Found: " + saved_key);
 		_location = result;
 		_http_status = HTTP_CONTINUE;
 		_access = result->loc_access;
 		_state = ST_LOAD_LOCATION;
-	}
-	else
-	{
+	} else {
+		_log->log(LOG_ERROR, _module, "Location NOT found.");
 		_location = NULL;
 		_state = -ST_LOAD_LOCATION;
 	}
 }
 
-
 /**
- * @brief Returns a real path, fetching to the document
+ * @brief Normalizes the requested path and finds the corresponding file or directory.
  *
- * @param requested_path path parsed from request
- * @param config ServerConfig struct
- * TODO: it may be useful return something different, or create a previous check...
- * @return t_path struct, that include status and path.
+ * This method normalizes the requested path by combining it with the root directory specified
+ * in the location configuration. It checks if the resulting path is a file or a directory and
+ * attempts to locate default pages if the path is a directory.
+ *
+ * @details
+ * - If the requested path points to a file, the method returns the normalized path and an HTTP_OK status.
+ * - If the path is a directory, the method appends a trailing slash (if missing) and checks for
+ *   default pages (e.g., "index.html") in the directory.
+ * - If no valid file or directory is found, the method returns an HTTP_NOT_FOUND status.
+ *
+ * @param requested_path The path requested by the client in the HTTP request.
+ * @return s_path A struct containing the HTTP status code and the normalized path.
  */
-s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const
-{
-	//TODO: importante. Estamos asumiendo que location tendrá default pages. Si por config no se especifican, deberá copiar de default..
-
+s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const {
 	std::string eval_path = _location->loc_root + requested_path;
-
-	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path))
+	_log->log(LOG_DEBUG, _module, "Normalize path to get proper file to serve.");
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
+		_log->log(LOG_INFO, _module, "File found.");
 		return (s_path(HTTP_OK, eval_path));
-	if (is_dir(eval_path))
-	{
-		if (eval_path[eval_path.size() - 1] != '/')
+	}
+
+	if (is_dir(eval_path)) {
+		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
-		for (size_t i = 0; i < _location->loc_default_pages.size(); i++)
-		{
-			if (is_file(eval_path + _location->loc_default_pages[i]))
-				return (s_path(200, eval_path + _location->loc_default_pages[i]));
+		}
+
+		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
+			if (is_file(eval_path + _location->loc_default_pages[i])) {
+				_log->log(LOG_INFO, _module, "Default File found.");
+				return (s_path(HTTP_OK, eval_path + _location->loc_default_pages[i]));
+			}
 		}
 	}
+
+	_log->log(LOG_ERROR, _module, "Requested path not found: " + requested_path);
 	return (s_path(HTTP_NOT_FOUND, requested_path));
 }
 
-
 /**
- * @brief Direct each HTTP method to its own handler
+ * @brief Handles the HTTP request based on the method (GET, POST, DELETE).
  *
- * @param client_socket Client FD.
- * @param config const reference to ServerConfig struct
+ * This method processes the HTTP request by first normalizing the requested path and then
+ * dispatching the request to the appropriate handler function based on the HTTP method.
+ *
+ * @details
+ * - If the initial state is invalid, the method sends an error response based on the current
+ *   HTTP status.
+ * - After normalizing the path using `normalize_request_path()`, the method checks if the
+ *   normalization succeeded. If the path is invalid or not found, it sends an appropriate
+ *   error response (e.g., 404 Not Found).
+ * - The request is handled according to the method:
+ *   - `GET` requests are passed to `handle_get()`.
+ *   - `POST` requests are passed to `handle_post()`.
+ *   - `DELETE` requests are passed to `handle_delete()`.
+ * - If the HTTP method is not recognized, an `HTTP_METHOD_NOT_ALLOWED` (405) response is sent.
+ *
+ * @param path The path requested by the client.
+ * @return bool True if the request was handled successfully, false if an error occurred.
  */
+
 bool HttpRequestHandler::handle_request(const std::string& path)
 {
 	if (_state < ST_INIT)
@@ -195,28 +276,26 @@ bool HttpRequestHandler::handle_request(const std::string& path)
 	s_path requested_path = normalize_request_path(path);
 	switch ((int)_method) {
 		case METHOD_GET:
+			_log->log(LOG_DEBUG, _module, "Handle GET request.");
 			handle_get(path);
 			break;
 		case METHOD_POST:
+			_log->log(LOG_DEBUG, _module, "Handle POST request.");
 			handle_post(path);
 			break;
 		case METHOD_DELETE:
+			_log->log(LOG_DEBUG, _module, "Handle DELETE request.");
 			handle_delete(path);
 			break;
 		default:
+			_log->log(LOG_ERROR, _module, "Method not allowed.");
 			_http_status = HTTP_METHOD_NOT_ALLOWED;
 			send_error_response(HTTP_METHOD_NOT_ALLOWED);
 	}
 	return (true);
 }
 
-/**
- * @brief GET HTTP method handler
- *
- * @param client_socket Client FD
- * @param config const reference to ServerConfig struct
- * @param requested_path full path from petition
- */
+
 void HttpRequestHandler::handle_get(const std::string& requested_path) {
 	//	TODO: This point, each method returns a message (WIP).
 	std::string full_path = _config.server_root + requested_path;
@@ -243,13 +322,7 @@ void HttpRequestHandler::handle_get(const std::string& requested_path) {
 //	}
 }
 
-/**
- * @brief POST HTTP method handler
- *
- * @param client_socket Client FD
- * @param config const reference to ServerConfig struct
- * @param requested_path full path from petition
- */
+
 void HttpRequestHandler::handle_post(const std::string& requested_path) {
 	// Read the request body (assuming it's after the headers)
 	std::string body = read_http_request();  // Could be refined to separate headers and body
@@ -271,13 +344,7 @@ void HttpRequestHandler::handle_post(const std::string& requested_path) {
 	}
 }
 
-/**
- * @brief DELETE HTTP method handler
- *
- * @param client_socket Client FD
- * @param config const reference to ServerConfig struct
- * @param requested_path full path from petition
- */
+
 void HttpRequestHandler::handle_delete(const std::string& requested_path) {
 	std::string full_path = _config.server_root + requested_path;
 
@@ -292,41 +359,73 @@ void HttpRequestHandler::handle_delete(const std::string& requested_path) {
 }
 
 /**
- * @brief Creates a default error body response.
+ * @brief Generates a default HTML error page as a string.
  *
- * @param error_code error code to include at response
- * @return a basic html with error code and detail
+ * This method constructs a basic HTML error page incorporating the HTTP status code
+ * and its corresponding description. The page includes a simple message indicating
+ * that something went wrong, along with the specific error code and description.
+ *
+ * @details
+ * - The HTML content is built by concatenating strings that represent the HTML structure.
+ * - The method uses `_http_status`, which should be set prior to calling this method,
+ *   to include the relevant status code in the error page.
+ * - The `int_to_string()` function converts the status code to a string, and
+ *   `http_status_description()` provides a textual description of the status code.
+ *
+ * @return std::string The complete HTML error page as a string.
+ *
+ * @note This method is used to provide a fallback error page when a custom error page
+ * is not available or cannot be loaded from the configured error pages.
  */
-std::string HttpRequestHandler::default_plain_error()
-{
-	std::string content = "<!DOCTYPE html>\n";
-	content += "<html>\n<head>\n";
-	content += "<title>Webserver - Error</title>\n";
-	content += "</head>\n<body>\n";
-	content += "<h1>Something went wrong...</h1>\n";
-	content += "<h2>" + int_to_string(_http_status) + " - " + http_status_description(_http_status) + "</h2>\n";
-	content += "</body>\n</html>\n";
-	return (content);
+std::string HttpRequestHandler::default_plain_error() {
+	std::ostringstream content;
+	content << "<!DOCTYPE html>\n"
+	        << "<html>\n<head>\n"
+	        << "<title>Webserver - Error</title>\n"
+	        << "</head>\n<body>\n"
+	        << "<h1>Something went wrong...</h1>\n"
+	        << "<h2>" << int_to_string(_http_status) << " - "
+	        << http_status_description(_http_status) << "</h2>\n"
+	        << "</body>\n</html>\n";
+	_log->log(LOG_DEBUG, _module, "Build default error page.");
+	return (content.str());
 }
+// OLD approach...
+//std::string HttpRequestHandler::default_plain_error()
+//{
+//	std::string content = "<!DOCTYPE html>\n";
+//	content += "<html>\n<head>\n";
+//	content += "<title>Webserver - Error</title>\n";
+//	content += "</head>\n<body>\n";
+//	content += "<h1>Something went wrong...</h1>\n";
+//	content += "<h2>" + int_to_string(_http_status) + " - " + http_status_description(_http_status) + "</h2>\n";
+//	content += "</body>\n</html>\n";
+//	return (content);
+//}
 
 /**
- * @brief Reads the contents of a file and returns it as a string.
+ * @brief Reads the content of a file from the given path.
  *
- * This function attempts to open and read the file specified by the given path.
- * If successful, the content is returned as a string. In case of failure to open
- * the file (e.g., due to lack of permissions), the function sets the HTTP status to
- * `HTTP_FORBIDDEN`. If a reading error occurs, it sets the HTTP status to
- * `HTTP_INTERNAL_SERVER_ERROR`.
+ * This method attempts to open and read the specified file in binary mode. It handles
+ * errors such as file permission issues or failures during the read operation. If any
+ * error occurs, an appropriate HTTP status code is set (e.g., `HTTP_FORBIDDEN` for access
+ * issues or `HTTP_INTERNAL_SERVER_ERROR` for I/O errors).
  *
- * @param path The file path to read from.
- * @return A string containing the content of the file. If the file cannot be opened
- *         or an error occurs, an empty string is returned and the HTTP status is set accordingly.
+ * @details
+ * - The file is read using a `std::ifstream` in binary mode to ensure that all types of files
+ *   can be processed, including binary files.
+ * - The method checks if the file was successfully opened. If not, the method returns an empty
+ *   string and sets the HTTP status to `HTTP_FORBIDDEN`.
+ * - If the file is opened successfully, it reads the content into a `std::stringstream` and
+ *   returns the content as a string. In case of read errors, the HTTP status is set to
+ *   `HTTP_INTERNAL_SERVER_ERROR`.
+ * - The file is explicitly closed after reading (even though `ifstream` closes it automatically).
  *
- * @exception std::ios_base::failure Thrown if a file I/O error occurs during reading.
- * @exception std::exception Catches any other unexpected standard exception.
+ * @param path The file system path to the file.
+ * @return std::string The content of the file, or an empty string if an error occurs.
  */
-std::string HttpRequestHandler::get_file_content(const std::string& path)
-{
+
+std::string HttpRequestHandler::get_file_content(const std::string& path) {
 	std::string content;
 	_state = -ST_LOAD_FILE;
 
@@ -334,23 +433,29 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
 		std::ifstream file(path.c_str(), std::ios::binary);
 
 		if (!file.is_open() || file.fail()) {
+			_log->log(LOG_ERROR, _module, "Failed to open file: " + path);
 			_http_status = HTTP_FORBIDDEN;
 			return (content);
 		}
+
 		std::stringstream file_content;
 		file_content << file.rdbuf();
+
 		if (file.bad()) {
+			_log->log(LOG_ERROR, _module, "Error reading file: " + path);
 			_http_status = HTTP_INTERNAL_SERVER_ERROR;
 		} else {
 			content = file_content.str();
+			_state = ST_LOAD_FILE;
 		}
-		_state = ST_LOAD_FILE;
 		file.close();
 	}
 	catch (const std::ios_base::failure& e) {
+		_log->log(LOG_ERROR, _module, "I/O failure: " + std::string(e.what()));
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 	}
 	catch (const std::exception& e) {
+		_log->log(LOG_ERROR, _module, "Exception: " + std::string(e.what()));
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -358,11 +463,23 @@ std::string HttpRequestHandler::get_file_content(const std::string& path)
 }
 
 /**
- * @brief Sends an error response to the client.
+ * @brief Sends an HTTP error response to the client.
  *
- * @param client_fd The file descriptor of the client.
- * @param config The server configuration.
- * @param error_code The HTTP error code to send (e.g., 404).
+ * This method generates and sends an error response based on the provided error code.
+ * If a custom error page is configured for the given error code, it attempts to load
+ * and send that page. If no custom page is found, a default plain HTML error page is sent.
+ *
+ * @details
+ * - It looks for a custom error page in `_location->loc_error_pages`.
+ * - If a custom error page is found but cannot be loaded, the method falls back to sending
+ *   a default error page.
+ * - The MIME type of the error page is determined using `get_mime_type()`, defaulting to
+ *   `text/html` if the page is not found.
+ * - The method then sends the error response using `send()` to the client. If the send fails,
+ *   an error is logged.
+ *
+ * @param error_code The HTTP status code to send in the response.
+ * @rdeturn bool True if the response was sent successfully, false if there was an error.
  */
 bool HttpRequestHandler::send_error_response(int error_code) {
 	std::string content;
@@ -382,8 +499,8 @@ bool HttpRequestHandler::send_error_response(int error_code) {
 			std::string file_content = get_file_content(error_file);
 			if (file_content.empty())
 				content = default_plain_error();
-			else
-			{
+			else {
+				_log->log(LOG_ERROR, _module, "Custom error page found.");
 				content = file_content;
 				type = get_mime_type(error_file);
 			}
@@ -392,31 +509,54 @@ bool HttpRequestHandler::send_error_response(int error_code) {
 	response = response_header(error_code, content.length(), type);
 	response += content;
 	if (send(_client_socket, response.c_str(), response.length(), 0) == -1)
+	{
+		_log->log(LOG_ERROR, _module, "Send error response fails.");
 		return (false);
+	}
+	_log->log(LOG_ERROR, _module, "Error response was sent: " + int_to_string(_http_status));
 	return (true);
 }
 
 /**
- * @brief Generates the HTTP response header.
+ * @brief Generates an HTTP response header.
  *
- * @param code The HTTP status code (e.g., 200, 404).
- * @param result The corresponding message (e.g., "OK", "Not Found").
- * @param content_size The size of the content being sent.
- * @param mime The MIME type of the content.
- * @return The HTTP response header as a string.
+ * This method constructs a basic HTTP response header based on the provided status code,
+ * content size, and MIME type. It follows the HTTP/1.1 specification and includes the
+ * status line, `Content-Length`, and `Content-Type` fields.
+ *
+ * @details
+ * - The method returns the header as a string, including the required carriage return
+ *   and line feed (`\r\n`) after each line, and an additional `\r\n` at the end to separate
+ *   the headers from the content.
+ *
+ * @param code The HTTP status code (e.g., 200 for OK, 404 for Not Found).
+ * @param content_size The size of the content being sent in the response body.
+ * @param mime The MIME type of the content (e.g., `text/html`, `application/json`).
+ * @return std::string The complete HTTP response header as a string.
  */
 std::string HttpRequestHandler::response_header(int code, size_t content_size, std::string mime) {
-	std::string header = "HTTP/1.1 " + int_to_string(code) + " " + http_status_description((e_http_sts)code) + "\r\n";
-	header += "Content-Length: " + int_to_string(content_size) + "\r\n";
-	header += "Content-Type: " + mime + "\r\n";
-	header += "\r\n";
-	return (header);
+	std::ostringstream header;
+	header << "HTTP/1.1 " << int_to_string(code) << " " << http_status_description((e_http_sts)code) << "\r\n"
+	       << "Content-Length: " << int_to_string((int)content_size) << "\r\n"
+	       << "Content-Type: " <<  mime << "\r\n"
+	       << "\r\n";
+	return (header.str());
 }
 
 /**
- * @brief Creates a map to use as static var with extensions and type
+ * @brief Creates and returns a map of file extensions to MIME types.
  *
- * @return A map that bind an extension with a mime type
+ * This method generates a map that associates common file extensions (e.g., ".html", ".jpg")
+ * with their corresponding MIME types (e.g., "text/html", "image/jpeg"). The map is used
+ * to determine the `Content-Type` header when serving files.
+ *
+ * @details
+ * - The method ensures that the map is initialized only once, using a static map to avoid
+ *   recreating the map on each call. If additional MIME types are required, they can be
+ *   added to the map.
+ * - Common MIME types such as `text/html`, `application/javascript`, and `image/jpeg` are included.
+ *
+ * @return std::map<std::string, std::string> A map that associates file extensions with their MIME types.
  */
 std::map<std::string, std::string> HttpRequestHandler::create_mime_types() {
 	std::map<std::string, std::string> mime_types;
@@ -433,11 +573,21 @@ std::map<std::string, std::string> HttpRequestHandler::create_mime_types() {
 }
 
 /**
- * @brief Given a path, it returns a mime type
+ * @brief Retrieves the MIME type based on the file extension.
  *
- * @param path Full path to a file
- * @return A map that bind an extension with a mime type
+ * This method looks up the MIME type corresponding to the file extension in the provided path.
+ * If the file extension is recognized, the associated MIME type is returned. If the extension
+ * is not recognized, it defaults to `text/plain`.
+ *
+ * @details
+ * - The method extracts the file extension by searching for the last '.' character in the path.
+ * - If the extension is found in the `mime_types` map, the corresponding MIME type is returned.
+ * - If no recognized extension is found, the default MIME type `text/plain` is returned.
+ *
+ * @param path The file system path to the file.
+ * @return std::string The MIME type corresponding to the file extension, or `text/plain` if not found.
  */
+
 std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 	static const std::map<std::string, std::string> mime_types = create_mime_types();
 
@@ -448,5 +598,6 @@ std::string HttpRequestHandler::get_mime_type(const std::string& path) {
 			return (mime_types.at(extension));
 		}
 	}
+	_log->log(LOG_DEBUG, _module, "File extension not recognized, defaulting to text/plain.");
 	return ("text/plain");
 }

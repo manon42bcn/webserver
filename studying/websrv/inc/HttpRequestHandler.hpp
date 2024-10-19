@@ -15,6 +15,7 @@
 
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "Logger.hpp"
 #include <string>
 
 enum e_rqs_state {
@@ -51,6 +52,8 @@ class HttpRequestHandler {
 		int                     _client_socket;
 		const ServerConfig&     _config;
 		const LocationConfig*   _location;
+		Logger*                 _log;
+		const std::string       _module;
 		int                      _state;
 		e_access                _access;
 		e_http_sts              _http_status;
@@ -75,7 +78,7 @@ class HttpRequestHandler {
 		std::map<std::string, std::string> create_mime_types();
 		std::string get_mime_type(const std::string& path);
 	public:
-		HttpRequestHandler(int client_socket, const ServerConfig& config);
+		HttpRequestHandler(int client_socket, const ServerConfig& config, Logger* log);
 		//	Temporal Method to debug responses for each method
 		void send_detailed_response(std::string requested_path);
 };
