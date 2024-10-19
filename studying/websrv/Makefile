@@ -15,6 +15,7 @@ SRCS_FILES		=	webserver.cpp \
 					main.cpp \
 					Logger.cpp \
 					SocketHandler.cpp \
+					ClientData.cpp \
 					HttpRequestHandler.cpp \
 					HttpResponseHandler.cpp \
 					ServerManager.cpp
@@ -23,6 +24,7 @@ HEADER			=	webserver.hpp \
 					http_enum_codes.hpp \
 					Logger.hpp \
 					SocketHandler.hpp \
+					ClientData.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \
 					ServerManager.hpp
