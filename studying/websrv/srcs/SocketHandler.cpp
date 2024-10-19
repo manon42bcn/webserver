@@ -44,6 +44,7 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger*
         _module("SocketHandler") {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
+	}
 	_log->log(LOG_DEBUG, _module, "Creating Sockets.");
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0)
