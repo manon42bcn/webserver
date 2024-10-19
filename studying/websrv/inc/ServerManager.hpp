@@ -45,6 +45,7 @@ public:
 	    ~ServerManager();
 	    void add_server(int port, const ServerConfig& config);
 		void run();
+	    void new_client(int client_fd, SocketHandler* server);
 		void add_client_to_poll(int client_fd);
 		bool add_server_to_poll(int server_fd);
 };

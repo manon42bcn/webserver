@@ -225,16 +225,7 @@ void ServerManager::run() {
 					// Accept a new connection
 					int new_client_fd = server->accept_connection();
 					if (new_client_fd > 0) {
-						ClientInfo client_info;
-						client_info.server = server;
-						client_info.client_fd.fd = new_client_fd;
-						client_info.client_fd.events = POLLIN;
-
-						// Add client info to clients and poll list
-						_clients.push_back(client_info);
-						_poll_fds.push_back(client_info.client_fd);
-						_log->log(LOG_DEBUG, _module,
-								  "New connection accepted on port " + int_to_string(server->get_socket_fd()));
+						new_client(new_client_fd, server);
 					}
 				} else {
 					// Handle client request
@@ -273,4 +264,17 @@ void ServerManager::run() {
 			}
 		}
 	}
+}
+
+
+void    ServerManager::new_client(int client_fd, SocketHandler* server) {
+	ClientInfo client_info;
+	client_info.server = server;
+	client_info.client_fd.fd = client_fd;
+	client_info.client_fd.events = POLLIN;
+
+	_clients.push_back(client_info);
+	_poll_fds.push_back(client_info.client_fd);
+	_log->log(LOG_DEBUG, _module,
+	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
 }
