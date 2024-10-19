@@ -54,7 +54,7 @@ void HttpRequestHandler::send_detailed_response(std::string requested_path)
  * @exception none No exception will be thrown, but exit process if the provided logger pointer is null.
  */
 
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config, Logger* log):
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config, const Logger* log):
 	_client_socket(client_socket),
 	_config(config),
 	_location(NULL),
