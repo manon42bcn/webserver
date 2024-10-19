@@ -15,6 +15,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 enum e_logger {
 	LOG_DEBUG = 0,
