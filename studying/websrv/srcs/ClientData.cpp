@@ -12,10 +12,11 @@
 
 #include "ClientData.hpp"
 
-ClientData::ClientData(SocketHandler *server, Logger* log, int fd):
+ClientData::ClientData(SocketHandler *server, const Logger* log, int fd):
 	_server(server),
 	_log(log),
-    _active(true) {
+    _active(true),
+	_client_fd() {
 	if (_log == NULL){
 		throw Logger::NoLoggerPointer();
 	}
@@ -23,8 +24,17 @@ ClientData::ClientData(SocketHandler *server, Logger* log, int fd):
 	_client_fd.events = POLLIN;
 }
 
-ClientData::~ClientData() {
-	close_fd();
+ClientData::~ClientData() {}
+
+ClientData& ClientData::operator=(const ClientData& orig)
+{
+	if(this == &orig)
+		return (*this);
+	this->_server = orig._server;
+	this->_log = orig._log;
+	this->_active = orig._active;
+	this->_client_fd = orig._client_fd;
+	return (*this);
 }
 
 SocketHandler* ClientData::get_server() {

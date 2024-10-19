@@ -224,12 +224,25 @@ void ServerManager::run() {
 				if (is_server) {
 					// Accept a new connection, create client and
 					// append fds to _poll_fds and _clients
-					new_client(server);
+					int client_fd = server->accept_connection();
+					if (client_fd < 0) {
+						_log->log(LOG_ERROR, _module, "Error getting client FD.");
+						return;
+					}
+					new_client(server, client_fd);
+					new_client_new(server, client_fd);
 				} else {
 					// Handle client request
 					ClientInfo* client_info = NULL;
-
+					size_t index = -1;
 					// Find the corresponding client in the clients vector
+					for (size_t c = 0; c < _clients_str.size(); ++c) {
+						if (_poll_fds[i].fd == _clients_str[c].get_fd().fd) {
+							index = c;
+//							client_data = &_clients_str[c];
+							break;
+						}
+					}
 					for (size_t c = 0; c < _clients.size(); ++c) {
 						if (_poll_fds[i].fd == _clients[c].client_fd.fd) {
 							client_info = &_clients[c];
@@ -238,17 +251,10 @@ void ServerManager::run() {
 					}
 
 					if (client_info != NULL) {
-						HttpRequestHandler request_handler(_poll_fds[i].fd, client_info->server->get_config(), _log);
+						HttpRequestHandler request_handler(_poll_fds[i].fd, client_info->server->get_config(), _log, _clients_str[index]);
 //						request_handler.handle_request(_poll_fds[i].fd, client_info->server->get_config());
-
 						// Remove the client info from the _clients vector BEFORE closing the connection
-						for (size_t c = 0; c < _clients.size(); ++c) {
-							if (_clients[c].client_fd.fd == _poll_fds[i].fd) {
-								_clients.erase(_clients.begin() + (int)c);
-								_log->log(LOG_DEBUG, _module, "client remove from _client vector.");
-								break;
-							}
-						}
+						remove_client_from_poll(_poll_fds[i].fd);
 					}
 
 					// Close the client connection
@@ -262,6 +268,50 @@ void ServerManager::run() {
 			}
 		}
 	}
+}
+
+void    ServerManager::new_client_new(SocketHandler *server, int client_fd) {
+//	int client_fd = server->accept_connection();
+//	if (client_fd < 0) {
+//		_log->log(LOG_ERROR, _module, "Error getting client FD.");
+//		return;
+//	}
+	ClientData new_client(server, _log, client_fd);
+	_clients_str.push_back(new_client);
+//	_clients.push_back(client_info);
+	_poll_fds.push_back(new_client.get_fd());
+	_log->log(LOG_DEBUG, _module,
+	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
+}
+
+void    ServerManager::new_client(SocketHandler* server, int client_fd) {
+//	int client_fd = server->accept_connection();
+//	if (client_fd < 0) {
+//		_log->log(LOG_ERROR, _module, "Error getting client FD.");
+//		return;
+//	}
+	ClientInfo client_info;
+	client_info.server = server;
+	client_info.client_fd.fd = client_fd;
+	client_info.client_fd.events = POLLIN;
+
+	_clients.push_back(client_info);
+	_poll_fds.push_back(client_info.client_fd);
+	_log->log(LOG_DEBUG, _module,
+	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
+}
+
+
+void    ServerManager::remove_client_from_poll(int fd) {
+	for (size_t c = 0; c < _clients.size(); ++c) {
+		if (_clients[c].client_fd.fd == fd) {
+			_clients.erase(_clients.begin() + (int)c);
+			_log->log(LOG_DEBUG, _module, "client remove from _client vector.");
+			break;
+		}
+	}
+	_log->log(LOG_ERROR, _module,
+	          "Client was not found at clients vector");
 }
 
 /**
@@ -281,19 +331,3 @@ void ServerManager::run() {
  * @param server A pointer to the `SocketHandler` instance associated with the client.
  * @return None
  */
-void    ServerManager::new_client(SocketHandler* server) {
-	int client_fd = server->accept_connection();
-	if (client_fd < 0) {
-		_log->log(LOG_ERROR, _module, "Error getting client FD.");
-		return;
-	}
-	ClientInfo client_info;
-	client_info.server = server;
-	client_info.client_fd.fd = client_fd;
-	client_info.client_fd.events = POLLIN;
-
-	_clients.push_back(client_info);
-	_poll_fds.push_back(client_info.client_fd);
-	_log->log(LOG_DEBUG, _module,
-	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
-}

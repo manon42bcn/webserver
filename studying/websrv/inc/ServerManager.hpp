@@ -18,6 +18,7 @@
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
+#include "ClientData.hpp"
 #include "webserver.hpp"
 #include "Logger.hpp"
 
@@ -38,6 +39,7 @@ class ServerManager {
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::vector<SocketHandler*>     _servers;
 		std::vector<ClientInfo> 	    _clients;
+	    std::vector<ClientData> 	    _clients_str;
 		const std::string	            _module;
 		const Logger*			        _log;
 public:
@@ -45,9 +47,12 @@ public:
 	    ~ServerManager();
 	    void add_server(int port, const ServerConfig& config);
 		void run();
-	    void new_client(SocketHandler* server);
+	    void new_client(SocketHandler* server, int fd);
+	    void new_client_new(SocketHandler* server, int fd);
 		void add_client_to_poll(int client_fd);
 		bool add_server_to_poll(int server_fd);
+	    void remove_client_from_poll(int fd);
+	    void remove_client_end_process(int fd, int i);
 };
 
 #endif

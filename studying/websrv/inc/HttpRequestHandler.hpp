@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUESTHANDLER_HPP
-#define HTTPREQUESTHANDLER_HPP
+#ifndef _HTTPREQUESTHANDLER_HPP_
+#define _HTTPREQUESTHANDLER_HPP_
 
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "ClientData.hpp"
 #include "Logger.hpp"
 #include <string>
 
@@ -51,8 +52,9 @@ class HttpRequestHandler {
 	private:
 		int                     _client_socket;
 		const ServerConfig&     _config;
-		const LocationConfig*   _location;
 		const Logger*           _log;
+		ClientData&             _client_data;
+		const LocationConfig*   _location;
 		const std::string       _module;
 		int                     _state;
 		e_access                _access;
@@ -78,7 +80,7 @@ class HttpRequestHandler {
 		std::map<std::string, std::string> create_mime_types();
 		std::string get_mime_type(const std::string& path);
 	public:
-		HttpRequestHandler(int client_socket, const ServerConfig& config, const Logger* log);
+		HttpRequestHandler(int client_socket, const ServerConfig& config, const Logger* log, ClientData& client_data);
 		//	Temporal Method to debug responses for each method
 		void send_detailed_response(std::string requested_path);
 };

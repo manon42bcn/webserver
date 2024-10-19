@@ -54,11 +54,13 @@ void HttpRequestHandler::send_detailed_response(std::string requested_path)
  * @exception none No exception will be thrown, but exit process if the provided logger pointer is null.
  */
 
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config, const Logger* log):
+HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config,
+                                       const Logger* log, ClientData& client_data):
 	_client_socket(client_socket),
 	_config(config),
-	_location(NULL),
 	_log(log),
+	_client_data(client_data),
+	_location(NULL),
 	_module("HttpRequestHandler"),
 	_state(ST_INIT),
 	_access(ACCESS_FORBIDDEN),
@@ -68,6 +70,8 @@ HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &co
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
+	_log->log(LOG_INFO, _module, "LLEGAMOS AQUI CON CLIENT DATA: " + int_to_string(_client_data.get_fd().fd));
+	_log->log(LOG_INFO, _module, "LLEGAMOS AQUI CON SOCKET: " + int_to_string(_client_socket));
 	std::string request = read_http_request();
 	std::string path = parse_request_and_method(request);
 	// Validate path using locations map and load its configuration as attribute.

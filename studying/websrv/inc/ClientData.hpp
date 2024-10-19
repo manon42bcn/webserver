@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef _CLIENT_DATA_HPP_
+#define _CLIENT_DATA_HPP_
+
 #include "SocketHandler.hpp"
 #include "Logger.hpp"
 #include <poll.h>
@@ -20,15 +23,18 @@
 class ClientData {
 	private:
 		SocketHandler*      _server;
-		Logger*             _log;
+		const Logger*       _log;
 	    bool                _active;
 		struct pollfd       _client_fd;
 
 	public:
-		ClientData(SocketHandler* server, Logger* log, int fd);
+		ClientData(SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
+	    ClientData& operator=(const ClientData& orig);
 	    SocketHandler* get_server();
 	    struct pollfd& get_fd();
 	    void deactivate();
 		void close_fd();
 };
+
+#endif
