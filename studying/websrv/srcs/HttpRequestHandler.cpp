@@ -66,8 +66,7 @@ HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &co
 	_method(METHOD_TO_PARSE)
 {
 	if (_log == NULL) {
-		std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
-		exit(1);
+		throw Logger::NoLoggerPointer();
 	}
 	std::string request = read_http_request();
 	std::string path = parse_request_and_method(request);

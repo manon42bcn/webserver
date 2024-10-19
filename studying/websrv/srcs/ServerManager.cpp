@@ -41,8 +41,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Log
 							_module("ServerManager"),
 							_log(logger) {
 	if (_log == NULL) {
-		std::cerr << "Error: Logger cannot be NULL pointer." << std::endl;
-		exit(1);
+		throw Logger::NoLoggerPointer();
 	}
         _poll_fds.reserve(100);
 	for (size_t i = 0; i < configs.size(); ++i) {
