@@ -222,11 +222,9 @@ void ServerManager::run() {
 				}
 
 				if (is_server) {
-					// Accept a new connection
-					int new_client_fd = server->accept_connection();
-					if (new_client_fd > 0) {
-						new_client(new_client_fd, server);
-					}
+					// Accept a new connection, create client and
+					// append fds to _poll_fds and _clients
+					new_client(server);
 				} else {
 					// Handle client request
 					ClientInfo* client_info = NULL;
@@ -266,8 +264,29 @@ void ServerManager::run() {
 	}
 }
 
-
-void    ServerManager::new_client(int client_fd, SocketHandler* server) {
+/**
+ * @brief Handles the acceptance of a new client and adds them to monitoring.
+ *
+ * This method processes a new client connection by adding the client file descriptor
+ * and associated server information to the `_clients` vector for tracking. It also
+ * adds the client's file descriptor to `_poll_fds` for event monitoring.
+ *
+ * @details
+ * - The method first checks if the `client_fd` is valid. If the file descriptor is invalid,
+ *   an error is logged, and the method returns.
+ * - The `POLLIN` event is set for the client file descriptor to monitor incoming data.
+ * - A log message is generated to indicate the successful acceptance of the new client.
+ *
+ * @param client_fd The file descriptor of the newly accepted client.
+ * @param server A pointer to the `SocketHandler` instance associated with the client.
+ * @return None
+ */
+void    ServerManager::new_client(SocketHandler* server) {
+	int client_fd = server->accept_connection();
+	if (client_fd < 0) {
+		_log->log(LOG_ERROR, _module, "Error getting client FD.");
+		return;
+	}
 	ClientInfo client_info;
 	client_info.server = server;
 	client_info.client_fd.fd = client_fd;
