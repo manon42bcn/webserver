@@ -50,7 +50,6 @@ typedef struct s_path {
 // TODO: state and access are wip.. just explore differents ways to use them
 class HttpRequestHandler {
 	private:
-		int                     _client_socket;
 		const ServerConfig&     _config;
 		const Logger*           _log;
 		ClientData&             _client_data;
@@ -60,6 +59,7 @@ class HttpRequestHandler {
 		e_access                _access;
 		e_http_sts              _http_status;
 		e_methods               _method;
+		int                     _fd;
 
 		// Init request handler
 		std::string read_http_request();
@@ -80,7 +80,7 @@ class HttpRequestHandler {
 		std::map<std::string, std::string> create_mime_types();
 		std::string get_mime_type(const std::string& path);
 	public:
-		HttpRequestHandler(int client_socket, const ServerConfig& config, const Logger* log, ClientData& client_data);
+		HttpRequestHandler(const Logger* log, ClientData& client_data);
 		//	Temporal Method to debug responses for each method
 		void send_detailed_response(std::string requested_path);
 };

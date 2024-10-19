@@ -22,16 +22,16 @@
 
 class ClientData {
 	private:
-		SocketHandler*      _server;
-		const Logger*       _log;
-	    bool                _active;
-		struct pollfd       _client_fd;
+		const SocketHandler*    _server;
+		const Logger*           _log;
+	    bool                    _active;
+		struct pollfd           _client_fd;
 
 	public:
-		ClientData(SocketHandler* server, const Logger* log, int fd);
+		ClientData(const SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
 	    ClientData& operator=(const ClientData& orig);
-	    SocketHandler* get_server();
+	    const SocketHandler* get_server();
 	    struct pollfd& get_fd();
 	    void deactivate();
 		void close_fd();

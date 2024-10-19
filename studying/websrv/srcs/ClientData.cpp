@@ -12,7 +12,7 @@
 
 #include "ClientData.hpp"
 
-ClientData::ClientData(SocketHandler *server, const Logger* log, int fd):
+ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	_server(server),
 	_log(log),
     _active(true),
@@ -37,7 +37,7 @@ ClientData& ClientData::operator=(const ClientData& orig)
 	return (*this);
 }
 
-SocketHandler* ClientData::get_server() {
+const SocketHandler* ClientData::get_server() {
 	return (_server);
 }
 

@@ -134,14 +134,12 @@ bool ServerManager::add_server_to_poll(int server_fd) {
     _log->log(LOG_ERROR, _module, "Invalid server file descriptor.");
     return (false);
     }
-	// Verificar si el fd ya está en _poll_fds ? Review doc para ver si es realmente necesario.
 	for (size_t i = 0; i < _poll_fds.size(); ++i) {
 		if (_poll_fds[i].fd == server_fd) {
 		  _log->log(LOG_WARNING, _module, "Server fd already in _poll_fds.");
 		  return (false);
 		}
 	}
-
 	struct pollfd pfd;
 	pfd.fd = server_fd;
 	pfd.events = POLLIN;
@@ -150,23 +148,6 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	_poll_fds.push_back(pfd);
 	_log->log(LOG_DEBUG, _module, "Server fd added to _poll_fds.");
 	return (true);
-}
-
-
-/**
- * @brief Adds a new client to the poll set and associates it with a server configuration.
- *
- * @todo this method and next will be reviewed to refactor.
- * @param client_fd File descriptor of the client.
- * @param config Server configuration associated with this client.
- */
-void ServerManager::add_client_to_poll(int client_fd) {
-	struct pollfd pfd;
-	pfd.fd = client_fd;
-	pfd.events = POLLIN;
-	pfd.revents = 0;
-	_poll_fds.push_back(pfd);
-	_log->log(LOG_DEBUG, _module, "client fd add to _polls_fds.");
 }
 
 /**
@@ -224,35 +205,20 @@ void ServerManager::run() {
 				if (is_server) {
 					// Accept a new connection, create client and
 					// append fds to _poll_fds and _clients
-					int client_fd = server->accept_connection();
-					if (client_fd < 0) {
-						_log->log(LOG_ERROR, _module, "Error getting client FD.");
-						return;
-					}
-					new_client(server, client_fd);
-					new_client_new(server, client_fd);
+					new_client(server);
 				} else {
 					// Handle client request
-					ClientInfo* client_info = NULL;
-					size_t index = -1;
+					int index = -1;
 					// Find the corresponding client in the clients vector
-					for (size_t c = 0; c < _clients_str.size(); ++c) {
-						if (_poll_fds[i].fd == _clients_str[c].get_fd().fd) {
-							index = c;
-//							client_data = &_clients_str[c];
-							break;
-						}
-					}
 					for (size_t c = 0; c < _clients.size(); ++c) {
-						if (_poll_fds[i].fd == _clients[c].client_fd.fd) {
-							client_info = &_clients[c];
+						if (_poll_fds[i].fd == _clients[c].get_fd().fd) {
+							index = (int)c;
 							break;
 						}
 					}
 
-					if (client_info != NULL) {
-						HttpRequestHandler request_handler(_poll_fds[i].fd, client_info->server->get_config(), _log, _clients_str[index]);
-//						request_handler.handle_request(_poll_fds[i].fd, client_info->server->get_config());
+					if (index != -1) {
+						HttpRequestHandler request_handler(_log, _clients[index]);
 						// Remove the client info from the _clients vector BEFORE closing the connection
 						remove_client_from_poll(_poll_fds[i].fd);
 					}
@@ -270,33 +236,15 @@ void ServerManager::run() {
 	}
 }
 
-void    ServerManager::new_client_new(SocketHandler *server, int client_fd) {
-//	int client_fd = server->accept_connection();
-//	if (client_fd < 0) {
-//		_log->log(LOG_ERROR, _module, "Error getting client FD.");
-//		return;
-//	}
+void    ServerManager::new_client(SocketHandler *server) {
+	int client_fd = server->accept_connection();
+	if (client_fd < 0) {
+		_log->log(LOG_ERROR, _module, "Error getting client FD.");
+		return;
+	}
 	ClientData new_client(server, _log, client_fd);
-	_clients_str.push_back(new_client);
-//	_clients.push_back(client_info);
+	_clients.push_back(new_client);
 	_poll_fds.push_back(new_client.get_fd());
-	_log->log(LOG_DEBUG, _module,
-	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
-}
-
-void    ServerManager::new_client(SocketHandler* server, int client_fd) {
-//	int client_fd = server->accept_connection();
-//	if (client_fd < 0) {
-//		_log->log(LOG_ERROR, _module, "Error getting client FD.");
-//		return;
-//	}
-	ClientInfo client_info;
-	client_info.server = server;
-	client_info.client_fd.fd = client_fd;
-	client_info.client_fd.events = POLLIN;
-
-	_clients.push_back(client_info);
-	_poll_fds.push_back(client_info.client_fd);
 	_log->log(LOG_DEBUG, _module,
 	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
 }
@@ -304,7 +252,7 @@ void    ServerManager::new_client(SocketHandler* server, int client_fd) {
 
 void    ServerManager::remove_client_from_poll(int fd) {
 	for (size_t c = 0; c < _clients.size(); ++c) {
-		if (_clients[c].client_fd.fd == fd) {
+		if (_clients[c].get_fd().fd == fd) {
 			_clients.erase(_clients.begin() + (int)c);
 			_log->log(LOG_DEBUG, _module, "client remove from _client vector.");
 			break;
