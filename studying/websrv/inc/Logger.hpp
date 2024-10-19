@@ -17,18 +17,18 @@
 #include <iostream>
 #include <cstdlib>
 
+/**
+ * @brief Logger level enum
+ *
+ * Inside class, logger level is used as a index for messages.
+ * Using the enum, is easier to write code and know which level
+ * any method is logging.
+ */
 enum e_logger {
 	LOG_DEBUG = 0,
 	LOG_INFO = 1,
 	LOG_WARNING = 2,
 	LOG_ERROR = 3
-};
-
-enum e_logger_module {
-	LM_LOGGER = 0,
-	LM_SERVER_MANAGER = 1,
-	LM_SOCKET_MANAGER = 2,
-	LM_REQUEST_MANAGER = 3
 };
 
 /**
@@ -51,6 +51,12 @@ public:
 	~Logger();
 	void log(int level, const std::string& module, const std::string& message) const;
 	void fatal_log(const std::string& module, const std::string& message) const;
+
+
+	class NoLoggerPointer : public std::exception {
+		public:
+			virtual const char *what() const throw();
+    };
 };
 
 #endif

@@ -110,3 +110,16 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 	std::cerr << "[FATAL ERROR][" << module << "]: " << message << std::endl;
 	exit(1);
  }
+
+ /**
+ * @brief Provides an error message when a Logger pointer is null.
+ *
+ * This method overrides the `what()` function from `std::exception` to provide
+ * a specific error message indicating that a Logger pointer is null.
+ *
+ * @return const char* A message indicating that the Logger pointer is null.
+ */
+ const char *Logger::NoLoggerPointer::what(void) const throw() {
+	 return ("Logger Pointer cannot be NULL.");
+ }
+
