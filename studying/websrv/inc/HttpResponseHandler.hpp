@@ -15,11 +15,16 @@
 
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "Logger.hpp"
+#include "ClientData.hpp"
 #include <string>
 #include <unistd.h>
 #include <string>
 #include <iostream>
 #include <sys/socket.h>
+
+#define RSP_NAME "HttpResponseHandler"
+
 /**
  * @brief Handle HTTP responses
  *
@@ -27,13 +32,24 @@
  * Handle state codes, content and Headers for HTTP responses.
  */
 class HttpResponseHandler {
-public:
-	void send_response(int client_socket, int status_code, const std::string& content);
-	void send_error_page(int client_socket, int error_code);
-
 private:
-	std::string generate_headers(int status_code, size_t content_length);
-	std::string get_status_message(int status_code);
+	int                     _fd;
+	e_http_sts              _http_status;
+	const LocationConfig*   _location;
+	const Logger*           _log;
+	e_methods               _method;
+	s_path&                 _resource;
+
+public:
+	HttpResponseHandler(int fd, e_http_sts status, const LocationConfig *location,
+	                    const Logger *log, e_methods method, s_path& path);
+	bool handle_get();
+	std::string header(int code, size_t content_size, std::string mime);
+	std::string default_plain_error();
+	s_content get_file_content(const std::string& path);
+	bool send_error_response();
+	bool sender(const std::string& body, const std::string& path);
+	bool handle_request();
 };
 
 #endif

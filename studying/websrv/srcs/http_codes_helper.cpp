@@ -136,4 +136,91 @@ e_methods method_string_to_enum(const std::string& method)
 	return ((e_methods)it->second);
 }
 
+/**
+ * @brief Creates and returns a map of file extensions to MIME types.
+ *
+ * This method generates a map that associates common file extensions (e.g., ".html", ".jpg")
+ * with their corresponding MIME types (e.g., "text/html", "image/jpeg"). The map is used
+ * to determine the `Content-Type` header when serving files.
+ *
+ * @details
+ * - The method ensures that the map is initialized only once, using a static map to avoid
+ *   recreating the map on each call. If additional MIME types are required, they can be
+ *   added to the map.
+ * - Common MIME types such as `text/html`, `application/javascript`, and `image/jpeg` are included.
+ *
+ * @return std::map<std::string, std::string> A map that associates file extensions with their MIME types.
+ */
+std::map<std::string, std::string> create_mime_types() {
+	std::map<std::string, std::string> mime_types;
+	mime_types[".html"] = "text/html";
+	mime_types[".css"] = "text/css";
+	mime_types[".js"] = "application/javascript";
+	mime_types[".jpg"] = "image/jpeg";
+	mime_types[".jpeg"] = "image/jpeg";
+	mime_types[".png"] = "image/png";
+	mime_types[".gif"] = "image/gif";
+	mime_types[".json"] = "application/json";
+	mime_types[".txt"] = "text/plain";
+	mime_types[".webp"] = "image/webp";
+	return (mime_types);
+}
+
+/**
+ * @brief Retrieves the MIME type based on the file extension.
+ *
+ * This method looks up the MIME type corresponding to the file extension in the provided path.
+ * If the file extension is recognized, the associated MIME type is returned. If the extension
+ * is not recognized, it defaults to `text/plain`.
+ *
+ * @details
+ * - The method extracts the file extension by searching for the last '.' character in the path.
+ * - If the extension is found in the `mime_types` map, the corresponding MIME type is returned.
+ * - If no recognized extension is found, the default MIME type `text/plain` is returned.
+ *
+ * @param path The file system path to the file.
+ * @return std::string The MIME type corresponding to the file extension, or `text/plain` if not found.
+ */
+std::string get_mime_type(const std::string& path) {
+	static const std::map<std::string, std::string> mime_types = create_mime_types();
+
+	size_t dot_pos = path.find_last_of('.');
+	if (dot_pos != std::string::npos) {
+		std::string extension = path.substr(dot_pos);
+		if (mime_types.find(extension) != mime_types.end()) {
+			return (mime_types.at(extension));
+		}
+	}
+	return ("text/plain");
+}
+
+/**
+ * @brief Replaces all occurrences of a key in the content with a given value.
+ *
+ * This method searches the provided content for all occurrences of the key and replaces
+ * each one with the specified value. It returns the modified content with all replacements made.
+ *
+ * @details
+ * - The method iterates through the content, finding each occurrence of the key using `std::string::find()`.
+ * - For each occurrence, it replaces the key with the value using `std::string::replace()`.
+ * - If the value contains the key (which could cause an infinite loop), the method does not perform any replacements.
+ *
+ * @param content The content in which to perform the replacements (e.g., HTML file content).
+ * @param key The key to search for in the content (e.g., "{error_code}").
+ * @param value The value to replace the key with (e.g., "404").
+ * @return std::string The content with all occurrences of the key replaced by the value.
+ */
+std::string replace_template(std::string content, const std::string& key, const std::string& value) {
+	size_t pos = 0;
+
+	if (value.find(key) != std::string::npos)
+		return (content);
+
+	while ((pos = content.find(key, pos)) != std::string::npos) {
+		content.replace(pos, key.length(), value);
+		pos += value.length();
+	}
+	return (content);
+}
+
 #endif

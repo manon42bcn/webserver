@@ -24,6 +24,9 @@
 std::string method_enum_to_string(int method);
 e_methods method_string_to_enum(const std::string& method);
 std::string http_status_description(e_http_sts code);
+std::map<std::string, std::string> create_mime_types();
+std::string get_mime_type(const std::string& path);
+std::string replace_template(std::string content, const std::string& key, const std::string& value);
 
 typedef enum e_mode {
 	TEMPLATE=0,
@@ -36,6 +39,19 @@ typedef enum e_access {
 	ACCESS_READ = 2,
 	ACCESS_WRITE = 3
 } t_access;
+
+struct s_path {
+	e_http_sts  code;
+	bool        found;
+	std::string path;
+	s_path(e_http_sts c, bool f, const std::string p) : code(c), found(f), path(p) {}
+};
+
+struct s_content {
+	bool        status;
+	std::string content;
+	s_content(bool s, std::string c): status(s), content(c){};
+};
 
 std::string int_to_string(int number);
 struct LocationConfig {
