@@ -80,6 +80,7 @@ class HttpRequestHandler {
 		s_path normalize_request_path(const std::string& requested_path) const;
 		std::string default_plain_error();
 		bool send_error_response();
+	    bool sender(const std::string& body, const std::string& path);
 		std::string get_file_content(const std::string& path);
 		static std::string response_header(int code, size_t content_size, std::string mime);
 		// Handle different methods

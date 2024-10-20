@@ -337,21 +337,42 @@ bool HttpRequestHandler::handle_request(const std::string& path)
 }
 
 /**
- * @brief Handles an HTTP GET request by sending the requested file content.
+ * @brief Sends the HTTP response body in fragments to ensure complete transmission.
  *
- * This method processes a GET request by normalizing the requested path, checking the HTTP
- * status, and either sending the requested file content or an error response.
+ * This method constructs the full HTTP response by generating the headers and appending the body.
+ * It then sends the response in fragments, ensuring that all bytes are transmitted to the client.
  *
  * @details
- * - The method first calls `normalize_request_path()` to resolve the file path.
- * - If the file is found and accessible, the file's content is read and sent along with the
- *   appropriate HTTP headers.
- * - If the file cannot be found or accessed, an error response is generated and sent to the client.
- * - The method also handles errors during the sending of the response and logs any issues.
+ * - The method handles partial sends by keeping track of how many bytes have been sent.
+ * - If `send()` returns `-1` it logs the error and returns `false`.
+ * - Any exceptions thrown during the sending process are caught, logged, and result in a `false` return value.
  *
- * @param requested_path The path requested by the client.
- * @return None
+ * @param body The content body to be sent in the response.
+ * @param path The file path (or resource) that determines the MIME type of the response.
+ * @return bool True if the response was sent successfully, false if an error occurred.
  */
+bool HttpRequestHandler::sender(const std::string& body, const std::string& path) {
+	try {
+		std::string response = response_header(_http_status, body.length(), get_mime_type(path));
+		response += body;
+		int total_sent = 0;
+		int to_send = (int)response.length();
+
+		while (total_sent < to_send) {
+			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
+			if (sent_bytes == -1) {
+				_log->log(LOG_ERROR, _module, "Error sending the response.");
+				return (false);
+			}
+			total_sent += sent_bytes;
+		}
+		return (true);
+	} catch(const std::exception& e) {
+		_log->log(LOG_ERROR, _module, e.what());
+		return (false);
+	}
+}
+
 void HttpRequestHandler::handle_get(const std::string& requested_path) {
 	s_path file_path = normalize_request_path(requested_path);
 	_http_status = file_path.code;
@@ -363,20 +384,11 @@ void HttpRequestHandler::handle_get(const std::string& requested_path) {
 	std::string content = get_file_content(file_path.path);
 	if (_http_status == HTTP_OK)
 	{
-		std::string response = response_header(_http_status, content.size(), get_mime_type(file_path.path));
-		_log->log(LOG_INFO, _module, response);
-		_log->log(LOG_INFO, _module, content);
-		response += content;
-		int sent_bytes = -1;
-		sent_bytes = (int)send(_fd, response.c_str(), response.length(), 0);
-		if (sent_bytes == -1) {
-			_log->log(LOG_ERROR, _module, "Error sending the response.");
-		}
+		sender(content, file_path.path);
 	} else {
 		send_error_response();
 	}
 }
-
 
 void HttpRequestHandler::handle_post(const std::string& requested_path) {
 	// Read the request body (assuming it's after the headers)
@@ -445,18 +457,6 @@ std::string HttpRequestHandler::default_plain_error() {
 	_log->log(LOG_DEBUG, _module, "Build default error page.");
 	return (content.str());
 }
-// OLD approach...
-//std::string HttpRequestHandler::default_plain_error()
-//{
-//	std::string content = "<!DOCTYPE html>\n";
-//	content += "<html>\n<head>\n";
-//	content += "<title>Webserver - Error</title>\n";
-//	content += "</head>\n<body>\n";
-//	content += "<h1>Something went wrong...</h1>\n";
-//	content += "<h2>" + int_to_string(_http_status) + " - " + http_status_description(_http_status) + "</h2>\n";
-//	content += "</body>\n</html>\n";
-//	return (content);
-//}
 
 /**
  * @brief Reads the content of a file from the given path.
@@ -488,71 +488,33 @@ std::string HttpRequestHandler::get_file_content(const std::string& path) {
 		if (!file) {
 			_log->log(LOG_ERROR, _module, "Failed to open file: " + path);
 			_http_status = HTTP_FORBIDDEN;
-			return content;
+			return (content);
 		}
-
-		// Obtén el tamaño del archivo
-		file.seekg(0, std::ios::end);  // Mueve el cursor al final
-		std::streampos file_size = file.tellg();  // Obtén la posición (tamaño del archivo)
-		file.seekg(0, std::ios::beg);  // Mueve el cursor al principio
-
-		// Reserva espacio en el string para el contenido del archivo
+		file.seekg(0, std::ios::end);
+		std::streampos file_size = file.tellg();
+		file.seekg(0, std::ios::beg);
+		_log->log(LOG_ERROR, _module, "filesize .." + int_to_string((int)file_size));
 		content.resize(file_size);
 
-		// Lee todo el archivo en el buffer
-		file.read(&content[0], file_size);  // Lee el archivo en el string
+		file.read(&content[0], file_size);
 
 		if (!file) {
 			_log->log(LOG_ERROR, _module, "Error reading file: " + path);
 			_http_status = HTTP_INTERNAL_SERVER_ERROR;
-			return "";
+			return ("");
 		}
 		file.close();
-	}
-	catch (const std::ios_base::failure& e) {
+	} catch (const std::ios_base::failure& e) {
 		_log->log(LOG_ERROR, _module, "I/O failure: " + std::string(e.what()));
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-	}
-	catch (const std::exception& e) {
+		return ("");
+	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, _module, "Exception: " + std::string(e.what()));
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		return ("");
 	}
-	return content;
+	return (content);
 }
-
-//std::string HttpRequestHandler::get_file_content(const std::string& path) {
-//	std::string content;
-//
-//	try {
-//		std::ifstream file(path.c_str(), std::ios::binary);
-//
-//		if (!file.is_open() || file.fail()) {
-//			_log->log(LOG_ERROR, _module, "Failed to open file: " + path);
-//			_http_status = HTTP_FORBIDDEN;
-//			return (content);
-//		}
-//
-//		std::stringstream file_content;
-//		file_content << file.rdbuf();
-//
-//		if (file.bad()) {
-//			_log->log(LOG_ERROR, _module, "Error reading file: " + path);
-//			_http_status = HTTP_INTERNAL_SERVER_ERROR;
-//		} else {
-//			content = file_content.str();
-//		}
-//		file.close();
-//	}
-//	catch (const std::ios_base::failure& e) {
-//		_log->log(LOG_ERROR, _module, "I/O failure: " + std::string(e.what()));
-//		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-//	}
-//	catch (const std::exception& e) {
-//		_log->log(LOG_ERROR, _module, "Exception: " + std::string(e.what()));
-//		_http_status = HTTP_INTERNAL_SERVER_ERROR;
-//	}
-//	return (content);
-//}
 
 /**
  * @brief Sends an HTTP error response to the client.
@@ -628,9 +590,10 @@ bool HttpRequestHandler::send_error_response() {
  */
 std::string HttpRequestHandler::response_header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
-	header << "HTTP/1.1 " << int_to_string(code) << " " << http_status_description((e_http_sts)code) << "\r\n"
-	       << "Content-Length: " << int_to_string((int)content_size) << "\r\n"
+	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
+	       << "Content-Length: " << content_size << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
+	       << "Connection: close\r\n"  // Cierra la conexión si no es keep-alive
 	       << "\r\n";
 
 	return (header.str());
@@ -662,6 +625,7 @@ std::map<std::string, std::string> HttpRequestHandler::create_mime_types() {
 	mime_types[".gif"] = "image/gif";
 	mime_types[".json"] = "application/json";
 	mime_types[".txt"] = "text/plain";
+	mime_types[".webp"] = "image/webp";
 	return (mime_types);
 }
 
