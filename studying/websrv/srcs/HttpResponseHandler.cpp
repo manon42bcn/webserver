@@ -224,7 +224,7 @@ std::string HttpResponseHandler::default_plain_error() {
 bool HttpResponseHandler::send_error_response() {
 	std::string content;
 	std::string error_file;
-	std::string file_path = ".txt";
+	std::string file_path = ".html";
 
 	content = default_plain_error();
 	if (_location)
