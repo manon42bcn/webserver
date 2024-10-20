@@ -65,7 +65,6 @@ bool HttpResponseHandler::handle_request() {
  */
 bool HttpResponseHandler::handle_get() {
 
-	_log->log(LOG_WARNING, RSP_NAME, "http... " + int_to_string(_http_status));
 	if (_http_status != HTTP_OK) {
 		send_error_response();
 		return (false);
