@@ -95,6 +95,7 @@ std::string http_status_description(e_http_sts code)
 		http_codes[HTTP_TOO_MANY_REQUESTS] = "Too Many Requests";
 		http_codes[HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE] = "Request Header Fields Too Large";
 		http_codes[HTTP_UNAVAILABLE_FOR_LEGAL_REASONS] = "Unavailable For Legal Reasons";
+		http_codes[HTTP_CLIENT_CLOSE_REQUEST] = "Client Close Request";
 		// 5xx Server Error
 		http_codes[HTTP_INTERNAL_SERVER_ERROR] = "Internal Server Error";
 		http_codes[HTTP_NOT_IMPLEMENTED] = "Not Implemented";
@@ -124,6 +125,10 @@ e_methods method_string_to_enum(const std::string& method)
 		methods_codes["GET"] = METHOD_GET;
 		methods_codes["POST"] = METHOD_POST;
 		methods_codes["DELETE"] = METHOD_DELETE;
+		methods_codes["PUT"] = METHOD_PUT;
+		methods_codes["HEAD"] = METHOD_HEAD;
+		methods_codes["OPTIONS"] = METHOD_OPTIONS;
+		methods_codes["PATCH"] = METHOD_PATCH;
 	}
 	std::map<std::string, int>::const_iterator it = methods_codes.find(method);
 	if (it == methods_codes.end())

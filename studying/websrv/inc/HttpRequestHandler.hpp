@@ -19,6 +19,10 @@
 #include "Logger.hpp"
 #include <string>
 
+#define BUFFER_REQUEST  1024
+#define MAX_REQUEST     8192
+#define URI_MAX         2048
+
 enum e_rqs_state {
 	ST_INIT = 0,
 	ST_LOAD_LOCATION = 1,
@@ -36,12 +40,18 @@ typedef enum s_is_file {
 	NONE_IS = 3
 } t_is_file;
 
-typedef int t_code;
-typedef struct s_path {
-	t_code      code;
+
+struct s_path {
+	e_http_sts  code;
 	std::string path;
-	s_path(t_code c, const std::string p) : code(c), path(p) {}
-} t_path;
+	s_path(e_http_sts c, const std::string p) : code(c), path(p) {}
+};
+
+struct s_content {
+	std::string content;
+	size_t      size;
+	s_content(std::string c, size_t s): content(c), size(s) {};
+};
 
 /**
  * @brief Class to encapsulates the logic of get a request, process it and send a response/error
@@ -55,7 +65,7 @@ class HttpRequestHandler {
 		ClientData&             _client_data;
 		const LocationConfig*   _location;
 		const std::string       _module;
-		int                     _state;
+		bool                     _state;
 		e_access                _access;
 		e_http_sts              _http_status;
 		e_methods               _method;
@@ -69,7 +79,7 @@ class HttpRequestHandler {
 		bool handle_request(const std::string& path);
 		s_path normalize_request_path(const std::string& requested_path) const;
 		std::string default_plain_error();
-		bool send_error_response(int error_code);
+		bool send_error_response();
 		std::string get_file_content(const std::string& path);
 		static std::string response_header(int code, size_t content_size, std::string mime);
 		// Handle different methods
@@ -83,7 +93,10 @@ class HttpRequestHandler {
 		HttpRequestHandler(const Logger* log, ClientData& client_data);
 		//	Temporal Method to debug responses for each method
 		void send_detailed_response(std::string requested_path);
+
+
 };
 
 
 #endif
+

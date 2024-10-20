@@ -22,6 +22,7 @@
 // Temporal method, to send a fix message without further actions, to debug dir and files checks
 void HttpRequestHandler::send_detailed_response(std::string requested_path)
 {
+//	std::string full_path = normalize_request_path(requested_path);
 	std::string content = "HELLO USING " + method_enum_to_string(_method)+ " FROM PORT : ";
 	content += int_to_string(_config.port);
 	content += " and getting path " + requested_path + "!";
@@ -59,9 +60,9 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	_client_data(client_data),
 	_location(NULL),
 	_module("HttpRequestHandler"),
-	_state(ST_INIT),
+	_state(false),
 	_access(ACCESS_FORBIDDEN),
-	_http_status(HTTP_CONTINUE),
+	_http_status(HTTP_I_AM_A_TEAPOT),
 	_method(METHOD_TO_PARSE),
 	_fd(_client_data.get_fd().fd)
 {
@@ -80,50 +81,70 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 /**
  * @brief Reads an HTTP request from the client socket.
  *
- * This method reads data from the client socket in chunks and accumulates it in a string
- * until the full HTTP request is received, or an error occurs.
+ * This method reads data from the client socket, accumulating it in a string until
+ * either the entire request is received or an error occurs. The method handles errors
+ * such as a request that exceeds the maximum allowed size or a client closing the connection.
  *
  * @details
- * - The method looks for the end of the HTTP headers (denoted by `\r\n\r\n`) to stop reading.
- * @todo - If the request size exceeds a predefined limit (e.g., 8192 bytes), an error is logged,
- *   and the method returns an empty string.
- * - If an error occurs during the `read()` system call, the method logs the error and returns
- *   an empty string.
- * @todo: - If the client disconnects without sending any data, the method logs an error and returns
- *   an empty string.
+ * - The method reads data in chunks using a buffer and appends it to the `request` string.
+ * - If the request size exceeds `MAX_REQUEST`, the method logs a warning and returns an empty string.
+ * - If an error occurs during reading, it logs the error and returns an empty string.
+ * - The request is considered complete when the method detects the `\r\n\r\n` sequence,
+ *   which marks the end of the HTTP headers.
  *
  * @return std::string The full HTTP request as a string, or an empty string if an error occurs.
  */
-
 std::string HttpRequestHandler::read_http_request() {
-	char buffer[1024];
+	char buffer[BUFFER_REQUEST];
 	std::string request;
-	int valread;
+	int         read_byte;
+	size_t      size = 0;
 
 	_log->log(LOG_DEBUG, _module, "Reading http request");
-	while ((valread = read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
-		buffer[valread] = '\0';
+	while ((read_byte = (int)read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
+		size += read_byte;
+		if (size > MAX_REQUEST) {
+			_http_status = HTTP_CONTENT_TOO_LARGE;
+			_log->log(LOG_WARNING, _module, "Request too large.");
+			return ("");
+		}
+		buffer[read_byte] = '\0';
 		request += buffer;
 		if (request.find("\r\n\r\n") != std::string::npos) {
 			break;
 		}
 	}
-	_log->log(LOG_INFO, _module, "Request read.");
-	_state = ST_READING;
+	if (read_byte < 0) {
+		_log->log(LOG_ERROR, _module, "Error Reading From Socket.");
+		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		return ("");
+	}
+	if (size == 0) {
+		_http_status = HTTP_CLIENT_CLOSE_REQUEST;
+		_log->log(LOG_ERROR, _module, "Client Close Request");
+		return ("");
+	}
+	_log->log(LOG_DEBUG, _module, "Request read.");
+	_http_status = HTTP_ACCEPTED;
 	return (request);
 }
 
 /**
  * @brief Parses the HTTP request to extract the method and requested path.
  *
- * This method parses the HTTP request string to identify the HTTP method (e.g., GET, POST) and the
- * requested path. It converts the method to an enumerated value and validates the path.
+ * This method parses the HTTP request string to identify the HTTP method (e.g., GET, POST)
+ * and the requested path. It converts the method to an enumerated value and validates the path.
+ * If the method or path are invalid, appropriate error messages are logged and the method
+ * returns an empty string.
  *
  * @details
- * - The method also checks if the path exceeds a predefined limit (e.g., 2048 characters) to avoid
- *   possible attacks. If the path is too long, the method logs an error and sets the HTTP status
- *   to `HTTP_URI_TOO_LONG`.
- * - In case of any parsing error, an appropriate HTTP status is set, and an empty string is returned.
+ * - If the request string is empty, an error is logged and the method returns an empty string.
+ * - The method extracts the HTTP method from the request and converts it to an enumeration.
+ *   If the method is unrecognized, an error log is generated, and the HTTP status is set to
+ *   `HTTP_BAD_REQUEST`.
+ * - The requested path is validated against a maximum length (`URI_MAX`). If the path exceeds
+ *   this length, an error log is generated, and the HTTP status is set to `HTTP_URI_TOO_LONG`.
+ * - On success, the requested path is returned and _state will be set to true.
  *
  * @param request The raw HTTP request string received from the client.
  * @return std::string The extracted path, or an empty string if an error occurs.
@@ -131,52 +152,75 @@ std::string HttpRequestHandler::read_http_request() {
 std::string HttpRequestHandler::parse_request_and_method(const std::string& request) {
 	std::string method;
 	std::string path;
+
+	if (request.empty())
+		return ("");
+
 	_log->log(LOG_DEBUG, _module, "Parsing Request to get path and method.");
 	size_t method_end = request.find(' ');
 	if (method_end != std::string::npos) {
 		method = request.substr(0, method_end);
-		_method = method_string_to_enum(method);
+		if (method.empty() || (_method = method_string_to_enum(method)) == METHOD_ERR ) {
+			_log->log(LOG_ERROR, _module,
+			          "Error parsing request: Method is empty or not valid.");
+			_http_status = HTTP_BAD_REQUEST;
+			return ("");
+		}
 
 		size_t path_end = request.find(' ', method_end + 1);
 		if (path_end != std::string::npos) {
 			path = request.substr(method_end + 1, path_end - method_end - 1);
 
-			if (path.size() > 2048) {
-				_log->log(LOG_ERROR, _module, "Request path too long.");
+			if (path.size() > URI_MAX) {
+				_log->log(LOG_ERROR, _module,
+				          "Request path too long.");
 				_http_status = HTTP_URI_TOO_LONG;
 				return ("");
 			}
-			_log->log(LOG_DEBUG, _module, "Request parsed.");
+			_log->log(LOG_DEBUG, _module,
+			          "Request parsed.");
 		} else {
-			_log->log(LOG_ERROR, _module, "Error parsing request: missing path.");
+			_log->log(LOG_ERROR, _module,
+			          "Error parsing request: missing path.");
 			_http_status = HTTP_BAD_REQUEST;
-			_state = ST_PARSING;
 			return ("");
 		}
 	} else {
-		_log->log(LOG_ERROR, _module, "Error parsing request: missing method.");
+		_log->log(LOG_ERROR, _module,
+		          "Error parsing request: method malformed.");
 		_method = METHOD_ERR;
 		_http_status = HTTP_BAD_REQUEST;
-		_state = ST_PARSING;
+		return ("");
 	}
+	_state = true;
 	return (path);
 }
 
-
 /**
- * @brief Get location info using request path
+ * @brief Searches for the location configuration based on the requested path.
  *
- * Iterates over server location, and evaluate which location config
- * should apply to current request. Load _access state and the pointer
- * to the LocationConfig structure that should be apply to the request.
+ * This method iterates through the available locations in the server configuration and
+ * finds the best match (i.e., the longest prefix) for the requested path. If a matching
+ * location is found, its configuration is loaded and the request state is updated.
  *
- * @param path path parsed from request
+ * @details
+ * - The method checks the current state to ensure it is valid before proceeding with
+ *   the location lookup.
+ * - The method searches for the longest matching prefix in the `locations` map.
+ * - If a matching location is found, the method sets `_location`, `_http_status`, and `_access`
+ *   based on the found location's configuration.
+ * - If no location is found, it logs an error, sets `_location` to `NULL`, and updates
+ *   the state to reflect the failure.
+ *
+ * @param path The requested path from the HTTP request.
+ * @return None
  */
+
 void HttpRequestHandler::get_location_config(const std::string& path) {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	if (_state < ST_INIT) {
+	if (!_state) {
 		_log->log(LOG_WARNING, _module, "Invalid state for location lookup.");
 		return;
 	}
@@ -197,11 +241,10 @@ void HttpRequestHandler::get_location_config(const std::string& path) {
 		_location = result;
 		_http_status = HTTP_CONTINUE;
 		_access = result->loc_access;
-		_state = ST_LOAD_LOCATION;
 	} else {
 		_log->log(LOG_ERROR, _module, "Location NOT found.");
 		_location = NULL;
-		_state = -ST_LOAD_LOCATION;
+		_state = false;
 	}
 }
 
@@ -222,7 +265,7 @@ void HttpRequestHandler::get_location_config(const std::string& path) {
  * @return s_path A struct containing the HTTP status code and the normalized path.
  */
 s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const {
-	std::string eval_path = _location->loc_root + requested_path;
+	std::string eval_path = _config.server_root+ _location->loc_root + requested_path;
 	_log->log(LOG_DEBUG, _module, "Normalize path to get proper file to serve.");
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, _module, "File found.");
@@ -267,11 +310,10 @@ s_path HttpRequestHandler::normalize_request_path(const std::string& requested_p
  * @param path The path requested by the client.
  * @return bool True if the request was handled successfully, false if an error occurred.
  */
-
 bool HttpRequestHandler::handle_request(const std::string& path)
 {
-	if (_state < ST_INIT)
-		return (send_error_response(_http_status));
+	if (!_state)
+		return (send_error_response());
 	s_path requested_path = normalize_request_path(path);
 	switch ((int)_method) {
 		case METHOD_GET:
@@ -289,36 +331,50 @@ bool HttpRequestHandler::handle_request(const std::string& path)
 		default:
 			_log->log(LOG_ERROR, _module, "Method not allowed.");
 			_http_status = HTTP_METHOD_NOT_ALLOWED;
-			send_error_response(HTTP_METHOD_NOT_ALLOWED);
+			send_error_response();
 	}
 	return (true);
 }
 
-
+/**
+ * @brief Handles an HTTP GET request by sending the requested file content.
+ *
+ * This method processes a GET request by normalizing the requested path, checking the HTTP
+ * status, and either sending the requested file content or an error response.
+ *
+ * @details
+ * - The method first calls `normalize_request_path()` to resolve the file path.
+ * - If the file is found and accessible, the file's content is read and sent along with the
+ *   appropriate HTTP headers.
+ * - If the file cannot be found or accessed, an error response is generated and sent to the client.
+ * - The method also handles errors during the sending of the response and logs any issues.
+ *
+ * @param requested_path The path requested by the client.
+ * @return None
+ */
 void HttpRequestHandler::handle_get(const std::string& requested_path) {
-	//	TODO: This point, each method returns a message (WIP).
-	std::string full_path = _config.server_root + requested_path;
-	std::ifstream file(full_path.c_str(), std::ios::binary);
-	send_detailed_response( requested_path);
-//	std::string content = "HELLO USING GET! from port: ";
-//	content += int_to_string(config.port);
-//	content += " and getting path " + requested_path;
-//	std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
-//	response += content;
-//	send(client_socket, response.c_str(), response.length(), 0);
-//	if (file.is_open()) {
-//		std::stringstream file_content;
-//		file_content << file.rdbuf();
-//		std::string content = file_content.str();
-//
-//		std::string response = response_header(200, "OK", content.length(), get_mime_type(full_path));
-//		response += content;
-//
-//		send(client_socket, response.c_str(), response.length(), 0);
-//		file.close();
-//	} else {
-//		send_error_response(client_socket, config, 404);  // File Not Found
-//	}
+	s_path file_path = normalize_request_path(requested_path);
+	_http_status = file_path.code;
+
+	if (_http_status != HTTP_OK) {
+		send_error_response();
+		return;
+	}
+	std::string content = get_file_content(file_path.path);
+	if (_http_status == HTTP_OK)
+	{
+		std::string response = response_header(_http_status, content.size(), get_mime_type(file_path.path));
+		_log->log(LOG_INFO, _module, response);
+		_log->log(LOG_INFO, _module, content);
+		response += content;
+		int sent_bytes = -1;
+		sent_bytes = (int)send(_fd, response.c_str(), response.length(), 0);
+		if (sent_bytes == -1) {
+			_log->log(LOG_ERROR, _module, "Error sending the response.");
+		}
+	} else {
+		send_error_response();
+	}
 }
 
 
@@ -339,7 +395,7 @@ void HttpRequestHandler::handle_post(const std::string& requested_path) {
 		response += "POST data received and saved.\n";
 		send(_fd, response.c_str(), response.length(), 0);
 	} else {
-		send_error_response(500);  // Internal Server Error if unable to save file
+		send_error_response();  // Internal Server Error if unable to save file
 	}
 }
 
@@ -353,7 +409,7 @@ void HttpRequestHandler::handle_delete(const std::string& requested_path) {
 		response += "File deleted successfully.\n";
 		send(_fd, response.c_str(), response.length(), 0);
 	} else {
-		send_error_response(404);  // File Not Found
+		send_error_response();  // File Not Found
 	}
 }
 
@@ -423,29 +479,33 @@ std::string HttpRequestHandler::default_plain_error() {
  * @param path The file system path to the file.
  * @return std::string The content of the file, or an empty string if an error occurs.
  */
-
 std::string HttpRequestHandler::get_file_content(const std::string& path) {
 	std::string content;
-	_state = -ST_LOAD_FILE;
 
 	try {
 		std::ifstream file(path.c_str(), std::ios::binary);
 
-		if (!file.is_open() || file.fail()) {
+		if (!file) {
 			_log->log(LOG_ERROR, _module, "Failed to open file: " + path);
 			_http_status = HTTP_FORBIDDEN;
-			return (content);
+			return content;
 		}
 
-		std::stringstream file_content;
-		file_content << file.rdbuf();
+		// Obtén el tamaño del archivo
+		file.seekg(0, std::ios::end);  // Mueve el cursor al final
+		std::streampos file_size = file.tellg();  // Obtén la posición (tamaño del archivo)
+		file.seekg(0, std::ios::beg);  // Mueve el cursor al principio
 
-		if (file.bad()) {
+		// Reserva espacio en el string para el contenido del archivo
+		content.resize(file_size);
+
+		// Lee todo el archivo en el buffer
+		file.read(&content[0], file_size);  // Lee el archivo en el string
+
+		if (!file) {
 			_log->log(LOG_ERROR, _module, "Error reading file: " + path);
 			_http_status = HTTP_INTERNAL_SERVER_ERROR;
-		} else {
-			content = file_content.str();
-			_state = ST_LOAD_FILE;
+			return "";
 		}
 		file.close();
 	}
@@ -457,9 +517,42 @@ std::string HttpRequestHandler::get_file_content(const std::string& path) {
 		_log->log(LOG_ERROR, _module, "Exception: " + std::string(e.what()));
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 	}
-
-	return (content);
+	return content;
 }
+
+//std::string HttpRequestHandler::get_file_content(const std::string& path) {
+//	std::string content;
+//
+//	try {
+//		std::ifstream file(path.c_str(), std::ios::binary);
+//
+//		if (!file.is_open() || file.fail()) {
+//			_log->log(LOG_ERROR, _module, "Failed to open file: " + path);
+//			_http_status = HTTP_FORBIDDEN;
+//			return (content);
+//		}
+//
+//		std::stringstream file_content;
+//		file_content << file.rdbuf();
+//
+//		if (file.bad()) {
+//			_log->log(LOG_ERROR, _module, "Error reading file: " + path);
+//			_http_status = HTTP_INTERNAL_SERVER_ERROR;
+//		} else {
+//			content = file_content.str();
+//		}
+//		file.close();
+//	}
+//	catch (const std::ios_base::failure& e) {
+//		_log->log(LOG_ERROR, _module, "I/O failure: " + std::string(e.what()));
+//		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+//	}
+//	catch (const std::exception& e) {
+//		_log->log(LOG_ERROR, _module, "Exception: " + std::string(e.what()));
+//		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+//	}
+//	return (content);
+//}
 
 /**
  * @brief Sends an HTTP error response to the client.
@@ -480,19 +573,19 @@ std::string HttpRequestHandler::get_file_content(const std::string& path) {
  * @param error_code The HTTP status code to send in the response.
  * @rdeturn bool True if the response was sent successfully, false if there was an error.
  */
-bool HttpRequestHandler::send_error_response(int error_code) {
+bool HttpRequestHandler::send_error_response() {
 	std::string content;
 	std::string response;
 	std::string type = "text/html";
 	std::string error_file;
 
 	content = default_plain_error();
-	if (_state != -ST_LOAD_LOCATION)
+	if (_state)
 	{
 		std::map<int, std::string>::const_iterator it;
 		const std::map<int, std::string>* error_pages = &_location->loc_error_pages;
 
-		it = error_pages->find(error_code);
+		it = error_pages->find(_http_status);
 		if (!error_pages->empty() || it != error_pages->end())
 		{
 			std::string file_content = get_file_content(error_file);
@@ -505,14 +598,14 @@ bool HttpRequestHandler::send_error_response(int error_code) {
 			}
 		}
 	}
-	response = response_header(error_code, content.length(), type);
+	response = response_header(_http_status, content.length(), type);
 	response += content;
 	if (send(_fd, response.c_str(), response.length(), 0) == -1)
 	{
 		_log->log(LOG_ERROR, _module, "Send error response fails.");
 		return (false);
 	}
-	_log->log(LOG_ERROR, _module, "Error response was sent: " + int_to_string(_http_status));
+	_log->log(LOG_ERROR, _module, "Error response was sent: " + http_status_description(_http_status));
 	return (true);
 }
 
@@ -539,6 +632,7 @@ std::string HttpRequestHandler::response_header(int code, size_t content_size, s
 	       << "Content-Length: " << int_to_string((int)content_size) << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
 	       << "\r\n";
+
 	return (header.str());
 }
 
