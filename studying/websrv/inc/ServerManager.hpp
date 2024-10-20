@@ -18,17 +18,9 @@
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
+#include "ClientData.hpp"
 #include "webserver.hpp"
 #include "Logger.hpp"
-
-
-/**
- * @brief Structure to associate a client with the server that accepted the connection.
- */
-struct ClientInfo {
-	SocketHandler*  server;
-	struct pollfd   client_fd;
-};
 
 /**
  * @brief Manages multiple server sockets and handles incoming connections.
@@ -37,7 +29,7 @@ class ServerManager {
 	private:
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::vector<SocketHandler*>     _servers;
-		std::vector<ClientInfo> 	    _clients;
+	    std::vector<ClientData> 	    _clients;
 		const std::string	            _module;
 		const Logger*			        _log;
 public:
@@ -45,8 +37,9 @@ public:
 	    ~ServerManager();
 	    void add_server(int port, const ServerConfig& config);
 		void run();
-		void add_client_to_poll(int client_fd);
+	    void new_client(SocketHandler* server);
 		bool add_server_to_poll(int server_fd);
+	    void remove_client_from_poll(int fd);
 };
 
 #endif

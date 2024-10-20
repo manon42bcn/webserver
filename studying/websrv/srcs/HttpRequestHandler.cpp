@@ -31,7 +31,7 @@ void HttpRequestHandler::send_detailed_response(std::string requested_path)
 
 	std::string header = response_header(200, content.length(), "text/plain");
 	std::string response = header + content;
-	send(_client_socket, response.c_str(), response.length(), 0);
+	send(_fd, response.c_str(), response.length(), 0);
 }
 // -----------------------------------------------------------------
 /**
@@ -47,23 +47,23 @@ void HttpRequestHandler::send_detailed_response(std::string requested_path)
  *   the server configuration.
  * - After the request and path are validated, the request processing begins by calling `handle_request()`.
  *
- * @param client_socket The socket file descriptor for the connected client.
  * @param config The configuration of the server (`ServerConfig`) used to process the request.
  * @param log A pointer to the logger instance used to record request processing activity.
+ * @param client_data Reference to the client instance to track the process properly.
  *
  * @exception none No exception will be thrown, but exit process if the provided logger pointer is null.
  */
-
-HttpRequestHandler::HttpRequestHandler(int client_socket, const ServerConfig &config, const Logger* log):
-	_client_socket(client_socket),
-	_config(config),
-	_location(NULL),
+HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_data):
+	_config(client_data.get_server()->get_config()),
 	_log(log),
+	_client_data(client_data),
+	_location(NULL),
 	_module("HttpRequestHandler"),
 	_state(ST_INIT),
 	_access(ACCESS_FORBIDDEN),
 	_http_status(HTTP_CONTINUE),
-	_method(METHOD_TO_PARSE)
+	_method(METHOD_TO_PARSE),
+	_fd(_client_data.get_fd().fd)
 {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
@@ -101,7 +101,7 @@ std::string HttpRequestHandler::read_http_request() {
 	int valread;
 
 	_log->log(LOG_DEBUG, _module, "Reading http request");
-	while ((valread = read(_client_socket, buffer, sizeof(buffer) - 1)) > 0) {
+	while ((valread = read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
 		buffer[valread] = '\0';
 		request += buffer;
 		if (request.find("\r\n\r\n") != std::string::npos) {
@@ -337,7 +337,7 @@ void HttpRequestHandler::handle_post(const std::string& requested_path) {
 		// Respond to the client with a success message
 		std::string response = response_header(200, body.length(), "text/plain");
 		response += "POST data received and saved.\n";
-		send(_client_socket, response.c_str(), response.length(), 0);
+		send(_fd, response.c_str(), response.length(), 0);
 	} else {
 		send_error_response(500);  // Internal Server Error if unable to save file
 	}
@@ -351,7 +351,7 @@ void HttpRequestHandler::handle_delete(const std::string& requested_path) {
 	if (remove(full_path.c_str()) == 0) {
 		std::string response = response_header(200, 0, "text/plain");
 		response += "File deleted successfully.\n";
-		send(_client_socket, response.c_str(), response.length(), 0);
+		send(_fd, response.c_str(), response.length(), 0);
 	} else {
 		send_error_response(404);  // File Not Found
 	}
@@ -507,7 +507,7 @@ bool HttpRequestHandler::send_error_response(int error_code) {
 	}
 	response = response_header(error_code, content.length(), type);
 	response += content;
-	if (send(_client_socket, response.c_str(), response.length(), 0) == -1)
+	if (send(_fd, response.c_str(), response.length(), 0) == -1)
 	{
 		_log->log(LOG_ERROR, _module, "Send error response fails.");
 		return (false);
