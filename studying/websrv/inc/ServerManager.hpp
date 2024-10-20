@@ -22,6 +22,8 @@
 #include "webserver.hpp"
 #include "Logger.hpp"
 
+#define SM_NAME "ServerManager"
+
 /**
  * @brief Manages multiple server sockets and handles incoming connections.
  */
@@ -30,7 +32,6 @@ class ServerManager {
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::vector<SocketHandler*>     _servers;
 	    std::vector<ClientData> 	    _clients;
-		const std::string	            _module;
 		const Logger*			        _log;
 public:
 		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);

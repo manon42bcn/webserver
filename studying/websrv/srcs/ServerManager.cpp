@@ -38,7 +38,6 @@
  * result in the program terminating.
  */
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
-							_module("ServerManager"),
 							_log(logger) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
@@ -47,7 +46,7 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Log
 	for (size_t i = 0; i < configs.size(); ++i) {
 		add_server(configs[i].port, configs[i]);
 	}
-	_log->log(LOG_DEBUG, _module, "instance init and ready.");
+	_log->log(LOG_DEBUG, SM_NAME, "instance init and ready.");
 }
 
 /**
@@ -75,7 +74,7 @@ ServerManager::~ServerManager() {
 	}
 	for (size_t i = 0; i < _servers.size(); i++)
 		delete _servers[i];
-	_log->log(LOG_DEBUG, _module, "ServerManager resources cleaned up.");
+	_log->log(LOG_DEBUG, SM_NAME, "ServerManager resources cleaned up.");
 }
 
 /**
@@ -100,16 +99,16 @@ void ServerManager::add_server(int port, const ServerConfig& config) {
 	try {
 		SocketHandler* server = new SocketHandler(port, config, _log);
 		_servers.push_back(server);
-		_log->log(LOG_DEBUG, _module,
+		_log->log(LOG_DEBUG, SM_NAME,
 		          "SocketHandler instance created and added to _servers.");
 
 		if (!add_server_to_poll(server->get_socket_fd())) {
-			_log->log(LOG_ERROR, _module, "Failed to add server to poll list.");
+			_log->log(LOG_ERROR, SM_NAME, "Failed to add server to poll list.");
 			_servers.pop_back();
 			delete server;
 		}
 	} catch (const std::exception& e) {
-		_log->log(LOG_ERROR, _module, "Error creating or adding SocketHandler: " + std::string(e.what()));
+		_log->log(LOG_ERROR, SM_NAME, "Error creating or adding SocketHandler: " + std::string(e.what()));
 	}
 }
 
@@ -131,12 +130,12 @@ void ServerManager::add_server(int port, const ServerConfig& config) {
  */
 bool ServerManager::add_server_to_poll(int server_fd) {
 	if (server_fd < 0) {
-    _log->log(LOG_ERROR, _module, "Invalid server file descriptor.");
+    _log->log(LOG_ERROR, SM_NAME, "Invalid server file descriptor.");
     return (false);
     }
 	for (size_t i = 0; i < _poll_fds.size(); ++i) {
 		if (_poll_fds[i].fd == server_fd) {
-		  _log->log(LOG_WARNING, _module, "Server fd already in _poll_fds.");
+		  _log->log(LOG_WARNING, SM_NAME, "Server fd already in _poll_fds.");
 		  return (false);
 		}
 	}
@@ -146,7 +145,7 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	pfd.revents = 0;
 
 	_poll_fds.push_back(pfd);
-	_log->log(LOG_DEBUG, _module, "Server fd added to _poll_fds.");
+	_log->log(LOG_DEBUG, SM_NAME, "Server fd added to _poll_fds.");
 	return (true);
 }
 
@@ -183,11 +182,11 @@ bool ServerManager::add_server_to_poll(int server_fd) {
  * @return None
  */
 void ServerManager::run() {
-	_log->log(LOG_DEBUG, _module, "Event loop started.");
+	_log->log(LOG_DEBUG, SM_NAME, "Event loop started.");
 	while (true) {
 		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 		if (poll_count < 0)
-			_log->fatal_log(_module, "error in poll process.");
+			_log->fatal_log(SM_NAME, "error in poll process.");
 		for (size_t i = 0; i < _poll_fds.size(); ++i) {
 			if (_poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
@@ -195,7 +194,7 @@ void ServerManager::run() {
 				// Check if the descriptor corresponds to a server socket
 				for (size_t s = 0; s < _servers.size(); ++s) {
 					if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
-						_log->log(LOG_DEBUG, _module, "fd belongs to a server.");
+						_log->log(LOG_DEBUG, SM_NAME, "fd belongs to a server.");
 						is_server = true;
 						server = _servers[s];
 						break;
@@ -209,7 +208,8 @@ void ServerManager::run() {
 				} else {
 					// Handle client request
 					int index = -1;
-					// Find the corresponding client in the clients vector
+					// TODO: for performance it will be a good idea use _client as map
+					// Ive found some issues with fd..
 					for (size_t c = 0; c < _clients.size(); ++c) {
 						if (_poll_fds[i].fd == _clients[c].get_fd().fd) {
 							index = (int)c;
@@ -225,10 +225,10 @@ void ServerManager::run() {
 
 					// Close the client connection
 					close(_poll_fds[i].fd);
-					_log->log(LOG_DEBUG, _module, "close connection: " + int_to_string((int)i));
+					_log->log(LOG_DEBUG, SM_NAME, "close connection: " + int_to_string((int)i));
 					// Remove the client descriptor from _poll_fds
 					_poll_fds.erase(_poll_fds.begin() + (int)i);
-					_log->log(LOG_DEBUG, _module, "fd remove from _polls_fds vector: " + int_to_string((int)i));
+					_log->log(LOG_DEBUG, SM_NAME, "fd remove from _polls_fds vector: " + int_to_string((int)i));
 					--i;  // Adjust index to check the new descriptor in this position
 				}
 			}
@@ -239,13 +239,13 @@ void ServerManager::run() {
 void    ServerManager::new_client(SocketHandler *server) {
 	int client_fd = server->accept_connection();
 	if (client_fd < 0) {
-		_log->log(LOG_ERROR, _module, "Error getting client FD.");
+		_log->log(LOG_ERROR, SM_NAME, "Error getting client FD.");
 		return;
 	}
 	ClientData new_client(server, _log, client_fd);
 	_clients.push_back(new_client);
 	_poll_fds.push_back(new_client.get_fd());
-	_log->log(LOG_DEBUG, _module,
+	_log->log(LOG_DEBUG, SM_NAME,
 	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
 }
 
@@ -254,11 +254,11 @@ void    ServerManager::remove_client_from_poll(int fd) {
 	for (size_t c = 0; c < _clients.size(); ++c) {
 		if (_clients[c].get_fd().fd == fd) {
 			_clients.erase(_clients.begin() + (int)c);
-			_log->log(LOG_DEBUG, _module, "client remove from _client vector.");
+			_log->log(LOG_DEBUG, SM_NAME, "client remove from _client vector.");
 			break;
 		}
 	}
-	_log->log(LOG_ERROR, _module,
+	_log->log(LOG_ERROR, SM_NAME,
 	          "Client was not found at clients vector");
 }
 
