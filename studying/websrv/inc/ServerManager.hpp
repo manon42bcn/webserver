@@ -41,6 +41,7 @@ public:
 	    void new_client(SocketHandler* server);
 		bool add_server_to_poll(int server_fd);
 	    void remove_client_from_poll(int fd);
+	    bool process_request(int poll_fd);
 };
 
 #endif

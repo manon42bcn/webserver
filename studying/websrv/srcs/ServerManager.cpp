@@ -207,28 +207,16 @@ void ServerManager::run() {
 					new_client(server);
 				} else {
 					// Handle client request
-					int index = -1;
-					// TODO: for performance it will be a good idea use _client as map
-					// Ive found some issues with fd..
-					for (size_t c = 0; c < _clients.size(); ++c) {
-						if (_poll_fds[i].fd == _clients[c].get_fd().fd) {
-							index = (int)c;
-							break;
-						}
-					}
-
-					if (index != -1) {
-						HttpRequestHandler request_handler(_log, _clients[index]);
-						// Remove the client info from the _clients vector BEFORE closing the connection
-						remove_client_from_poll(_poll_fds[i].fd);
-					}
+					process_request(_poll_fds[i].fd);
 
 					// Close the client connection
 					close(_poll_fds[i].fd);
-					_log->log(LOG_DEBUG, SM_NAME, "close connection: " + int_to_string((int)i));
+					_log->log(LOG_DEBUG, SM_NAME,
+					          "close connection: " + int_to_string((int)i));
 					// Remove the client descriptor from _poll_fds
 					_poll_fds.erase(_poll_fds.begin() + (int)i);
-					_log->log(LOG_DEBUG, SM_NAME, "fd remove from _polls_fds vector: " + int_to_string((int)i));
+					_log->log(LOG_DEBUG, SM_NAME,
+					          "fd remove from _polls_fds vector: " + int_to_string((int)i));
 					--i;  // Adjust index to check the new descriptor in this position
 				}
 			}
@@ -236,6 +224,55 @@ void ServerManager::run() {
 	}
 }
 
+/**
+ * @brief Processes a request from a client identified by a poll file descriptor.
+ *
+ * This method checks if the given `poll_fd` corresponds to an existing client. If a match
+ * is found, it creates an `HttpRequestHandler` to handle the client's request and then
+ * removes the client from the polling list. If no match is found, a log entry is made.
+ *
+ * @details
+ * - The method iterates over the `_clients` vector to find the client corresponding to `poll_fd`.
+ *   If a match is found, the client is processed and removed from polling.
+ * - If the `poll_fd` no matching client is found, appropriate log messages are generated.
+ *
+ * @param poll_fd The file descriptor returned by the `poll()` system call.
+ * @return bool True if the client request was successfully processed, false otherwise.
+ */
+bool    ServerManager::process_request(int poll_fd) {
+	// TODO: for performance it will be a good idea use _client as map
+	// Ive found some issues with fd..
+	for (size_t c = 0; c < _clients.size(); ++c) {
+		if (poll_fd == _clients[c].get_fd().fd) {
+			HttpRequestHandler request_handler(_log, _clients[c]);
+			remove_client_from_poll(poll_fd);
+			_log->log(LOG_DEBUG, SM_NAME,
+			          "End of request process and client removed from poll.");
+			return (true);
+		}
+	}
+	_log->log(LOG_INFO, SM_NAME,
+	          "No client was found at _client storage.");
+	return (false);
+}
+
+/**
+ * @brief Accepts a new client connection and adds it to monitoring lists.
+ *
+ * This method accepts a new client connection from the provided `SocketHandler` (server),
+ * creates a `ClientData` object to track the client, and adds it to both the `_clients`
+ * vector and the `_poll_fds` vector for event monitoring.
+ *
+ * @details
+ * - The method calls `accept_connection()` on the server to get the client file descriptor (`client_fd`).
+ *   If the `client_fd` is invalid (negative), an error is logged, and the method returns.
+ * - The newly created `ClientData` object is added to the `_clients` and `_poll_fds` vectors
+ *   to monitor the client and handle future requests.
+ * - Logs are generated to track the acceptance of the new client, including the port and the `client_fd`.
+ *
+ * @param server A pointer to the `SocketHandler` instance that accepted the client.
+ * @return None
+ */
 void    ServerManager::new_client(SocketHandler *server) {
 	int client_fd = server->accept_connection();
 	if (client_fd < 0) {
@@ -249,7 +286,22 @@ void    ServerManager::new_client(SocketHandler *server) {
 	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
 }
 
-
+/**
+ * @brief Removes a client from the clients vector based on its file descriptor.
+ *
+ * This method searches for a client in the `_clients` vector whose file descriptor (`fd`)
+ * matches the provided `fd`. If the client is found, it is removed from the vector.
+ *
+ * @details
+ * - The method iterates through the `_clients` vector to find the matching client.
+ * - Once found, the client is removed from the vector, and a log message is generated
+ *   indicating the successful removal.
+ * - If the client is not found, an error log is generated to indicate that the client
+ *   could not be located in the vector.
+ *
+ * @param fd The file descriptor of the client to remove.
+ * @return None
+ */
 void    ServerManager::remove_client_from_poll(int fd) {
 	for (size_t c = 0; c < _clients.size(); ++c) {
 		if (_clients[c].get_fd().fd == fd) {
@@ -259,23 +311,6 @@ void    ServerManager::remove_client_from_poll(int fd) {
 		}
 	}
 	_log->log(LOG_ERROR, SM_NAME,
-	          "Client was not found at clients vector");
+	          "Client was not found at clients storage.");
 }
 
-/**
- * @brief Handles the acceptance of a new client and adds them to monitoring.
- *
- * This method processes a new client connection by adding the client file descriptor
- * and associated server information to the `_clients` vector for tracking. It also
- * adds the client's file descriptor to `_poll_fds` for event monitoring.
- *
- * @details
- * - The method first checks if the `client_fd` is valid. If the file descriptor is invalid,
- *   an error is logged, and the method returns.
- * - The `POLLIN` event is set for the client file descriptor to monitor incoming data.
- * - A log message is generated to indicate the successful acceptance of the new client.
- *
- * @param client_fd The file descriptor of the newly accepted client.
- * @param server A pointer to the `SocketHandler` instance associated with the client.
- * @return None
- */
