@@ -37,6 +37,9 @@ CC				=	c++
 RM				= 	rm -rf
 CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
+WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
+export WEBSERVER_PATH
 
 all: $(OBJS_DIR) $(NAME)
 
@@ -48,6 +51,9 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
+
+run: all
+	@./webserver
 
 clean:
 	$(RM) $(OBJS)

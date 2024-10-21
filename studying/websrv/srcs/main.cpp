@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/18 13:44:19 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 13:39:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 //#include "HttpResponseHandler.hpp"
 #include "ServerManager.hpp"
 //#include "SocketHandler.hpp"
+#include <cstdlib>
 
 void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "FROM: " << location << std::endl;
@@ -109,6 +110,7 @@ struct LocationTest {
 
 
 int main() {
+	std::string base_path = getenv("WEBSERVER_PATH");
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -130,25 +132,25 @@ int main() {
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
-	server1.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server1.server_root = base_path + "data";
 	server1.error_pages[404] = "/404.html";
 	server1.locations = locations;
 	server1.default_pages.push_back("index.html");
-	server1.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
-	server1.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
+	server1.ws_root = base_path + "data";
+	server1.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server1);
 
 	ServerConfig server2;
 	server2.port = 9090;
 	server2.server_name = "localhost";
-	server2.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data/9090";
+	server2.server_root =  base_path + "data/9090";
 	server2.error_pages[404] = "/404.html";
 	server2.locations = locations;
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");
-	server2.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
-	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
+	server2.ws_root = base_path + "data";
+	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
 	Logger logger(LOG_DEBUG, false);
 	try {
