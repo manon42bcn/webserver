@@ -41,7 +41,6 @@ WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 export WEBSERVER_PATH
 
-
 all: $(OBJS_DIR) $(NAME)
 
 $(NAME): $(OBJS)
@@ -52,6 +51,7 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
+
 
 run: re
 	@./webserver
