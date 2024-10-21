@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 15:16:16 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 13:15:55 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,15 @@
 
 #define RH_NAME "HttpRequestHandler"
 #define BUFFER_REQUEST  1024
-#define MAX_REQUEST     8192
+#define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
 #define URI_MAX         2048
+
+struct s_request {
+	std::string header;
+	bool		body_read;
+	size_t 		body_size;
+	std::string body;
+};
 
 enum e_rqs_state {
 	ST_INIT = 0,
@@ -58,6 +65,7 @@ class HttpRequestHandler {
 		e_http_sts              _http_status;
 		e_methods               _method;
 		int                     _fd;
+		size_t 					_max_request;
 
 		// Init request handler
 		std::string read_http_request();

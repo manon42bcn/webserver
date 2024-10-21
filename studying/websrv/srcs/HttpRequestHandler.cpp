@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 12:52:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 13:16:50 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	_access(ACCESS_FORBIDDEN),
 	_http_status(HTTP_I_AM_A_TEAPOT),
 	_method(METHOD_TO_PARSE),
-	_fd(_client_data.get_fd().fd)
-{
+	_fd(_client_data.get_fd().fd),
+	_max_request(MAX_REQUEST) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
@@ -85,7 +85,7 @@ std::string HttpRequestHandler::read_http_request() {
 	_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
 	while ((read_byte = (int)read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
 		size += read_byte;
-		if (size > MAX_REQUEST) {
+		if (size > _max_request) {
 			_http_status = HTTP_CONTENT_TOO_LARGE;
 			_log->log(LOG_WARNING, RH_NAME, "Request too large.");
 			return ("");
