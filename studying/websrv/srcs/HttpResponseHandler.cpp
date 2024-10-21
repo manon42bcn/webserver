@@ -6,16 +6,18 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:50:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 12:53:42 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponseHandler.hpp"
 
-HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, const LocationConfig *location,
+HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, e_access access,
+										 const LocationConfig *location,
                                          const Logger *log, e_methods method, s_path& path):
 		_fd(fd),
 		_http_status(status),
+		_access(access),
         _location(location),
         _log(log),
         _method(method),
@@ -65,7 +67,7 @@ bool HttpResponseHandler::handle_request() {
  */
 bool HttpResponseHandler::handle_get() {
 
-	if (_http_status != HTTP_OK) {
+	if (_http_status != HTTP_OK || _access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}

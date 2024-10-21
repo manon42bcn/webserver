@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 19:14:28 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 12:52:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,6 @@ void HttpRequestHandler::get_location_config(const std::string& path) {
 	if (result) {
 		_log->log(LOG_DEBUG, RH_NAME, "Location Found: " + saved_key);
 		_location = result;
-		_http_status = HTTP_CONTINUE;
 		_access = result->loc_access;
 	} else {
 		_log->log(LOG_ERROR, RH_NAME, "Location NOT found.");
@@ -247,6 +246,10 @@ void HttpRequestHandler::get_location_config(const std::string& path) {
  * @return s_path A struct containing the HTTP status code and the normalized path.
  */
 s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const {
+	if (_access < ACCESS_READ) {
+		_log->log(LOG_WARNING, RH_NAME, "Location have no access permissions.");
+	    return (s_path(HTTP_FORBIDDEN, true, ""));
+	}
 	std::string eval_path = _config.server_root+ _location->loc_root + requested_path;
 	_log->log(LOG_DEBUG, RH_NAME, "Normalize path to get proper file to serve.");
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
@@ -279,6 +282,8 @@ s_path HttpRequestHandler::normalize_request_path(const std::string& requested_p
  *
  * @details
  * - The method first normalizes the path using `normalize_request_path()`.
+ * - If there is a not a previous error _http_status (bad request, etc...), http is set using
+ *      normalized eval_path status.
  * - It creates an instance of `HttpResponseHandler` to handle the request based on the method, path, and state.
  * - If the internal `_state` is invalid, it calls `send_error_response()` to generate and send an error response.
  * - Otherwise, it delegates the request handling to `HttpResponseHandler::handle_request()`.
@@ -289,8 +294,9 @@ s_path HttpRequestHandler::normalize_request_path(const std::string& requested_p
 bool HttpRequestHandler::handle_request(const std::string& path)
 {
 	s_path eval_path = normalize_request_path(path);
-	_http_status = eval_path.code;
-	HttpResponseHandler response(_fd, _http_status, _location, _log, _method, eval_path);
+	if (_http_status == HTTP_ACCEPTED)
+		_http_status = eval_path.code;
+	HttpResponseHandler response(_fd, _http_status, _access, _location, _log, _method, eval_path);
 	if (!_state)
 		return (response.send_error_response());
 	return (response.handle_request());

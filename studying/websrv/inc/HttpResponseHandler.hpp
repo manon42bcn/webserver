@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 11:33:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/21 12:51:13 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@ class HttpResponseHandler {
 private:
 	int                     _fd;
 	e_http_sts              _http_status;
+	e_access				_access;
 	const LocationConfig*   _location;
 	const Logger*           _log;
 	e_methods               _method;
 	s_path&                 _resource;
 
 public:
-	HttpResponseHandler(int fd, e_http_sts status, const LocationConfig *location,
+	HttpResponseHandler(int fd, e_http_sts status, e_access access,
+						const LocationConfig *location,
 	                    const Logger *log, e_methods method, s_path& path);
 	bool handle_get();
 	std::string header(int code, size_t content_size, std::string mime);
