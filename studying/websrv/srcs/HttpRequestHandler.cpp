@@ -251,6 +251,15 @@ std::string HttpRequestHandler::parse_request_and_method(const std::string& requ
 	return (path);
 }
 
+// TODO: Implement the full function. The idea is use s_request structure
+// to save all the info related with the request, and validate header content
+// consistency wiht body (if is present), etc..
+void HttpRequestHandler::validate_parsed_request(s_request& request){
+	if (_http_status == HTTP_BAD_REQUEST)
+		return;
+
+}
+
 /**
  * @brief Searches for the location configuration based on the requested path.
  *

@@ -71,6 +71,7 @@ class HttpRequestHandler {
 		std::string read_http_request();
 		std::string parse_request_and_method(const std::string& request);
 	    s_request parse_request(const std::string& request);
+	    void validate_parsed_request(s_request& request);
 		std::string get_header_value(std::string header, std::string key);
 	    void get_location_config(const std::string& path);
 		bool handle_request(const std::string& path);
