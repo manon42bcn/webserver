@@ -6,12 +6,20 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/16 22:28:25 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 00:05:49 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 
+
+/**
+ * @brief Checks if the brackets in the given range are balanced.
+ *
+ * @param start Iterator to the start of the range.
+ * @param end Iterator to the end of the range.
+ * @return true if brackets are balanced, false otherwise.
+ */
 bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
 {
     int bracketCount = 0;
@@ -25,12 +33,25 @@ bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::s
     return bracketCount == 0;
 }
 
+/**
+ * @brief Checks if a file can be opened.
+ *
+ * @param filename The name of the file to check.
+ * @return true if the file can be opened, false otherwise.
+ */
 bool can_open_file(const char* filename)
 {
     std::ifstream file(filename);
     return file.is_open();
 }
 
+/**
+ * @brief Validates the command line arguments.
+ *
+ * @param argc Argument count.
+ * @param argv Argument vector.
+ * @return true if arguments are valid, false otherwise.
+ */
 bool check_args(int argc, char **argv)
 {
     if (argc < 2)
@@ -62,6 +83,12 @@ bool check_args(int argc, char **argv)
     return true;
 }
 
+/**
+ * @brief Validates a port number.
+ *
+ * @param port The port number as a string.
+ * @return The port number as an integer if valid, -1 otherwise.
+ */
 int check_port(std::string port)
 {
     int port_int = 0;
@@ -80,6 +107,12 @@ int check_port(std::string port)
     return port_int;
 }
 
+/**
+ * @brief Validates a server name.
+ *
+ * @param server_name The server name to validate.
+ * @return true if the server name is valid, false otherwise.
+ */
 bool check_server_name(std::string server_name)
 {
     if (server_name.empty())
@@ -95,6 +128,12 @@ bool check_server_name(std::string server_name)
     return true;
 }
 
+/**
+ * @brief Checks if an error code is valid.
+ *
+ * @param code The error code to check.
+ * @return true if the error code is valid, false otherwise.
+ */
 bool is_valid_error_code(int code) {
     return (code >= 400 && code < 600);
 }
@@ -136,6 +175,12 @@ bool check_error_page(std::string error_page)
     return false;
 }
 
+/**
+ * @brief Checks if a filename is valid.
+ *
+ * @param filename The filename to check.
+ * @return true if the filename
+ */
 bool is_valid_filename(const std::string& filename) {
     for (size_t i = 0; i < filename.length(); ++i) {
         if (!isalnum(filename[i]) && filename[i] != '.' && filename[i] != '-') {
@@ -146,6 +191,12 @@ bool is_valid_filename(const std::string& filename) {
     return true;
 }
 
+/**
+ * @brief Checks if the default page is valid.
+ *
+ * @param default_page The default page to check.
+ * @return true if the default page is valid, false otherwise.
+ */
 bool check_default_page(std::string default_page)
 {
     if (default_page.empty())

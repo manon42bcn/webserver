@@ -6,72 +6,12 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/21 23:23:42 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 00:06:16 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 #include <set>
-
-void print_location_config(LocationConfig location) {
-    std::cout << GRAY << "          Location root: " << location.loc_root << RESET << std::endl;
-    // std::cout << GRAY << "          Location access: " << location.loc_access << RESET << std::endl;
-    // std::cout << GRAY << "          Location default pages: " << location.loc_default_pages << RESET << std::endl;
-    for (std::vector<std::string>::iterator it = location.loc_default_pages.begin(); it != location.loc_default_pages.end(); it++) {
-        std::cout << GRAY << "          Location default page: " << *it << RESET << std::endl;
-    }
-    // std::cout << GRAY << "          Location error pages: " << location.loc_error_pages << RESET << std::endl;
-    for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++) {
-        std::cout << GRAY << "          Location error page: " << it->first << " -> " << it->second << RESET << std::endl;
-    }
-    // std::cout << GRAY << "          Location error mode: " << location.loc_error_mode << RESET << std::endl;
-    // std::cout << GRAY << "          Location allowed methods: " << location.loc_allowed_methods << RESET << std::endl;
-    // if (!location.loc_allowed_methods.empty())
-    // {
-    //     std::cout << GRAY << "          Location allowed methods: " << RESET;
-    //     for (std::vector<t_methods>::iterator it = location.loc_allowed_methods.begin(); it != location.loc_allowed_methods.end(); it++) {
-    //     if (*it == GET)
-    //         std::cout << GRAY<< "GET " << RESET;
-    //     else if (*it == POST)
-    //         std::cout << GRAY << "POST " << RESET;
-    //     else if (*it == DELETE)
-    //         std::cout << GRAY << "DELETE " << RESET;
-    //     else if (*it == PUT)
-    //         std::cout << GRAY << "PUT " << RESET;
-    //     else if (*it == HEAD)
-    //         std::cout << GRAY << "HEAD " << RESET;
-    //     else if (*it == OPTIONS)
-    //         std::cout << GRAY << "OPTIONS " << RESET;
-    //     else if (*it == TRACE)
-    //         std::cout << GRAY << "TRACE " << RESET;
-    //     else if (*it == CONNECT)
-    //         std ::cout << GRAY << "CONNECT " << RESET;
-    //     }
-    //     std::cout << std::endl;
-    // }
-}
-
-// std::vector<t_methods> split_allowed_methods(std::string allowed_methods)
-// {
-//     std::vector<t_methods> methods;
-//     std::istringstream iss(allowed_methods);
-//     std::string method;
-//     while (iss >> method) {
-//         if (method == "GET")
-//             methods.push_back(GET);
-//         else if (method == "POST")
-//             methods.push_back(POST);
-//         else if (method == "DELETE")
-//             methods.push_back(DELETE);
-//         else if (method == "PUT")
-//             methods.push_back(PUT);
-//         else if (method == "HEAD")
-//             methods.push_back(HEAD);
-//     }
-//     return methods;
-// }
-
-
 
 LocationConfig handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     std::map<std::string, std::string> locations;
@@ -356,6 +296,7 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines)
     // std::cout << "Servers found: " << servers.size() << std::endl;
     return servers;
 }
+
 
 std::vector<ServerConfig> parse_file(std::string path)
 {

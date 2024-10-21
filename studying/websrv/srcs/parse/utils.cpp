@@ -6,12 +6,19 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/21 23:13:21 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 00:00:39 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 
+/**
+ * @brief Cleans a line by trimming whitespace, removing a trailing semicolon,
+ * and returning an empty string if the line is empty or starts with '#'.
+ *
+ * @param line The line to be cleaned.
+ * @return A cleaned version of the line.
+ */
 std::string clean_line(std::string line)
 {
     std::string::size_type start_pos = line.find_first_not_of(" \t");
@@ -30,6 +37,13 @@ std::string clean_line(std::string line)
     return line;
 }
 
+/**
+ * @brief Extracts the value associated with a key in a given line.
+ *
+ * @param line The line containing the key-value pair.
+ * @param key The key to search for.
+ * @return The value associated with the key, or an empty string if not found.
+ */
 std::string get_value(std::string line, const std::string& key) {
     std::string::size_type keyPos = line.find(key);
     if (keyPos != std::string::npos) {
@@ -44,6 +58,14 @@ std::string get_value(std::string line, const std::string& key) {
     return "";
 }
 
+/**
+ * @brief Searches for an exact string in a line, ensuring it is not
+ * preceded or followed by alphanumeric characters.
+ *
+ * @param line The line to search within.
+ * @param str The string to search for.
+ * @return True if the exact string is found, false otherwise.
+ */
 bool find_exact_string(const std::string& line, const std::string& str) {
     size_t pos = line.find(str);
     if (pos != std::string::npos) {
@@ -58,69 +80,13 @@ bool find_exact_string(const std::string& line, const std::string& str) {
     return false;
 }
 
-std::vector<std::string> split_default_pages(std::string default_pages)
-{
-    std::vector<std::string> default_pages_vector;
-    std::istringstream iss(default_pages);
-    std::string page;
-    while (iss >> page)
-        default_pages_vector.push_back(page);
-    return default_pages_vector;
-}
-
-std::string delete_first_slash(std::string path)
-{
-    if (path[0] == '/')
-        path.erase(0, 1);
-    return path;
-}
-
-std::map<int, std::string> split_error_pages(std::string error_pages)
-{
-    std::map<int, std::string> error_pages_map;
-    std::istringstream iss(error_pages);
-    std::string token;
-    std::vector<int> error_codes;
-    std::string path;
-    std::string base_path = getenv("WEBSERVER_PATH");
-
-    while (iss >> token)
-    {
-        bool is_number = true;
-        for (std::string::iterator it = token.begin(); it != token.end(); ++it)
-        {
-            if (!std::isdigit(*it))
-            {
-                is_number = false;
-                break;
-            }
-        }
-        if (is_number)
-        {
-            error_codes.push_back(std::atoi(token.c_str()));
-        }
-        else
-        {
-            path = delete_first_slash(token);
-            break;
-        }
-    }
-
-    for (std::vector<int>::iterator it = error_codes.begin(); it != error_codes.end(); ++it)
-    {
-        std::string adjusted_path = path;
-        size_t x_pos = adjusted_path.find('x');
-        if (x_pos != std::string::npos) {
-            std::stringstream ss;
-            ss << (*it % 10);
-            adjusted_path.replace(x_pos, 1, ss.str());
-        }
-        error_pages_map[*it] = base_path + adjusted_path;
-    }
-
-    return error_pages_map;
-}
-
+/**
+ * @brief Reads a file line by line, cleaning each line and returning a vector
+ * of non-empty lines.
+ *
+ * @param path The path to the file.
+ * @return A vector of cleaned, non-empty lines.
+ */
 std::vector<std::string> get_raw_lines(std::string path)
 {
     std::ifstream file(path.c_str());
@@ -138,6 +104,12 @@ std::vector<std::string> get_raw_lines(std::string path)
     return rawLines;
 }
 
+/**
+ * @brief Removes curly braces '{' and '}' from a line and cleans it of whitespace.
+ *
+ * @param line The line to be cleaned.
+ * @return The cleaned line without braces.
+ */
 std::string delete_brackets_clean(std::string line)
 {
     std::string::size_type start_pos = line.find("{");
@@ -148,4 +120,17 @@ std::string delete_brackets_clean(std::string line)
         line.erase(end_pos, 1);
     line = clean_line(line);
     return line;
+}
+
+/**
+ * @brief Removes the first slash from a path if it exists.
+ *
+ * @param path The path to modify.
+ * @return The path without the leading slash.
+ */
+std::string delete_first_slash(std::string path)
+{
+    if (path[0] == '/')
+        path.erase(0, 1);
+    return path;
 }
