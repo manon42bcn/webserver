@@ -14,7 +14,7 @@ SERVER_DIR		=	websrv/
 
 .PHONY: all
 all:
-	@docker compose -f $(SERVER_DIR)docker-compose.yml up -d --build
+	@docker compose -f $(SERVER_DIR)docker-compose.yml up --build
 
 .PHONY: clean
 clean:

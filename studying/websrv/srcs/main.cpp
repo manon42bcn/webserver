@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/24 23:49:21 by mac               #+#    #+#             */
-/*   Updated: 2024/09/24 23:49:24 by mac              ###   ########.fr       */
+/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/21 13:39:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,120 +18,146 @@
 #include <fcntl.h>
 #include <cstring>
 #include <cstdlib>
+#include <poll.h>
+#include <sys/stat.h>
+#include <map>
 
-#define PORT1 8080
-#define PORT2 9090
-#define MAX_CLIENTS 100
-#define BUFFER_SIZE 1024
+#include "webserver.hpp"
+//#include "HttpRequestHandler.hpp"
+//#include "HttpResponseHandler.hpp"
+#include "ServerManager.hpp"
+//#include "SocketHandler.hpp"
+#include <cstdlib>
 
-int set_nonblocking(int fd) {
-	int flags = fcntl(fd, F_GETFL, 0);
-	if (flags == -1) return -1;
-	return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+void print_server_config(const ServerConfig& config, std::string location) {
+	std::cout << "FROM: " << location << std::endl;
+	std::cout << "Server Configuration:" << std::endl;
+	std::cout << "  Port: " << config.port << std::endl;
+	std::cout << "  Server Name: " << config.server_name << std::endl;
+	std::cout << "  Document Root: " << config.server_root << std::endl;
+
+	// Imprimir las páginas de error personalizadas
+	std::cout << "  Error Pages: " << std::endl;
+	for (std::map<int, std::string>::const_iterator it = config.error_pages.begin(); it != config.error_pages.end(); ++it) {
+		std::cout << "    Error " << it->first << ": " << it->second << std::endl;
+	}
+
+	// Imprimir las páginas por defecto
+	std::cout << "  Default Pages: " << std::endl;
+	for (std::vector<std::string>::const_iterator it = config.default_pages.begin(); it != config.default_pages.end(); ++it) {
+		std::cout << "    " << *it << std::endl;
+	}
+
+//	// Imprimir las rutas configuradas en 'locations'
+//	std::cout << "  Locations: " << std::endl;
+//	for (std::map<std::string, std::string>::const_iterator it = config.locations.begin(); it != config.locations.end(); ++it) {
+//		std::cout << "    Path: " << it->first << ", Directory: " << it->second << std::endl;
+//	}
+
+	std::cout << "------------------"  << std::endl;
 }
 
-int create_server_socket(int port) {
-	int server_fd;
-	struct sockaddr_in address;
-
-	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-		std::cerr << "Error al crear el socket." << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	int opt = 1;
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
-		std::cerr << "Error al configurar el socket." << std::endl;
-		close(server_fd);
-		exit(EXIT_FAILURE);
-	}
-
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(port);
-
-	if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-		std::cerr << "Error al hacer bind en el puerto " << port << std::endl;
-		close(server_fd);
-		exit(EXIT_FAILURE);
-	}
-
-	if (listen(server_fd, 3) < 0) {
-		std::cerr << "Error al escuchar en el puerto " << port << std::endl;
-		close(server_fd);
-		exit(EXIT_FAILURE);
-	}
-
-	std::cout << "Servidor escuchando en el puerto " << port << std::endl;
-	return server_fd;
+void print_vector_config(const std::vector<ServerConfig> &config, std::string location)
+{
+	for (size_t i = 0; i < config.size(); i++)
+		print_server_config(config[i], location);
+	exit(0);
 }
+
+bool is_dir(std::string ruta)
+{
+	struct stat s;
+
+	if (stat(ruta.c_str(), &s) == 0) {
+		return S_ISDIR(s.st_mode);
+	}
+	return false;
+}
+
+bool is_file(std::string ruta) {
+	struct stat s;
+
+	if (stat(ruta.c_str(), &s) == 0) {
+		return S_ISREG(s.st_mode);
+	}
+	return false;
+}
+
+/**
+ * @brief Converts an integer to a string.
+ *
+ * @param number The integer to convert.
+ * @return A string representation of the integer.
+ */
+std::string int_to_string(int number) {
+	std::stringstream ss;
+	ss << number;
+	return ss.str();
+}
+
+// WIP: Starts_with to compare a given path with each locations key...
+bool starts_with(const std::string& str, const std::string& prefix) {
+	if (str.size() < prefix.size()) {
+		return (false);
+	}
+	return (str.compare(0, prefix.size(), prefix) == 0);
+}
+
+struct LocationTest {
+	const std::string& saludo;
+	LocationTest(const std::string& s) : saludo(s){};
+};
+
 
 int main() {
-	int server_fd1 = create_server_socket(PORT1);
-	int server_fd2 = create_server_socket(PORT2);
+	std::string base_path = getenv("WEBSERVER_PATH");
+	std::vector<ServerConfig> configs;
+//	std::vector<LocationConfig> locations;
+	std::map<std::string, LocationConfig> locations;
 
-	set_nonblocking(server_fd1);
-	set_nonblocking(server_fd2);
+	// Datos de prueba
+	std::vector<std::string> default_pages;
+	default_pages.push_back("index.html");
+	default_pages.push_back("home.html");
+	std::map<int, std::string> error_pages;
+	error_pages[404] = "404.html";
 
-	struct pollfd poll_fds[MAX_CLIENTS];
-	int nfds = 2;
+	// Insertar datos en el vector
+	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
+	locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
 
-	poll_fds[0].fd = server_fd1;
-	poll_fds[0].events = POLLIN;
+	ServerConfig server1;
+	server1.port = 8080;
+	server1.server_name = "localhost";
+	server1.server_root = base_path + "data";
+	server1.error_pages[404] = "/404.html";
+	server1.locations = locations;
+	server1.default_pages.push_back("index.html");
+	server1.ws_root = base_path + "data";
+	server1.ws_errors_root = base_path + "default_error_pages";
+	configs.push_back(server1);
 
-	poll_fds[1].fd = server_fd2;
-	poll_fds[1].events = POLLIN;
-
-	char buffer[BUFFER_SIZE];
-
-	while (true) {
-		int poll_count = poll(poll_fds, nfds, -1);
-
-		if (poll_count < 0) {
-			std::cerr << "Error en poll()." << std::endl;
-			exit(EXIT_FAILURE);
-		}
-
-		for (int i = 0; i < nfds; ++i) {
-			if (poll_fds[i].revents & POLLIN) {
-				if (poll_fds[i].fd == server_fd1 || poll_fds[i].fd == server_fd2) {
-					int new_socket;
-					struct sockaddr_in address;
-					socklen_t addrlen = sizeof(address);
-
-					new_socket = accept(poll_fds[i].fd, (struct sockaddr *)&address, &addrlen);
-					if (new_socket < 0) {
-						std::cerr << "Error al aceptar conexión." << std::endl;
-						continue;
-					}
-
-					std::cout << "Nueva conexión aceptada en el puerto "
-					          << (poll_fds[i].fd == server_fd1 ? PORT1 : PORT2)
-					          << std::endl;
-
-					set_nonblocking(new_socket);
-					poll_fds[nfds].fd = new_socket;
-					poll_fds[nfds].events = POLLIN;
-					nfds++;
-				} else {
-					int valread = read(poll_fds[i].fd, buffer, BUFFER_SIZE);
-					if (valread == 0) {
-						std::cout << "Cliente desconectado." << std::endl;
-						close(poll_fds[i].fd);
-						poll_fds[i] = poll_fds[nfds - 1];
-						nfds--;
-					} else if (valread > 0) {
-						buffer[valread] = '\0';
-						std::cout << "Mensaje recibido: " << buffer << std::endl;
-						std::string response = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, world!";
-						send(poll_fds[i].fd, response.c_str(), response.length(), 0);
-					}
-				}
-			}
-		}
+	ServerConfig server2;
+	server2.port = 9090;
+	server2.server_name = "localhost";
+	server2.server_root =  base_path + "data/9090";
+	server2.error_pages[404] = "/404.html";
+	server2.locations = locations;
+	server2.default_pages.push_back("index.html");
+	server2.default_pages.push_back("home.html");
+	server2.default_pages.push_back("index.htm");
+	server2.ws_root = base_path + "data";
+	server2.ws_errors_root = base_path + "default_error_pages";
+	configs.push_back(server2);
+	Logger logger(LOG_DEBUG, false);
+	try {
+		ServerManager server_manager(configs, &logger);
+		server_manager.run();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
 	}
-
-	close(server_fd1);
-	close(server_fd2);
 	return 0;
 }
