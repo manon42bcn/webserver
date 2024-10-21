@@ -12,35 +12,64 @@
 
 #include "webserver.hpp"
 
-//void print_server_config(const ServerConfig& config) {
-//	std::cout << "Server Configuration:" << std::endl;
-//	std::cout << "  Port: " << config.port << std::endl;
-//	std::cout << "  Server Name: " << config.server_name << std::endl;
-//	std::cout << "  Document Root: " << config.server_root << std::endl;
-//
-//	// Imprimir las páginas de error personalizadas
-//	std::cout << "  Error Pages: " << std::endl;
-//	for (std::map<int, std::string>::const_iterator it = config.error_pages.begin(); it != config.error_pages.end(); ++it) {
-//		std::cout << "    Error " << it->first << ": " << it->second << std::endl;
-//	}
-//
-//	// Imprimir las páginas por defecto
-//	std::cout << "  Default Pages: " << std::endl;
-//	for (std::vector<std::string>::const_iterator it = config.default_pages.begin(); it != config.default_pages.end(); ++it) {
-//		std::cout << "    " << *it << std::endl;
-//	}
-//
-//	// Imprimir las rutas configuradas en 'locations'
-//	std::cout << "  Locations: " << std::endl;
-//	for (std::map<std::string, std::string>::const_iterator it = config.locations.begin(); it != config.locations.end(); ++it) {
-//		std::cout << "    Path: " << it->first << ", Directory: " << it->second << std::endl;
-//	}
-//
-//	std::cout << std::endl;
-//}
-//
-//void print_vector_config(std::vector<ServerConfig> &config)
-//{
-//	for (size_t i = 0; i < config.size(); i++)
-//		print_server_config(config[i]);
-//}
+/**
+ * @brief Validates if a string represents a valid `size_t` value.
+ *
+ * This function checks whether the provided string contains only numeric characters (digits),
+ * which would make it a valid positive integer for conversion to `size_t`.
+ *
+ * @details
+ * - The function first checks if the string is empty. An empty string is not considered valid.
+ * - It then iterates through each character of the string, verifying that all characters are digits.
+ * - If all characters are digits and the string is not empty, the function returns `true`.
+ * - Otherwise, it returns `false`.
+ *
+ * @param value The string to validate.
+ * @return bool True if the string contains only digits, false otherwise.
+ */
+bool is_valid_size_t(const std::string& value) {
+	if (value.empty())
+		return (false);
+
+	for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
+		if (!std::isdigit(*it))
+			return (false);
+	}
+
+	return (true);
+}
+
+/**
+ * @brief Converts a valid numeric string to `size_t`.
+ *
+ * This function converts a valid numeric string (verified externally) to a `size_t` value.
+ * It assumes that the input string contains only digits, as it should be validated by `is_valid_size_t()`.
+ *
+ * @param value The numeric string to convert to `size_t`.
+ * @return size_t The converted `size_t` value.
+ */
+size_t str_to_size_t(const std::string& value) {
+	size_t result;
+	std::stringstream ss(value);
+
+	if (ss >> result)
+		return (result);
+	return (0);
+}
+
+/**
+ * @brief Converts a string to lowercase.
+ *
+ * This function iterates through each character in the input string and converts it to lowercase
+ * using `std::tolower()`. It handles characters safely by casting them to `unsigned char`.
+ *
+ * @param input The input string to be converted to lowercase.
+ * @return std::string A new string where all characters are lowercase.
+ */
+std::string to_lowercase(const std::string& input) {
+	std::string result = input;
+	for (std::size_t i = 0; i < result.size(); ++i) {
+		result[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(result[i])));
+	}
+	return (result);
+}

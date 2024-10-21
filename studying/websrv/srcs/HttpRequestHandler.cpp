@@ -52,7 +52,12 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 		throw Logger::NoLoggerPointer();
 	}
 	std::string request = read_http_request();
+    s_request parsed_request = parse_request(request);
+	_log->log(LOG_ERROR, RH_NAME, parsed_request.header);
+	_log->log(LOG_ERROR, RH_NAME, parsed_request.body);
+	_log->log(LOG_ERROR, RH_NAME, int_to_string((int)parsed_request.body.length()));
 	std::string path = parse_request_and_method(request);
+	_log->log(LOG_ERROR, RH_NAME, get_header_value(parsed_request.header, "Content-Length"));
 	// Validate path using locations map and load its configuration as attribute.
 	get_location_config(path);
 	_log->log(LOG_DEBUG, RH_NAME, "Workflow to handle request. Start");
@@ -61,18 +66,86 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 }
 
 /**
- * @brief Reads an HTTP request from the client socket.
+ * @brief Parses an HTTP request into its header and body.
  *
- * This method reads data from the client socket, accumulating it in a string until
- * either the entire request is received or an error occurs. The method handles errors
- * such as a request that exceeds the maximum allowed size or a client closing the connection.
+ * This method splits the provided HTTP request string into a header and body, using the
+ * delimiter `\r\n\r\n` to identify where the header ends and the body begins. It also
+ * indicates whether the request includes a body and calculates its size.
  *
  * @details
- * - The method reads data in chunks using a buffer and appends it to the `request` string.
- * - If the request size exceeds `MAX_REQUEST`, the method logs a warning and returns an empty string.
- * - If an error occurs during reading, it logs the error and returns an empty string.
- * - The request is considered complete when the method detects the `\r\n\r\n` sequence,
- *   which marks the end of the HTTP headers.
+ * - The method first searches for the delimiter `\r\n\r\n` to identify the end of the header.
+ * - If the delimiter is found, the method extracts the header and body. If there is no body,
+ *   the `body_included` flag will be false, and `body_size` will be 0.
+ * - If the delimiter is not found, the method logs an error and sets the HTTP status to `HTTP_BAD_REQUEST`.
+ *
+ * @param request The full HTTP request as a string.
+ * @return s_request A structure containing the parsed header, body, body size, and a flag indicating if the body is included.
+ */
+s_request HttpRequestHandler::parse_request(const std::string &request) {
+	size_t header_end = request.find("\r\n\r\n");
+	s_request parsed_request;
+
+	parsed_request.body_included = false;
+	if (header_end != std::string::npos) {
+		parsed_request.header = request.substr(0, header_end);
+		header_end += 4;
+		if (header_end < request.length()) {
+			parsed_request.body = request.substr(header_end);
+			parsed_request.body_size = parsed_request.body.length();
+			parsed_request.body_included = true;
+		}
+	} else {
+		_log->log(LOG_ERROR, RH_NAME,
+		          "Request parsing error: No header-body delimiter found.");
+		_http_status = HTTP_BAD_REQUEST;
+	}
+	return (parsed_request);
+}
+
+/**
+ * @brief Extracts the value of a specific HTTP header field.
+ *
+ * This method searches the provided header string for a specific key and returns the associated
+ * value. The search is case-insensitive, and it assumes the format `key: value`.
+ *
+ * @details
+ * - The method first converts the key and the header string to lowercase for a case-insensitive search.
+ * - It searches for the key followed by `": "` to locate the start of the value.
+ * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
+ * - If the key is not found, the method returns an empty string.
+ *
+ * @param header The full HTTP header string.
+ * @param key The key for which the value is to be retrieved (e.g., "content-type").
+ * @return std::string The value associated with the key, or an empty string if the key is not found.
+ */
+std::string HttpRequestHandler::get_header_value(std::string header, std::string key) {
+	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + key);
+	header = to_lowercase(header);
+	size_t key_pos = header.find(key);
+	if (key_pos != std::string::npos) {
+		_log->log(LOG_DEBUG, RH_NAME, key + "Found at headers.");
+		key_pos += key.length() + 2;
+		size_t end_key = header.find("\n\n", key_pos);
+		return (header.substr(key_pos, end_key - key_pos));
+	}
+	_log->log(LOG_DEBUG, RH_NAME, key + "not founded at headers.");
+	return ("");
+}
+
+/**
+ * @brief Reads an HTTP request from the client socket.
+ *
+ * This method reads data from the client socket and accumulates it into a buffer, building
+ * the complete HTTP request. It handles errors such as oversized requests and client disconnections.
+ *
+ * @details
+ * - The method reads data in chunks from the socket, appending it to the `request` string.
+ * - If the total request size exceeds `_max_request`, the method sets the HTTP status to
+ *   `HTTP_CONTENT_TOO_LARGE` and logs a warning.
+ * - If an error occurs during reading, it logs the error, sets the HTTP status to
+ *   `HTTP_INTERNAL_SERVER_ERROR`, and returns an empty string.
+ * - If the client closes the connection without sending data, the method sets the HTTP status
+ *   to `HTTP_CLIENT_CLOSE_REQUEST` and logs the event.
  *
  * @return std::string The full HTTP request as a string, or an empty string if an error occurs.
  */
@@ -83,7 +156,7 @@ std::string HttpRequestHandler::read_http_request() {
 	size_t      size = 0;
 
 	_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-	while ((read_byte = (int)read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
+	while ((read_byte = read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
 		size += read_byte;
 		if (size > _max_request) {
 			_http_status = HTTP_CONTENT_TOO_LARGE;
@@ -92,12 +165,12 @@ std::string HttpRequestHandler::read_http_request() {
 		}
 		buffer[read_byte] = '\0';
 		request += buffer;
-		if (request.find("\r\n\r\n") != std::string::npos) {
+		if (read_byte < (int)(sizeof(buffer) - 1))
 			break;
-		}
 	}
 	if (read_byte < 0) {
-		_log->log(LOG_ERROR, RH_NAME, "Error Reading From Socket.");
+		_log->log(LOG_ERROR, RH_NAME, "Error Reading From Socket." + int_to_string(read_byte));
+		_log->log(LOG_ERROR, RH_NAME, request);
 		_http_status = HTTP_INTERNAL_SERVER_ERROR;
 		return ("");
 	}

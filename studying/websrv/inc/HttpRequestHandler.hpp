@@ -27,7 +27,7 @@
 
 struct s_request {
 	std::string header;
-	bool		body_read;
+	bool        body_included;
 	size_t 		body_size;
 	std::string body;
 };
@@ -60,7 +60,7 @@ class HttpRequestHandler {
 		const Logger*           _log;
 		ClientData&             _client_data;
 		const LocationConfig*   _location;
-		bool                     _state;
+		bool                    _state;
 		e_access                _access;
 		e_http_sts              _http_status;
 		e_methods               _method;
@@ -70,7 +70,9 @@ class HttpRequestHandler {
 		// Init request handler
 		std::string read_http_request();
 		std::string parse_request_and_method(const std::string& request);
-		void get_location_config(const std::string& path);
+	    s_request parse_request(const std::string& request);
+		std::string get_header_value(std::string header, std::string key);
+	    void get_location_config(const std::string& path);
 		bool handle_request(const std::string& path);
 		s_path normalize_request_path(const std::string& requested_path) const;
 

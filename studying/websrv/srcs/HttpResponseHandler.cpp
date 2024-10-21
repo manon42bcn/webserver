@@ -286,7 +286,6 @@ bool HttpResponseHandler::sender(const std::string& body, const std::string& pat
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
-
 		while (total_sent < to_send) {
 			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
 			if (sent_bytes == -1) {

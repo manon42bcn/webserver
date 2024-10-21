@@ -28,6 +28,10 @@ std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
 std::string replace_template(std::string content, const std::string& key, const std::string& value);
 
+bool is_valid_size_t(const std::string& value);
+size_t str_to_size_t(const std::string& value);
+std::string to_lowercase(const std::string& input);
+
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1
