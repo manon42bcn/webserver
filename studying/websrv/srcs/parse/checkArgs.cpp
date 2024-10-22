@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 00:05:49 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:49:50 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,32 @@ bool check_args(int argc, char **argv)
         std::cout << "Error: file \"" << argv[1] << "\" can't be opened." << std::endl;
         return false;
     }
+    else
+    {
+        std::ifstream file(argv[1]);
+        if (!file) {
+            std::cout << "Error: the file can't be opened." << std::endl;
+            return false;
+        }
+        file.seekg(0, std::ios::end);
+        if (file.tellg() == 0) {
+            std::cout << "Error: the file is empty." << std::endl;
+            return false;
+        }
+        file.seekg(0, std::ios::beg);
+    }
 
-    // Verificar que sean accesibles los ficheros
+    // Verificar que el archivo tenga la extensión .conf
+    std::string filename = argv[1];
+    if (filename.find_last_of(".") != std::string::npos) {
+        if (filename.substr(filename.find_last_of(".") + 1) != "conf") {
+            std::cout << "Error: the file must have the .conf extension" << std::endl;
+            return false;
+        }
+    } else {
+        std::cout << "Error: the file has no extension." << std::endl;
+        return false;
+    }
 
     return true;
 }

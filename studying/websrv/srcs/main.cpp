@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 23:31:47 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:57:12 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,18 +110,17 @@ struct LocationTest {
 
 
 int main(int argc, char *argv[]) {
-	std::string base_path = getenv("WEBSERVER_PATH");
+	Logger logger(LOG_DEBUG, false);
+	// std::string base_path = getenv("WEBSERVER_PATH");
 	if (!check_args(argc, argv))
         exit(1);
-    parse_file(argv[1]);
-
-	std::vector<ServerConfig> configs = parse_file("configs/test1.conf");
+	std::vector<ServerConfig> configs = parse_file(argv[1]);
 
 
 	
 	// std::vector<ServerConfig> configs;
-//	std::vector<LocationConfig> locations;
-	std::map<std::string, LocationConfig> locations;
+	// std::vector<LocationConfig> locations;
+	// std::map<std::string, LocationConfig> locations;
 
 	// Datos de prueba
 	// std::vector<std::string> default_pages;
@@ -160,7 +159,6 @@ int main(int argc, char *argv[]) {
 	// server2.ws_root = base_path + "data";
 	// server2.ws_errors_root = base_path + "default_error_pages";
 	// configs.push_back(server2);
-	Logger logger(LOG_DEBUG, false);
 	try {
 		ServerManager server_manager(configs, &logger);
 		server_manager.run();

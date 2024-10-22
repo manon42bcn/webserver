@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 00:06:16 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:43:04 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,10 +305,9 @@ std::vector<ServerConfig> parse_file(std::string path)
 
     _log->log(LOG_DEBUG, "parse_file", "Parsing file: " + path);
     std::vector<std::string> rawLines = get_raw_lines(path);
-    _log->log(LOG_DEBUG, "parse_file", "Raw lines: " + int_to_string(rawLines.size()));
+    _log->log(LOG_DEBUG, "parse_file", "Raw lines obtained: " + int_to_string(rawLines.size()));
     std::vector<ServerConfig> servers = parse_servers(rawLines);
-    _log->log(LOG_DEBUG, "parse_file", "Servers found: " + int_to_string(servers.size()));
-
+    _log->log(LOG_INFO, "parse_file", "Servers parsed: " + int_to_string(servers.size()));
     return servers;
 }
 
