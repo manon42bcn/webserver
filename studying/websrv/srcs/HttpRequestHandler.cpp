@@ -51,13 +51,9 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
-	std::string request = read_http_request();
-    s_request parsed_request = parse_request(request);
-	_log->log(LOG_ERROR, RH_NAME, parsed_request.header);
-	_log->log(LOG_ERROR, RH_NAME, parsed_request.body);
-	_log->log(LOG_ERROR, RH_NAME, int_to_string((int)parsed_request.body.length()));
-	std::string path = parse_request_and_method(request);
-	_log->log(LOG_ERROR, RH_NAME, get_header_value(parsed_request.header, "Content-Length"));
+	std::string request_data = read_http_request();
+    parse_request(request_data);
+	parse_method_and_path();
 	// Validate path using locations map and load its configuration as attribute.
 	get_location_config(path);
 	_log->log(LOG_DEBUG, RH_NAME, "Workflow to handle request. Start");
@@ -81,25 +77,20 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
  * @param request The full HTTP request as a string.
  * @return s_request A structure containing the parsed header, body, body size, and a flag indicating if the body is included.
  */
-s_request HttpRequestHandler::parse_request(const std::string &request) {
-	size_t header_end = request.find("\r\n\r\n");
-	s_request parsed_request;
+void HttpRequestHandler::parse_request(const std::string &request_data) {
+	size_t header_end = request_data.find("\r\n\r\n");
 
-	parsed_request.body_included = false;
 	if (header_end != std::string::npos) {
-		parsed_request.header = request.substr(0, header_end);
+		_request.header = request_data.substr(0, header_end);
 		header_end += 4;
-		if (header_end < request.length()) {
-			parsed_request.body = request.substr(header_end);
-			parsed_request.body_size = parsed_request.body.length();
-			parsed_request.body_included = true;
+		if (header_end < request_data.length()) {
+			_request.body = request_data.substr(header_end);
 		}
 	} else {
-		_log->log(LOG_ERROR, RH_NAME,
-		          "Request parsing error: No header-body delimiter found.");
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Request parsing error: No header-body delimiter found.");
 		_http_status = HTTP_BAD_REQUEST;
 	}
-	return (parsed_request);
 }
 
 /**
@@ -204,60 +195,88 @@ std::string HttpRequestHandler::read_http_request() {
  * @param request The raw HTTP request string received from the client.
  * @return std::string The extracted path, or an empty string if an error occurs.
  */
-std::string HttpRequestHandler::parse_request_and_method(const std::string& request) {
+void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
-
-	if (request.empty())
+	if (_request.empty())
 		return ("");
 
 	_log->log(LOG_DEBUG, RH_NAME, "Parsing Request to get path and method.");
-	size_t method_end = request.find(' ');
+	size_t method_end = _request.header.find(' ');
 	if (method_end != std::string::npos) {
-		method = request.substr(0, method_end);
-		if (method.empty() || (_method = method_string_to_enum(method)) == METHOD_ERR ) {
-			_log->log(LOG_ERROR, RH_NAME,
-			          "Error parsing request: Method is empty or not valid.");
+		method = _request.header.substr(0, method_end);
+		if (method.empty() || (_request.method = method_string_to_enum(method)) == METHOD_ERR ) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Error parsing request: Method is empty or not valid.");
 			_http_status = HTTP_BAD_REQUEST;
-			return ("");
+			return ;
 		}
 
-		size_t path_end = request.find(' ', method_end + 1);
+		size_t path_end = _request.header.find(' ', method_end + 1);
 		if (path_end != std::string::npos) {
-			path = request.substr(method_end + 1, path_end - method_end - 1);
-
+			path = _request.header.substr(method_end + 1, path_end - method_end - 1);
 			if (path.size() > URI_MAX) {
-				_log->log(LOG_ERROR, RH_NAME,
-				          "Request path too long.");
+				turn_off_sanity(HTTP_URI_TOO_LONG,
+				                "Request path too long.");
 				_http_status = HTTP_URI_TOO_LONG;
-				return ("");
+				return ;
 			}
 			_log->log(LOG_DEBUG, RH_NAME,
-			          "Request parsed.");
+			          "Request header fully parsed.");
+			_request.sanity = true;
+			_state = true;
+			return;
 		} else {
-			_log->log(LOG_ERROR, RH_NAME,
-			          "Error parsing request: missing path.");
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Error parsing request: missing path.");
 			_http_status = HTTP_BAD_REQUEST;
-			return ("");
+			return ;
 		}
 	} else {
-		_log->log(LOG_ERROR, RH_NAME,
-		          "Error parsing request: method malformed.");
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Error parsing request: method malformed.");
 		_method = METHOD_ERR;
 		_http_status = HTTP_BAD_REQUEST;
-		return ("");
+		return ;
 	}
-	_state = true;
-	return (path);
 }
 
 // TODO: Implement the full function. The idea is use s_request structure
 // to save all the info related with the request, and validate header content
 // consistency wiht body (if is present), etc..
-void HttpRequestHandler::validate_parsed_request(s_request& request){
-	if (_http_status == HTTP_BAD_REQUEST)
+void HttpRequestHandler::validate_request() {
+	if (_request.sanity == false)
 		return;
+	if (!_request.body.empty())
+	{
+		if (_request.method == METHOD_GET
+		    || _request.method == METHOD_HEAD
+		    || _request.method == METHOD_OPTIONS) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Body received with GET, HEAD or OPTION method.");
+		}
+		std::string content_lenght = get_header_value(_request.header, "content-length");
+		if (content_lenght.empty()) {
+			turn_off_sanity(HTTP_LENGTH_REQUIRED,
+			                "Content Lenght required when body is received.");
+		}
+		if (is_valid_size_t(content_lenght)) {
+			if (str_to_size_t(content_lenght) != _request.body.length())
+			{
+				turn_off_sanity(HTTP_BAD_REQUEST,
+				                "Content size header and body size does not match.");
+			}
+		} else {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Content size header non valid value.");
+		}
+	}
+}
 
+void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
+	_log->log(LOG_ERROR, RH_NAME, detail);
+	_request.sanity = false;
+	_request.status = status;
 }
 
 /**

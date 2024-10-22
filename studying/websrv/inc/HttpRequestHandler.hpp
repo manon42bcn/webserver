@@ -27,9 +27,11 @@
 
 struct s_request {
 	std::string header;
-	bool        body_included;
-	size_t 		body_size;
+	e_methods   method;
+	std::string path;
 	std::string body;
+	bool        sanity;
+	int         status;
 };
 
 enum e_rqs_state {
@@ -66,16 +68,18 @@ class HttpRequestHandler {
 		e_methods               _method;
 		int                     _fd;
 		size_t 					_max_request;
+	    s_request               _request;
 
 		// Init request handler
 		std::string read_http_request();
-		std::string parse_request_and_method(const std::string& request);
-	    s_request parse_request(const std::string& request);
-	    void validate_parsed_request(s_request& request);
+		void parse_method_and_path();
+	    void parse_request(const std::string& request_data);
+	    void validate_request();
 		std::string get_header_value(std::string header, std::string key);
 	    void get_location_config(const std::string& path);
 		bool handle_request(const std::string& path);
 		s_path normalize_request_path(const std::string& requested_path) const;
+	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
 		HttpRequestHandler(const Logger* log, ClientData& client_data);
