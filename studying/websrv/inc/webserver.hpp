@@ -28,6 +28,10 @@ std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
 std::string replace_template(std::string content, const std::string& key, const std::string& value);
 
+bool is_valid_size_t(const std::string& value);
+size_t str_to_size_t(const std::string& value);
+std::string to_lowercase(const std::string& input);
+
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1
@@ -39,6 +43,20 @@ typedef enum e_access {
 	ACCESS_READ = 2,
 	ACCESS_WRITE = 3
 } t_access;
+
+struct s_request {
+	std::string& body;
+	e_methods&   method;
+	std::string& path;
+	std::string& normalized_path;
+	e_access&    access;
+	bool&        sanity;
+	e_http_sts&  status;
+	s_request(std::string& b, e_methods& m, std::string& p,
+	          std::string& np, e_access& a, bool& s, e_http_sts& sts):
+			  body(b), method(m), path(p), normalized_path(np),
+              access(a), sanity(s), status(sts) {};
+};
 
 struct s_path {
 	e_http_sts  code;

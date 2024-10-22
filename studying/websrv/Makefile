@@ -52,11 +52,16 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
 
-run: all
+
+run: re
+	@./webserver
+
+local: all
 	@./webserver
 
 clean:
 	$(RM) $(OBJS)
+	$(RM) *.log
 
 fclean: clean
 	$(RM) $(NAME)
