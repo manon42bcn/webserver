@@ -111,6 +111,7 @@ struct LocationTest {
 
 int main() {
 	std::string base_path = getenv("WEBSERVER_PATH");
+//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -152,7 +153,7 @@ int main() {
 	server2.ws_root = base_path + "data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	Logger logger(LOG_DEBUG, false);
+	Logger logger(LOG_DEBUG, true);
 	try {
 		ServerManager server_manager(configs, &logger);
 		server_manager.run();

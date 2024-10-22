@@ -44,6 +44,20 @@ typedef enum e_access {
 	ACCESS_WRITE = 3
 } t_access;
 
+struct s_request {
+	std::string& body;
+	e_methods&   method;
+	std::string& path;
+	std::string& normalized_path;
+	e_access&    access;
+	bool&        sanity;
+	e_http_sts&  status;
+	s_request(std::string& b, e_methods& m, std::string& p,
+	          std::string& np, e_access& a, bool& s, e_http_sts& sts):
+			  body(b), method(m), path(p), normalized_path(np),
+              access(a), sanity(s), status(sts) {};
+};
+
 struct s_path {
 	e_http_sts  code;
 	bool        found;

@@ -25,14 +25,7 @@
 #define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
 #define URI_MAX         2048
 
-struct s_request {
-	std::string header;
-	e_methods   method;
-	std::string path;
-	std::string body;
-	bool        sanity;
-	int         status;
-};
+
 
 enum e_rqs_state {
 	ST_INIT = 0,
@@ -58,17 +51,23 @@ typedef enum s_is_file {
 // TODO: state and access are wip.. just explore differents ways to use them
 class HttpRequestHandler {
 	private:
+	    typedef void (HttpRequestHandler::*validate_step)( );
 		const ServerConfig&     _config;
 		const Logger*           _log;
 		ClientData&             _client_data;
 		const LocationConfig*   _location;
-		bool                    _state;
-		e_access                _access;
-		e_http_sts              _http_status;
-		e_methods               _method;
 		int                     _fd;
 		size_t 					_max_request;
-	    s_request               _request;
+//
+//	    request
+	    std::string             _header;
+	    std::string             _body;
+	    e_methods               _method;
+	    std::string             _path;
+	    std::string             _normalized_path;
+	    e_access                _access;
+	    bool                    _sanity;
+	    e_http_sts              _status;
 
 		// Init request handler
 		std::string read_http_request();
@@ -76,9 +75,9 @@ class HttpRequestHandler {
 	    void parse_request(const std::string& request_data);
 	    void validate_request();
 		std::string get_header_value(std::string header, std::string key);
-	    void get_location_config(const std::string& path);
-		bool handle_request(const std::string& path);
-		s_path normalize_request_path(const std::string& requested_path) const;
+	    void get_location_config();
+		void handle_request();
+		void normalize_request_path();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:

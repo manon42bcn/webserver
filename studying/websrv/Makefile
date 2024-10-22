@@ -61,6 +61,7 @@ local: all
 
 clean:
 	$(RM) $(OBJS)
+	$(RM) *.log
 
 fclean: clean
 	$(RM) $(NAME)

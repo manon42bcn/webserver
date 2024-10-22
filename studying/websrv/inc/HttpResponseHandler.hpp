@@ -35,20 +35,19 @@ class HttpResponseHandler {
 private:
 	int                     _fd;
 	e_http_sts              _http_status;
-	e_access				_access;
 	const LocationConfig*   _location;
 	const Logger*           _log;
-	e_methods               _method;
-	s_path&                 _resource;
+	s_request&              _request;
 
 public:
-	HttpResponseHandler(int fd, e_http_sts status, e_access access,
-						const LocationConfig *location,
-	                    const Logger *log, e_methods method, s_path& path);
+	HttpResponseHandler(const LocationConfig *location,
+	                    const Logger *log,
+	                    s_request& request,
+	                    int fd);
 	bool handle_get();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-	s_content get_file_content(const std::string& path);
+	s_content get_file_content(std::string& path);
 	bool send_error_response();
 	bool sender(const std::string& body, const std::string& path);
 	bool handle_request();

@@ -12,16 +12,15 @@
 
 #include "HttpResponseHandler.hpp"
 
-HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, e_access access,
-										 const LocationConfig *location,
-                                         const Logger *log, e_methods method, s_path& path):
+HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
+                                         const Logger *log,
+                                         s_request& request,
+                                         int fd):
 		_fd(fd),
-		_http_status(status),
-		_access(access),
+		_http_status(request.status),
         _location(location),
         _log(log),
-        _method(method),
-		_resource(path) {
+		_request(request) {
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
 	_log->log(LOG_DEBUG, RSP_NAME, "HttpResponseHandler init.");
@@ -29,7 +28,7 @@ HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, e_access acc
 
 bool HttpResponseHandler::handle_request() {
 
-	switch ((int)_method) {
+	switch (_request.method) {
 		case METHOD_GET:
 			_log->log(LOG_DEBUG, RSP_NAME, "Handle GET request.");
 			return (handle_get());
@@ -67,15 +66,17 @@ bool HttpResponseHandler::handle_request() {
  */
 bool HttpResponseHandler::handle_get() {
 
-	if (_http_status != HTTP_OK || _access < ACCESS_READ) {
+	if (!_request.sanity)
+		send_error_response();
+	if (_http_status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}
-	s_content content = get_file_content(_resource.path);
+	s_content content = get_file_content(_request.normalized_path);
 	if (content.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
-		return (sender(content.content, _resource.path));
+		return (sender(content.content, _request.normalized_path));
 	} else {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Get will send a error due to content load fails.");
@@ -100,7 +101,7 @@ bool HttpResponseHandler::handle_get() {
  * @param path The file system path to the file.
  * @return s_content A structure containing a success flag and the file content.
  */
-s_content HttpResponseHandler::get_file_content(const std::string& path) {
+s_content HttpResponseHandler::get_file_content(std::string& path) {
 	std::string content;
 	// Check if path is empty. To avoid further unnecessary errors
 	if (path.empty())
