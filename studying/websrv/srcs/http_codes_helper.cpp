@@ -6,7 +6,7 @@
 /*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 23:33:40 by mac               #+#    #+#             */
-/*   Updated: 2024/10/17 15:24:56 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 22:37:05 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "HttpRequestHandler.hpp"
 #include <map>
 #include <iostream>
+#include <set>
 // Método temporal, para facilitar el debug únicamente
 std::string method_enum_to_string(int method)
 {
@@ -153,16 +154,39 @@ e_methods method_string_to_enum(const std::string& method)
  */
 std::map<std::string, std::string> create_mime_types() {
 	std::map<std::string, std::string> mime_types;
+	// Text and Web
 	mime_types[".html"] = "text/html";
 	mime_types[".css"] = "text/css";
 	mime_types[".js"] = "application/javascript";
+	mime_types[".json"] = "application/json";
+	mime_types[".txt"] = "text/plain";
+	// Images
 	mime_types[".jpg"] = "image/jpeg";
 	mime_types[".jpeg"] = "image/jpeg";
 	mime_types[".png"] = "image/png";
 	mime_types[".gif"] = "image/gif";
-	mime_types[".json"] = "application/json";
-	mime_types[".txt"] = "text/plain";
 	mime_types[".webp"] = "image/webp";
+	mime_types[".svg"] = "image/svg+xml";
+	// Audio
+	mime_types[".mp3"] = "audio/mpeg";
+	mime_types[".wav"] = "audio/wav";
+	mime_types[".ogg"] = "audio/ogg";
+	// Video
+	mime_types[".mp4"] = "video/mp4";
+	mime_types[".ogg"] = "video/ogg";  // Ogg can be both audio and video
+	// Documents
+	mime_types[".pdf"] = "application/pdf";
+	mime_types[".doc"] = "application/msword";
+	mime_types[".docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+	mime_types[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	// Fonts
+	mime_types[".ttf"] = "font/ttf";
+	mime_types[".woff"] = "font/woff";
+	mime_types[".woff2"] = "font/woff2";
+	// Archives
+	mime_types[".zip"] = "application/zip";
+	mime_types[".rar"] = "application/vnd.rar";
+	mime_types[".gz"] = "application/gzip";
 	return (mime_types);
 }
 
@@ -192,6 +216,54 @@ std::string get_mime_type(const std::string& path) {
 		}
 	}
 	return ("text/plain");
+}
+
+/**
+ * @brief Validate the MIME type based on the file extension.
+ *
+ * This method looks up the MIME type corresponding to the file extension in the provided path.
+ * If the file extension is recognized, true is returned. If the extension is not recognized,
+ * false
+ *
+ * @details
+ * - The method extracts the file extension by searching for the last '.' character in the path.
+ *
+ * @param path The file system path to the file.
+ * @return bool true if a MIME type is recognized, false otherwise.
+ */
+bool valid_mime_type(const std::string& path) {
+	static const std::map<std::string, std::string> mime_types = create_mime_types();
+
+	size_t dot_pos = path.find_last_of('.');
+	if (dot_pos != std::string::npos) {
+		std::string extension = path.substr(dot_pos);
+		if (mime_types.find(extension) != mime_types.end()) {
+			return (true);
+		}
+	}
+	return (false);
+}
+
+bool black_list_extension(const std::string& path) {
+	static std::set<std::string> disallowed_extensions;
+
+	if (disallowed_extensions.empty()) {
+		disallowed_extensions.insert(".exe");
+		disallowed_extensions.insert(".bat");
+		disallowed_extensions.insert(".sh");
+		disallowed_extensions.insert(".php");
+		disallowed_extensions.insert(".pl");
+		disallowed_extensions.insert(".py");
+	}
+
+	size_t dot_pos = path.find_last_of('.');
+	if (dot_pos != std::string::npos) {
+		std::string extension = path.substr(dot_pos);
+		if (disallowed_extensions.find(extension) != disallowed_extensions.end()) {
+			return (true);
+		}
+	}
+	return (false);
 }
 
 /**

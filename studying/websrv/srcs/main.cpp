@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 13:39:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 22:38:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int main() {
 	server2.ws_root = base_path + "data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	Logger logger(LOG_DEBUG, true);
+	Logger logger(LOG_DEBUG, false);
 	try {
 		ServerManager server_manager(configs, &logger);
 		server_manager.run();

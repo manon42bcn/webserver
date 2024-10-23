@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 13:16:50 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 22:37:12 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,7 @@ void HttpRequestHandler::validate_request() {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Content size header non valid value.");
 		}
+		_content_type = get_header_value(_header, "content-type");
 	} else {
 		if (_method == METHOD_POST || _method == METHOD_PUT || _method == METHOD_PATCH) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
@@ -337,7 +338,17 @@ void HttpRequestHandler::get_location_config() {
  */
 void HttpRequestHandler::normalize_request_path() {
 	std::string eval_path = _config.server_root + _location->loc_root + _path;
-	_log->log(LOG_DEBUG, RH_NAME, "Normalize path to get proper file to serve.");
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Normalize path to get proper file to serve.");
+
+	if (_method == METHOD_POST) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Path build to a POST request");
+		_normalized_path = eval_path;
+		validate_post_path();
+		return ;
+	}
+
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
 		_normalized_path = eval_path;
@@ -361,6 +372,29 @@ void HttpRequestHandler::normalize_request_path() {
 	}
 	turn_off_sanity(HTTP_NOT_FOUND,
 	                "Requested path not found " + _path);
+}
+
+void HttpRequestHandler::validate_post_path() {
+	if (_content_type.empty()) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+						"Content-Type mandatory in POST Requests.");
+		return ;
+	}
+	if (!valid_mime_type(_path)) {
+		turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
+						"MIME type not supported.");
+		return ;
+	}
+	if (black_list_extension(_path)) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"Extension file is part of black list.");
+		return ;
+	}
+	std::string path_type = get_mime_type(_path);
+	if (path_type != _content_type) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+						"Content-Type header does not match with path POST request.");
+	}
 }
 
 /**

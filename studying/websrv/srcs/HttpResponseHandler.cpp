@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 12:53:42 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 21:38:39 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,3 +304,73 @@ void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail)
 	_request.sanity = false;
 	_request.status = status;
 }
+
+
+//bool HttpResponseHandler::handle_post() {
+//	// Validar estado HTTP y acceso
+//	if (_http_status != HTTP_OK || _request.access < ACCESS_WRITE) {
+//		send_error_response();
+//		return false;
+//	}
+//
+//	// Obtener Content-Length para saber el tamaño del body
+//	size_t content_length = get_content_length();
+//	if (content_length == 0) {
+//		_log->log(LOG_ERROR, RSP_NAME, "No Content-Length header provided.");
+//		return send_error_response(411);  // 411 Length Required
+//	}
+//
+//	// Leer el contenido del body basado en el Content-Length
+//	std::string body = read_request_body(content_length);
+//
+//	// Generar un nombre de archivo o procesar los datos según la lógica del servidor
+//	std::string full_path = _config.server_root + generate_filename_based_on_path(_request.path);
+//
+//	// Guardar el contenido del body en un archivo
+//	std::ofstream file(full_path.c_str());
+//	if (!file.is_open()) {
+//		_log->log(LOG_ERROR, RSP_NAME, "Unable to open file to write POST data.");
+//		return send_error_response(500);  // 500 Internal Server Error
+//	}
+//	file << body;
+//	file.close();
+//
+//	// Preparar la respuesta HTTP (por ejemplo, 201 Created)
+//	std::string response = response_header(201, 0, "text/plain");
+//	response += "POST data received and saved.\n";
+//	send(_fd, response.c_str(), response.length(), 0);
+//
+//	return true;
+//}
+
+//bool HttpResponseHandler::handle_post() {
+//	// Verificar que la solicitud ha sido validada correctamente
+//	if (!_request.sanity) {
+//		send_error_response(_request.status);
+//		return false;
+//	}
+//
+//	// Ya se validó que hay un body presente, ahora manejar el POST
+//	std::string full_path = _request.normalized_path;
+//
+//	// Guardar el contenido del body en un archivo
+//	std::ofstream file(full_path.c_str());
+//	if (!file.is_open()) {
+//		_log->log(LOG_ERROR, RSP_NAME, "Unable to open file to write POST data.");
+//		return send_error_response(500);  // Internal Server Error
+//	}
+//
+//	file << _request.body;
+//	file.close();
+//
+//	// Enviar respuesta exitosa (201 Created)
+//	std::string response = response_header(201, 0, "text/plain");
+//	response += "POST data received and saved.\n";
+//	send(_fd, response.c_str(), response.length(), 0);
+//
+//	return true;
+//}
+
+
+
+

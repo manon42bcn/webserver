@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 15:25:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 22:36:58 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ e_methods method_string_to_enum(const std::string& method);
 std::string http_status_description(e_http_sts code);
 std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
+bool valid_mime_type(const std::string& path);
 std::string replace_template(std::string content, const std::string& key, const std::string& value);
-
+bool black_list_extension(const std::string& path);
 bool is_valid_size_t(const std::string& value);
 size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);

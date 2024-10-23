@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 13:15:55 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/23 22:06:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ class HttpRequestHandler {
 //	    request
 	    std::string             _header;
 	    std::string             _body;
+		std::string 			_content_type;
 	    e_methods               _method;
 	    std::string             _path;
 	    std::string             _normalized_path;
@@ -78,6 +79,7 @@ class HttpRequestHandler {
 	    void get_location_config();
 		void handle_request();
 		void normalize_request_path();
+		void validate_post_path();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
