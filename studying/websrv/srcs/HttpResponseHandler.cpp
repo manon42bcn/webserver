@@ -41,8 +41,7 @@ bool HttpResponseHandler::handle_request() {
 //			handle_delete(path);
 //			break;
 		default:
-			_log->log(LOG_ERROR, RSP_NAME, "Method not allowed.");
-			_http_status = HTTP_NOT_IMPLEMENTED;
+			turn_off_sanity(HTTP_NOT_IMPLEMENTED, "Method not allowed.");
 			send_error_response();
 	}
 	return (true);
@@ -65,9 +64,6 @@ bool HttpResponseHandler::handle_request() {
  * @return bool True if the file content was sent successfully, false if an error response was sent.
  */
 bool HttpResponseHandler::handle_get() {
-
-	if (!_request.sanity)
-		send_error_response();
 	if (_http_status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
@@ -301,4 +297,10 @@ bool HttpResponseHandler::sender(const std::string& body, const std::string& pat
 		_log->log(LOG_ERROR, RSP_NAME, e.what());
 		return (false);
 	}
+}
+
+void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
+	_log->log(LOG_ERROR, RSP_NAME, detail);
+	_request.sanity = false;
+	_request.status = status;
 }

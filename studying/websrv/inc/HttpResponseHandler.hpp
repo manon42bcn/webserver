@@ -37,6 +37,7 @@ private:
 	e_http_sts              _http_status;
 	const LocationConfig*   _location;
 	const Logger*           _log;
+	std::string             _content;
 	s_request&              _request;
 
 public:
@@ -51,6 +52,7 @@ public:
 	bool send_error_response();
 	bool sender(const std::string& body, const std::string& path);
 	bool handle_request();
+	void turn_off_sanity(e_http_sts status, std::string detail);
 };
 
 #endif
