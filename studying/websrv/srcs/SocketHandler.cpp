@@ -57,8 +57,11 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger*
 	server_addr.sin_port = htons(port);
 
 	_log->log(LOG_DEBUG, _module, "Linking Socket.");
+	// SECOND ERROR IN 42 IS here with "Error linking Socket."
 	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
-		_log->fatal_log(_module, "Error linking Socket.");
+		//_log->fatal_log(_module, "Error linking Socket.");
+	    _log->fatal_log(_module, "Error linking Socket: " + std::string(strerror(errno)));
+
 
 	_log->log(LOG_DEBUG, _module, "Socket to listening mode.");
 	if (listen(_socket_fd, 10) < 0)

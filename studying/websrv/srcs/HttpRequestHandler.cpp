@@ -249,6 +249,15 @@ void HttpRequestHandler::get_location_config(const std::string& path) {
 s_path HttpRequestHandler::normalize_request_path(const std::string& requested_path) const {
 	std::string eval_path = _config.server_root+ _location->loc_root + requested_path;
 	_log->log(LOG_DEBUG, RH_NAME, "Normalize path to get proper file to serve.");
+	_log->log(LOG_DEBUG, RH_NAME, "Eval path: " + eval_path);
+	_log->log(LOG_DEBUG, RH_NAME, "_config.server_root: " + _config.server_root);
+	_log->log(LOG_DEBUG, RH_NAME, "_location->loc_root: " + _location->loc_root);
+
+	// FIRST ERROR IN 42 IS here, with _http_status value 404, and path "/"
+	// /home/vaguilar/Desktop/webserver/studying/websrvdata
+	// EN LUGAR DE
+	// /home/vaguilar/Desktop/webserver/studying/websrv/data
+	eval_path = "/home/vaguilar/Desktop/webserver/studying/websrv/data";
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
 		return (s_path(HTTP_OK, true, eval_path));

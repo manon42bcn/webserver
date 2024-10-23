@@ -194,13 +194,14 @@ void print_raw_lines(std::vector<std::string> rawLines);
 void print_server_config(ServerConfig server);
 bool find_exact_string(const std::string& line, const std::string& str);
 std::vector<std::string> split_default_pages(std::string default_pages);
-std::map<int, std::string> split_error_pages(std::string error_pages);
+std::map<int, std::string> split_error_pages(std::string error_pages, const Logger* _log);
 bool check_brackets(std::vector<std::string>::iterator start);
 std::vector<std::string> get_raw_lines(std::string file);
-std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines);
+std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, const Logger* _log);
 bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
 std::string delete_brackets_clean(std::string line);
 std::string delete_first_slash(std::string path);
+std::string get_server_root();
 
 
 # endif

@@ -19,14 +19,22 @@
  * @param error_pages The string containing error pages.
  * @return A map of error codes to file paths.
  */
-std::map<int, std::string> split_error_pages(std::string error_pages)
+std::map<int, std::string> split_error_pages(std::string error_pages, const Logger* _log)
 {
+    _log->log(LOG_DEBUG, "split_error_pages", "Entering split_error_pages");
     std::map<int, std::string> error_pages_map;
+    _log->log(LOG_DEBUG, "split_error_pages", "Error pages map created");
     std::istringstream iss(error_pages);
+    _log->log(LOG_DEBUG, "split_error_pages", "Iss created");
     std::string token;
+    _log->log(LOG_DEBUG, "split_error_pages", "Token created");
     std::vector<int> error_codes;
+    _log->log(LOG_DEBUG, "split_error_pages", "Error codes vector created");
     std::string path;
-    std::string base_path = getenv("WEBSERVER_PATH");
+    _log->log(LOG_DEBUG, "split_error_pages", "Path created");
+    std::string base_path = get_server_root();
+
+    _log->log(LOG_DEBUG, "split_error_pages", "Base path: " + base_path);
 
     while (iss >> token)
     {

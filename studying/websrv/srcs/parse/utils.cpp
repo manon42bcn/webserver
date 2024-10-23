@@ -134,3 +134,14 @@ std::string delete_first_slash(std::string path)
         path.erase(0, 1);
     return path;
 }
+
+
+std::string get_server_root()
+{
+    char buffer[PATH_MAX];
+    if (getcwd(buffer, sizeof(buffer)) != NULL) {
+        return std::string(buffer);
+    }
+    return "";
+}
+
