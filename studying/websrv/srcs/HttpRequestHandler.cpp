@@ -67,6 +67,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	}
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Request Validation Process. End.");
+	_client_data.say_hello("Saludando desde dentro");
 	handle_request();
 }
 
@@ -164,8 +165,8 @@ std::string HttpRequestHandler::read_http_request() {
 		}
 		buffer[read_byte] = '\0';
 		request += buffer;
-		//if (read_byte < (int)(sizeof(buffer) - 1))
-		//	break;
+//		if (read_byte < (int)(sizeof(buffer) - 1))
+//			break;
 	}
 	if (read_byte < 0 && size == 0) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,

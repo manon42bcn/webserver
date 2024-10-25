@@ -242,13 +242,23 @@ void ServerManager::run() {
 bool    ServerManager::process_request(int poll_fd) {
 	// TODO: for performance it will be a good idea use _client as map
 	// Ive found some issues with fd..
-	for (size_t c = 0; c < _clients.size(); ++c) {
-		if (poll_fd == _clients[c].get_fd().fd) {
-			HttpRequestHandler request_handler(_log, _clients[c]);
-			remove_client_from_poll(poll_fd);
-			_log->log(LOG_DEBUG, SM_NAME,
-			          "End of request process and client removed from poll.");
-			return (true);
+	std::map<int, ClientData>::iterator it = _clients_map.find(poll_fd);
+	if (it != _clients_map.end()) {
+		HttpRequestHandler request_handler(_log, it->second);
+		remove_client_from_poll(poll_fd);
+		_log->log(LOG_DEBUG, SM_NAME,
+		          "End of request process and client removed from poll.");
+		return (true);
+		_log->log(LOG_ERROR, SM_NAME, "From map " + int_to_string(it->second.get_fd().fd));
+	} else {
+		for (size_t c = 0; c < _clients.size(); ++c) {
+			if (poll_fd == _clients[c].get_fd().fd) {
+				HttpRequestHandler request_handler(_log, _clients[c]);
+				remove_client_from_poll(poll_fd);
+				_log->log(LOG_DEBUG, SM_NAME,
+				          "End of request process and client removed from poll.");
+				return (true);
+			}
 		}
 	}
 	_log->log(LOG_INFO, SM_NAME,
@@ -280,6 +290,7 @@ void    ServerManager::new_client(SocketHandler *server) {
 		return;
 	}
 	ClientData new_client(server, _log, client_fd);
+	_clients_map.insert(std::make_pair(new_client.get_fd().fd, new_client));
 	_clients.push_back(new_client);
 	_poll_fds.push_back(new_client.get_fd());
 	_log->log(LOG_DEBUG, SM_NAME,
@@ -303,6 +314,17 @@ void    ServerManager::new_client(SocketHandler *server) {
  * @return None
  */
 void    ServerManager::remove_client_from_poll(int fd) {
+	std::map<int, ClientData>::iterator it = _clients_map.find(fd);
+	if (it != _clients_map.end()) {
+		_log->log(LOG_DEBUG, SM_NAME, it->second.saludo());
+		_clients_map.erase(it);
+		_log->log(LOG_DEBUG, SM_NAME,
+		          "End of request process and client removed from poll.");
+		return ;
+	} else {
+		return ;
+	}
+
 	for (size_t c = 0; c < _clients.size(); ++c) {
 		if (_clients[c].get_fd().fd == fd) {
 			_clients.erase(_clients.begin() + (int)c);

@@ -32,6 +32,7 @@ class ServerManager {
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::vector<SocketHandler*>     _servers;
 	    std::vector<ClientData> 	    _clients;
+	    std::map<int, ClientData>       _clients_map;
 		const Logger*			        _log;
 public:
 		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);

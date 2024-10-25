@@ -22,9 +22,22 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	}
 	_client_fd.fd = fd;
 	_client_fd.events = POLLIN;
+	_timestamp = std::time(NULL);
 }
 
 ClientData::~ClientData() {}
+
+void ClientData::say_hello(std::string saludo) {
+	_saludos = saludo;
+}
+
+std::string& ClientData::saludo(){
+        return (this->_saludos);
+}
+
+std::time_t& ClientData::timer(){
+	return (this->_timestamp);
+}
 
 ClientData& ClientData::operator=(const ClientData& orig)
 {

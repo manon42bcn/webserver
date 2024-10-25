@@ -17,6 +17,7 @@
 #include "Logger.hpp"
 #include <poll.h>
 #include <unistd.h>
+#include <ctime>
 
 # define CD_MODULE "ClientData"
 
@@ -26,6 +27,8 @@ class ClientData {
 		const Logger*           _log;
 	    bool                    _active;
 		struct pollfd           _client_fd;
+	    std::time_t             _timestamp;
+	    std::string             _saludos;
 
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
@@ -35,6 +38,9 @@ class ClientData {
 	    struct pollfd& get_fd();
 	    void deactivate();
 		void close_fd();
+	    void say_hello(std::string saludo);
+	    std::string& saludo();
+	    std::time_t& timer();
 };
 
 #endif
