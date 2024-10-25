@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 12:51:13 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 07:25:06 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ public:
 	                    s_request& request,
 	                    int fd);
 	bool handle_get();
+	bool handle_post();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	s_content get_file_content(std::string& path);

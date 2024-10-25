@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/23 22:37:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 20:37:05 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void HttpRequestHandler::parse_request(const std::string &request_data) {
 		header_end += 4;
 		if (header_end < request_data.length()) {
 			_body = request_data.substr(header_end);
+			_log->log(LOG_WARNING, RH_NAME, "Content HERE :" + int_to_string(_body.length()));
 		}
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
@@ -123,7 +124,8 @@ std::string HttpRequestHandler::get_header_value(std::string header, std::string
 	if (key_pos != std::string::npos) {
 		_log->log(LOG_DEBUG, RH_NAME, key + "Found at headers.");
 		key_pos += key.length() + 2;
-		size_t end_key = header.find("\n\n", key_pos);
+		size_t end_key = header.find("\r\n", key_pos);
+		_log->log(LOG_WARNING, RH_NAME, "End Key: " + int_to_string(end_key));
 		return (header.substr(key_pos, end_key - key_pos));
 	}
 	_log->log(LOG_DEBUG, RH_NAME, key + "not founded at headers.");
@@ -162,10 +164,10 @@ std::string HttpRequestHandler::read_http_request() {
 		}
 		buffer[read_byte] = '\0';
 		request += buffer;
-		if (read_byte < (int)(sizeof(buffer) - 1))
-			break;
+		//if (read_byte < (int)(sizeof(buffer) - 1))
+		//	break;
 	}
-	if (read_byte < 0) {
+	if (read_byte < 0 && size == 0) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 		                "Error Reading From Socket." + int_to_string(read_byte));
 		return ("");
@@ -256,6 +258,7 @@ void HttpRequestHandler::parse_method_and_path() {
  * @return None
  */
 void HttpRequestHandler::validate_request() {
+	_log->log(LOG_INFO, RH_NAME, _header);
 	if (!_body.empty()) {
 		if (_method == METHOD_GET || _method == METHOD_HEAD || _method == METHOD_OPTIONS) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
@@ -267,13 +270,14 @@ void HttpRequestHandler::validate_request() {
 			                "Content Lenght required when body is received.");
 		}
 		if (is_valid_size_t(content_length)) {
-			if (str_to_size_t(content_length) != _body.length()) {
-				turn_off_sanity(HTTP_BAD_REQUEST,
-				                "Content size header and body size does not match.");
-			}
+			//if (str_to_size_t(content_length) != _body.length()) {
+			//	turn_off_sanity(HTTP_BAD_REQUEST,
+			//	                "Content size header and body size does not match. "
+			//					+ int_to_string(str_to_size_t(content_length)) + " and body is " + int_to_string(_body.length()));
+			//}
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
-			                "Content size header non valid value.");
+			                "Content size header non valid value: " + content_length);
 		}
 		_content_type = get_header_value(_header, "content-type");
 	} else {

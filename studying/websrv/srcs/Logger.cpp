@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 11:20:38 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/18 13:24:00 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 08:18:59 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,10 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 	exit(1);
  }
 
+void Logger::to_out(const char c) const {
+	*(_log_out) << "[" << c << "]" << std::endl;
+}
+
  /**
  * @brief Provides an error message when a Logger pointer is null.
  *
@@ -122,4 +126,5 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
  const char *Logger::NoLoggerPointer::what(void) const throw() {
 	 return ("Logger Pointer cannot be NULL.");
  }
+
 

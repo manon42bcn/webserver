@@ -42,7 +42,8 @@ typedef enum e_access {
 	ACCESS_BAD_REQUEST = 0,
 	ACCESS_FORBIDDEN = 1,
 	ACCESS_READ = 2,
-	ACCESS_WRITE = 3
+	ACCESS_WRITE = 3,
+	ACCESS_DELETE = 4
 } t_access;
 
 struct s_request {

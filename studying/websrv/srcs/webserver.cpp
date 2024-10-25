@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:51:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 08:02:17 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,13 @@
  * @return bool True if the string contains only digits, false otherwise.
  */
 bool is_valid_size_t(const std::string& value) {
-	if (value.empty())
+	if (value.empty()) {
 		return (false);
+	}
 
 	for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
+		if (*it == ' ')
+			continue ;
 		if (!std::isdigit(*it))
 			return (false);
 	}
