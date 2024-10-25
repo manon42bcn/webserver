@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 22:53:54 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 23:51:27 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,27 +180,41 @@ bool starts_with(const std::string& str, const std::string& prefix);
 //}
 
 
-// Parse functions
+// Parse
 
-std::vector<ServerConfig> parse_file(std::string file);
-bool check_args(int argc, char **argv);
+std::vector<ServerConfig> parse_file(std::string file, Logger* logger);
+std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logger* logger);
+
+// Print
+
+void print_raw_lines(std::vector<std::string> rawLines);
+void print_server_config(ServerConfig server);
+void print_location_config(LocationConfig location);
+
+// Utils
+
 std::string get_value(std::string line, const std::string& key);
 std::string clean_line(std::string line);
+bool find_exact_string(const std::string& line, const std::string& str);
+std::vector<std::string> split_default_pages(std::string default_pages);
+std::map<int, std::string> split_error_pages(std::string error_pages);
+std::vector<std::string> get_raw_lines(std::string file);
+std::string delete_brackets_clean(std::string line);
+std::string delete_first_slash(std::string path);
+std::string get_server_root();
+std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+
+// Verifications
+
+bool check_args(int argc, char **argv);
+bool check_root(std::string root);
+bool check_client_max_body_size(std::string client_max_body_size);
 int check_port(std::string port);
 bool check_server_name(std::string server_name);
 bool check_error_page(std::string error_page);
 bool check_default_page(std::string default_page);
-void print_raw_lines(std::vector<std::string> rawLines);
-void print_server_config(ServerConfig server);
-bool find_exact_string(const std::string& line, const std::string& str);
-std::vector<std::string> split_default_pages(std::string default_pages);
-std::map<int, std::string> split_error_pages(std::string error_pages);
 bool check_brackets(std::vector<std::string>::iterator start);
-std::vector<std::string> get_raw_lines(std::string file);
-std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines);
 bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
-std::string delete_brackets_clean(std::string line);
-std::string delete_first_slash(std::string path);
-
 
 # endif

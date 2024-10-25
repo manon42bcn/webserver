@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 00:02:13 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 23:52:35 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,14 @@ void print_server_config(ServerConfig server)
             std::cout << YELLOW << "    Default page: " RESET << *it << std::endl;
         }
     }
-
+    if (server.locations.size() > 0)
+    {
+        std::cout << YELLOW << "  Locations: " RESET << server.locations.size() << std::endl;
+        for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++)
+        {
+            print_location_config(it->second);
+        }
+    }
     std::cout << YELLOW << "  Webserver root: " RESET << server.ws_root << std::endl;
 }
 

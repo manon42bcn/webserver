@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   checkArgs.cpp                                      :+:      :+:    :+:   */
+/*   verifications.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 16:49:50 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 23:42:38 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
+#include <filesystem> // Asegúrate de incluir esta biblioteca
+#include <sys/stat.h> // Para usar la función stat
 
 
 /**
@@ -39,6 +41,7 @@ bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::s
  * @param filename The name of the file to check.
  * @return true if the file can be opened, false otherwise.
  */
+// VERIFY: No estoy seguro de usar esto
 bool can_open_file(const char* filename)
 {
     std::ifstream file(filename);
@@ -92,7 +95,6 @@ bool check_args(int argc, char **argv)
         file.seekg(0, std::ios::beg);
     }
 
-    // Verificar que el archivo tenga la extensión .conf
     std::string filename = argv[1];
     if (filename.find_last_of(".") != std::string::npos) {
         if (filename.substr(filename.find_last_of(".") + 1) != "conf") {
@@ -190,6 +192,14 @@ bool check_error_page(std::string error_page)
             if (!hasErrorCode) {
                 return false;
             }
+            if (part.find_last_of(".") != std::string::npos) {
+                std::string extension = part.substr(part.find_last_of(".") + 1);
+                if (extension != "html" && extension != "htm") {
+                    return false;
+                }
+            } else {
+                return false;
+            }
             return true;
         } else {
             return false;
@@ -229,9 +239,60 @@ bool check_default_page(std::string default_page)
     std::string page;
     while (iss >> page) {
         if (!is_valid_filename(page)) {
-            std::cout << RED << "Error: Página por defecto inválida: " << page << RESET << std::endl;
+            return false;
+        }
+        if (page.find_last_of(".") != std::string::npos) {
+            std::string extension = page.substr(page.find_last_of(".") + 1);
+            if (extension != "html" && extension != "htm") {
+                return false;
+            }
+        } else {
             return false;
         }
     }
+    return true;
+}
+
+bool is_directory(const std::string& path) {
+    struct stat info;
+    if (stat(path.c_str(), &info) != 0) {
+        return false;
+    } else if (info.st_mode & S_IFDIR) {
+        return true;
+    }
+    return false;
+}
+
+
+bool check_root(std::string root)
+{
+    if (root.empty())
+        return false;
+    std::istringstream iss(root);
+    std::string path;
+    std::string root_path = get_server_root();
+    while (iss >> path) {
+        std::string full_path = root_path + path;
+        if (!is_directory(full_path))
+            return false;
+    }
+    return true;
+}
+
+bool check_client_max_body_size(std::string client_max_body_size)   
+{
+    if (client_max_body_size.empty())
+        return false;
+
+    char unit = client_max_body_size[client_max_body_size.size() - 1];
+    if (unit != 'M' && unit != 'k')
+        return false;
+
+    std::string number_part = client_max_body_size.substr(0, client_max_body_size.size() - 1);
+    for (std::string::size_type i = 0; i < number_part.size(); ++i) {
+        if (!isdigit(number_part[i]))
+            return false;
+    }
+
     return true;
 }

@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 00:02:31 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 23:42:51 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
  */
 std::map<int, std::string> split_error_pages(std::string error_pages)
 {
+    std::cout << RED << "error_pages: " << error_pages << RESET << std::endl;
     std::map<int, std::string> error_pages_map;
     std::istringstream iss(error_pages);
     std::string token;

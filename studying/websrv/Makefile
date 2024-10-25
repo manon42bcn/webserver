@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 22:26:19 by mporras-          #+#    #+#              #
-#    Updated: 2024/10/22 16:57:29 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/10/25 21:52:38 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ SRCS_FILES		=	webserver.cpp \
 					HttpRequestHandler.cpp \
 					HttpResponseHandler.cpp \
 					ServerManager.cpp \
-					parse/file.cpp \
-					parse/checkArgs.cpp \
+					parse/parse.cpp \
+					parse/verifications.cpp \
 					parse/utils.cpp \
 					parse/print.cpp \
 					parse/split.cpp

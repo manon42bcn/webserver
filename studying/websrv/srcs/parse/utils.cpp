@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 00:00:39 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 21:55:20 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,3 +134,51 @@ std::string delete_first_slash(std::string path)
         path.erase(0, 1);
     return path;
 }
+
+std::string get_server_root()
+{
+    char buffer[PATH_MAX];
+    if (getcwd(buffer, sizeof(buffer)) != NULL) {
+        return std::string(buffer);
+    }
+    return "";
+}
+
+std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
+{
+    int bracketCount = 0;
+    for (std::vector<std::string>::iterator it = start; it != end; ++it)
+    {
+        if (it->find("{") != std::string::npos)
+        {
+            bracketCount++;
+        }
+        if (it->find("}") != std::string::npos)
+        {
+            bracketCount--;
+            if (bracketCount == 0)
+            {
+                return ++it;
+            }
+        }
+    }
+    return end;
+}
+
+
+std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
+    int bracketCount = 0;
+    for (std::vector<std::string>::iterator it = start; it != end; ++it) {
+        if (it->find("{") != std::string::npos) {
+            bracketCount++;
+        }
+        if (it->find("}") != std::string::npos) {
+            bracketCount--;
+            if (bracketCount == 0) {
+                return it;
+            }
+        }
+    }
+    return end;
+}
+

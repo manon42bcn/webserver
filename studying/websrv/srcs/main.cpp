@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/22 16:57:12 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 21:41:01 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
 	// std::string base_path = getenv("WEBSERVER_PATH");
 	if (!check_args(argc, argv))
         exit(1);
-	std::vector<ServerConfig> configs = parse_file(argv[1]);
+	std::vector<ServerConfig> configs = parse_file(argv[1], &logger);
 
 
 	

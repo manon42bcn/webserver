@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file.cpp                                           :+:      :+:    :+:   */
+/*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/22 16:43:04 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/25 23:52:47 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 #include <set>
 
-LocationConfig handleLocationBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
+LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     std::map<std::string, std::string> locations;
     LocationConfig location;
 
@@ -84,45 +84,6 @@ LocationConfig handleLocationBlock(std::vector<std::string>::iterator start, std
 
 
 
-std::vector<std::string>::iterator findServerBlockEnd(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
-{
-    int bracketCount = 0;
-
-    for (std::vector<std::string>::iterator it = start; it != end; ++it)
-    {
-        if (it->find("{") != std::string::npos)
-        {
-            bracketCount++;
-        }
-        if (it->find("}") != std::string::npos)
-        {
-            bracketCount--;
-            if (bracketCount == 0)
-            {
-                return it;
-            }
-        }
-    }
-    return end;
-}
-
-
-
-std::vector<std::string>::iterator findLocationBlockEnd(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
-    int bracketCount = 0;
-    for (std::vector<std::string>::iterator it = start; it != end; ++it) {
-        if (it->find("{") != std::string::npos) {
-            bracketCount++;
-        }
-        if (it->find("}") != std::string::npos) {
-            bracketCount--;
-            if (bracketCount == 0) {
-                return it;
-            }
-        }
-    }
-    return end;
-}
 
 
 
@@ -130,71 +91,76 @@ std::vector<std::string>::iterator findLocationBlockEnd(std::vector<std::string>
 
 
 
-std::string get_server_root()
-{
-    char buffer[PATH_MAX];
-    if (getcwd(buffer, sizeof(buffer)) != NULL) {
-        return std::string(buffer);
-    }
-    return "";
-}
 
-ServerConfig parseServerBlock(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
+ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
     ServerConfig server;
-    std::string temp;
-    int temp_int;
     
     start++;
-
-    
+    logger->log(LOG_DEBUG, "parse_server_block", "Parsing server block");
     for (std::vector<std::string>::iterator it = start; it != end; ++it)
     {
         if (find_exact_string(*it, "location"))
         {
-            LocationConfig location = handleLocationBlock(it, end);
+            LocationConfig location = parse_location_block(it, end);
             std::vector<std::string>::iterator start_location = it;
-            std::vector<std::string>::iterator end_location = findLocationBlockEnd(start_location, end);
-            location = handleLocationBlock(start_location, end_location);
+            std::vector<std::string>::iterator end_location = find_block_end(start_location, end);
+            location = parse_location_block(start_location, end_location);
             server.locations["/"] = location;
             // it = skip_block(start_location, end_location);
             // it = end_location;
         }
         else if (find_exact_string(*it, "port"))
         {
-            temp_int = check_port(get_value(*it, "port"));
-            if (temp_int > 0)
-                server.port = temp_int;
+            int port = check_port(get_value(*it, "port"));
+            if (port != -1)
+                server.port = port;
             else
-            {
-                std::cout << "Error: port " << temp << " is not valid." << std::endl;
-                exit(1);
-            }
+                logger->fatal_log("parse_server_block", "Port " + get_value(*it, "port") + " is not valid.");
         }
         else if (find_exact_string(*it, "server_name"))
         {
-            if (!check_server_name(get_value(*it, "server_name")))
-            {
-                std::cout << "Error: server_name " << get_value(*it, "server_name") << " is not valid." << std::endl;
-                exit(1);
-            }
-            server.server_name = get_value(*it, "server_name");
+            std::string serverName = get_value(*it, "server_name");
+            logger->log(LOG_DEBUG, "parse_server_block", "Server name: " + serverName);
+            if (check_server_name(serverName))
+                server.server_name = serverName;
+            else
+                logger->fatal_log("parse_server_block", "Server name " + serverName + " is not valid.");
+        }
+        else if (find_exact_string(*it, "root"))
+        {
+            std::string root = get_value(*it, "root");
+            if (check_root(root))
+                server.server_root = get_server_root() + get_value(*it, "root");
+            else
+                logger->fatal_log("parse_server_block", "Server root " + root + " is not valid.");
+        }
+        else if (find_exact_string(*it, "index"))
+        {
+            if (check_default_page(get_value(*it, "index")))
+                server.default_pages = split_default_pages(get_value(*it, "index"));
+            else
+                logger->fatal_log("parse_server_block", "Default page " + get_value(*it, "index") + " is not valid.");
+        }
+        else if (find_exact_string(*it, "client_max_body_size"))
+        {
+            std::string client_max_body_size = get_value(*it, "client_max_body_size");
+            if (check_client_max_body_size(client_max_body_size))
+                server.client_max_body_size = get_value(*it, "client_max_body_size");
+            else
+                logger->fatal_log("parse_server_block", "Client max body size " + client_max_body_size + " is not valid.");
         }
         else if (find_exact_string(*it, "error_page"))
         {
-
-            if (check_error_page(get_value(*it, "error_page")))
+            std::string error_page = get_value(*it, "error_page");
+            if (check_error_page(error_page))
             {
-                server.error_pages = split_error_pages(get_value(*it, "error_page"));
+                std::map<int, std::string> new_error_pages = split_error_pages(error_page);
+                server.error_pages.insert(new_error_pages.begin(), new_error_pages.end());
             }
             else
-            {
-                std::cout << "Error: error_page " << get_value(*it, "error_page") << " is not valid." << std::endl;
-                exit(1);
-            }
+                logger->fatal_log("parse_server_block", "Error page " + error_page + " is not valid.");
         }
-        else if (find_exact_string(*it, "client_max_body_size"))
-            server.client_max_body_size = get_value(*it, "client_max_body_size");
         else if (find_exact_string(*it, "autoindex"))
         {
             if (get_value(*it, "autoindex") == "on")
@@ -206,20 +172,6 @@ ServerConfig parseServerBlock(std::vector<std::string>::iterator start, std::vec
                 std::cout << "Error: autoindex " << get_value(*it, "autoindex") << " is not valid." << std::endl;
                 exit(1);
             }
-        }
-        else if (find_exact_string(*it, "root"))
-        {
-            std::string base_path = getenv("WEBSERVER_PATH");
-           server.server_root = base_path + delete_first_slash(get_value(*it, "root"));
-        }
-        else if (find_exact_string(*it, "index"))
-        {
-            if (!check_default_page(get_value(*it, "index")))
-            {
-                std::cout << "Error: default page " << get_value(*it, "index") << " is not valid." << std::endl;
-                exit(1);
-            }
-            server.default_pages = split_default_pages(get_value(*it, "index"));
         }
         else
             continue;
@@ -240,76 +192,47 @@ ServerConfig parseServerBlock(std::vector<std::string>::iterator start, std::vec
         server.server_name = "localhost";
     server.ws_root = get_server_root();
 
+    // logger->log(LOG_DEBUG, "parse_server_block", "Server NAME: " + server.server_name + " PORT: " + int_to_string(server.port));
+
     // if (!server.checkObligatoryParams())
     //     throw std::runtime_error("Obligatory parameters are missing in server block in server " + server.getServerName());
     //  verificar si tengo 2 veces el mismo parametro
 
 
-    // print_server_config(server);
+    print_server_config(server);
     return server;
 }
 
-std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
-{
-    int bracketCount = 0;
-    for (std::vector<std::string>::iterator it = start; it != end; ++it)
-    {
-        if (it->find("{") != std::string::npos)
-        {
-            bracketCount++;
-        }
-        if (it->find("}") != std::string::npos)
-        {
-            bracketCount--;
-            if (bracketCount == 0)
-            {
-                return ++it;
-            }
-        }
-    }
-    return end;
-}
-
-
-std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines)
+std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logger* logger)
 {
     std::vector<std::string>::iterator start;
     std::vector<std::string>::iterator end;
     std::vector<ServerConfig> servers;
-    if (!check_brackets(rawLines.begin(), rawLines.end()))
-    {
-        std::cout << "Error: Brackets are not closed" << std::endl;
-        exit(1);
-    }
+
+    logger->log(LOG_DEBUG, "parse_servers", "Checking brackets");
+    if (!check_brackets(rawLines.begin(), rawLines.end()))  
+        logger->log(LOG_ERROR, "parse_servers", "Brackets are not closed");
     for (std::vector<std::string>::iterator it = rawLines.begin(); it != rawLines.end(); it++)
     {
         if (find_exact_string(*it, "server"))
         {
-            // std::cout << "Server block found" << std::endl;
+            logger->log(LOG_DEBUG, "parse_servers", "Server block found");
             start = it;
-            end = findServerBlockEnd(start, rawLines.end());
-            servers.push_back(parseServerBlock(start, end));
+            end =   find_block_end(start, rawLines.end());
+            servers.push_back(parse_server_block(start, end, logger));
             it = skip_block(start, end);
         }
     }
 
-    // std::cout << "Servers found: " << servers.size() << std::endl;
+    logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
     return servers;
 }
 
-
-std::vector<ServerConfig> parse_file(std::string path)
+std::vector<ServerConfig> parse_file(std::string path, Logger* logger)
 {
-    const Logger*       _log;
-    _log = new Logger(LOG_DEBUG, false);
-
-    _log->log(LOG_DEBUG, "parse_file", "Parsing file: " + path);
+    logger->log(LOG_DEBUG, "parse_file", "Parsing file: " + path);
     std::vector<std::string> rawLines = get_raw_lines(path);
-    _log->log(LOG_DEBUG, "parse_file", "Raw lines obtained: " + int_to_string(rawLines.size()));
-    std::vector<ServerConfig> servers = parse_servers(rawLines);
-    _log->log(LOG_INFO, "parse_file", "Servers parsed: " + int_to_string(servers.size()));
+    logger->log(LOG_DEBUG, "parse_file", "Raw lines obtained: " + int_to_string(rawLines.size()));
+    std::vector<ServerConfig> servers = parse_servers(rawLines, logger);
     return servers;
 }
-
-
-
