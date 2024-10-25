@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/25 23:52:47 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/26 00:27:00 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
         else if (find_exact_string(*it, "error_page"))
         {
-            // std::cout << "Error page found" << std::endl;
             if (check_error_page(get_value(*it, "error_page")))
-            {
                 location.loc_error_pages = split_error_pages(get_value(*it, "error_page"));
-            }
             else
             {
                 std::cout << "Error: error_page " << get_value(*it, "error_page") << " is not valid." << std::endl;
@@ -98,16 +95,17 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     
     start++;
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server block");
+
     for (std::vector<std::string>::iterator it = start; it != end; ++it)
     {
         if (find_exact_string(*it, "location"))
         {
             LocationConfig location = parse_location_block(it, end);
-            std::vector<std::string>::iterator start_location = it;
-            std::vector<std::string>::iterator end_location = find_block_end(start_location, end);
-            location = parse_location_block(start_location, end_location);
+            // std::vector<std::string>::iterator start_location = it;
+            // std::vector<std::string>::iterator end_location = find_block_end(start_location, end);
+            location = parse_location_block(it, find_block_end(it, end));
             server.locations["/"] = location;
-            // it = skip_block(start_location, end_location);
+            it = skip_block(it, find_block_end(it, end));
             // it = end_location;
         }
         else if (find_exact_string(*it, "port"))
@@ -163,18 +161,18 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "autoindex"))
         {
-            if (get_value(*it, "autoindex") == "on")
+            if (check_autoindex(get_value(*it, "autoindex")))
                 server.autoindex = true;
-            else if (get_value(*it, "autoindex") == "off")
+            else if (check_autoindex(get_value(*it, "autoindex")))
                 server.autoindex = false;
             else
-            {
-                std::cout << "Error: autoindex " << get_value(*it, "autoindex") << " is not valid." << std::endl;
-                exit(1);
-            }
+                logger->fatal_log("parse_server_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
         }
         else
+        {
+            std::cout << RED << "Error: " << *it << " is not valid parameter" << RESET << std::endl;
             continue;
+        }
         // else
         //     it++;
         // else if (it->empty() || find_exact_string(*it, "allowedMethods") || find_exact_string(*it, "}") || find_exact_string(*it, "{"))
@@ -184,12 +182,12 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         //     std::cout << RED << "Error: " << *it << " is not valid parameter" << RESET << std::endl;
         //     exit(1);
         // }
-        // std::cout << GRAY << "Server block line: " << *it << RESET << std::endl;
     }
-    // std::cout << "Server block end out of for" << std::endl;
 
     if (server.server_name == "")
         server.server_name = "localhost";
+    if (!server.autoindex)
+        server.autoindex = false;
     server.ws_root = get_server_root();
 
     // logger->log(LOG_DEBUG, "parse_server_block", "Server NAME: " + server.server_name + " PORT: " + int_to_string(server.port));
@@ -197,9 +195,6 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     // if (!server.checkObligatoryParams())
     //     throw std::runtime_error("Obligatory parameters are missing in server block in server " + server.getServerName());
     //  verificar si tengo 2 veces el mismo parametro
-
-
-    print_server_config(server);
     return server;
 }
 
@@ -225,6 +220,7 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
     }
 
     logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
+    print_servers(servers);
     return servers;
 }
 

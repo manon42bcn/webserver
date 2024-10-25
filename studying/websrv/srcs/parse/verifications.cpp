@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/25 23:42:38 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/26 00:22:37 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,11 +217,10 @@ bool check_error_page(std::string error_page)
  */
 bool is_valid_filename(const std::string& filename) {
     for (size_t i = 0; i < filename.length(); ++i) {
-        if (!isalnum(filename[i]) && filename[i] != '.' && filename[i] != '-') {
+        if (!isalnum(filename[i]) && filename[i] != '.' && filename[i] != '-' && filename[i] != '_') {
             return false;
         }
     }
-
     return true;
 }
 
@@ -295,4 +294,13 @@ bool check_client_max_body_size(std::string client_max_body_size)
     }
 
     return true;
+}
+
+bool check_autoindex(std::string autoindex)
+{
+    if (autoindex == "on")
+        return true;
+    if (autoindex == "off")
+        return true;
+    return false;
 }

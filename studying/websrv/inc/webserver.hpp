@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/25 23:51:27 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/26 00:26:32 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,8 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 void print_raw_lines(std::vector<std::string> rawLines);
 void print_server_config(ServerConfig server);
 void print_location_config(LocationConfig location);
+void print_servers(std::vector<ServerConfig> servers);
+
 
 // Utils
 
@@ -216,5 +218,6 @@ bool check_error_page(std::string error_page);
 bool check_default_page(std::string default_page);
 bool check_brackets(std::vector<std::string>::iterator start);
 bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
+bool check_autoindex(std::string autoindex);
 
 # endif
