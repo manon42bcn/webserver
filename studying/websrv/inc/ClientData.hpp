@@ -21,6 +21,7 @@
 
 # define CD_MODULE "ClientData"
 
+//TODO READ ABOUT vsnprintf
 class ClientData {
 	private:
 		const SocketHandler*    _server;
@@ -29,18 +30,23 @@ class ClientData {
 		struct pollfd           _client_fd;
 	    std::time_t             _timestamp;
 	    std::string             _saludos;
+	    size_t                  _poll_index;
 
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
 	    ClientData& operator=(const ClientData& orig);
 	    const SocketHandler* get_server();
-	    struct pollfd& get_fd();
+	    struct pollfd get_fd();
 	    void deactivate();
 		void close_fd();
 	    void say_hello(std::string saludo);
+	    bool keep_alive();
 	    std::string& saludo();
 	    std::time_t& timer();
+	    int crono();
+	    void set_index(size_t index);
+	    size_t get_index();
 };
 
 #endif

@@ -202,22 +202,21 @@ void ServerManager::run() {
 				}
 
 				if (is_server) {
-					// Accept a new connection, create client and
-					// append fds to _poll_fds and _clients
 					new_client(server);
 				} else {
 					// Handle client request
-					process_request(_poll_fds[i].fd);
+					process_request(i);
 
 					// Close the client connection
-					close(_poll_fds[i].fd);
-					_log->log(LOG_DEBUG, SM_NAME,
-					          "close connection: " + int_to_string((int)i));
-					// Remove the client descriptor from _poll_fds
-					_poll_fds.erase(_poll_fds.begin() + (int)i);
-					_log->log(LOG_DEBUG, SM_NAME,
-					          "fd remove from _polls_fds vector: " + int_to_string((int)i));
-					--i;  // Adjust index to check the new descriptor in this position
+//					close(_poll_fds[i].fd);
+//					_log->log(LOG_DEBUG, SM_NAME,
+//					          "close connection: " + int_to_string((int)i));
+//					// Remove the client descriptor from _poll_fds
+//					_poll_fds.erase(_poll_fds.begin() + (int)i);
+//					_log->log(LOG_DEBUG, SM_NAME,
+//					          "fd remove from _polls_fds vector: " + int_to_string((int)i));
+					 // Adjust index to check the new descriptor in this position
+					--i;
 				}
 			}
 		}
@@ -239,31 +238,23 @@ void ServerManager::run() {
  * @param poll_fd The file descriptor returned by the `poll()` system call.
  * @return bool True if the client request was successfully processed, false otherwise.
  */
-bool    ServerManager::process_request(int poll_fd) {
-	// TODO: for performance it will be a good idea use _client as map
-	// Ive found some issues with fd..
-	std::map<int, ClientData>::iterator it = _clients_map.find(poll_fd);
+bool    ServerManager::process_request(size_t poll_index) {
+	int poll_fd = _poll_fds[poll_index].fd;
+
+	_log->log(LOG_ERROR, SM_NAME, "Index arrived proc: " + int_to_string(poll_index));
+	_log->log(LOG_ERROR, SM_NAME, "Size saved proc: " + int_to_string(_poll_fds.size()));
+	std::map<int, ClientData*>::iterator it = _clients_map.find(poll_fd);
 	if (it != _clients_map.end()) {
+		_log->log(LOG_ERROR, SM_NAME, "Index saved proc : " + int_to_string(it->second->get_index()));
 		HttpRequestHandler request_handler(_log, it->second);
-		remove_client_from_poll(poll_fd);
-		_log->log(LOG_DEBUG, SM_NAME,
-		          "End of request process and client removed from poll.");
+		_log->log(LOG_ERROR, SM_NAME, it->second->saludo());
+		remove_client_from_poll(it, poll_index);
 		return (true);
-		_log->log(LOG_ERROR, SM_NAME, "From map " + int_to_string(it->second.get_fd().fd));
 	} else {
-		for (size_t c = 0; c < _clients.size(); ++c) {
-			if (poll_fd == _clients[c].get_fd().fd) {
-				HttpRequestHandler request_handler(_log, _clients[c]);
-				remove_client_from_poll(poll_fd);
-				_log->log(LOG_DEBUG, SM_NAME,
-				          "End of request process and client removed from poll.");
-				return (true);
-			}
-		}
+		_log->log(LOG_WARNING, SM_NAME,
+		          "No client was found at _client storage.");
+		return (false);
 	}
-	_log->log(LOG_INFO, SM_NAME,
-	          "No client was found at _client storage.");
-	return (false);
 }
 
 /**
@@ -289,10 +280,12 @@ void    ServerManager::new_client(SocketHandler *server) {
 		_log->log(LOG_ERROR, SM_NAME, "Error getting client FD.");
 		return;
 	}
-	ClientData new_client(server, _log, client_fd);
-	_clients_map.insert(std::make_pair(new_client.get_fd().fd, new_client));
-	_clients.push_back(new_client);
-	_poll_fds.push_back(new_client.get_fd());
+	ClientData* new_client = new ClientData(server, _log, client_fd);
+	_clients_map.insert(std::make_pair(new_client->get_fd().fd, new_client));
+	_log->log(LOG_ERROR, SM_NAME, "Size antes: " + int_to_string(_poll_fds.size()));
+	_poll_fds.push_back(new_client->get_fd());
+	new_client->set_index(_poll_fds.size() - 1);
+	_log->log(LOG_ERROR, SM_NAME, "Size despues: " + int_to_string(_poll_fds.size()));
 	_log->log(LOG_DEBUG, SM_NAME,
 	          "New Client accepted on port " + int_to_string(server->get_socket_fd()));
 }
@@ -313,26 +306,22 @@ void    ServerManager::new_client(SocketHandler *server) {
  * @param fd The file descriptor of the client to remove.
  * @return None
  */
-void    ServerManager::remove_client_from_poll(int fd) {
-	std::map<int, ClientData>::iterator it = _clients_map.find(fd);
-	if (it != _clients_map.end()) {
-		_log->log(LOG_DEBUG, SM_NAME, it->second.saludo());
-		_clients_map.erase(it);
-		_log->log(LOG_DEBUG, SM_NAME,
-		          "End of request process and client removed from poll.");
-		return ;
-	} else {
-		return ;
-	}
+void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t poll_index) {
 
-	for (size_t c = 0; c < _clients.size(); ++c) {
-		if (_clients[c].get_fd().fd == fd) {
-			_clients.erase(_clients.begin() + (int)c);
-			_log->log(LOG_DEBUG, SM_NAME, "client remove from _client vector.");
-			break;
-		}
+	if (client_data != _clients_map.end()) {
+		ClientData* current_client = client_data->second;
+		_clients_map.erase(client_data);
+		_poll_fds.erase(_poll_fds.begin() + (int)poll_index);
+		current_client->close_fd();
+		delete current_client;
+		_log->log(LOG_DEBUG, SM_NAME,
+		          "close connection: " + int_to_string((int)poll_index));
+		// Remove the client descriptor from _poll_fds
+		_log->log(LOG_DEBUG, SM_NAME,
+		          "fd remove from _polls_fds vector: " + int_to_string((int) poll_index));
+	} else {
+		_log->log(LOG_ERROR, SM_NAME,
+		          "Client was not found at clients storage.");
 	}
-	_log->log(LOG_ERROR, SM_NAME,
-	          "Client was not found at clients storage.");
 }
 

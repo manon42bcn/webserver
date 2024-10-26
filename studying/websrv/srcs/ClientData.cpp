@@ -27,6 +27,10 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 
 ClientData::~ClientData() {}
 
+bool ClientData::keep_alive() {
+	return (this->_active);
+}
+
 void ClientData::say_hello(std::string saludo) {
 	_saludos = saludo;
 }
@@ -37,6 +41,11 @@ std::string& ClientData::saludo(){
 
 std::time_t& ClientData::timer(){
 	return (this->_timestamp);
+}
+
+int ClientData::crono() {
+	std::time_t now = std::time(NULL);
+	return (now - _timestamp);
 }
 
 ClientData& ClientData::operator=(const ClientData& orig)
@@ -50,11 +59,19 @@ ClientData& ClientData::operator=(const ClientData& orig)
 	return (*this);
 }
 
+void ClientData::set_index(size_t index) {
+	_poll_index = index;
+}
+
+size_t ClientData::get_index() {
+	return (_poll_index);
+}
+
 const SocketHandler* ClientData::get_server() {
 	return (_server);
 }
 
-struct pollfd& ClientData::get_fd() {
+struct pollfd ClientData::get_fd() {
 	return (_client_fd);
 }
 

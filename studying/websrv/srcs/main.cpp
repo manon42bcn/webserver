@@ -110,8 +110,8 @@ struct LocationTest {
 
 
 int main() {
-	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = getenv("WEBSERVER_PATH");
+	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -133,24 +133,24 @@ int main() {
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
-	server1.server_root = base_path + "data";
+	server1.server_root = base_path + "/data";
 	server1.error_pages[404] = "/404.html";
 	server1.locations = locations;
 	server1.default_pages.push_back("index.html");
-	server1.ws_root = base_path + "data";
+	server1.ws_root = base_path + "/data";
 	server1.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server1);
 
 	ServerConfig server2;
 	server2.port = 9090;
 	server2.server_name = "localhost";
-	server2.server_root =  base_path + "data/9090";
+	server2.server_root =  base_path + "/data/9090";
 	server2.error_pages[404] = "/404.html";
 	server2.locations = locations;
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");
-	server2.ws_root = base_path + "data";
+	server2.ws_root = base_path + "/data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
 	Logger logger(LOG_DEBUG, false);

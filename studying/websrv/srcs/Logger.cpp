@@ -95,6 +95,20 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 	}
 }
 
+template<typename T>
+void Logger::new_log(int log_level, const std::string &module, T message_content) const {
+	std::ostringstream message;
+	message << message_content;
+	if (log_level < LOG_DEBUG && log_level > LOG_ERROR) {
+		*(_log_out) << _log_level[LOG_ERROR] << "[LOGGER]: Log level out of range." << std::endl;
+		return;
+	} else {
+		if (log_level >= _level)
+			*(_log_out) << _log_level[log_level] << module << "]: " << message << std::endl;
+		return;
+	}
+}
+
 /**
  * @brief Public method to log an error message and exit from current execution.
  *

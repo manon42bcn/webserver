@@ -54,7 +54,7 @@ class HttpRequestHandler {
 	    typedef void (HttpRequestHandler::*validate_step)( );
 		const ServerConfig&     _config;
 		const Logger*           _log;
-		ClientData&             _client_data;
+		ClientData*             _client_data;
 		const LocationConfig*   _location;
 		int                     _fd;
 		size_t 					_max_request;
@@ -83,7 +83,7 @@ class HttpRequestHandler {
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
-		HttpRequestHandler(const Logger* log, ClientData& client_data);
+		HttpRequestHandler(const Logger* log, ClientData* client_data);
 		//	Temporal Method to debug responses for each method
 //		void send_detailed_response(std::string requested_path);
 

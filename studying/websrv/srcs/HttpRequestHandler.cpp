@@ -38,12 +38,12 @@
  * @param client_data The data associated with the client, including the server configuration and file descriptor.
  * @throws Logger::NoLoggerPointer if the logger pointer is null.
  */
-HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_data):
-	_config(client_data.get_server()->get_config()),
+HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_data):
+	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
 	_location(NULL),
-	_fd(_client_data.get_fd().fd),
+	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST),
 	_sanity(true) {
 	if (_log == NULL) {
@@ -67,7 +67,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	}
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Request Validation Process. End.");
-	_client_data.say_hello("Saludando desde dentro");
+	_client_data->say_hello("Saludando desde dentro" + int_to_string(_client_data->crono()));
 	handle_request();
 }
 
@@ -157,7 +157,7 @@ std::string HttpRequestHandler::read_http_request() {
 	size_t      size = 0;
 
 	_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-	while ((read_byte = read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
+	while ((read_byte = recv(_fd, buffer, sizeof(buffer) - 1, 0)) > 0) {
 		size += read_byte;
 		if (size > _max_request) {
 			turn_off_sanity(HTTP_CONTENT_TOO_LARGE, "Request too large.");
@@ -170,7 +170,7 @@ std::string HttpRequestHandler::read_http_request() {
 	}
 	if (read_byte < 0 && size == 0) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Error Reading From Socket." + int_to_string(read_byte));
+		                "Error Reading From Socket. " + int_to_string(read_byte));
 		return ("");
 	}
 	if (size == 0) {
@@ -343,8 +343,9 @@ void HttpRequestHandler::get_location_config() {
  */
 void HttpRequestHandler::normalize_request_path() {
 	std::string eval_path = _config.server_root + _location->loc_root + _path;
+
 	_log->log(LOG_DEBUG, RH_NAME,
-			  "Normalize path to get proper file to serve.");
+			  "Normalize path to get proper file to serve." + eval_path);
 
 	if (_method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
@@ -365,8 +366,9 @@ void HttpRequestHandler::normalize_request_path() {
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
-
+		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
 		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
+			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
 				_log->log(LOG_INFO, RH_NAME, "Default File found");
 				_normalized_path = eval_path + _location->loc_default_pages[i];
