@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/26 00:22:37 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/26 20:51:04 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,11 +146,11 @@ bool check_server_name(std::string server_name)
     if (server_name.length() < 1 || server_name.length() > 253) {
         return false;
     }
-    for (size_t i = 0; i < server_name.length(); i++)
-    {
-        if (!isalnum(server_name[i]))
-            return false;
-    }
+    // for (size_t i = 0; i < server_name.length(); i++)
+    // {
+    //     if (!isalnum(server_name[i]))
+    //         return false;
+    // }
     return true;
 }
 
@@ -234,21 +234,21 @@ bool check_default_page(std::string default_page)
 {
     if (default_page.empty())
         return false;
-    std::istringstream iss(default_page);
-    std::string page;
-    while (iss >> page) {
-        if (!is_valid_filename(page)) {
-            return false;
-        }
-        if (page.find_last_of(".") != std::string::npos) {
-            std::string extension = page.substr(page.find_last_of(".") + 1);
-            if (extension != "html" && extension != "htm") {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+    // std::istringstream iss(default_page);
+    // std::string page;
+    // while (iss >> page) {
+    //     if (!is_valid_filename(page)) {
+    //         return false;
+    //     }
+    //     if (page.find_last_of(".") != std::string::npos) {
+    //         std::string extension = page.substr(page.find_last_of(".") + 1);
+    //         if (extension != "html" && extension != "htm") {
+    //             return false;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
+    // }
     return true;
 }
 
@@ -265,16 +265,18 @@ bool is_directory(const std::string& path) {
 
 bool check_root(std::string root)
 {
+    
     if (root.empty())
         return false;
-    std::istringstream iss(root);
-    std::string path;
-    std::string root_path = get_server_root();
-    while (iss >> path) {
-        std::string full_path = root_path + path;
-        if (!is_directory(full_path))
-            return false;
-    }
+    // si termina en / que se lo quite
+    // std::istringstream iss(root);
+    // std::string path;
+    // std::string root_path = get_server_root();
+    // while (iss >> path) {
+    //     std::string full_path = root_path + path;
+    //     if (!is_directory(full_path))
+    //         return false;
+    // }
     return true;
 }
 
@@ -303,4 +305,9 @@ bool check_autoindex(std::string autoindex)
     if (autoindex == "off")
         return true;
     return false;
+}
+
+bool check_error_mode(std::string error_mode)
+{
+    return (error_mode == "literal" || error_mode == "template");
 }

@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/25 21:55:20 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/26 20:43:05 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,22 @@ std::string get_value(std::string line, const std::string& key) {
         if (valueStart != std::string::npos) {
             std::string::size_type valueEnd = line.find_last_not_of(" \t");
             if (valueEnd != std::string::npos && valueEnd >= valueStart) {
-                return line.substr(valueStart, valueEnd - valueStart + 1);
+                // TESTEANDO: si termina en / que se lo quite
+                std::string value = line.substr(valueStart, valueEnd - valueStart + 1);
+                if (value[value.length() - 1] == '/')
+                    value.erase(value.length() - 1);
+                // std::cout << RED << "RETORNARE:     " << line.substr(valueStart, valueEnd - valueStart + 1) << RESET << std::endl;
+                return value;
             }
         }
     }
     return "";
 }
 
-/**
- * @brief Searches for an exact string in a line, ensuring it is not
- * preceded or followed by alphanumeric characters.
- *
- * @param line The line to search within.
- * @param str The string to search for.
- * @return True if the exact string is found, false otherwise.
- */
+// Realmente no busca el string exacto
 bool find_exact_string(const std::string& line, const std::string& str) {
     size_t pos = line.find(str);
+        
     if (pos != std::string::npos) {
         if (pos > 0 && std::isalnum(line[pos - 1])) {
             return false;
@@ -149,6 +148,7 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
     int bracketCount = 0;
     for (std::vector<std::string>::iterator it = start; it != end; ++it)
     {
+        // std::cout << GRAY << "Skip block: " << *it << RESET << std::endl;
         if (it->find("{") != std::string::npos)
         {
             bracketCount++;
@@ -169,6 +169,7 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
 std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     int bracketCount = 0;
     for (std::vector<std::string>::iterator it = start; it != end; ++it) {
+        // std::cout << GRAY << "Find block end: " << *it << RESET << std::endl;
         if (it->find("{") != std::string::npos) {
             bracketCount++;
         }
@@ -179,6 +180,63 @@ std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iter
             }
         }
     }
+    // Si no encuentra el final, devuelve el final y da mensaje de error y retorna valor invalido
+    std::cout << RED << "No se encontro el final del bloque" << RESET << std::endl;
     return end;
 }
 
+t_allowed_methods string_to_method(std::string method) {
+    if (method == "GET")
+        return GET;
+    if (method == "POST")
+        return POST;
+    if (method == "DELETE")
+        return DELETE;
+    return INVALID_METHOD;
+}
+
+
+// Elimino los signos '=' y '~' y limpia la linea
+std::string delete_signs(std::string line) {
+    std::string result;
+    for (std::string::iterator it = line.begin(); it != line.end(); ++it) {
+        if (*it != '=' && *it != '~') {
+            result += *it;
+        }
+    }
+    result = clean_line(result);
+    return result;
+}
+
+std::string delete_last_slash(std::string path) {
+    if (path[path.length() - 1] == '/')
+        path.erase(path.length() - 1);
+    return path;
+}
+
+std::string get_location_path(std::string line) {
+    std::string::size_type start_pos = line.find("location");
+    std::string location_path;
+    if (start_pos != std::string::npos)
+    {
+        start_pos += 8;
+        std::string::size_type end_pos = line.find_first_of("{", start_pos);
+        if (end_pos != std::string::npos)
+            location_path = line.substr(start_pos, end_pos - start_pos);
+        else
+            location_path = line.substr(start_pos);
+        location_path = delete_first_slash(location_path);
+    }
+    location_path = delete_signs(location_path);
+    if (location_path != "/" && location_path[location_path.length() - 1] == '/')
+        location_path.erase(location_path.length() - 1);
+    return location_path;
+}
+
+t_mode string_to_error_mode(std::string error_mode) {
+    if (error_mode == "literal")
+        return LITERAL;
+    if (error_mode == "template")
+        return TEMPLATE;
+    return INVALID_ERROR_MODE;
+}
