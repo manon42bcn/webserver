@@ -305,6 +305,10 @@ void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail)
 	_request.status = status;
 }
 
+void HttpResponseHandler::get_request_content(){
+
+}
+
 // Validation of access privileges will be done before.
 bool HttpResponseHandler::handle_post() {
 	if (_request.body.length() == 0) {

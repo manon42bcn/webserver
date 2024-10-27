@@ -30,8 +30,6 @@ class ClientData {
 	    bool                    _active;
 		struct pollfd           _client_fd;
 	    std::time_t             _timestamp;
-	    std::string             _saludos;
-	    size_t                  _poll_index;
 
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
@@ -41,14 +39,8 @@ class ClientData {
 	    struct pollfd get_fd();
 	    void deactivate();
 		void close_fd();
-	    void say_hello(std::string saludo);
-	    bool keep_alive();
-	    std::string& saludo();
-	    std::time_t& timer();
 	    int chronos();
 	    void chronos_reset();
-	    void set_index(size_t index);
-	    size_t get_index();
 };
 
 #endif

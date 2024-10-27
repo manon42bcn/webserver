@@ -14,6 +14,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
+#include <signal.h>
 
 
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
@@ -21,9 +22,14 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Log
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
-        _poll_fds.reserve(100);
-	for (size_t i = 0; i < configs.size(); ++i) {
-		add_server(configs[i].port, configs[i]);
+	_poll_fds.reserve(100);
+	try {
+		for (size_t i = 0; i < configs.size(); ++i) {
+			add_server(configs[i].port, configs[i]);
+		}
+	} catch (const SocketHandler::SocketCreationError &e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw ServerManager::ServerBuildError();
 	}
 	_active = true;
 	_log->log(LOG_DEBUG, SM_NAME, "instance init and ready.");
@@ -31,23 +37,26 @@ ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Log
 
 ServerManager::~ServerManager() {
 	if (!_clients_map.empty()) {
+		_log->log(LOG_DEBUG, SM_NAME,
+		          "Cleaning remaining clients.");
 		for (std::map<int, ClientData*>::iterator it = _clients_map.begin(); it != _clients_map.end(); it++){
 			it->second->close_fd();
 			delete it->second;
 			_clients_map.erase(it);
 		}
 	}
-	for (size_t i = 0; i < _poll_fds.size(); i++)
-	{
-		if (_poll_fds[i].fd > 0) {
-			close(_poll_fds[i].fd);
-		}
-	}
+	_log->log(LOG_DEBUG, SM_NAME,
+	          "Cleaning sockets servers.");
 	for (size_t i = 0; i < _servers.size(); i++) {
 		delete _servers[i];
 	}
 	_log->log(LOG_DEBUG, SM_NAME,
-	          "ServerManager resources cleaned up.");
+	          "Erasing from _polls_fds vector.");
+	for (size_t i = 0; i < _poll_fds.size(); i++) {
+		_poll_fds.erase(_poll_fds.begin() + (int)i);
+	}
+	_log->log(LOG_DEBUG, SM_NAME,
+	          "Server Manager Resources Clean Up.");
 }
 
 void ServerManager::add_server(int port, const ServerConfig& config) {
@@ -62,8 +71,12 @@ void ServerManager::add_server(int port, const ServerConfig& config) {
 			_servers.pop_back();
 			delete server;
 		}
+	} catch (const SocketHandler::SocketCreationError &e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw SocketHandler::SocketCreationError();
 	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, SM_NAME, "Error creating or adding SocketHandler: " + std::string(e.what()));
+		throw ServerManager::ServerBuildError();
 	}
 }
 
@@ -88,13 +101,20 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	return (true);
 }
 
+void ServerManager::turn_off_server() {
+	_log->log(LOG_INFO, SM_NAME,
+	          "Server it will be gracefully stop.");
+	_active = false;
+}
 
 void ServerManager::run() {
 	_log->log(LOG_DEBUG, SM_NAME, "Event loop started.");
+
 	while (_active) {
 		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
-		if (poll_count < 0)
+		if (poll_count < 0 && _active) {
 			_log->fatal_log(SM_NAME, "error in poll process.");
+		}
 		for (size_t i = 0; i < _poll_fds.size(); ++i) {
 			if (_poll_fds[i].revents & POLLIN) {
 				bool is_server = false;
@@ -144,7 +164,6 @@ void    ServerManager::new_client(SocketHandler *server) {
 	ClientData* new_client = new ClientData(server, _log, client_fd);
 	_clients_map.insert(std::make_pair(new_client->get_fd().fd, new_client));
 	_poll_fds.push_back(new_client->get_fd());
-	new_client->set_index(_poll_fds.size() - 1);
 	_log->log(LOG_DEBUG, SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
 }
@@ -166,3 +185,6 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t p
 	}
 }
 
+const char* ServerManager::ServerBuildError::what() const throw() {
+	return ("Error Building Server.");
+}

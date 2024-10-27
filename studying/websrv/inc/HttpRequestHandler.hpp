@@ -90,6 +90,7 @@ class HttpRequestHandler {
 
 	public:
 		HttpRequestHandler(const Logger* log, ClientData* client_data);
+	    ~HttpRequestHandler();
 		//	Temporal Method to debug responses for each method
 //		void send_detailed_response(std::string requested_path);
 

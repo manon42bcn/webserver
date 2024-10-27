@@ -108,10 +108,16 @@ struct LocationTest {
 	LocationTest(const std::string& s) : saludo(s){};
 };
 
+ServerManager* running_server = NULL;
+
+void signal_handler(int sig){
+	(void)sig;
+	running_server->turn_off_server();
+}
 
 int main() {
-	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = getenv("WEBSERVER_PATH");
+	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -156,8 +162,14 @@ int main() {
 	Logger logger(LOG_DEBUG, false);
 	try {
 		ServerManager server_manager(configs, &logger);
+		signal(SIGINT, signal_handler);
+		running_server = &server_manager;
 		server_manager.run();
 	} catch (Logger::NoLoggerPointer& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (ServerManager::ServerBuildError& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	}
 	return 0;

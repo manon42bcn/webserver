@@ -25,22 +25,13 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	_timestamp = std::time(NULL);
 }
 
-ClientData::~ClientData() {}
-
-bool ClientData::keep_alive() {
-	return (this->_active);
-}
-
-void ClientData::say_hello(std::string saludo) {
-	_saludos = saludo;
-}
-
-std::string& ClientData::saludo(){
-        return (this->_saludos);
-}
-
-std::time_t& ClientData::timer(){
-	return (this->_timestamp);
+ClientData::~ClientData() {
+	if (_client_fd.fd >= 0) {
+		close(_client_fd.fd);
+	}
+	_log->log(LOG_DEBUG, CD_MODULE,
+	          "Client Data Resources clean up.");
+	_log = NULL;
 }
 
 int ClientData::chronos() {
@@ -64,14 +55,6 @@ ClientData& ClientData::operator=(const ClientData& orig)
 	this->_active = orig._active;
 	this->_client_fd = orig._client_fd;
 	return (*this);
-}
-
-void ClientData::set_index(size_t index) {
-	_poll_index = index;
-}
-
-size_t ClientData::get_index() {
-	return (_poll_index);
 }
 
 const SocketHandler* ClientData::get_server() {

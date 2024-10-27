@@ -34,7 +34,8 @@ class ServerManager {
 	    std::vector<ClientData> 	    _clients;
 	    std::map<int, ClientData*>      _clients_map;
 		const Logger*			        _log;
-	    bool                            _active;
+		bool                            _active;
+
 public:
 		typedef std::map<int, ClientData*>::iterator t_client_it;
 		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);
@@ -45,6 +46,11 @@ public:
 		bool add_server_to_poll(int server_fd);
 	    void remove_client_from_poll(t_client_it client_data, size_t poll_index);
 	    bool process_request(size_t poll_fd_index);
+	    void turn_off_server();
+	    class ServerBuildError : public std::exception {
+			public:
+			    virtual const char *what() const throw();
+	    };
 };
 
 #endif

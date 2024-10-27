@@ -73,6 +73,14 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	handle_request();
 }
 
+HttpRequestHandler::~HttpRequestHandler() {
+	_client_data = NULL;
+	_location = NULL;
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "HttpRequestHandler resources clean up.");
+	_log = NULL;
+}
+
 /**
  * @brief Reads the HTTP request header from the client socket with a timeout check.
  *
