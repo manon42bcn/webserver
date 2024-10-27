@@ -21,7 +21,7 @@
 #include <string>
 
 #define RH_NAME "HttpRequestHandler"
-#define BUFFER_REQUEST  1024
+#define BUFFER_REQUEST  2048
 #define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
 #define URI_MAX         2048
 
@@ -58,24 +58,30 @@ class HttpRequestHandler {
 		const LocationConfig*   _location;
 		int                     _fd;
 		size_t 					_max_request;
-//
 //	    request
+	    std::string             _request;
 	    std::string             _header;
 	    std::string             _body;
 		std::string 			_content_type;
+	    size_t                  _content_leght;
+//	    parsed
 	    e_methods               _method;
 	    std::string             _path;
 	    std::string             _normalized_path;
+	    std::string             _boundary;
 	    e_access                _access;
 	    bool                    _sanity;
 	    e_http_sts              _status;
 
 		// Init request handler
-		std::string read_http_request();
+		void read_request_header();
 		void parse_method_and_path();
-	    void parse_request(const std::string& request_data);
+	    void parse_header();
+	    void load_header_data();
+	    void load_content();
 	    void validate_request();
-		std::string get_header_value(std::string header, std::string key);
+		std::string get_header_value(std::string& haystack, std::string needle);
+		void parse_content_type();
 	    void get_location_config();
 		void handle_request();
 		void normalize_request_path();

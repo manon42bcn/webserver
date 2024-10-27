@@ -206,16 +206,6 @@ void ServerManager::run() {
 				} else {
 					// Handle client request
 					process_request(i);
-
-					// Close the client connection
-//					close(_poll_fds[i].fd);
-//					_log->log(LOG_DEBUG, SM_NAME,
-//					          "close connection: " + int_to_string((int)i));
-//					// Remove the client descriptor from _poll_fds
-//					_poll_fds.erase(_poll_fds.begin() + (int)i);
-//					_log->log(LOG_DEBUG, SM_NAME,
-//					          "fd remove from _polls_fds vector: " + int_to_string((int)i));
-					 // Adjust index to check the new descriptor in this position
 					--i;
 				}
 			}
