@@ -20,6 +20,7 @@
 #include <ctime>
 
 # define CD_MODULE "ClientData"
+# define TIMEOUT_LIMIT 10
 
 //TODO READ ABOUT vsnprintf
 class ClientData {
@@ -44,7 +45,8 @@ class ClientData {
 	    bool keep_alive();
 	    std::string& saludo();
 	    std::time_t& timer();
-	    int crono();
+	    int chronos();
+	    void chronos_reset();
 	    void set_index(size_t index);
 	    size_t get_index();
 };

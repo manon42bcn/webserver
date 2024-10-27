@@ -81,11 +81,11 @@ class HttpRequestHandler {
 	    void load_content();
 	    void validate_request();
 		std::string get_header_value(std::string& haystack, std::string needle);
-		void parse_content_type();
+//		void parse_content_type();
 	    void get_location_config();
 		void handle_request();
 		void normalize_request_path();
-		void validate_post_path();
+//		void validate_post_path();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:

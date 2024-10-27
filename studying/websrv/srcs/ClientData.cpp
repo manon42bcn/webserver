@@ -43,9 +43,16 @@ std::time_t& ClientData::timer(){
 	return (this->_timestamp);
 }
 
-int ClientData::crono() {
+int ClientData::chronos() {
 	std::time_t now = std::time(NULL);
-	return (now - _timestamp);
+	if (now - _timestamp > TIMEOUT_LIMIT) {
+		_active = false;
+	}
+	return (_active);
+}
+
+void ClientData::chronos_reset() {
+	_timestamp = std::time(NULL);
 }
 
 ClientData& ClientData::operator=(const ClientData& orig)
