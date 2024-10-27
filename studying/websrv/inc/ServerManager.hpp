@@ -34,6 +34,7 @@ class ServerManager {
 	    std::vector<ClientData> 	    _clients;
 	    std::map<int, ClientData*>      _clients_map;
 		const Logger*			        _log;
+	    bool                            _active;
 public:
 		typedef std::map<int, ClientData*>::iterator t_client_it;
 		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);

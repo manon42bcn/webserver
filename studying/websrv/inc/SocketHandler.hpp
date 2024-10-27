@@ -23,6 +23,7 @@ private:
 	const ServerConfig& _config;
 	const Logger*       _log;
 	const std::string   _module;
+	std::string         _port_str;
 
 public:
 	SocketHandler(int port, const ServerConfig& config, const Logger* logger);
@@ -30,6 +31,7 @@ public:
 	int accept_connection();
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;
+	std::string& get_port();
 
 private:
 	bool set_nonblocking(int fd);

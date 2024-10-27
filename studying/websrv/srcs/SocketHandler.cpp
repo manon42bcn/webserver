@@ -55,11 +55,10 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger*
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 	server_addr.sin_port = htons(port);
-
+	_port_str = int_to_string(port);
 	_log->log(LOG_DEBUG, _module, "Linking Socket.");
 	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
 		_log->fatal_log(_module, "Error linking Socket.");
-
 	_log->log(LOG_DEBUG, _module, "Socket to listening mode.");
 	if (listen(_socket_fd, 10) < 0)
 		_log->fatal_log(_module, "Error at listening process.");
@@ -88,21 +87,10 @@ SocketHandler::~SocketHandler() {
 	}
 }
 
-/**
- * @brief Accepts a new incoming client connection on the server socket.
- *
- * This method accepts a connection from a client on the server socket (_socket_fd) and
- * returns the client's file descriptor (client_fd). The client socket is set to non-blocking
- * mode to ensure that the server can handle multiple clients concurrently without blocking.
- *
- * @details
- * - If the accept operation fails (e.g., no connection or an error in the system call),
- *   a log message is generated, and the method returns -1 to indicate the failure.
- * - If setting the client socket to non-blocking mode fails, the client connection is closed,
- *   and the method returns -1.
- *
- * @return int The file descriptor for the accepted client connection, or -1 if an error occurs.
- */
+std::string& SocketHandler::get_port() {
+	return (this->_port_str);
+}
+
 int SocketHandler::accept_connection() {
 	_log->log(LOG_DEBUG, _module,"Accepting Connection.");
 	int client_fd = accept(_socket_fd, NULL, NULL);
