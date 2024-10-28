@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 16:13:06 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:26:07 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ void HttpRequestHandler::parse_header() {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Request parsing error: No header-body delimiter found.");
 	}
+	_log->log(LOG_DEBUG, RH_NAME, _request);
 }
 
 /**
