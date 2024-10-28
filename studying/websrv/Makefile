@@ -13,14 +13,18 @@
 SRCS_FILES		=	webserver.cpp \
 					http_codes_helper.cpp \
 					main.cpp \
+					Logger.cpp \
 					SocketHandler.cpp \
+					ClientData.cpp \
 					HttpRequestHandler.cpp \
 					HttpResponseHandler.cpp \
 					ServerManager.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					http_enum_codes.hpp \
+					Logger.hpp \
 					SocketHandler.hpp \
+					ClientData.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \
 					ServerManager.hpp
@@ -33,6 +37,9 @@ CC				=	c++
 RM				= 	rm -rf
 CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
+WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+
+export WEBSERVER_PATH
 
 all: $(OBJS_DIR) $(NAME)
 
@@ -44,6 +51,13 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
+
+
+run: re
+	@./webserver
+
+local: all
+	@./webserver
 
 clean:
 	$(RM) $(OBJS)

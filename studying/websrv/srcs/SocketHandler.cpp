@@ -19,91 +19,89 @@
 #include <iostream>
 #include <cstring>
 
-/**
- * @brief Constructor de SocketHandler que acepta configuración de servidor.
- *
- * @param port Número del puerto en el que el servidor escuchará.
- * @param config Configuración asociada a este servidor.
- */
-SocketHandler::SocketHandler(int port, const ServerConfig& config)
-		:_socket_fd(-1), _config(config) {
-	// Crear el socket
+
+SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger* logger):
+		_socket_fd(-1),
+        _config(config),
+        _log(logger){
+	if (_log == NULL) {
+		throw Logger::NoLoggerPointer();
+	}
+	_log->log(LOG_DEBUG, SH_NAME,
+	          "Creating Sockets.");
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0) {
-		std::cerr << "Error al crear el socket" << std::endl;
-		exit(EXIT_FAILURE);
+		throw SocketHandler::SocketCreationError();
 	}
 
-	// Configurar la dirección del servidor
+	_log->log(LOG_DEBUG, SH_NAME, "Configure server address.");
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
 	server_addr.sin_port = htons(port);
-
-	// Enlazar el socket
-	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-		std::cerr << "Error al enlazar el socket" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	// Poner el socket en modo escucha
-	if (listen(_socket_fd, 10) < 0) {
-		std::cerr << "Error al escuchar en el socket" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	// Configurar el socket como no bloqueante
+	_port_str = int_to_string(port);
+	_log->log(LOG_DEBUG, SH_NAME, "Linking Socket.");
+	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
+		_log->fatal_log(SH_NAME, "Error linking Socket.");
+	_log->log(LOG_DEBUG, SH_NAME, "Socket to listening mode.");
+	if (listen(_socket_fd, 10) < 0)
+		_log->fatal_log(SH_NAME, "Error at listening process.");
 	set_nonblocking(_socket_fd);
-
-	std::cout << "Servidor configurado y escuchando en el puerto " << port << std::endl;
+	_log->log(LOG_INFO, SH_NAME,
+			  "Server listening. Port: " + int_to_string(port));
 }
 
-/**
- * @brief Acepta una nueva conexión.
- *
- * @return Descriptor del socket del cliente.
- */
+SocketHandler::~SocketHandler() {
+	if (_socket_fd >= 0) {
+		close(_socket_fd);
+		_log->log(LOG_DEBUG, SH_NAME,
+		          "Socket closed.");
+	}
+	_log->log(LOG_DEBUG, SH_NAME,
+	          "SockedHandler resources clean up.");
+	_log = NULL;
+}
+
+std::string& SocketHandler::get_port() {
+	return (this->_port_str);
+}
+
 int SocketHandler::accept_connection() {
+	_log->log(LOG_DEBUG, SH_NAME,"Accepting Connection.");
 	int client_fd = accept(_socket_fd, NULL, NULL);
 	if (client_fd < 0) {
-		std::cerr << "Error al aceptar la conexión" << std::endl;
+		_log->log(LOG_ERROR, SH_NAME,"Error accepting connection.");
 	} else {
 		set_nonblocking(client_fd);  // Asegurarse de que el socket del cliente sea no bloqueante
+		_log->log(LOG_INFO, SH_NAME,"Connection Accepted.");
 	}
 	return client_fd;
 }
 
-/**
- * @brief Devuelve el descriptor del socket.
- *
- * @return int Descriptor del socket.
- */
+
 int SocketHandler::get_socket_fd() const {
 	return (_socket_fd);
 }
 
-/**
- * @brief Devuelve la configuración del servidor.
- *
- * @return ServerConfig Estructura con la configuración del servidor.
- */
 const ServerConfig& SocketHandler::get_config() const {
 	return (_config);
 }
 
-/**
- * @brief Configura el socket como no bloqueante.
- *
- * @param fd Descriptor del socket.
- */
-void SocketHandler::set_nonblocking(int fd) {
+bool SocketHandler::set_nonblocking(int fd) {
+	_log->log(LOG_DEBUG, SH_NAME, "Set connection as nonblocking.");
 	int flags = fcntl(fd, F_GETFL, 0);
 	if (flags == -1) {
-		std::cerr << "Error al obtener las banderas del socket" << std::endl;
-		exit(EXIT_FAILURE);
+		_log->log(LOG_ERROR, SH_NAME, "Error getting socket flags.");
+		return (false);
 	}
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		std::cerr << "Error al configurar el socket como no bloqueante" << std::endl;
-		exit(EXIT_FAILURE);
+		_log->log(LOG_ERROR, SH_NAME, "Error setting socket as nonblocking.");
+		return (false);
 	}
+	_log->log(LOG_INFO, SH_NAME, "Socket set as nonblocking.");
+	return (true);
+}
+
+const char* SocketHandler::SocketCreationError::what(void) const throw() {
+	return ("Error Creating Socket.");
 }

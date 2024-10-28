@@ -10,25 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKETHANDLER_HPP
-#define SOCKETHANDLER_HPP
-#include "webserver.hpp"
-#include "http_enum_codes.hpp"
-#include <string>
+#ifndef _SOCKETHANDLER_HPP_
+# define _SOCKETHANDLER_HPP_
+# include "webserver.hpp"
+# include "http_enum_codes.hpp"
+# include "Logger.hpp"
+# include <string>
+
+# define SH_NAME "SocketHandler"
 
 class SocketHandler {
 private:
-	int _socket_fd;
+	int                 _socket_fd;
 	const ServerConfig& _config;
+	const Logger*       _log;
+	const std::string   _module;
+	std::string         _port_str;
 
+	bool set_nonblocking(int fd);
 public:
-	SocketHandler(int port, const ServerConfig& config);
+	SocketHandler(int port, const ServerConfig& config, const Logger* logger);
+	~SocketHandler();
 	int accept_connection();
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;
 
-private:
-	void set_nonblocking(int fd);
+	std::string& get_port();
+	class SocketCreationError : public std::exception {
+	public:
+		virtual const char *what() const throw();
+	};
 };
 
 #endif

@@ -6,43 +6,51 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 14:04:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/18 13:51:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERMANAGER_HPP
-#define SERVERMANAGER_HPP
+#ifndef __SERVERMANAGER_HPP__
+#define __SERVERMANAGER_HPP__
 
 #include <vector>
 #include <poll.h>
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
+#include "ClientData.hpp"
 #include "webserver.hpp"
+#include "Logger.hpp"
 
-/**
- * @brief Structure to associate a client with the server that accepted the connection.
- */
-struct ClientInfo {
-	SocketHandler*  server;
-	struct pollfd   client_fd;
-};
+#define SM_NAME "ServerManager"
 
 /**
  * @brief Manages multiple server sockets and handles incoming connections.
  */
 class ServerManager {
 	private:
-		std::vector<struct pollfd> _poll_fds;  ///< Vector of file descriptors for poll()
-		std::vector<SocketHandler*> _servers;  ///< Vector of server socket handlers (one per port)
-		std::vector<ClientInfo> _clients;      ///< Vector of clients with their associated servers
+		std::vector<struct pollfd> 	    _poll_fds;
+		std::vector<SocketHandler*>     _servers;
+	    std::vector<ClientData> 	    _clients;
+	    std::map<int, ClientData*>      _clients_map;
+		const Logger*			        _log;
+		bool                            _active;
 
 public:
-		ServerManager(const std::vector<ServerConfig>& configs);
+		typedef std::map<int, ClientData*>::iterator t_client_it;
+		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);
+	    ~ServerManager();
+	    void add_server(int port, const ServerConfig& config);
 		void run();
-		void add_server(int port, const ServerConfig& config);
-		void add_client_to_poll(int client_fd);
-		void add_server_to_poll(int server_fd);
+	    void new_client(SocketHandler* server);
+		bool add_server_to_poll(int server_fd);
+	    void remove_client_from_poll(t_client_it client_data, size_t poll_index);
+	    bool process_request(size_t poll_fd_index);
+	    void turn_off_server();
+	    class ServerBuildError : public std::exception {
+			public:
+			    virtual const char *what() const throw();
+	    };
 };
 
 #endif

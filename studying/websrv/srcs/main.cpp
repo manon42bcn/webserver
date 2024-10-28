@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:50:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 09:33:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 //#include "HttpResponseHandler.hpp"
 #include "ServerManager.hpp"
 //#include "SocketHandler.hpp"
+#include <cstdlib>
 
 void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "FROM: " << location << std::endl;
@@ -107,8 +108,16 @@ struct LocationTest {
 	LocationTest(const std::string& s) : saludo(s){};
 };
 
+ServerManager* running_server = NULL;
+
+void signal_handler(int sig){
+	(void)sig;
+	running_server->turn_off_server();
+}
 
 int main() {
+	std::string base_path = getenv("WEBSERVER_PATH");
+//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -121,7 +130,7 @@ int main() {
 	error_pages[404] = "404.html";
 
 	// Insertar datos en el vector
-	locations.insert(std::make_pair("/", LocationConfig("/", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
@@ -130,31 +139,38 @@ int main() {
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
-	server1.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
+	server1.server_root = base_path + "/data";
 	server1.error_pages[404] = "/404.html";
 	server1.locations = locations;
 	server1.default_pages.push_back("index.html");
-	server1.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
-	server1.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
+	server1.ws_root = base_path + "/data";
+	server1.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server1);
 
 	ServerConfig server2;
 	server2.port = 9090;
 	server2.server_name = "localhost";
-	server2.server_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data/9090";
+	server2.server_root =  base_path + "/data/9090";
 	server2.error_pages[404] = "/404.html";
 	server2.locations = locations;
 	server2.default_pages.push_back("index.html");
 	server2.default_pages.push_back("home.html");
 	server2.default_pages.push_back("index.htm");
-	server2.ws_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/data";
-	server2.ws_errors_root = "/Users/mac/Documents/Cursus/webserver/studying/websrv/default_error_pages";
+	server2.ws_root = base_path + "/data";
+	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	ServerManager server_manager(configs);
-
-
-	// Iniciar el ciclo de eventos
-	server_manager.run();
-
+	Logger logger(LOG_DEBUG, true);
+	try {
+		ServerManager server_manager(configs, &logger);
+		signal(SIGINT, signal_handler);
+		running_server = &server_manager;
+		server_manager.run();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (ServerManager::ServerBuildError& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (std::exception& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	}
 	return 0;
 }

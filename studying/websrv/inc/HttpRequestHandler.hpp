@@ -6,40 +6,30 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/17 11:06:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:10:27 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUESTHANDLER_HPP
-#define HTTPREQUESTHANDLER_HPP
+#ifndef _HTTPREQUESTHANDLER_HPP_
+#define _HTTPREQUESTHANDLER_HPP_
 
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "ClientData.hpp"
+#include "Logger.hpp"
+#include "HttpResponseHandler.hpp"
 #include <string>
 
-enum e_rqs_state {
-	ST_INIT = 0,
-	ST_LOAD_LOCATION = 1,
-	ST_READING = 2,
-	ST_PARSING = 3,
-	ST_LOAD_FILE = 4,
-	ST_ERROR_READING = 5,
-	ST_ERROR_PROCESS = 6,
-	ST_METHOD_PATH = 7
-};
+#define RH_NAME "HttpRequestHandler"
+#define BUFFER_REQUEST  2048
+#define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
+#define URI_MAX         2048
 
 typedef enum s_is_file {
 	DIR_IS = 0,
 	FILE_IS = 1,
 	NONE_IS = 3
 } t_is_file;
-
-typedef int t_code;
-typedef struct s_path {
-	t_code      code;
-	std::string path;
-	s_path(t_code c, const std::string p) : code(c), path(p) {}
-} t_path;
 
 /**
  * @brief Class to encapsulates the logic of get a request, process it and send a response/error
@@ -48,37 +38,54 @@ typedef struct s_path {
 // TODO: state and access are wip.. just explore differents ways to use them
 class HttpRequestHandler {
 	private:
-		int                     _client_socket;
+	    typedef void (HttpRequestHandler::*validate_step)( );
 		const ServerConfig&     _config;
+		const Logger*           _log;
+		ClientData*             _client_data;
 		const LocationConfig*   _location;
-		int                      _state;
-		e_access                _access;
-		e_http_sts              _http_status;
-		e_methods               _method;
+		int                     _fd;
+		size_t 					_max_request;
+//	    request
+	    std::string             _request;
+	    std::string             _header;
+	    std::string             _body;
+		std::string 			_content_type;
+	    size_t                  _content_leght;
+//	    parsed
+	    e_methods               _method;
+	    std::string             _path;
+	    std::string             _normalized_path;
+		std::string 			_query_encoded;
+		e_path_type				_path_type;
+	    std::string             _boundary;
+	    e_access                _access;
+	    bool                    _sanity;
+	    e_http_sts              _status;
 
 		// Init request handler
-		std::string read_http_request();
-		std::string parse_request_and_method(const std::string& request);
-		void get_location_config(const std::string& path);
-		// Entrypoint to workflow
-		bool handle_request(const std::string path);
-		s_path normalize_request_path(std::string& requested_path, const ServerConfig& config);
-		std::string default_plain_error();
-		bool send_error_response(int error_code);
-		std::string get_file_content(const std::string& path);
-		static std::string response_header(int code, size_t content_size, std::string mime);
-		// Handle different methods
-		void handle_get(int client_socket, const ServerConfig& config, const std::string& requested_path);
-		void handle_post(int client_socket, const ServerConfig& config, const std::string& requested_path);
-		void handle_delete(int client_socket, const ServerConfig& config, const std::string& requested_path);
-		// Additional helper methods to handle file serving and MIME types (optional to include here)
-		std::map<std::string, std::string> create_mime_types();
-		std::string get_mime_type(const std::string& path);
+		void read_request_header();
+		void parse_method_and_path();
+		void parse_path_type();
+	    void parse_header();
+	    void load_header_data();
+	    void load_content();
+	    void validate_request();
+//		std::string get_header_value(std::string& haystack, std::string needle);
+//		void parse_content_type();
+	    void get_location_config();
+		void handle_request();
+		void normalize_request_path();
+//		void validate_post_path();
+	    void turn_off_sanity(e_http_sts status, std::string detail);
+
 	public:
-		HttpRequestHandler(int client_socket, const ServerConfig& config);
+		HttpRequestHandler(const Logger* log, ClientData* client_data);
+	    ~HttpRequestHandler();
 		//	Temporal Method to debug responses for each method
-		void send_detailed_response(const std::string method, const ServerConfig& config, std::string requested_path, int client_socket);
+//		void send_detailed_response(std::string requested_path);
+
 };
 
 
 #endif
+

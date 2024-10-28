@@ -17,7 +17,7 @@ WORKDIR /ws
 COPY . .
 RUN make
 #RUN make
-
 EXPOSE 8080
 
-CMD [ "./webserver" ]
+
+CMD [ "make", "run" ]

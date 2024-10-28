@@ -18,7 +18,11 @@ enum e_methods {
 	METHOD_ERR = 1,
 	METHOD_GET = 2,
 	METHOD_POST = 3,
-	METHOD_DELETE = 4
+	METHOD_DELETE = 4,
+	METHOD_PUT = 5,
+	METHOD_HEAD = 6,
+	METHOD_OPTIONS = 7,
+	METHOD_PATCH = 8
 };
 
 enum e_http_sts {
@@ -80,6 +84,7 @@ enum e_http_sts {
 	HTTP_TOO_MANY_REQUESTS = 429,             // "Too Many Requests"
 	HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE = 431, // "Request Header Fields Too Large"
 	HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451, // "Unavailable For Legal Reasons"
+	HTTP_CLIENT_CLOSE_REQUEST = 499,          // "Client Close Request"
 
 	/*####### 5xx - Server Error #######*/
 	HTTP_INTERNAL_SERVER_ERROR = 500,         // "Internal Server Error"
