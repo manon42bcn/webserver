@@ -34,7 +34,6 @@
 class HttpResponseHandler {
 private:
 	int                     _fd;
-	e_http_sts              _http_status;
 	const LocationConfig*   _location;
 	const Logger*           _log;
 	std::string             _content;
@@ -50,7 +49,7 @@ public:
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	s_content get_file_content(std::string& path);
-	void get_request_content();
+	void get_post_content();
 	bool send_error_response();
 	bool sender(const std::string& body, const std::string& path);
 	bool handle_request();

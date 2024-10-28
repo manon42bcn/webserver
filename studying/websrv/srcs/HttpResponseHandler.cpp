@@ -17,9 +17,8 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
                                          s_request& request,
                                          int fd):
 		_fd(fd),
-		_http_status(request.status),
         _location(location),
-        _log(log),
+		_log(log),
 		_request(request) {
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
@@ -56,7 +55,7 @@ bool HttpResponseHandler::handle_request() {
  * an error response is sent instead.
  *
  * @details
- * - The method first checks the `_http_status` to ensure it is `HTTP_OK`. If not, it sends an error response.
+ * - The method first checks the `_request.status` to ensure it is `HTTP_OK`. If not, it sends an error response.
  * - It calls `get_file_content()` to retrieve the content of the requested file.
  * - If the file content is successfully loaded, the method sends the content using `sender()`.
  * - If the file cannot be loaded, an error response is sent.
@@ -64,7 +63,7 @@ bool HttpResponseHandler::handle_request() {
  * @return bool True if the file content was sent successfully, false if an error response was sent.
  */
 bool HttpResponseHandler::handle_get() {
-	if (_http_status != HTTP_OK || _request.access < ACCESS_READ) {
+	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}
@@ -109,7 +108,7 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 		if (!file) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Failed to open file: " + path);
-			_http_status = HTTP_FORBIDDEN;
+			_request.status = HTTP_FORBIDDEN;
 			return (s_content(false, ""));
 		}
 		file.seekg(0, std::ios::end);
@@ -122,19 +121,19 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 		if (!file) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Error reading file: " + path);
-			_http_status = HTTP_INTERNAL_SERVER_ERROR;
+			_request.status = HTTP_INTERNAL_SERVER_ERROR;
 			return (s_content(false, ""));
 		}
 		file.close();
 	} catch (const std::ios_base::failure& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "I/O failure: " + std::string(e.what()));
-		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		_request.status = HTTP_INTERNAL_SERVER_ERROR;
 		return (s_content(false, ""));
 	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Exception: " + std::string(e.what()));
-		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		_request.status = HTTP_INTERNAL_SERVER_ERROR;
 		return (s_content(false, ""));
 	}
 	_log->log(LOG_DEBUG, RSP_NAME,
@@ -179,7 +178,7 @@ std::string HttpResponseHandler::header(int code, size_t content_size, std::stri
  *
  * @details
  * - The HTML content is built by concatenating strings that represent the HTML structure.
- * - The method uses `_http_status`, which should be set prior to calling this method,
+ * - The method uses `_request.status`, which should be set prior to calling this method,
  *   to include the relevant status code in the error page.
  * - The `int_to_string()` function converts the status code to a string, and
  *   `http_status_description()` provides a textual description of the status code.
@@ -196,8 +195,8 @@ std::string HttpResponseHandler::default_plain_error() {
 	        << "<title>Webserver - Error</title>\n"
 	        << "</head>\n<body>\n"
 	        << "<h1>Something went wrong...</h1>\n"
-	        << "<h2>" << int_to_string(_http_status) << " - "
-	        << http_status_description(_http_status) << "</h2>\n"
+	        << "<h2>" << int_to_string(_request.status) << " - "
+	        << http_status_description(_request.status) << "</h2>\n"
 	        << "</body>\n</html>\n";
 	_log->log(LOG_DEBUG, RSP_NAME, "Build default error page.");
 	return (content.str());
@@ -233,13 +232,13 @@ bool HttpResponseHandler::send_error_response() {
 		if (_location->loc_error_mode == TEMPLATE) {
 			it = error_pages->find(0);
 		} else {
-			it = error_pages->find(_http_status);
+			it = error_pages->find(_request.status);
 		}
 		if (!error_pages->empty() || it != error_pages->end()) {
 			s_content file_content = get_file_content(error_file);
 			if (!file_content.status) {
 				_log->log(LOG_DEBUG, RSP_NAME,
-				          "Custom error page cannot be load. http status: " + int_to_string(_http_status));
+				          "Custom error page cannot be load. http status: " + int_to_string(_request.status));
 				content = default_plain_error();
 			} else {
 				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
@@ -248,15 +247,15 @@ bool HttpResponseHandler::send_error_response() {
 				if (_location->loc_error_mode == TEMPLATE)
 				{
 					content = replace_template(content, "{error_code}",
-					                           int_to_string(_http_status));
+					                           int_to_string(_request.status));
 					content = replace_template(content, "{error_detail}",
-					                           http_status_description(_http_status));
+					                           http_status_description(_request.status));
 					_log->log(LOG_DEBUG, RSP_NAME, "Template update to send.");
 				}
 			}
 		} else {
 			_log->log(LOG_DEBUG, RSP_NAME,
-			          "Custom error page was not found. Error: " + int_to_string(_http_status));
+			          "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
 	return (sender(content, file_path));
@@ -279,7 +278,7 @@ bool HttpResponseHandler::send_error_response() {
  */
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
 	try {
-		std::string response = header(_http_status, body.length(), get_mime_type(path));
+		std::string response = header(_request.status, body.length(), get_mime_type(path));
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
@@ -305,15 +304,58 @@ void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail)
 	_request.status = status;
 }
 
-void HttpResponseHandler::get_request_content(){
+void HttpResponseHandler::get_post_content(){
+	if (_request.content_length == 0) {
+		turn_off_sanity(HTTP_LENGTH_REQUIRED,
+		                "Content-length required at POST request.");
+		return;
+	}
+	if (_request.content_type.empty()) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Content-Type required at POST request.");
+		return;
+	}
+	if (_request.body.empty()) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "No body request required at POST request.");
+		return;
+	} else {
+		if (_request.body.length() != _request.content_length) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Received content-length and content size does not match.");
+			return ;
+		}
+	}
+	if (!_request.boundary.empty()) {
+		size_t info_pos = _request.body.find(_request.boundary);
+		std::string content_info;
+		std::string content_body_data;
 
+		if (info_pos != std::string::npos) {
+			size_t content_data = info_pos + _request.boundary.length() + 2;
+			size_t end_info = _request.body.find("\r\n\r\n", content_data);
+			if (end_info != std::string::npos) {
+				content_info = _request.body.substr(content_data, end_info - content_data);
+				size_t final_data = _request.body.find(content_info);
+				if (final_data != std::string::npos) {
+					size_t next_boundary = _request.body.find(_request.boundary, content_info.length());
+					if (next_boundary != std::string::npos) {
+						_content = _request.body.substr(final_data, next_boundary);
+					}
+				}
+				_log->log(LOG_ERROR, RSP_NAME, "contentINFO " + content_info);
+			}
+		}
+	}
 }
 
 // Validation of access privileges will be done before.
 bool HttpResponseHandler::handle_post() {
-	if (_request.body.length() == 0) {
-		turn_off_sanity(HTTP_LENGTH_REQUIRED,
-						"No content lenght in POST request.");
+	get_post_content();
+	turn_off_sanity(HTTP_BAD_REQUEST, "Temporal to avoid saving until fully implemented.");
+	_log->log(LOG_INFO, RSP_NAME, _request.body);
+	_log->log(LOG_WARNING, RSP_NAME, _content);
+	if (!_request.sanity) {
 		send_error_response();
 	}
 	std::ofstream file(_request.normalized_path.c_str());

@@ -32,6 +32,7 @@ bool black_list_extension(const std::string& path);
 bool is_valid_size_t(const std::string& value);
 size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);
+std::string get_header_value(std::string& haystack, std::string needle);
 
 typedef enum e_mode {
 	TEMPLATE=0,
@@ -54,10 +55,15 @@ struct s_request {
 	e_access&    access;
 	bool&        sanity;
 	e_http_sts&  status;
+	size_t&      content_length;
+	std::string& content_type;
+	std::string& boundary;
 	s_request(std::string& b, e_methods& m, std::string& p,
-	          std::string& np, e_access& a, bool& s, e_http_sts& sts):
+	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
+	          size_t& cl, std::string& ct, std::string& bd):
 			  body(b), method(m), path(p), normalized_path(np),
-              access(a), sanity(s), status(sts) {};
+              access(a), sanity(s), status(sts),
+			  content_length(cl), content_type(ct), boundary(bd) {};
 };
 
 struct s_path {

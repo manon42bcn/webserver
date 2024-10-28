@@ -76,3 +76,34 @@ std::string to_lowercase(const std::string& input) {
 	}
 	return (result);
 }
+
+/**
+ * @brief Extracts the value of a specific HTTP header field.
+ *
+ * This method searches the provided header string for a specific key and returns the associated
+ * value. The search is case-insensitive, and it assumes the format `key: value`.
+ *
+ * @details
+ * - The method first converts the key and the header string to lowercase for a case-insensitive search.
+ * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
+ * - If the key is not found, the method returns an empty string.
+ *
+ * @param haystack The HTTP Header format string to be searched over it.
+ * @param needle The key for which the value is to be retrieved (e.g., "content-type").
+ * @return std::string The value associated with the key, or an empty string if the key is not found.
+ */
+std::string get_header_value(std::string& haystack, std::string needle) {
+	std::string lower_header = to_lowercase(haystack);
+	size_t key_pos = lower_header.find(needle);
+
+	if (key_pos != std::string::npos) {
+		key_pos += needle.length() + 1;
+		size_t end_key = lower_header.find("\r\n", key_pos);
+		if (end_key == std::string::npos) {
+			return (haystack.substr(key_pos));
+		} else {
+			return (haystack.substr(key_pos, end_key - key_pos));
+		}
+	}
+	return ("");
+}

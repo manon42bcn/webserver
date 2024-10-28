@@ -80,7 +80,7 @@ class HttpRequestHandler {
 	    void load_header_data();
 	    void load_content();
 	    void validate_request();
-		std::string get_header_value(std::string& haystack, std::string needle);
+//		std::string get_header_value(std::string& haystack, std::string needle);
 //		void parse_content_type();
 	    void get_location_config();
 		void handle_request();

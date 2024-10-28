@@ -328,39 +328,39 @@ void HttpRequestHandler::load_content() {
 	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
 }
 
-/**
- * @brief Extracts the value of a specific HTTP header field.
- *
- * This method searches the provided header string for a specific key and returns the associated
- * value. The search is case-insensitive, and it assumes the format `key: value`.
- *
- * @details
- * - The method first converts the key and the header string to lowercase for a case-insensitive search.
- * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
- * - If the key is not found, the method returns an empty string.
- *
- * @param haystack The HTTP Header format string to be searched over it.
- * @param needle The key for which the value is to be retrieved (e.g., "content-type").
- * @return std::string The value associated with the key, or an empty string if the key is not found.
- */
-std::string HttpRequestHandler::get_header_value(std::string& haystack, std::string needle) {
-	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + needle);
-	std::string lower_header = to_lowercase(haystack);
-	size_t key_pos = lower_header.find(needle);
-
-	if (key_pos != std::string::npos) {
-		_log->log(LOG_DEBUG, RH_NAME, needle + "Found at headers.");
-		key_pos += needle.length() + 1;
-		size_t end_key = lower_header.find("\r\n", key_pos);
-		if (end_key == std::string::npos) {
-			return (haystack.substr(key_pos));
-		} else {
-			return (haystack.substr(key_pos, end_key - key_pos));
-		}
-	}
-	_log->log(LOG_DEBUG, RH_NAME, needle + "not founded at headers.");
-	return ("");
-}
+///**
+// * @brief Extracts the value of a specific HTTP header field.
+// *
+// * This method searches the provided header string for a specific key and returns the associated
+// * value. The search is case-insensitive, and it assumes the format `key: value`.
+// *
+// * @details
+// * - The method first converts the key and the header string to lowercase for a case-insensitive search.
+// * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
+// * - If the key is not found, the method returns an empty string.
+// *
+// * @param haystack The HTTP Header format string to be searched over it.
+// * @param needle The key for which the value is to be retrieved (e.g., "content-type").
+// * @return std::string The value associated with the key, or an empty string if the key is not found.
+// */
+//std::string HttpRequestHandler::get_header_value(std::string& haystack, std::string needle) {
+//	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + needle);
+//	std::string lower_header = to_lowercase(haystack);
+//	size_t key_pos = lower_header.find(needle);
+//
+//	if (key_pos != std::string::npos) {
+//		_log->log(LOG_DEBUG, RH_NAME, needle + "Found at headers.");
+//		key_pos += needle.length() + 1;
+//		size_t end_key = lower_header.find("\r\n", key_pos);
+//		if (end_key == std::string::npos) {
+//			return (haystack.substr(key_pos));
+//		} else {
+//			return (haystack.substr(key_pos, end_key - key_pos));
+//		}
+//	}
+//	_log->log(LOG_DEBUG, RH_NAME, needle + "not founded at headers.");
+//	return ("");
+//}
 
 /**
  * @brief Validates the HTTP request to ensure body content is consistent with the method.
@@ -521,8 +521,8 @@ void HttpRequestHandler::normalize_request_path() {
  */
 void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
-	                                      _normalized_path, _access,
-	                                      _sanity, _status);
+	                                      _normalized_path, _access, _sanity,
+	                                      _status, _content_leght, _content_type, _boundary);
 	HttpResponseHandler response(_location, _log, request_wrapper, _fd);
 	if (!_sanity) {
 		response.send_error_response();
