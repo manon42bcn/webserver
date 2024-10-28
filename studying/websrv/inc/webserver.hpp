@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 19:08:18 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:11:42 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <sstream> 
+#include <sstream>
+#include <csignal>
 
 #define DEL_LINE		"\033[2K"
 #define ITALIC			"\033[3m"
