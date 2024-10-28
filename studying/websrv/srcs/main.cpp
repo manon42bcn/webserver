@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/24 07:43:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 09:33:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,8 @@ void signal_handler(int sig){
 }
 
 int main() {
-//	std::string base_path = getenv("WEBSERVER_PATH");
-	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+	std::string base_path = getenv("WEBSERVER_PATH");
+//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 //	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/23 22:36:58 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 12:39:38 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ bool black_list_extension(const std::string& path);
 bool is_valid_size_t(const std::string& value);
 size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);
-std::string get_header_value(std::string& haystack, std::string needle);
+std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
+std::string trim(const std::string& str, const std::string& chars_to_trim);
 
 typedef enum e_mode {
 	TEMPLATE=0,

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/24 07:26:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 12:40:38 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,6 +329,8 @@ void HttpResponseHandler::get_post_content(){
 	if (!_request.boundary.empty()) {
 		size_t part_start = _request.body.find(_request.boundary);
 		while (part_start != std::string::npos) {
+			_log->log(LOG_DEBUG, RSP_NAME,
+					  "Looking for Post related data.");
 			part_start += _request.boundary.length() + 2;
 			size_t headers_end = _request.body.find("\r\n\r\n", part_start);
 			if (headers_end != std::string::npos) {
@@ -336,16 +338,35 @@ void HttpResponseHandler::get_post_content(){
 				size_t file_data_start = headers_end + 4;
 				size_t next_boundary = _request.body.find(_request.boundary, file_data_start);
 				std::string content_data = _request.body.substr(file_data_start, next_boundary - file_data_start);
+				if (content_info.empty() || content_data.empty()) {
+					turn_off_sanity(HTTP_BAD_REQUEST,
+									"Multi-part body request is incomplete.");
+					return ;
+				}
+				std::string content_disposition = get_header_value(content_info, "content-disposition:", "\r\n");
+				std::string content_name = trim(get_header_value(content_disposition, "name", ";"), "\"");
+				std::string content_filename = trim(get_header_value(content_disposition, "filename", ";"), "\"");
+				std::string content_type = get_header_value(content_info, "content-type:", "\r\n");
+				_log->log(LOG_DEBUG, RSP_NAME, _request.normalized_path);
+				_log->log(LOG_DEBUG, RSP_NAME, _request.path);
+				_log->log(LOG_DEBUG, RSP_NAME, content_disposition);
+				_log->log(LOG_DEBUG, RSP_NAME, content_type);
+				_log->log(LOG_DEBUG, RSP_NAME, content_name);
+				_log->log(LOG_DEBUG, RSP_NAME, content_filename);
+
+
 				_multi_content.push_back(multi_part(content_info, content_data));
 				part_start = next_boundary;
 			} else {
+				_log->log(LOG_DEBUG, RSP_NAME,
+						  "End of multi-part body request.");
 				break;
 			}
 		}
-		for (size_t i = 0; i < _multi_content.size(); i++){
-			_log->log(LOG_DEBUG, RSP_NAME, "info: " + _multi_content[i].data_info);
-			_log->log(LOG_DEBUG, RSP_NAME, "data: " + _multi_content[i].data);
-		}
+//		for (size_t i = 0; i < _multi_content.size(); i++){
+//			_log->log(LOG_DEBUG, RSP_NAME, "info: " + _multi_content[i].data_info);
+//			_log->log(LOG_DEBUG, RSP_NAME, "data: " + _multi_content[i].data);
+//		}
 
 //		size_t info_pos = _request.body.find(_request.boundary);
 //		std::string content_info;

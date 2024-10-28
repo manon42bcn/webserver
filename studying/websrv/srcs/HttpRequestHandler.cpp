@@ -239,8 +239,8 @@ void HttpRequestHandler::parse_method_and_path() {
  * @return None
  */
 void HttpRequestHandler::load_header_data() {
-	std::string content_length = get_header_value(_header, "content-length:");
-	_content_type = get_header_value(_header, "content-type:");
+	std::string content_length = get_header_value(_header, "content-length:", "\r\n");
+	_content_type = get_header_value(_header, "content-type:", "\r\n");
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
@@ -254,7 +254,7 @@ void HttpRequestHandler::load_header_data() {
 	}
 	if (!_content_type.empty()) {
 		if (starts_with(_content_type, "multipart")) {
-			_boundary = get_header_value(_content_type, "boundary");
+			_boundary = get_header_value(_content_type, "boundary", "\r\n");
 			if (_boundary.empty()) {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
