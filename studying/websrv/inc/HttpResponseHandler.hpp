@@ -25,6 +25,12 @@
 
 #define RSP_NAME "HttpResponseHandler"
 
+struct multi_part {
+	std::string data_info;
+	std::string data;
+	multi_part(std::string di, std::string d): data_info(di), data(d) {};
+};
+
 /**
  * @brief Handle HTTP responses
  *
@@ -36,6 +42,7 @@ private:
 	int                     _fd;
 	const LocationConfig*   _location;
 	const Logger*           _log;
+	std::vector<multi_part> _multi_content;
 	std::string             _content;
 	s_request&              _request;
 

@@ -327,25 +327,45 @@ void HttpResponseHandler::get_post_content(){
 		}
 	}
 	if (!_request.boundary.empty()) {
-		size_t info_pos = _request.body.find(_request.boundary);
-		std::string content_info;
-		std::string content_body_data;
-
-		if (info_pos != std::string::npos) {
-			size_t content_data = info_pos + _request.boundary.length() + 2;
-			size_t end_info = _request.body.find("\r\n\r\n", content_data);
-			if (end_info != std::string::npos) {
-				content_info = _request.body.substr(content_data, end_info - content_data);
-				size_t final_data = _request.body.find(content_info);
-				if (final_data != std::string::npos) {
-					size_t next_boundary = _request.body.find(_request.boundary, content_info.length());
-					if (next_boundary != std::string::npos) {
-						_content = _request.body.substr(final_data, next_boundary);
-					}
-				}
-				_log->log(LOG_ERROR, RSP_NAME, "contentINFO " + content_info);
+		size_t part_start = _request.body.find(_request.boundary);
+		while (part_start != std::string::npos) {
+			part_start += _request.boundary.length() + 2;
+			size_t headers_end = _request.body.find("\r\n\r\n", part_start);
+			if (headers_end != std::string::npos) {
+				std::string content_info = _request.body.substr(part_start, headers_end - part_start);
+				size_t file_data_start = headers_end + 4;
+				size_t next_boundary = _request.body.find(_request.boundary, file_data_start);
+				std::string content_data = _request.body.substr(file_data_start, next_boundary - file_data_start);
+				_multi_content.push_back(multi_part(content_info, content_data));
+				part_start = next_boundary;
+			} else {
+				break;
 			}
 		}
+		for (size_t i = 0; i < _multi_content.size(); i++){
+			_log->log(LOG_DEBUG, RSP_NAME, "info: " + _multi_content[i].data_info);
+			_log->log(LOG_DEBUG, RSP_NAME, "data: " + _multi_content[i].data);
+		}
+
+//		size_t info_pos = _request.body.find(_request.boundary);
+//		std::string content_info;
+//		std::string content_body_data;
+//
+//		if (info_pos != std::string::npos) {
+//			size_t content_data = info_pos + _request.boundary.length() + 2;
+//			size_t end_info = _request.body.find("\r\n\r\n", content_data);
+//			if (end_info != std::string::npos) {
+//				content_info = _request.body.substr(content_data, end_info - content_data);
+//				size_t final_data = _request.body.find(content_info);
+//				if (final_data != std::string::npos) {
+//					size_t next_boundary = _request.body.find(_request.boundary, content_info.length());
+//					if (next_boundary != std::string::npos) {
+//						_content = _request.body.substr(final_data, next_boundary);
+//					}
+//				}
+//				_log->log(LOG_ERROR, RSP_NAME, "contentINFO " + content_info);
+//			}
+//		}
 	}
 }
 
