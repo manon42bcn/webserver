@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/21 13:16:50 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:26:07 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,27 +38,31 @@
  * @param client_data The data associated with the client, including the server configuration and file descriptor.
  * @throws Logger::NoLoggerPointer if the logger pointer is null.
  */
-HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_data):
-	_config(client_data.get_server()->get_config()),
+HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_data):
+	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
 	_location(NULL),
-	_fd(_client_data.get_fd().fd),
+	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST),
 	_sanity(true) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
 	size_t i = 0;
-	validate_step steps[] = {&HttpRequestHandler::parse_method_and_path,
+	validate_step steps[] = {&HttpRequestHandler::read_request_header,
+							 &HttpRequestHandler::parse_header,
+	                         &HttpRequestHandler::parse_method_and_path,
+							 &HttpRequestHandler::parse_path_type,
+	                         &HttpRequestHandler::load_header_data,
+	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request,
 	                         &HttpRequestHandler::get_location_config,
 	                         &HttpRequestHandler::normalize_request_path};
-	std::string request_data = read_http_request();
-	parse_request(request_data);
+
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
-	while (i < 4)
+	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
 		if (!_sanity)
@@ -70,113 +74,101 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData& client_dat
 	handle_request();
 }
 
+HttpRequestHandler::~HttpRequestHandler() {
+	_client_data = NULL;
+	_location = NULL;
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "HttpRequestHandler resources clean up.");
+	_log = NULL;
+}
+
 /**
- * @brief Parses an HTTP request into its header and body.
+ * @brief Reads the HTTP request header from the client socket with a timeout check.
  *
- * This method splits the provided HTTP request string into a header and body, using the
- * delimiter `\r\n\r\n` to identify where the header ends and the body begins.
+ * This method reads the header data from the client socket in chunks and appends it to `_request`.
+ * It stops reading when the header size exceeds `_max_request`, the timeout defined in `_client_data`
+ * expires, or when the header-body delimiter `\r\n\r\n` is found.
  *
  * @details
- * - The method first searches for the delimiter `\r\n\r\n` to identify the end of the header.
- * - If the delimiter is found, the header is extracted and stored in `_header`.
- * - If there is additional data after the delimiter, it is stored in `_body`.
- * - If the delimiter is not found, the method disables the sanity check and sets the HTTP status to `HTTP_BAD_REQUEST`.
+ * - The method reads data in chunks using `recv` and appends it to `_request`.
+ * - If the accumulated size exceeds `_max_request`, it disables sanity and sets the HTTP status to `HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE`.
+ * - If the timeout in `_client_data` expires, it disables sanity and sets the status to `HTTP_REQUEST_TIMEOUT`.
+ * - If the client closes the connection, it sets the status to `HTTP_CLIENT_CLOSE_REQUEST`.
+ * - On successful read, it resets the timeout counter in `_client_data`.
  *
- * @param request_data The full HTTP request as a string.
  * @return None
  */
-void HttpRequestHandler::parse_request(const std::string &request_data) {
-	size_t header_end = request_data.find("\r\n\r\n");
-
-	if (header_end != std::string::npos) {
-		_header = request_data.substr(0, header_end);
-		header_end += 4;
-		if (header_end < request_data.length()) {
-			_body = request_data.substr(header_end);
-		}
-	} else {
-		turn_off_sanity(HTTP_BAD_REQUEST,
-		                "Request parsing error: No header-body delimiter found.");
-	}
-}
-
-/**
- * @brief Extracts the value of a specific HTTP header field.
- *
- * This method searches the provided header string for a specific key and returns the associated
- * value. The search is case-insensitive, and it assumes the format `key: value`.
- *
- * @details
- * - The method first converts the key and the header string to lowercase for a case-insensitive search.
- * - It searches for the key followed by `": "` to locate the start of the value.
- * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
- * - If the key is not found, the method returns an empty string.
- *
- * @param header The full HTTP header string.
- * @param key The key for which the value is to be retrieved (e.g., "content-type").
- * @return std::string The value associated with the key, or an empty string if the key is not found.
- */
-std::string HttpRequestHandler::get_header_value(std::string header, std::string key) {
-	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + key);
-	header = to_lowercase(header);
-	size_t key_pos = header.find(key);
-	if (key_pos != std::string::npos) {
-		_log->log(LOG_DEBUG, RH_NAME, key + "Found at headers.");
-		key_pos += key.length() + 2;
-		size_t end_key = header.find("\n\n", key_pos);
-		return (header.substr(key_pos, end_key - key_pos));
-	}
-	_log->log(LOG_DEBUG, RH_NAME, key + "not founded at headers.");
-	return ("");
-}
-
-/**
- * @brief Reads an HTTP request from the client socket.
- *
- * This method reads data from the client socket and accumulates it into a buffer, building
- * the complete HTTP request. It handles errors such as oversized requests and client disconnections.
- *
- * @details
- * - The method reads data in chunks from the socket, appending it to the `request` string.
- * - If the total request size exceeds `_max_request`, the method sets the HTTP status to
- *   `HTTP_CONTENT_TOO_LARGE` and logs a warning.
- * - If an error occurs during reading, it logs the error, sets the HTTP status to
- *   `HTTP_INTERNAL_SERVER_ERROR`, and returns an empty string.
- * - If the client closes the connection without sending data, the method sets the HTTP status
- *   to `HTTP_CLIENT_CLOSE_REQUEST` and logs the event.
- *
- * @return std::string The full HTTP request as a string, or an empty string if an error occurs.
- */
-std::string HttpRequestHandler::read_http_request() {
+void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
-	std::string request;
 	int         read_byte;
 	size_t      size = 0;
 
 	_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-	while ((read_byte = read(_fd, buffer, sizeof(buffer) - 1)) > 0) {
+	while ((read_byte = recv(_fd, buffer, sizeof(buffer), 0)) > 0) {
 		size += read_byte;
 		if (size > _max_request) {
-			turn_off_sanity(HTTP_CONTENT_TOO_LARGE, "Request too large.");
-			return ("");
+			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
+			                "Request Header too large.");
+			return ;
 		}
-		buffer[read_byte] = '\0';
-		request += buffer;
-		if (read_byte < (int)(sizeof(buffer) - 1))
-			break;
+		_request.append(buffer, read_byte);
+		if (_request.find("\r\n\r\n") != std::string::npos) {
+			break ;
+		}
+		if (!_client_data->chronos()) {
+			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+			                "Request Timeout.");
+			return ;
+		}
 	}
-	if (read_byte < 0) {
+	if (read_byte < 0 && size == 0) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Error Reading From Socket." + int_to_string(read_byte));
-		return ("");
+		                "Error Reading From Socket. " + int_to_string(read_byte));
+		return ;
 	}
 	if (size == 0) {
 		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 		                "Client Close Request");
-		return ("");
+		return ;
 	}
-	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
-	return (request);
+	_client_data->chronos_reset();
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "Request read.");
+}
+
+/**
+ * @brief Parses the HTTP request to separate the header from the body, ensuring the header is not empty.
+ *
+ * This method locates the header-body delimiter `\r\n\r\n` within the request and separates the header portion.
+ * It verifies that the header is not empty before continuing, assigning any remaining data as the body in `_request`.
+ *
+ * @details
+ * - If the delimiter `\r\n\r\n` is found, the method extracts and assigns the header to `_header`.
+ * - If `_header` is empty, the method disables sanity and sets the status to `HTTP_BAD_REQUEST`.
+ * - The remaining content after the delimiter is assigned to `_request` as the body.
+ * - If the delimiter is not found, it disables sanity and sets the status to `HTTP_BAD_REQUEST`.
+ *
+ * @return None
+ */
+void HttpRequestHandler::parse_header() {
+	size_t header_end = _request.find("\r\n\r\n");
+
+	if (header_end != std::string::npos) {
+		_header = _request.substr(0, header_end);
+		if (_header.empty()) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Request Header is empty.");
+			return ;
+		}
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "Header successfully parsed.");
+		header_end += 4;
+		_request = _request.substr(header_end);
+	} else {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Request parsing error: No header-body delimiter found.");
+	}
+	_log->log(LOG_DEBUG, RH_NAME, _request);
 }
 
 /**
@@ -187,23 +179,19 @@ std::string HttpRequestHandler::read_http_request() {
  * appropriate HTTP error status.
  *
  * @details
- * - If the header is empty, it immediately disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- * - The method is extracted by finding the first space in the header. If the method is invalid or empty,
- *   sanity is turned off and an error status is set.
- * - The path is extracted by finding the next space in the header. If the path exceeds `URI_MAX` or is missing,
- *   the method sets the status to `HTTP_URI_TOO_LONG` or `HTTP_BAD_REQUEST`, respectively.
+ * - If the header does not contain a space character to separate the method, it sets the status to `HTTP_BAD_REQUEST`.
+ * - The method portion is extracted and validated; if it is empty or invalid, it disables sanity.
+ * - The path is extracted next; if it exceeds `URI_MAX`, it disables sanity and sets the status to `HTTP_URI_TOO_LONG`.
+ * - Upon successful parsing, the method and path are logged for tracking.
  *
  * @return None
  */
 void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
-	if (_header.empty()) {
-		turn_off_sanity(HTTP_BAD_REQUEST, "Header is empty or malformed.");
-		return;
-	}
 
-	_log->log(LOG_DEBUG, RH_NAME, "Parsing Request to get path and method.");
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Parsing Request to get path and method.");
 	size_t method_end = _header.find(' ');
 	if (method_end != std::string::npos) {
 		method = _header.substr(0, method_end);
@@ -238,20 +226,173 @@ void HttpRequestHandler::parse_method_and_path() {
 	}
 }
 
+void HttpRequestHandler::parse_path_type() {
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Parsing Path type.");
+	size_t pos = _path.find('?');
+	if (pos == std::string::npos) {
+		_path_type = PATH_REGULAR;
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Regular Path to normalize.");
+		return;
+	}
+	_query_encoded = _path.substr(pos + 1);
+	_path = _path.substr(0, pos);
+	_path_type = PATH_QUERY;
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Query found and parse from path.");
+}
+
 /**
- * @brief Validates the HTTP request by checking the body and content length.
+ * @brief Parses the HTTP request header to extract the method and path.
  *
- * This method checks the consistency of the HTTP request body with the HTTP method.
- * It ensures that the request adheres to the following rules:
- * - Methods such as GET, HEAD, and OPTIONS should not have a body.
- * - Methods such as POST, PUT, and PATCH require a body.
- * - If a body is present, the `Content-Length` header must be valid and must match the actual body size.
+ * This method analyzes the `_header` string to extract the HTTP method and the requested path.
+ * If the header is malformed or if the method or path are invalid, it disables sanity and sets the
+ * appropriate HTTP error status.
  *
  * @details
- * - If the body is present but the method does not allow it (e.g., GET or HEAD), the method disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- * - If the body is missing but the method requires it (e.g., POST), sanity is disabled and the request is rejected.
- * - If the body is present, it verifies that the `Content-Length` header matches the size of the body.
- * - If any validation fails, the method disables sanity and logs the appropriate error message.
+ * - If the header does not contain a space character to separate the method, it sets the status to `HTTP_BAD_REQUEST`.
+ * - The method portion is extracted and validated; if it is empty or invalid, it disables sanity.
+ * - The path is extracted next; if it exceeds `URI_MAX`, it disables sanity and sets the status to `HTTP_URI_TOO_LONG`.
+ * - Upon successful parsing, the method and path are logged for tracking.
+ *
+ * @return None
+ */
+void HttpRequestHandler::load_header_data() {
+	std::string content_length = get_header_value(_header, "content-length:", "\r\n");
+	_content_type = get_header_value(_header, "content-type:", "\r\n");
+
+	if (!content_length.empty()){
+		if (is_valid_size_t(content_length)) {
+			_content_leght = str_to_size_t(content_length);
+		} else {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Content-Length malformed.");
+		}
+	} else {
+		_content_leght = 0;
+	}
+	if (!_content_type.empty()) {
+		if (starts_with(_content_type, "multipart")) {
+			_boundary = get_header_value(_content_type, "boundary", "\r\n");
+			if (_boundary.empty()) {
+				turn_off_sanity(HTTP_BAD_REQUEST,
+				                "Boundary malformed or not present with a multipart Content-Type.");
+			}
+			size_t end_type = _content_type.find(';');
+			if (end_type != std::string::npos) {
+				_content_type = _content_type.substr(0, end_type);
+			}
+		}
+	}
+}
+
+/**
+ * @brief Loads the HTTP request content from the client socket.
+ *
+ * This method reads the body content of the HTTP request up to the specified `Content-Length`.
+ * It verifies that the body does not exceed `_max_request`, and checks for timeout during the reading process.
+ *
+ * @details
+ * - If `Content-Length` is zero, the method logs this information and returns immediately.
+ * - Reads in chunks from the socket, accumulating the data in `_request` until the specified length or a timeout occurs.
+ * - If the accumulated size exceeds `_max_request`, it disables sanity and sets the status to `HTTP_CONTENT_TOO_LARGE`.
+ * - If the client closes the connection or an error occurs, it sets the appropriate HTTP status.
+ * - On successful read, it assigns the accumulated content to `_body`.
+ *
+ * @return None
+ */
+void HttpRequestHandler::load_content() {
+	if (_content_leght == 0) {
+		_log->log(LOG_INFO, RH_NAME,
+		          "No Content-Length to read from FD.");
+		return ;
+	}
+
+	char buffer[BUFFER_REQUEST];
+	int         read_byte;
+	size_t      size = 0;
+	size_t      to_read = _content_leght - _request.length();
+
+	while (to_read > 0) {
+		read_byte = recv(_fd, buffer, sizeof(buffer) - 1, 0);
+		if (read_byte < 0) {
+			continue ;
+		}
+		size += read_byte;
+		to_read -= read_byte;
+		if (size > _max_request) {
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+			                "Body Content too Large.");
+			return ;
+		}
+		_request.append(buffer, read_byte);
+		if (!_client_data->chronos()) {
+			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+			                "Request Timeout.");
+			return ;
+		}
+	}
+	if (read_byte < 0 && size == 0) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                "Error Reading From Socket. " + int_to_string(read_byte));
+		return ;
+	}
+	if (size == 0) {
+		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+		                "Client Close Request");
+		return ;
+	}
+	_client_data->chronos_reset();
+	_body = _request;
+	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
+}
+
+///**
+// * @brief Extracts the value of a specific HTTP header field.
+// *
+// * This method searches the provided header string for a specific key and returns the associated
+// * value. The search is case-insensitive, and it assumes the format `key: value`.
+// *
+// * @details
+// * - The method first converts the key and the header string to lowercase for a case-insensitive search.
+// * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
+// * - If the key is not found, the method returns an empty string.
+// *
+// * @param haystack The HTTP Header format string to be searched over it.
+// * @param needle The key for which the value is to be retrieved (e.g., "content-type").
+// * @return std::string The value associated with the key, or an empty string if the key is not found.
+// */
+//std::string HttpRequestHandler::get_header_value(std::string& haystack, std::string needle) {
+//	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + needle);
+//	std::string lower_header = to_lowercase(haystack);
+//	size_t key_pos = lower_header.find(needle);
+//
+//	if (key_pos != std::string::npos) {
+//		_log->log(LOG_DEBUG, RH_NAME, needle + "Found at headers.");
+//		key_pos += needle.length() + 1;
+//		size_t end_key = lower_header.find("\r\n", key_pos);
+//		if (end_key == std::string::npos) {
+//			return (haystack.substr(key_pos));
+//		} else {
+//			return (haystack.substr(key_pos, end_key - key_pos));
+//		}
+//	}
+//	_log->log(LOG_DEBUG, RH_NAME, needle + "not founded at headers.");
+//	return ("");
+//}
+
+/**
+ * @brief Validates the HTTP request to ensure body content is consistent with the method.
+ *
+ * This method checks that the presence or absence of a request body matches the HTTP method requirements.
+ * - Methods GET, HEAD, and OPTIONS should not have a body.
+ * - Methods POST, PUT, and PATCH require a body.
+ *
+ * @details
+ * - If a body is present with GET, HEAD, or OPTIONS, it disables sanity and sets the status to `HTTP_BAD_REQUEST`.
+ * - If a body is missing with POST, PUT, or PATCH, it also disables sanity and sets the status to `HTTP_BAD_REQUEST`.
+ * - Logs warnings indicating mismatches between the method and body presence.
  *
  * @return None
  */
@@ -260,20 +401,7 @@ void HttpRequestHandler::validate_request() {
 		if (_method == METHOD_GET || _method == METHOD_HEAD || _method == METHOD_OPTIONS) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body received with GET, HEAD or OPTION method.");
-		}
-		std::string content_length = get_header_value(_header, "content-length");
-		if (content_length.empty()) {
-			turn_off_sanity(HTTP_LENGTH_REQUIRED,
-			                "Content Lenght required when body is received.");
-		}
-		if (is_valid_size_t(content_length)) {
-			if (str_to_size_t(content_length) != _body.length()) {
-				turn_off_sanity(HTTP_BAD_REQUEST,
-				                "Content size header and body size does not match.");
-			}
-		} else {
-			turn_off_sanity(HTTP_BAD_REQUEST,
-			                "Content size header non valid value.");
+			return ;
 		}
 	} else {
 		if (_method == METHOD_POST || _method == METHOD_PUT || _method == METHOD_PATCH) {
@@ -337,7 +465,17 @@ void HttpRequestHandler::get_location_config() {
  */
 void HttpRequestHandler::normalize_request_path() {
 	std::string eval_path = _config.server_root + _location->loc_root + _path;
-	_log->log(LOG_DEBUG, RH_NAME, "Normalize path to get proper file to serve.");
+
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Normalize path to get proper file to serve." + eval_path);
+
+	if (_method == METHOD_POST) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Path build to a POST request");
+		_normalized_path = eval_path;
+		return ;
+	}
+
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
 		_normalized_path = eval_path;
@@ -349,8 +487,9 @@ void HttpRequestHandler::normalize_request_path() {
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
-
+		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
 		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
+			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
 				_log->log(LOG_INFO, RH_NAME, "Default File found");
 				_normalized_path = eval_path + _location->loc_default_pages[i];
@@ -362,6 +501,29 @@ void HttpRequestHandler::normalize_request_path() {
 	turn_off_sanity(HTTP_NOT_FOUND,
 	                "Requested path not found " + _path);
 }
+
+//void HttpRequestHandler::validate_post_path() {
+//	if (_content_type.empty()) {
+//		turn_off_sanity(HTTP_BAD_REQUEST,
+//						"Content-Type mandatory in POST Requests.");
+//		return ;
+//	}
+//	if (!valid_mime_type(_path)) {
+//		turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
+//						"MIME type not supported.");
+//		return ;
+//	}
+//	if (black_list_extension(_path)) {
+//		turn_off_sanity(HTTP_FORBIDDEN,
+//						"Extension file is part of black list.");
+//		return ;
+//	}
+//	std::string path_type = get_mime_type(_path);
+//	if (path_type != _content_type) {
+//		turn_off_sanity(HTTP_BAD_REQUEST,
+//						"Content-Type header does not match with path POST request.");
+//	}
+//}
 
 /**
  * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
@@ -379,9 +541,10 @@ void HttpRequestHandler::normalize_request_path() {
  */
 void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
-	                                      _normalized_path, _access,
-	                                      _sanity, _status);
-	HttpResponseHandler response(_location, _log, request_wrapper, _fd);
+	                                      _normalized_path, _access, _sanity,
+	                                      _status, _content_leght, _content_type,
+										  _boundary, _path_type, _query_encoded);
+	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	if (!_sanity) {
 		response.send_error_response();
 	} else {

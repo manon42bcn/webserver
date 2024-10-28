@@ -17,24 +17,30 @@
 #include "Logger.hpp"
 #include <poll.h>
 #include <unistd.h>
+#include <ctime>
 
 # define CD_MODULE "ClientData"
+# define TIMEOUT_LIMIT 10
 
+//TODO READ ABOUT vsnprintf
 class ClientData {
 	private:
 		const SocketHandler*    _server;
 		const Logger*           _log;
 	    bool                    _active;
 		struct pollfd           _client_fd;
+	    std::time_t             _timestamp;
 
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
 	    ClientData& operator=(const ClientData& orig);
 	    const SocketHandler* get_server();
-	    struct pollfd& get_fd();
+	    struct pollfd get_fd();
 	    void deactivate();
 		void close_fd();
+	    int chronos();
+	    void chronos_reset();
 };
 
 #endif

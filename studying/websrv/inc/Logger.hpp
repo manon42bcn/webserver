@@ -6,7 +6,7 @@
 /*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 21:36:54 by mac               #+#    #+#             */
-/*   Updated: 2024/10/18 13:24:20 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 08:14:53 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef __LOGGER_HPP__
@@ -16,6 +16,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <sstream>
 
 /**
  * @brief Logger level enum
@@ -49,6 +50,9 @@ private:
 public:
 	Logger(int level, bool log_to_file);
 	~Logger();
+	void to_out(const char c) const;
+	template<typename T>
+	void new_log(int level, const std::string& module, T message) const;
 	void log(int level, const std::string& module, const std::string& message) const;
 	void fatal_log(const std::string& module, const std::string& message) const;
 

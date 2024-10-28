@@ -17,13 +17,17 @@
 # include "Logger.hpp"
 # include <string>
 
+# define SH_NAME "SocketHandler"
+
 class SocketHandler {
 private:
 	int                 _socket_fd;
 	const ServerConfig& _config;
 	const Logger*       _log;
 	const std::string   _module;
+	std::string         _port_str;
 
+	bool set_nonblocking(int fd);
 public:
 	SocketHandler(int port, const ServerConfig& config, const Logger* logger);
 	~SocketHandler();
@@ -31,8 +35,11 @@ public:
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;
 
-private:
-	bool set_nonblocking(int fd);
+	std::string& get_port();
+	class SocketCreationError : public std::exception {
+	public:
+		virtual const char *what() const throw();
+	};
 };
 
 #endif
