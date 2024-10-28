@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/24 20:37:05 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 13:39:29 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,7 +523,7 @@ void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_leght, _content_type, _boundary);
-	HttpResponseHandler response(_location, _log, request_wrapper, _fd);
+	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	if (!_sanity) {
 		response.send_error_response();
 	} else {
