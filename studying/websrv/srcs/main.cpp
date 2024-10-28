@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/25 21:41:01 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:05:55 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,12 @@ struct LocationTest {
 	LocationTest(const std::string& s) : saludo(s){};
 };
 
+ServerManager* running_server = NULL;
+
+void signal_handler(int sig){
+	(void)sig;
+	running_server->turn_off_server();
+}
 
 int main(int argc, char *argv[]) {
 	Logger logger(LOG_DEBUG, false);
@@ -161,8 +167,14 @@ int main(int argc, char *argv[]) {
 	// configs.push_back(server2);
 	try {
 		ServerManager server_manager(configs, &logger);
+		signal(SIGINT, signal_handler);
+		running_server = &server_manager;
 		server_manager.run();
 	} catch (Logger::NoLoggerPointer& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (ServerManager::ServerBuildError& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	}
 	return 0;

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 11:20:38 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/18 13:24:00 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/24 08:18:59 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,20 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 	}
 }
 
+template<typename T>
+void Logger::new_log(int log_level, const std::string &module, T message_content) const {
+	std::ostringstream message;
+	message << message_content;
+	if (log_level < LOG_DEBUG && log_level > LOG_ERROR) {
+		*(_log_out) << _log_level[LOG_ERROR] << "[LOGGER]: Log level out of range." << std::endl;
+		return;
+	} else {
+		if (log_level >= _level)
+			*(_log_out) << _log_level[log_level] << module << "]: " << message << std::endl;
+		return;
+	}
+}
+
 /**
  * @brief Public method to log an error message and exit from current execution.
  *
@@ -111,6 +125,10 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
 	exit(1);
  }
 
+void Logger::to_out(const char c) const {
+	*(_log_out) << "[" << c << "]" << std::endl;
+}
+
  /**
  * @brief Provides an error message when a Logger pointer is null.
  *
@@ -122,4 +140,5 @@ void Logger::log(int log_level, const std::string& module, const std::string& me
  const char *Logger::NoLoggerPointer::what(void) const throw() {
 	 return ("Logger Pointer cannot be NULL.");
  }
+
 

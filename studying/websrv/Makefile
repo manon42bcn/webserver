@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 22:26:19 by mporras-          #+#    #+#              #
-#    Updated: 2024/10/25 21:52:38 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/10/28 19:08:31 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,14 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
 
-run: all
+
+run: re
+	@./webserver
+
+local: all
+	@./webserver
+
+local: all
 	@./webserver configs/test1.conf
 
 clean:

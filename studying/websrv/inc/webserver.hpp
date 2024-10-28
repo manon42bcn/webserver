@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/26 20:44:05 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:08:18 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,14 @@ e_methods method_string_to_enum(const std::string& method);
 std::string http_status_description(e_http_sts code);
 std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
+bool valid_mime_type(const std::string& path);
 std::string replace_template(std::string content, const std::string& key, const std::string& value);
+bool black_list_extension(const std::string& path);
+bool is_valid_size_t(const std::string& value);
+size_t str_to_size_t(const std::string& value);
+std::string to_lowercase(const std::string& input);
+std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
+std::string trim(const std::string& str, const std::string& chars_to_trim);
 
 typedef enum e_mode {
 	TEMPLATE=0,
@@ -84,8 +91,39 @@ typedef enum e_access {
 	ACCESS_BAD_REQUEST = 0,
 	ACCESS_FORBIDDEN = 1,
 	ACCESS_READ = 2,
-	ACCESS_WRITE = 3
+	ACCESS_WRITE = 3,
+	ACCESS_DELETE = 4
 } t_access;
+
+enum e_path_type {
+	PATH_REGULAR = 0,
+	PATH_QUERY = 1,
+	PATH_ENCODED = 2
+};
+
+struct s_request {
+	std::string& body;
+	e_methods&   method;
+	std::string& path;
+	std::string& normalized_path;
+	e_access&    access;
+	bool&        sanity;
+	e_http_sts&  status;
+	size_t&      content_length;
+	std::string& content_type;
+	std::string& boundary;
+	e_path_type& path_type;
+	std::string& query;
+
+	s_request(std::string& b, e_methods& m, std::string& p,
+	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
+	          size_t& cl, std::string& ct, std::string& bd,
+			  e_path_type& pt, std::string& qy):
+			  body(b), method(m), path(p), normalized_path(np),
+              access(a), sanity(s), status(sts),
+			  content_length(cl), content_type(ct), boundary(bd),
+			  path_type(pt), query(qy){};
+};
 
 struct s_path {
 	e_http_sts  code;

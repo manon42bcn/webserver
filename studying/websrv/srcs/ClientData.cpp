@@ -22,9 +22,29 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	}
 	_client_fd.fd = fd;
 	_client_fd.events = POLLIN;
+	_timestamp = std::time(NULL);
 }
 
-ClientData::~ClientData() {}
+ClientData::~ClientData() {
+	if (_client_fd.fd >= 0) {
+		close(_client_fd.fd);
+	}
+	_log->log(LOG_DEBUG, CD_MODULE,
+	          "Client Data Resources clean up.");
+	_log = NULL;
+}
+
+int ClientData::chronos() {
+	std::time_t now = std::time(NULL);
+	if (now - _timestamp > TIMEOUT_LIMIT) {
+		_active = false;
+	}
+	return (_active);
+}
+
+void ClientData::chronos_reset() {
+	_timestamp = std::time(NULL);
+}
 
 ClientData& ClientData::operator=(const ClientData& orig)
 {
@@ -41,7 +61,7 @@ const SocketHandler* ClientData::get_server() {
 	return (_server);
 }
 
-struct pollfd& ClientData::get_fd() {
+struct pollfd ClientData::get_fd() {
 	return (_client_fd);
 }
 

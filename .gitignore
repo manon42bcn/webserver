@@ -5,6 +5,8 @@ objs
 *.d
 *.o
 webserv
+webserver
+*.log
 
 .DS_Store
 .vscode

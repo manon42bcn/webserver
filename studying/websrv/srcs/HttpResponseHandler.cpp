@@ -6,20 +6,22 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 13:50:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:25:13 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponseHandler.hpp"
 
-HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, const LocationConfig *location,
-                                         const Logger *log, e_methods method, s_path& path):
+HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
+                                         const Logger *log,
+										 ClientData* client_data,
+										 s_request& request,
+										 int fd):
 		_fd(fd),
-		_http_status(status),
         _location(location),
-        _log(log),
-        _method(method),
-		_resource(path) {
+		_log(log),
+		_client_data(client_data),
+		_request(request) {
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
 	_log->log(LOG_DEBUG, RSP_NAME, "HttpResponseHandler init.");
@@ -27,21 +29,20 @@ HttpResponseHandler::HttpResponseHandler(int fd, e_http_sts status, const Locati
 
 bool HttpResponseHandler::handle_request() {
 
-	switch ((int)_method) {
+	switch (_request.method) {
 		case METHOD_GET:
 			_log->log(LOG_DEBUG, RSP_NAME, "Handle GET request.");
 			return (handle_get());
-//		case METHOD_POST:
-//			_log->log(LOG_DEBUG, RSP_NAME, "Handle POST request.");
-//			handle_post(path);
-//			break;
+		case METHOD_POST:
+			_log->log(LOG_DEBUG, RSP_NAME, "Handle POST request.");
+			return 	(handle_post());
+			break;
 //		case METHOD_DELETE:
 //			_log->log(LOG_DEBUG, RSP_NAME, "Handle DELETE request.");
 //			handle_delete(path);
 //			break;
 		default:
-			_log->log(LOG_ERROR, RSP_NAME, "Method not allowed.");
-			_http_status = HTTP_NOT_IMPLEMENTED;
+			turn_off_sanity(HTTP_NOT_IMPLEMENTED, "Method not allowed.");
 			send_error_response();
 	}
 	return (true);
@@ -56,7 +57,7 @@ bool HttpResponseHandler::handle_request() {
  * an error response is sent instead.
  *
  * @details
- * - The method first checks the `_http_status` to ensure it is `HTTP_OK`. If not, it sends an error response.
+ * - The method first checks the `_request.status` to ensure it is `HTTP_OK`. If not, it sends an error response.
  * - It calls `get_file_content()` to retrieve the content of the requested file.
  * - If the file content is successfully loaded, the method sends the content using `sender()`.
  * - If the file cannot be loaded, an error response is sent.
@@ -64,16 +65,15 @@ bool HttpResponseHandler::handle_request() {
  * @return bool True if the file content was sent successfully, false if an error response was sent.
  */
 bool HttpResponseHandler::handle_get() {
-
-	if (_http_status != HTTP_OK) {
+	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}
-	s_content content = get_file_content(_resource.path);
+	s_content content = get_file_content(_request.normalized_path);
 	if (content.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
-		return (sender(content.content, _resource.path));
+		return (sender(content.content, _request.normalized_path));
 	} else {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Get will send a error due to content load fails.");
@@ -98,7 +98,7 @@ bool HttpResponseHandler::handle_get() {
  * @param path The file system path to the file.
  * @return s_content A structure containing a success flag and the file content.
  */
-s_content HttpResponseHandler::get_file_content(const std::string& path) {
+s_content HttpResponseHandler::get_file_content(std::string& path) {
 	std::string content;
 	// Check if path is empty. To avoid further unnecessary errors
 	if (path.empty())
@@ -110,7 +110,7 @@ s_content HttpResponseHandler::get_file_content(const std::string& path) {
 		if (!file) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Failed to open file: " + path);
-			_http_status = HTTP_FORBIDDEN;
+			_request.status = HTTP_FORBIDDEN;
 			return (s_content(false, ""));
 		}
 		file.seekg(0, std::ios::end);
@@ -123,19 +123,19 @@ s_content HttpResponseHandler::get_file_content(const std::string& path) {
 		if (!file) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Error reading file: " + path);
-			_http_status = HTTP_INTERNAL_SERVER_ERROR;
+			_request.status = HTTP_INTERNAL_SERVER_ERROR;
 			return (s_content(false, ""));
 		}
 		file.close();
 	} catch (const std::ios_base::failure& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "I/O failure: " + std::string(e.what()));
-		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		_request.status = HTTP_INTERNAL_SERVER_ERROR;
 		return (s_content(false, ""));
 	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Exception: " + std::string(e.what()));
-		_http_status = HTTP_INTERNAL_SERVER_ERROR;
+		_request.status = HTTP_INTERNAL_SERVER_ERROR;
 		return (s_content(false, ""));
 	}
 	_log->log(LOG_DEBUG, RSP_NAME,
@@ -180,7 +180,7 @@ std::string HttpResponseHandler::header(int code, size_t content_size, std::stri
  *
  * @details
  * - The HTML content is built by concatenating strings that represent the HTML structure.
- * - The method uses `_http_status`, which should be set prior to calling this method,
+ * - The method uses `_request.status`, which should be set prior to calling this method,
  *   to include the relevant status code in the error page.
  * - The `int_to_string()` function converts the status code to a string, and
  *   `http_status_description()` provides a textual description of the status code.
@@ -197,8 +197,8 @@ std::string HttpResponseHandler::default_plain_error() {
 	        << "<title>Webserver - Error</title>\n"
 	        << "</head>\n<body>\n"
 	        << "<h1>Something went wrong...</h1>\n"
-	        << "<h2>" << int_to_string(_http_status) << " - "
-	        << http_status_description(_http_status) << "</h2>\n"
+	        << "<h2>" << int_to_string(_request.status) << " - "
+	        << http_status_description(_request.status) << "</h2>\n"
 	        << "</body>\n</html>\n";
 	_log->log(LOG_DEBUG, RSP_NAME, "Build default error page.");
 	return (content.str());
@@ -234,13 +234,13 @@ bool HttpResponseHandler::send_error_response() {
 		if (_location->loc_error_mode == TEMPLATE) {
 			it = error_pages->find(0);
 		} else {
-			it = error_pages->find(_http_status);
+			it = error_pages->find(_request.status);
 		}
 		if (!error_pages->empty() || it != error_pages->end()) {
 			s_content file_content = get_file_content(error_file);
 			if (!file_content.status) {
 				_log->log(LOG_DEBUG, RSP_NAME,
-				          "Custom error page cannot be load. http status: " + int_to_string(_http_status));
+				          "Custom error page cannot be load. http status: " + int_to_string(_request.status));
 				content = default_plain_error();
 			} else {
 				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
@@ -249,15 +249,15 @@ bool HttpResponseHandler::send_error_response() {
 				if (_location->loc_error_mode == TEMPLATE)
 				{
 					content = replace_template(content, "{error_code}",
-					                           int_to_string(_http_status));
+					                           int_to_string(_request.status));
 					content = replace_template(content, "{error_detail}",
-					                           http_status_description(_http_status));
+					                           http_status_description(_request.status));
 					_log->log(LOG_DEBUG, RSP_NAME, "Template update to send.");
 				}
 			}
 		} else {
 			_log->log(LOG_DEBUG, RSP_NAME,
-			          "Custom error page was not found. Error: " + int_to_string(_http_status));
+			          "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
 	return (sender(content, file_path));
@@ -280,11 +280,10 @@ bool HttpResponseHandler::send_error_response() {
  */
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
 	try {
-		std::string response = header(_http_status, body.length(), get_mime_type(path));
+		std::string response = header(_request.status, body.length(), get_mime_type(path));
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
-
 		while (total_sent < to_send) {
 			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
 			if (sent_bytes == -1) {
@@ -300,3 +299,152 @@ bool HttpResponseHandler::sender(const std::string& body, const std::string& pat
 		return (false);
 	}
 }
+
+void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
+	_log->log(LOG_ERROR, RSP_NAME, detail);
+	_request.sanity = false;
+	_request.status = status;
+}
+
+void HttpResponseHandler::get_post_content(){
+	if (!_request.sanity) {
+		return;
+	}
+	if (_request.content_length == 0) {
+		turn_off_sanity(HTTP_LENGTH_REQUIRED,
+		                "Content-length required at POST request.");
+		return;
+	}
+	if (_request.content_type.empty()) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Content-Type required at POST request.");
+		return;
+	}
+	if (_request.body.empty()) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "No body request required at POST request.");
+		return;
+	} else {
+		if (_request.body.length() != _request.content_length) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Received content-length and content size does not match.");
+			return ;
+		}
+	}
+	if (!_request.boundary.empty()) {
+		parse_multipart_data();
+	}
+}
+
+void HttpResponseHandler::parse_multipart_data() {
+	size_t part_start = _request.body.find(_request.boundary);
+	while (part_start != std::string::npos) {
+		part_start += _request.boundary.length() + 2;
+		size_t headers_end = _request.body.find("\r\n\r\n", part_start);
+		if (headers_end != std::string::npos) {
+			_log->log(LOG_DEBUG, RSP_NAME,
+					  "Looking for Post multi-part related data.");
+			std::string content_info = _request.body.substr(part_start, headers_end - part_start);
+			size_t file_data_start = headers_end + 4;
+			size_t next_boundary = _request.body.find(_request.boundary, file_data_start);
+			std::string content_data = _request.body.substr(file_data_start, next_boundary - file_data_start);
+			if (content_info.empty() || content_data.empty()) {
+				turn_off_sanity(HTTP_BAD_REQUEST,
+								"Multi-part body request is incomplete.");
+				return ;
+			}
+			std::string content_disposition = get_header_value(content_info, "content-disposition:", "\r\n");
+			s_multi_part part_data(get_header_value(content_info, "content-disposition:", ";"),
+								   trim(get_header_value(content_disposition, "name", ";"), "\""),
+								   trim(get_header_value(content_disposition, "filename", ";"), "\""),
+								   get_header_value(content_info, "content-type:", "\r\n"),
+								   content_data);
+			if (part_data.filename.empty()) {
+				part_data.data_type = CT_UNKNOWN;
+			}
+			_multi_content.push_back(part_data);
+			part_start = next_boundary;
+		} else {
+			_log->log(LOG_DEBUG, RSP_NAME,
+					  "End of multi-part body request.");
+			break;
+		}
+	}
+}
+
+void HttpResponseHandler::validate_payload() {
+	if (!_request.sanity) {
+		return;
+	}
+	for (size_t i = 0; i < _multi_content.size(); i++) {
+		if (!_multi_content[i].filename.empty() && black_list_extension(_multi_content[i].filename)) {
+			turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
+								"File extension is on black-list.");
+			return ;
+		}
+	}
+}
+
+// Validation of access privileges will be done before.
+bool HttpResponseHandler::handle_post() {
+	if (_location->loc_access < ACCESS_WRITE) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"No post data available.");
+	}
+	get_post_content();
+	validate_payload();
+	_client_data->chronos_reset();
+	if (!_request.sanity) {
+		send_error_response();
+	}
+	for (size_t i = 0; i < _multi_content.size(); i++) {
+		if (_multi_content[i].data_type == CT_FILE) {
+			std::string save_path = _request.normalized_path + _multi_content[i].filename;
+			std::ofstream file(save_path.c_str());
+			if (!file.is_open()) {
+				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+								"Unable to open file to write.");
+				return (send_error_response());
+			}
+			file << _multi_content[i].data;
+			file.close();
+			_request.status = HTTP_CREATED;
+			_log->log(LOG_DEBUG, RSP_NAME,
+					  "File Data Recieved and saved.");
+		}
+	}
+	sender("Created", _request.normalized_path);
+	return (true);
+}
+
+//bool HttpResponseHandler::handle_post() {
+//	// Verificar que la solicitud ha sido validada correctamente
+//	if (!_request.sanity) {
+//		send_error_response(_request.status);
+//		return false;
+//	}
+//
+//	// Ya se validó que hay un body presente, ahora manejar el POST
+//	std::string full_path = _request.normalized_path;
+//
+//	// Guardar el contenido del body en un archivo
+//	std::ofstream file(full_path.c_str());
+//	if (!file.is_open()) {
+//		_log->log(LOG_ERROR, RSP_NAME, "Unable to open file to write POST data.");
+//		return send_error_response(500);  // Internal Server Error
+//	}
+//
+//	file << _request.body;
+//	file.close();
+//
+//	// Enviar respuesta exitosa (201 Created)
+//	std::string response = response_header(201, 0, "text/plain");
+//	response += "POST data received and saved.\n";
+//	send(_fd, response.c_str(), response.length(), 0);
+//
+//	return true;
+//}
+
+
+
+
