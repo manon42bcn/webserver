@@ -18,6 +18,7 @@ COPY . .
 RUN make
 #RUN make
 EXPOSE 8080
+EXPOSE 9090
 
 
 CMD [ "make", "run" ]

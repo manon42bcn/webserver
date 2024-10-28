@@ -28,6 +28,7 @@
 #include "ServerManager.hpp"
 //#include "SocketHandler.hpp"
 #include <cstdlib>
+#include <signal.h>
 
 void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "FROM: " << location << std::endl;

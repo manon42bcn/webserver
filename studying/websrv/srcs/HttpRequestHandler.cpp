@@ -51,14 +51,14 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	}
 	size_t i = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
-							 &HttpRequestHandler::parse_header,
+	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
-							 &HttpRequestHandler::parse_path_type,
+	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
-	                         &HttpRequestHandler::load_content,
-	                         &HttpRequestHandler::validate_request,
 	                         &HttpRequestHandler::get_location_config,
-	                         &HttpRequestHandler::normalize_request_path};
+	                         &HttpRequestHandler::normalize_request_path,
+	                         &HttpRequestHandler::load_content,
+	                         &HttpRequestHandler::validate_request};
 
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
