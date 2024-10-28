@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 12:39:38 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:13:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,12 @@ typedef enum e_access {
 	ACCESS_DELETE = 4
 } t_access;
 
+enum e_path_type {
+	PATH_REGULAR = 0,
+	PATH_QUERY = 1,
+	PATH_ENCODED = 2
+};
+
 struct s_request {
 	std::string& body;
 	e_methods&   method;
@@ -59,12 +65,17 @@ struct s_request {
 	size_t&      content_length;
 	std::string& content_type;
 	std::string& boundary;
+	e_path_type& path_type;
+	std::string& query;
+
 	s_request(std::string& b, e_methods& m, std::string& p,
 	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
-	          size_t& cl, std::string& ct, std::string& bd):
+	          size_t& cl, std::string& ct, std::string& bd,
+			  e_path_type& pt, std::string& qy):
 			  body(b), method(m), path(p), normalized_path(np),
               access(a), sanity(s), status(sts),
-			  content_length(cl), content_type(ct), boundary(bd) {};
+			  content_length(cl), content_type(ct), boundary(bd),
+			  path_type(pt), query(qy){};
 };
 
 struct s_path {

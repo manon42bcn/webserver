@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 13:39:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:13:06 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 							 &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
+							 &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request,
@@ -188,7 +189,8 @@ void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
 
-	_log->log(LOG_DEBUG, RH_NAME, "Parsing Request to get path and method.");
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Parsing Request to get path and method.");
 	size_t method_end = _header.find(' ');
 	if (method_end != std::string::npos) {
 		method = _header.substr(0, method_end);
@@ -221,6 +223,23 @@ void HttpRequestHandler::parse_method_and_path() {
 		_method = METHOD_ERR;
 		return ;
 	}
+}
+
+void HttpRequestHandler::parse_path_type() {
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Parsing Path type.");
+	size_t pos = _path.find('?');
+	if (pos == std::string::npos) {
+		_path_type = PATH_REGULAR;
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Regular Path to normalize.");
+		return;
+	}
+	_query_encoded = _path.substr(pos + 1);
+	_path = _path.substr(0, pos);
+	_path_type = PATH_QUERY;
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Query found and parse from path.");
 }
 
 /**
@@ -522,7 +541,8 @@ void HttpRequestHandler::normalize_request_path() {
 void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
-	                                      _status, _content_leght, _content_type, _boundary);
+	                                      _status, _content_leght, _content_type,
+										  _boundary, _path_type, _query_encoded);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	if (!_sanity) {
 		response.send_error_response();

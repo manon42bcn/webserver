@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/23 22:06:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:10:27 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,6 @@
 #define BUFFER_REQUEST  2048
 #define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
 #define URI_MAX         2048
-
-
-
-enum e_rqs_state {
-	ST_INIT = 0,
-	ST_LOAD_LOCATION = 1,
-	ST_READING = 2,
-	ST_PARSING = 3,
-	ST_LOAD_FILE = 4,
-	ST_ERROR_READING = 5,
-	ST_ERROR_PROCESS = 6,
-	ST_METHOD_PATH = 7
-};
 
 typedef enum s_is_file {
 	DIR_IS = 0,
@@ -68,6 +55,8 @@ class HttpRequestHandler {
 	    e_methods               _method;
 	    std::string             _path;
 	    std::string             _normalized_path;
+		std::string 			_query_encoded;
+		e_path_type				_path_type;
 	    std::string             _boundary;
 	    e_access                _access;
 	    bool                    _sanity;
@@ -76,6 +65,7 @@ class HttpRequestHandler {
 		// Init request handler
 		void read_request_header();
 		void parse_method_and_path();
+		void parse_path_type();
 	    void parse_header();
 	    void load_header_data();
 	    void load_content();

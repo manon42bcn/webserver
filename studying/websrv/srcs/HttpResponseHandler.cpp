@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 15:13:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/28 16:17:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,6 +307,9 @@ void HttpResponseHandler::turn_off_sanity(e_http_sts status, std::string detail)
 }
 
 void HttpResponseHandler::get_post_content(){
+	if (!_request.sanity) {
+		return;
+	}
 	if (_request.content_length == 0) {
 		turn_off_sanity(HTTP_LENGTH_REQUIRED,
 		                "Content-length required at POST request.");
@@ -370,6 +373,9 @@ void HttpResponseHandler::parse_multipart_data() {
 }
 
 void HttpResponseHandler::validate_payload() {
+	if (!_request.sanity) {
+		return;
+	}
 	for (size_t i = 0; i < _multi_content.size(); i++) {
 		if (!_multi_content[i].filename.empty() && black_list_extension(_multi_content[i].filename)) {
 			turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -381,6 +387,10 @@ void HttpResponseHandler::validate_payload() {
 
 // Validation of access privileges will be done before.
 bool HttpResponseHandler::handle_post() {
+	if (_location->loc_access < ACCESS_WRITE) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"No post data available.");
+	}
 	get_post_content();
 	validate_payload();
 	_client_data->chronos_reset();
