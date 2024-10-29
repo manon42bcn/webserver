@@ -7,6 +7,6 @@ objs
 webserv
 webserver
 *.log
-
+.env
 .DS_Store
 .vscode

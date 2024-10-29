@@ -14,7 +14,6 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
-#include <signal.h>
 
 
 ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):

@@ -462,7 +462,30 @@ bool HttpResponseHandler::handle_delete() {
 	return true;
 }
 
+std::vector<char*> HttpResponseHandler::cgi_environment() {
+	std::vector<std::string> env_vars;
 
+
+	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
+	env_vars.push_back("SERVER_PROTOCOL=HTTP/1.1");
+	env_vars.push_back("REQUEST_METHOD=" + method_enum_to_string(_request.method));
+	env_vars.push_back("QUERY_STRING=" + _request.query);
+	env_vars.push_back("CONTENT_TYPE=" + _request.content_type);
+	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));
+	env_vars.push_back("PATH_INFO=" + _request.normalized_path);
+	env_vars.push_back("SCRIPT_NAME=" + _request.query);
+	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
+//	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
+
+	// Convertir cada variable de entorno a `char*`
+	std::vector<char *> env_ptrs;
+	for (size_t i = 0; i < env_vars.size(); ++i) {
+		env_ptrs.push_back(const_cast<char *>(env_vars[i].c_str()));
+	}
+	env_ptrs.push_back(NULL);
+
+	return env_ptrs;
+}
 
 
 

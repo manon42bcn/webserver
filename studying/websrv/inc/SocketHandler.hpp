@@ -25,7 +25,7 @@ private:
 	const ServerConfig& _config;
 	const Logger*       _log;
 	const std::string   _module;
-	std::string         _port_str;
+	std::string   _port_str;
 
 	bool set_nonblocking(int fd);
 public:
