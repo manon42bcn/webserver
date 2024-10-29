@@ -244,22 +244,6 @@ void HttpRequestHandler::parse_path_type() {
 			  "Query found and parse from path.");
 }
 
-bool HttpRequestHandler::is_cgi(const std::string& filename){
-	std::string cgi_files [] = {".py", ".php"};
-
-	size_t dot_pos = filename.find_last_of('.');
-	if (dot_pos == std::string::npos) {
-		return (false);
-	}
-	std::string extension = filename.substr(dot_pos);
-	for (size_t i = 0; i < cgi_files[i].size() ; i++) {
-		if (extension == cgi_files[i]) {
-			return (true);
-		}
-	}
-	return (false);
-}
-
 /**
  * @brief Parses the HTTP request header to extract the method and path.
  *
@@ -505,6 +489,10 @@ void HttpRequestHandler::normalize_request_path() {
 	                "Requested path not found " + _path);
 }
 
+void HttpRequestHandler::request_path_cgi() {
+
+}
+
 /**
  * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
  *
@@ -523,7 +511,7 @@ void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_leght, _content_type,
-										  _boundary, _path_type, _query_encoded);
+										  _boundary, _path_type, _query_encoded, _cgi);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	response.handle_request();
 }
