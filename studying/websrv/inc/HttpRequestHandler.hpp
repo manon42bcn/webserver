@@ -62,6 +62,8 @@ class HttpRequestHandler {
 	    bool                    _sanity;
 	    e_http_sts              _status;
 		bool					_cgi;
+	    std::string             _script;
+	    std::string             _path_info;
 
 		// Init request handler
 		void read_request_header();
@@ -76,6 +78,7 @@ class HttpRequestHandler {
 	    void get_location_config();
 		void handle_request();
 		void normalize_request_path();
+	    void request_path_cgi();
 //		void validate_post_path();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
