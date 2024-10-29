@@ -117,15 +117,16 @@ struct s_request {
 	std::string& boundary;
 	e_path_type& path_type;
 	std::string& query;
+	bool&        cgi;
 
 	s_request(std::string& b, e_methods& m, std::string& p,
 	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
 	          size_t& cl, std::string& ct, std::string& bd,
-			  e_path_type& pt, std::string& qy):
+			  e_path_type& pt, std::string& qy, bool& cgi):
 			  body(b), method(m), path(p), normalized_path(np),
               access(a), sanity(s), status(sts),
 			  content_length(cl), content_type(ct), boundary(bd),
-			  path_type(pt), query(qy){};
+			  path_type(pt), query(qy), cgi(cgi){};
 };
 
 struct s_path {
@@ -159,6 +160,7 @@ struct LocationConfig {
 	std::map<int, std::string>  loc_error_pages;
 	std::vector<t_allowed_methods>    loc_allowed_methods;
 	bool                        autoindex;
+	bool                        cgi_file;
 
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
