@@ -475,8 +475,8 @@ void HttpRequestHandler::normalize_request_path() {
 		return ;
 	}
 	if (_method == METHOD_DELETE) {
-		turn_off_sanity(HTTP_BAD_REQUEST,
-		                "Delete method malformed path.");
+		turn_off_sanity(HTTP_NOT_FOUND,
+		                "Resource to be deleted, not found.");
 		return ;
 	}
 	if (is_dir(eval_path)) {
