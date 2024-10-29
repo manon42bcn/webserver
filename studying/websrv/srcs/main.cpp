@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 09:33:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/29 11:01:43 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,6 @@ bool starts_with(const std::string& str, const std::string& prefix) {
 	}
 	return (str.compare(0, prefix.size(), prefix) == 0);
 }
-
-struct LocationTest {
-	const std::string& saludo;
-	LocationTest(const std::string& s) : saludo(s){};
-};
 
 ServerManager* running_server = NULL;
 

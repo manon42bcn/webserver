@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 16:10:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/29 11:00:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,17 @@ class HttpRequestHandler {
 	    e_access                _access;
 	    bool                    _sanity;
 	    e_http_sts              _status;
+		bool					_cgi;
 
 		// Init request handler
 		void read_request_header();
 		void parse_method_and_path();
 		void parse_path_type();
 	    void parse_header();
+		bool is_cgi(const std::string& filename);
 	    void load_header_data();
 	    void load_content();
 	    void validate_request();
-//		std::string get_header_value(std::string& haystack, std::string needle);
 //		void parse_content_type();
 	    void get_location_config();
 		void handle_request();
