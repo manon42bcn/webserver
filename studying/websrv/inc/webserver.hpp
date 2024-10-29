@@ -64,8 +64,10 @@
 #define MID_GRAY		"\033[38;5;245m"
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
-
+// TODO: define a path max for WS only, path max is defined at limits.h
+# ifndef PATH_MAX
 #define PATH_MAX 4096
+# endif
 
 // Methods included at http_codes_helper.cpp
 std::string method_enum_to_string(int method);
