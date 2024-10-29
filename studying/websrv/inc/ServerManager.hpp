@@ -38,9 +38,9 @@ class ServerManager {
 
 public:
 		typedef std::map<int, ClientData*>::iterator t_client_it;
-		ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger);
+		ServerManager(std::vector<ServerConfig>& configs, const Logger* logger);
 	    ~ServerManager();
-	    void add_server(int port, const ServerConfig& config);
+	    void add_server(int port, ServerConfig& config);
 		void run();
 	    void new_client(SocketHandler* server);
 		bool add_server_to_poll(int server_fd);

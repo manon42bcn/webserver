@@ -16,7 +16,7 @@
 #include <cstring>
 
 
-ServerManager::ServerManager(const std::vector<ServerConfig>& configs, const Logger* logger):
+ServerManager::ServerManager(std::vector<ServerConfig>& configs, const Logger* logger):
 							_log(logger) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
@@ -58,7 +58,7 @@ ServerManager::~ServerManager() {
 	          "Server Manager Resources Clean Up.");
 }
 
-void ServerManager::add_server(int port, const ServerConfig& config) {
+void ServerManager::add_server(int port, ServerConfig& config) {
 	try {
 		SocketHandler* server = new SocketHandler(port, config, _log);
 		_servers.push_back(server);

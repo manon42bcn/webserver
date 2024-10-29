@@ -507,7 +507,7 @@ void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_leght, _content_type,
-										  _boundary, _path_type, _query_encoded);
+										  _boundary, _path_type, _query_encoded, _cgi);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	response.handle_request();
 }

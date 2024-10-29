@@ -153,18 +153,18 @@ typedef enum e_allowed_methods {
 
 std::string int_to_string(int number);
 struct LocationConfig {
-	std::string                 loc_root;
-	e_access                    loc_access; // (?)
-	std::vector<std::string>    loc_default_pages;
-	t_mode                      loc_error_mode; // (?)
-	std::map<int, std::string>  loc_error_pages;
-	std::vector<t_allowed_methods>    loc_allowed_methods;
-	bool                        autoindex;
-	bool                        cgi_file;
-
+	std::string                         loc_root;
+	e_access                            loc_access; // (?)
+	std::vector<std::string>            loc_default_pages;
+	t_mode                              loc_error_mode; // (?)
+	std::map<int, std::string>          loc_error_pages;
+	std::vector<t_allowed_methods>      loc_allowed_methods;
+	bool                                autoindex;
+	bool                                cgi_file;
+	std::map<std::string, std::string>  cgi_locations;
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
-	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
+	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), cgi_file(true) {};
 };
 
 struct ServerConfig {

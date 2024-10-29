@@ -22,14 +22,17 @@
 class SocketHandler {
 private:
 	int                 _socket_fd;
-	const ServerConfig& _config;
+	ServerConfig&       _config;
 	const Logger*       _log;
 	const std::string   _module;
-	std::string   _port_str;
+	std::string         _port_str;
 
 	bool set_nonblocking(int fd);
+	bool is_cgi_file(const std::string& filename, const std::string& extension) const;
+	void get_cgi_files(const std::string& directory, const std::string& extension, std::map<std::string, std::string>& mapped_files);
+	void mapping_cgi_locations();
 public:
-	SocketHandler(int port, const ServerConfig& config, const Logger* logger);
+	SocketHandler(int port, ServerConfig& config, const Logger* logger);
 	~SocketHandler();
 	int accept_connection();
 	int get_socket_fd() const;

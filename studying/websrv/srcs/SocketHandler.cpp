@@ -18,9 +18,13 @@
 #include <unistd.h>
 #include <iostream>
 #include <cstring>
+#include <string>
+#include <vector>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
-
-SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger* logger):
+SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logger):
 		_socket_fd(-1),
         _config(config),
         _log(logger){
@@ -35,6 +39,7 @@ SocketHandler::SocketHandler(int port, const ServerConfig& config, const Logger*
 	}
 
 	_log->log(LOG_DEBUG, SH_NAME, "Configure server address.");
+	mapping_cgi_locations();
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -100,6 +105,69 @@ bool SocketHandler::set_nonblocking(int fd) {
 	}
 	_log->log(LOG_INFO, SH_NAME, "Socket set as nonblocking.");
 	return (true);
+}
+
+bool SocketHandler::is_cgi_file(const std::string &filename, const std::string& extension) const {
+	return (filename.size() >= extension.length()
+	        && filename.compare(filename.size() - extension.length(),
+        extension.length(), extension) == 0);
+}
+
+
+void SocketHandler::get_cgi_files(const std::string& directory,
+                                  const std::string& extension, std::map<std::string, std::string>& mapped_files) {
+	DIR* dir = opendir(directory.c_str());
+	if (dir == NULL) {
+		_log->log(LOG_WARNING, SH_NAME,
+		          "No directory was found.");
+		return;
+	}
+
+	struct dirent* entry;
+	while ((entry = readdir(dir)) != NULL) {
+		std::string name = entry->d_name;
+
+		if (name == "." || name == "..") continue;
+
+		std::string full_path = directory + "/" + name;
+		struct stat info;
+		if (stat(full_path.c_str(), &info) != 0) {
+			_log->log(LOG_WARNING, SH_NAME,
+			          full_path + " : is not accessible.");
+			continue ;
+		}
+
+		if (S_ISDIR(info.st_mode)) {
+			get_cgi_files(full_path, extension, mapped_files);
+		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
+			mapped_files.insert(std::make_pair(full_path, name));
+		}
+	}
+	closedir(dir);
+}
+
+
+void SocketHandler::mapping_cgi_locations() {
+	_log->log(LOG_DEBUG, SH_NAME,
+	          "mapping cgi locations.");
+	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin(); it != _config.locations.end(); it++) {
+		if (it->second.cgi_file) {
+			_log->log(LOG_DEBUG, SH_NAME,
+			          "Location with CGI activated, mapping for files.");
+			get_cgi_files(_config.server_root + it->second.loc_root, ".py", it->second.cgi_locations);
+			_log->log(LOG_DEBUG, SH_NAME,
+			          "Location with CGI activated, mapping for files.");
+		}
+	}
+	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin(); it != _config.locations.end(); it++) {
+		if (it->second.cgi_file) {
+			_log->log(LOG_DEBUG, SH_NAME, "LocationROOT " + it->second.loc_root);
+			for (std::map<std::string, std::string>::iterator it_p = it->second.cgi_locations.begin(); it_p != it->second.cgi_locations.end(); it_p++) {
+				_log->log(LOG_DEBUG, SH_NAME,
+				          "path : " + it_p->first + " file " + it_p->second);
+			}
+		}
+	}
 }
 
 const char* SocketHandler::SocketCreationError::what(void) const throw() {
