@@ -127,7 +127,7 @@ int main() {
 
 	// Insertar datos en el vector
 	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
 	locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));

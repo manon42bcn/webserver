@@ -447,18 +447,26 @@ void HttpRequestHandler::get_location_config() {
  * @return None
  */
 void HttpRequestHandler::normalize_request_path() {
-	std::string eval_path = _config.server_root + _location->loc_root + _path;
+	std::string eval_path = _config.server_root + _path;
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
 
+	// TODO: After CGI is fully implemented, this condition must be reviewed.
 	if (_method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Path build to a POST request");
+		if (eval_path[eval_path.size() - 1] != '/') {
+			eval_path += "/";
+		}
+		if (!is_dir(eval_path)){
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Non valid path to create resource.");
+			return ;
+		}
 		_normalized_path = eval_path;
 		return ;
 	}
-
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
 		_normalized_path = eval_path;
@@ -466,7 +474,11 @@ void HttpRequestHandler::normalize_request_path() {
 		_status = HTTP_OK;
 		return ;
 	}
-
+	if (_method == METHOD_DELETE) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+		                "Delete method malformed path.");
+		return ;
+	}
 	if (is_dir(eval_path)) {
 		// TODO: After CGI is fully implemented, this condition must be reviewed.
 		if (_method == METHOD_DELETE) {
@@ -513,11 +525,7 @@ void HttpRequestHandler::handle_request() {
 	                                      _status, _content_leght, _content_type,
 										  _boundary, _path_type, _query_encoded);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
-	if (!_sanity) {
-		response.send_error_response();
-	} else {
-		response.handle_request();
-	}
+	response.handle_request();
 }
 
 /**
