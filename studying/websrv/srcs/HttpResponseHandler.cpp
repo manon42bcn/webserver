@@ -294,8 +294,10 @@ bool HttpResponseHandler::sender(const std::string& body, const std::string& pat
 		int to_send = (int)response.length();
 		while (total_sent < to_send) {
 			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
+			// TODO: videos can overlog errors... check for a reasonable fix
 			if (sent_bytes == -1) {
-				_log->log(LOG_ERROR, RSP_NAME, "Error sending the response.");
+				_log->log(LOG_DEBUG, RSP_NAME,
+				          "Error sending the response.");
 				return (false);
 			}
 			total_sent += sent_bytes;
