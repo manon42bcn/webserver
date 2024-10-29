@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/03 13:03:40 by vaguilar          #+#    #+#              #
-#    Updated: 2024/10/04 11:26:52 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/10/16 21:19:30 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,9 +44,16 @@ LIBS_LIBS	=	libs/Libft/libft.a
 LIB_LINKS	=	-L ./$(LIB_FT)
 
 SRCS		=	src/main.cpp
-SRCS		+=	src/configuration/Config.cpp
-SRCS		+=	src/configuration/parse.cpp
-SRCS		+=	src/configuration/Server.cpp
+SRCS		+=	src/parse/file.cpp
+SRCS		+=	src/parse/checkArgs.cpp
+SRCS		+=	src/parse/utils.cpp
+SRCS		+=	src/parse/print.cpp
+
+
+# SRCS		+=	src/configuration/Config.cpp
+# SRCS		+=	src/configuration/parse.cpp
+# SRCS		+=	src/configuration/Server.cpp
+# SRCS		+=	src/configuration/Location.cpp
 
 OBJS		=	$(patsubst $(SRCS_DIR)/%, $(OBJS_DIR)/%, $(SRCS:.cpp=.o))
 DEPS		=	$(patsubst $(SRCS_DIR)/%, $(DEPS_DIR)/%, $(SRCS:.cpp=.d))

@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
 /*   Updated: 2024/10/29 11:01:43 by mporras-         ###   ########.fr       */
@@ -111,21 +111,28 @@ void signal_handler(int sig){
 	running_server->turn_off_server();
 }
 
-int main() {
-	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
-	std::vector<ServerConfig> configs;
-//	std::vector<LocationConfig> locations;
-	std::map<std::string, LocationConfig> locations;
+int main(int argc, char *argv[]) {
+	Logger logger(LOG_DEBUG, false);
+	// std::string base_path = getenv("WEBSERVER_PATH");
+	if (!check_args(argc, argv))
+        exit(1);
+	std::vector<ServerConfig> configs = parse_file(argv[1], &logger);
+
+
+	
+	// std::vector<ServerConfig> configs;
+	// std::vector<LocationConfig> locations;
+	// std::map<std::string, LocationConfig> locations;
 
 	// Datos de prueba
-	std::vector<std::string> default_pages;
-	default_pages.push_back("index.html");
-	default_pages.push_back("home.html");
-	std::map<int, std::string> error_pages;
-	error_pages[404] = "404.html";
+	// std::vector<std::string> default_pages;
+	// default_pages.push_back("index.html");
+	// default_pages.push_back("home.html");
+	// std::map<int, std::string> error_pages;
+	// error_pages[404] = "404.html";
 
 	// Insertar datos en el vector
+
 	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
 	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
