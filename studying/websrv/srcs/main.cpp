@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 19:05:55 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/10/28 20:36:15 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void signal_handler(int sig){
 }
 
 int main(int argc, char *argv[]) {
-	Logger logger(LOG_DEBUG, false);
+	Logger logger(LOG_ERROR, false);
 	// std::string base_path = getenv("WEBSERVER_PATH");
 	if (!check_args(argc, argv))
         exit(1);
