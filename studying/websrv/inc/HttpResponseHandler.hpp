@@ -38,10 +38,12 @@ struct s_multi_part {
 	std::string 	type;
 	std::string 	data;
 	e_content_type	data_type;
+	e_http_sts      status;
 	s_multi_part(std::string di, std::string n,
 				 std::string fn, std::string t,
 				 std::string d): disposition(di), name(n),
-				 filename(fn), type(t), data(d), data_type(CT_FILE) {};
+				 filename(fn), type(t), data(d), data_type(CT_FILE),
+                 status(HTTP_CREATED) {};
 };
 
 /**
@@ -68,6 +70,7 @@ public:
 	                    int fd);
 	bool handle_get();
 	bool handle_post();
+	bool handle_delete();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	s_content get_file_content(std::string& path);

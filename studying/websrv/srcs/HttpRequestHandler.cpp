@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 16:26:07 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:27:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,21 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST),
-	_sanity(true) {
+	_sanity(true),
+	_cgi(false) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
 	size_t i = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
-							 &HttpRequestHandler::parse_header,
+	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
-							 &HttpRequestHandler::parse_path_type,
+	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
-	                         &HttpRequestHandler::load_content,
-	                         &HttpRequestHandler::validate_request,
 	                         &HttpRequestHandler::get_location_config,
-	                         &HttpRequestHandler::normalize_request_path};
+	                         &HttpRequestHandler::normalize_request_path,
+	                         &HttpRequestHandler::load_content,
+	                         &HttpRequestHandler::validate_request};
 
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
@@ -243,6 +244,22 @@ void HttpRequestHandler::parse_path_type() {
 			  "Query found and parse from path.");
 }
 
+bool HttpRequestHandler::is_cgi(const std::string& filename){
+	std::string cgi_files [] = {".py", ".php"};
+
+	size_t dot_pos = filename.find_last_of('.');
+	if (dot_pos == std::string::npos) {
+		return (false);
+	}
+	std::string extension = filename.substr(dot_pos);
+	for (size_t i = 0; i < cgi_files[i].size() ; i++) {
+		if (extension == cgi_files[i]) {
+			return (true);
+		}
+	}
+	return (false);
+}
+
 /**
  * @brief Parses the HTTP request header to extract the method and path.
  *
@@ -348,40 +365,6 @@ void HttpRequestHandler::load_content() {
 	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
 }
 
-///**
-// * @brief Extracts the value of a specific HTTP header field.
-// *
-// * This method searches the provided header string for a specific key and returns the associated
-// * value. The search is case-insensitive, and it assumes the format `key: value`.
-// *
-// * @details
-// * - The method first converts the key and the header string to lowercase for a case-insensitive search.
-// * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
-// * - If the key is not found, the method returns an empty string.
-// *
-// * @param haystack The HTTP Header format string to be searched over it.
-// * @param needle The key for which the value is to be retrieved (e.g., "content-type").
-// * @return std::string The value associated with the key, or an empty string if the key is not found.
-// */
-//std::string HttpRequestHandler::get_header_value(std::string& haystack, std::string needle) {
-//	_log->log(LOG_DEBUG, RH_NAME, "Try to get from header " + needle);
-//	std::string lower_header = to_lowercase(haystack);
-//	size_t key_pos = lower_header.find(needle);
-//
-//	if (key_pos != std::string::npos) {
-//		_log->log(LOG_DEBUG, RH_NAME, needle + "Found at headers.");
-//		key_pos += needle.length() + 1;
-//		size_t end_key = lower_header.find("\r\n", key_pos);
-//		if (end_key == std::string::npos) {
-//			return (haystack.substr(key_pos));
-//		} else {
-//			return (haystack.substr(key_pos, end_key - key_pos));
-//		}
-//	}
-//	_log->log(LOG_DEBUG, RH_NAME, needle + "not founded at headers.");
-//	return ("");
-//}
-
 /**
  * @brief Validates the HTTP request to ensure body content is consistent with the method.
  *
@@ -464,26 +447,45 @@ void HttpRequestHandler::get_location_config() {
  * @return None
  */
 void HttpRequestHandler::normalize_request_path() {
-	std::string eval_path = _config.server_root + _location->loc_root + _path;
+	std::string eval_path = _config.server_root + _path;
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
 
+	// TODO: After CGI is fully implemented, this condition must be reviewed.
 	if (_method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Path build to a POST request");
+		if (eval_path[eval_path.size() - 1] != '/') {
+			eval_path += "/";
+		}
+		if (!is_dir(eval_path)){
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Non valid path to create resource.");
+			return ;
+		}
 		_normalized_path = eval_path;
 		return ;
 	}
-
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
 		_normalized_path = eval_path;
+		_cgi = is_cgi(_normalized_path);
 		_status = HTTP_OK;
 		return ;
 	}
-
+	if (_method == METHOD_DELETE) {
+		turn_off_sanity(HTTP_NOT_FOUND,
+		                "Resource to be deleted, not found.");
+		return ;
+	}
 	if (is_dir(eval_path)) {
+		// TODO: After CGI is fully implemented, this condition must be reviewed.
+		if (_method == METHOD_DELETE) {
+			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
+							"Delete method over a dir is not allowed.");
+			return ;
+		}
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
@@ -493,6 +495,7 @@ void HttpRequestHandler::normalize_request_path() {
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
 				_log->log(LOG_INFO, RH_NAME, "Default File found");
 				_normalized_path = eval_path + _location->loc_default_pages[i];
+				_cgi = is_cgi(_normalized_path);
 				_status = HTTP_OK;
 				return ;
 			}
@@ -501,29 +504,6 @@ void HttpRequestHandler::normalize_request_path() {
 	turn_off_sanity(HTTP_NOT_FOUND,
 	                "Requested path not found " + _path);
 }
-
-//void HttpRequestHandler::validate_post_path() {
-//	if (_content_type.empty()) {
-//		turn_off_sanity(HTTP_BAD_REQUEST,
-//						"Content-Type mandatory in POST Requests.");
-//		return ;
-//	}
-//	if (!valid_mime_type(_path)) {
-//		turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
-//						"MIME type not supported.");
-//		return ;
-//	}
-//	if (black_list_extension(_path)) {
-//		turn_off_sanity(HTTP_FORBIDDEN,
-//						"Extension file is part of black list.");
-//		return ;
-//	}
-//	std::string path_type = get_mime_type(_path);
-//	if (path_type != _content_type) {
-//		turn_off_sanity(HTTP_BAD_REQUEST,
-//						"Content-Type header does not match with path POST request.");
-//	}
-//}
 
 /**
  * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
@@ -545,11 +525,7 @@ void HttpRequestHandler::handle_request() {
 	                                      _status, _content_leght, _content_type,
 										  _boundary, _path_type, _query_encoded);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
-	if (!_sanity) {
-		response.send_error_response();
-	} else {
-		response.handle_request();
-	}
+	response.handle_request();
 }
 
 /**
@@ -572,20 +548,3 @@ void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) 
 	_sanity = false;
 	_status = status;
 }
-
-//// Temporal method, to send a fix message without further actions, to debug dir and files checks
-//void HttpRequestHandler::send_detailed_response(std::string requested_path)
-//{
-//	//	std::string full_path = normalize_request_path(requested_path);
-//	std::string content = "HELLO USING " + method_enum_to_string(_method)+ " FROM PORT : ";
-//	content += int_to_string(_config.port);
-//	content += " and getting path " + requested_path + "!";
-//	content += " with full path " + _config.server_root + requested_path;
-//	content += "  and it was evaluated as " + normalize_request_path(requested_path).path;
-//	content += " location found " + _location->loc_root;
-//
-//	std::string header = response_header(200, content.length(), "text/plain");
-//	std::string response = header + content;
-//	send(_fd, response.c_str(), response.length(), 0);
-//}
-//// -----------------------------------------------------------------

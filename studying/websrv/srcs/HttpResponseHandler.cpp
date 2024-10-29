@@ -29,20 +29,28 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 
 bool HttpResponseHandler::handle_request() {
 
+	if (!_request.sanity) {
+		send_error_response();
+		return (false);
+	}
 	switch (_request.method) {
 		case METHOD_GET:
-			_log->log(LOG_DEBUG, RSP_NAME, "Handle GET request.");
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Handle GET request.");
 			return (handle_get());
 		case METHOD_POST:
-			_log->log(LOG_DEBUG, RSP_NAME, "Handle POST request.");
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Handle POST request.");
 			return 	(handle_post());
 			break;
-//		case METHOD_DELETE:
-//			_log->log(LOG_DEBUG, RSP_NAME, "Handle DELETE request.");
-//			handle_delete(path);
-//			break;
+		case METHOD_DELETE:
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Handle DELETE request.");
+			handle_delete();
+			break;
 		default:
-			turn_off_sanity(HTTP_NOT_IMPLEMENTED, "Method not allowed.");
+			turn_off_sanity(HTTP_NOT_IMPLEMENTED,
+			                "Method not allowed.");
 			send_error_response();
 	}
 	return (true);
@@ -400,6 +408,13 @@ bool HttpResponseHandler::handle_post() {
 	for (size_t i = 0; i < _multi_content.size(); i++) {
 		if (_multi_content[i].data_type == CT_FILE) {
 			std::string save_path = _request.normalized_path + _multi_content[i].filename;
+			std::ifstream check_file(save_path.c_str());
+			if (check_file.good()) {
+				turn_off_sanity(HTTP_CONFLICT,
+				                "File already exists and cannot be overwritten.");
+				check_file.close();
+				return send_error_response();
+			}
 			std::ofstream file(save_path.c_str());
 			if (!file.is_open()) {
 				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
@@ -417,33 +432,34 @@ bool HttpResponseHandler::handle_post() {
 	return (true);
 }
 
-//bool HttpResponseHandler::handle_post() {
-//	// Verificar que la solicitud ha sido validada correctamente
-//	if (!_request.sanity) {
-//		send_error_response(_request.status);
-//		return false;
-//	}
-//
-//	// Ya se validó que hay un body presente, ahora manejar el POST
-//	std::string full_path = _request.normalized_path;
-//
-//	// Guardar el contenido del body en un archivo
-//	std::ofstream file(full_path.c_str());
-//	if (!file.is_open()) {
-//		_log->log(LOG_ERROR, RSP_NAME, "Unable to open file to write POST data.");
-//		return send_error_response(500);  // Internal Server Error
-//	}
-//
-//	file << _request.body;
-//	file.close();
-//
-//	// Enviar respuesta exitosa (201 Created)
-//	std::string response = response_header(201, 0, "text/plain");
-//	response += "POST data received and saved.\n";
-//	send(_fd, response.c_str(), response.length(), 0);
-//
-//	return true;
-//}
+bool HttpResponseHandler::handle_delete() {
+	if (_location->loc_access < ACCESS_DELETE) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+		                "Insufficient permissions to delete the resource.");
+		return send_error_response();
+	}
+
+	std::string delete_path = _request.normalized_path;
+
+	if (!std::ifstream(delete_path.c_str()).good()) {
+		turn_off_sanity(HTTP_NOT_FOUND,
+		                "Resource not found for deletion.");
+		return send_error_response();
+	}
+
+	if (std::remove(delete_path.c_str()) != 0) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                "Failed to delete the resource.");
+		return send_error_response();
+	}
+
+	_request.status = HTTP_NO_CONTENT;
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "Resource deleted successfully: " + delete_path);
+	sender("Resource Deleted.", delete_path);
+	return true;
+}
+
 
 
 
