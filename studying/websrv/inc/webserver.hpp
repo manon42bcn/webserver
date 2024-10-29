@@ -83,7 +83,7 @@ size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);
 std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
 std::string trim(const std::string& str, const std::string& chars_to_trim);
-
+bool is_cgi(const std::string& filename);
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1,

@@ -489,9 +489,9 @@ void HttpRequestHandler::normalize_request_path() {
 	                "Requested path not found " + _path);
 }
 
-void HttpRequestHandler::request_path_cgi() {
-
-}
+//void HttpRequestHandler::request_path_cgi() {
+//
+//}
 
 /**
  * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
