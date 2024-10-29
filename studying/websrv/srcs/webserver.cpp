@@ -127,3 +127,18 @@ std::string trim(const std::string& str, const std::string& chars_to_trim = " \t
 	return str.substr(start, end - start);
 }
 
+bool is_cgi(const std::string& filename){
+	std::string cgi_files [] = {".py", ".php"};
+
+	size_t dot_pos = filename.find_last_of('.');
+	if (dot_pos == std::string::npos) {
+		return (false);
+	}
+	std::string extension = filename.substr(dot_pos);
+	for (size_t i = 0; i < cgi_files[i].size() ; i++) {
+		if (extension == cgi_files[i]) {
+			return (true);
+		}
+	}
+	return (false);
+}
