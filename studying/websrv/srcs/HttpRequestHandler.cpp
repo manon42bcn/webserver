@@ -32,7 +32,7 @@
  *   8. `normalize_request_path()`
  *   9. `load_content()`
  *   10. `validate_request()`
- * - If any step fails (i.e., `_sanity` is false) or if `_cgi` is true, the process halts.
+ * - If any step fails (i.e., `_sanity` is false), the process halts.
  * - Upon completion, it calls `handle_request()` to handle the validated request.
  *
  * @param log A pointer to the logger instance used to log actions and errors.
@@ -69,8 +69,6 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	{
 		(this->*steps[i])();
 		if (!_sanity)
-			break;
-		if (_cgi)
 			break;
 		i++;
 	}
@@ -320,6 +318,182 @@ void HttpRequestHandler::load_header_data() {
 }
 
 /**
+ * @brief Searches for the location configuration that matches the requested path.
+ *
+ * This method iterates through the available locations and searches for a configuration
+ * that matches the requested path. It selects the most specific location if there are multiple matches.
+ *
+ * @details
+ * - The method logs the start of the search and iterates through the `locations` map in `_config`.
+ * - It checks if the requested path starts with each location key, and selects the longest matching key.
+ * - If a matching location is found, it sets `_location` and updates the access permissions (`_access`).
+ * - If no location is found, it calls `turn_off_sanity()` and sets the HTTP status to `HTTP_BAD_REQUEST`.
+ *
+ * @return None
+ */
+void HttpRequestHandler::get_location_config() {
+	std::string saved_key;
+	const LocationConfig* result = NULL;
+
+	_log->log(LOG_DEBUG, RH_NAME, "Searching related location.");
+	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
+	     it != _config.locations.end(); ++it) {
+		const std::string& key = it->first;
+		if (starts_with(_path, key)) {
+			if (key.length() > saved_key.length()) {
+				result = &it->second;
+				saved_key = key;
+			}
+		}
+	}
+	if (result) {
+		_log->log(LOG_DEBUG, RH_NAME, "Location Found: " + saved_key);
+		_location = result;
+		_access = result->loc_access;
+	} else {
+		turn_off_sanity(HTTP_BAD_REQUEST, "Location Not Found");
+	}
+}
+
+/**
+ * @brief Evaluates if the requested path corresponds to a CGI script and adjusts path attributes accordingly.
+ *
+ * This method checks if the requested path points to a CGI file or a mapped CGI script in the configuration.
+ * If a CGI path is detected, it updates `_normalized_path`, `_script`, `_path_info`, and sets `_cgi` to true.
+ *
+ * @details
+ * - If the path is a CGI file directly (not a directory), it sets `_script` and `_normalized_path` appropriately.
+ * - Searches for mapped CGI paths in `_location->cgi_locations`. If a match is found, `_normalized_path` and `_script` are updated.
+ * - Sets `_cgi` to true if the path corresponds to a CGI file or location.
+ * - Logs each step, including the path, type, and any CGI configurations detected.
+ *
+ * @return None
+ */
+void HttpRequestHandler::cgi_normalize_path() {
+	if (!_location->cgi_file) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "No CGI locations at server config.");
+		return ;
+	}
+	std::string eval_path = _config.server_root + _path;
+	if (is_dir(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI test - Directory exist.");
+		return ;
+	}
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "The user is over a real CGI file. It should be handle as script.");
+		size_t dot_pos = eval_path.find_last_of('/');
+		_script = eval_path.substr(dot_pos + 1);
+		_normalized_path = eval_path.substr(0, dot_pos);
+		_cgi = true;
+		return ;
+	}
+
+	std::string saved_key;
+	const t_cgi* cgi_data = NULL;
+
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "Request will be testing against mapped CGI scripts.");
+	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
+	     it != _location->cgi_locations.end(); it++) {
+		const std::string& key = it->first;
+		if (starts_with(_path, key)) {
+			if (key.length() > saved_key.length()) {
+				cgi_data = &it->second;
+				saved_key = key;
+			}
+		}
+	}
+	if (cgi_data) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI - Location Found: " + saved_key);
+		_normalized_path = _config.server_root + cgi_data->cgi_path;
+		_script = cgi_data->script;
+		_path_info = _path.substr(saved_key.length());
+		_cgi = true;
+	}
+}
+
+/**
+ * @brief Normalizes the requested path based on the server root and validates its existence and type.
+ *
+ * This method combines the server root with the requested `_path`, and then checks if the resulting path
+ * is valid according to the HTTP method used (GET, POST, DELETE).
+ *
+ * @details
+ * - If CGI is true, this step won't be executed. CGI paths are normalized previously.
+ * - **POST**: Ensures the path is a directory to create a new resource. Sets `_normalized_path` if valid.
+ * - **File Check**: For GET requests, checks if the path points to an existing file, updates `_cgi` if it is a CGI, and sets `_status` to `HTTP_OK`.
+ * - **DELETE**: Ensures the resource exists; if the target is a directory, the operation is not allowed.
+ * - **Directory Check**: If the path is a directory, attempts to locate default files. If found, sets `_normalized_path`.
+ * - If no valid path or resource is found, it disables sanity and sets `_status` to `HTTP_NOT_FOUND`.
+ *
+ * @return None
+ */
+void HttpRequestHandler::normalize_request_path() {
+	if (_cgi) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI context. path has been normalized");
+		return ;
+	}
+	std::string eval_path = _config.server_root + _path;
+
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Normalize path to get proper file to serve." + eval_path);
+	if (_method == METHOD_POST) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Path build to a POST request");
+		if (eval_path[eval_path.size() - 1] != '/') {
+			eval_path += "/";
+		}
+		if (!is_dir(eval_path)){
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Non valid path to create resource.");
+			return ;
+		}
+		_normalized_path = eval_path;
+		return ;
+	}
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
+		_log->log(LOG_INFO, RH_NAME, "File found.");
+		_normalized_path = eval_path;
+		_cgi = is_cgi(_normalized_path);
+		_status = HTTP_OK;
+		return ;
+	}
+	if (_method == METHOD_DELETE) {
+		turn_off_sanity(HTTP_NOT_FOUND,
+		                "Resource to be deleted, not found.");
+		return ;
+	}
+	if (is_dir(eval_path)) {
+		if (_method == METHOD_DELETE) {
+			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
+							"Delete method over a dir is not allowed.");
+			return ;
+		}
+		if (eval_path[eval_path.size() - 1] != '/') {
+			eval_path += "/";
+		}
+		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
+		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
+			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
+			if (is_file(eval_path + _location->loc_default_pages[i])) {
+				_log->log(LOG_INFO, RH_NAME, "Default File found");
+				_normalized_path = eval_path + _location->loc_default_pages[i];
+				_cgi = is_cgi(_normalized_path);
+				_status = HTTP_OK;
+				return ;
+			}
+		}
+	}
+	turn_off_sanity(HTTP_NOT_FOUND,
+	                "Requested path not found " + _path);
+}
+
+/**
  * @brief Loads the HTTP request content from the client socket.
  *
  * This method reads the body content of the HTTP request up to the specified `Content-Length`.
@@ -406,177 +580,6 @@ void HttpRequestHandler::validate_request() {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body empty with POST, PUT or PATCH method.");
 		}
-	}
-}
-
-/**
- * @brief Searches for the location configuration that matches the requested path.
- *
- * This method iterates through the available locations and searches for a configuration
- * that matches the requested path. It selects the most specific location if there are multiple matches.
- *
- * @details
- * - The method logs the start of the search and iterates through the `locations` map in `_config`.
- * - It checks if the requested path starts with each location key, and selects the longest matching key.
- * - If a matching location is found, it sets `_location` and updates the access permissions (`_access`).
- * - If no location is found, it calls `turn_off_sanity()` and sets the HTTP status to `HTTP_BAD_REQUEST`.
- *
- * @return None
- */
-void HttpRequestHandler::get_location_config() {
-	std::string saved_key;
-	const LocationConfig* result = NULL;
-
-	_log->log(LOG_DEBUG, RH_NAME, "Searching related location.");
-	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
-	     it != _config.locations.end(); ++it) {
-		const std::string& key = it->first;
-		if (starts_with(_path, key)) {
-			if (key.length() > saved_key.length()) {
-				result = &it->second;
-				saved_key = key;
-			}
-		}
-	}
-	if (result) {
-		_log->log(LOG_DEBUG, RH_NAME, "Location Found: " + saved_key);
-		_location = result;
-		_access = result->loc_access;
-	} else {
-		turn_off_sanity(HTTP_BAD_REQUEST, "Location Not Found");
-	}
-}
-
-/**
- * @brief Normalizes the requested path based on the server root and validates its existence and type.
- *
- * This method combines the server root with the requested `_path`, and then checks if the resulting path
- * is valid according to the HTTP method used (GET, POST, DELETE).
- *
- * @details
- * - **POST**: Ensures the path is a directory to create a new resource. Sets `_normalized_path` if valid.
- * - **File Check**: For GET requests, checks if the path points to an existing file, updates `_cgi` if it is a CGI, and sets `_status` to `HTTP_OK`.
- * - **DELETE**: Ensures the resource exists; if the target is a directory, the operation is not allowed.
- * - **Directory Check**: If the path is a directory, attempts to locate default files. If found, sets `_normalized_path`.
- * - If no valid path or resource is found, it disables sanity and sets `_status` to `HTTP_NOT_FOUND`.
- *
- * @return None
- */
-void HttpRequestHandler::normalize_request_path() {
-	std::string eval_path = _config.server_root + _path;
-
-	_log->log(LOG_DEBUG, RH_NAME,
-			  "Normalize path to get proper file to serve." + eval_path);
-
-	if (_method == METHOD_POST) {
-		_log->log(LOG_DEBUG, RH_NAME,
-				  "Path build to a POST request");
-		if (eval_path[eval_path.size() - 1] != '/') {
-			eval_path += "/";
-		}
-		if (!is_dir(eval_path)){
-			turn_off_sanity(HTTP_BAD_REQUEST,
-			                "Non valid path to create resource.");
-			return ;
-		}
-		_normalized_path = eval_path;
-		return ;
-	}
-	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
-		_log->log(LOG_INFO, RH_NAME, "File found.");
-		_normalized_path = eval_path;
-		_cgi = is_cgi(_normalized_path);
-		_status = HTTP_OK;
-		return ;
-	}
-	if (_method == METHOD_DELETE) {
-		turn_off_sanity(HTTP_NOT_FOUND,
-		                "Resource to be deleted, not found.");
-		return ;
-	}
-	if (is_dir(eval_path)) {
-		if (_method == METHOD_DELETE) {
-			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
-							"Delete method over a dir is not allowed.");
-			return ;
-		}
-		if (eval_path[eval_path.size() - 1] != '/') {
-			eval_path += "/";
-		}
-		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
-		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
-			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
-			if (is_file(eval_path + _location->loc_default_pages[i])) {
-				_log->log(LOG_INFO, RH_NAME, "Default File found");
-				_normalized_path = eval_path + _location->loc_default_pages[i];
-				_cgi = is_cgi(_normalized_path);
-				_status = HTTP_OK;
-				return ;
-			}
-		}
-	}
-	turn_off_sanity(HTTP_NOT_FOUND,
-	                "Requested path not found " + _path);
-}
-
-/**
- * @brief Evaluates if the requested path corresponds to a CGI script and adjusts path attributes accordingly.
- *
- * This method checks if the requested path points to a CGI file or a mapped CGI script in the configuration.
- * If a CGI path is detected, it updates `_normalized_path`, `_script`, `_path_info`, and sets `_cgi` to true.
- *
- * @details
- * - If the path is a CGI file directly (not a directory), it sets `_script` and `_normalized_path` appropriately.
- * - Searches for mapped CGI paths in `_location->cgi_locations`. If a match is found, `_normalized_path` and `_script` are updated.
- * - Sets `_cgi` to true if the path corresponds to a CGI file or location.
- * - Logs each step, including the path, type, and any CGI configurations detected.
- *
- * @return None
- */
-void HttpRequestHandler::cgi_normalize_path() {
-	if (!_location->cgi_file) {
-		_log->log(LOG_DEBUG, RH_NAME,
-				  "No CGI locations at server config.");
-		return ;
-	}
-	std::string eval_path = _config.server_root + _path;
-	if (is_dir(eval_path)) {
-		_log->log(LOG_DEBUG, RH_NAME,
-		          "CGI test - Directory exist.");
-		return ;
-	}
-	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
-		_log->log(LOG_DEBUG, RH_NAME,
-		          "The user is over a real CGI file. It should be handle as script.");
-		size_t dot_pos = eval_path.find_last_of('/');
-		_script = eval_path.substr(dot_pos + 1);
-		_normalized_path = eval_path.substr(0, dot_pos);
-		_cgi = true;
-		return ;
-	}
-
-	std::string saved_key;
-	const t_cgi* cgi_data = NULL;
-
-	_log->log(LOG_DEBUG, RH_NAME,
-	          "Request will be testing against mapped CGI scripts.");
-	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
-		it != _location->cgi_locations.end(); it++) {
-		const std::string& key = it->first;
-		if (starts_with(_path, key)) {
-			if (key.length() > saved_key.length()) {
-				cgi_data = &it->second;
-				saved_key = key;
-			}
-		}
-	}
-	if (cgi_data) {
-		_log->log(LOG_DEBUG, RH_NAME,
-				  "CGI - Location Found: " + saved_key);
-		_normalized_path = _config.server_root + cgi_data->cgi_path;
-		_script = cgi_data->script;
-		_path_info = _path.substr(saved_key.length());
-		_cgi = true;
 	}
 }
 
