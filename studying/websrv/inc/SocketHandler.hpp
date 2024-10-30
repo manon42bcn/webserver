@@ -29,7 +29,9 @@ private:
 
 	bool set_nonblocking(int fd);
 	bool is_cgi_file(const std::string& filename, const std::string& extension) const;
-	void get_cgi_files(const std::string& directory, const std::string& extension, std::map<std::string, std::string>& mapped_files);
+	bool get_location(const std::string& path, const std::string& loc_root);
+	void get_cgi_files(const std::string& directory, const std::string& loc_root,
+	                   const std::string& extension, std::map<std::string, std::string>& mapped_files);
 	void mapping_cgi_locations();
 public:
 	SocketHandler(int port, ServerConfig& config, const Logger* logger);

@@ -112,8 +112,8 @@ void signal_handler(int sig){
 }
 
 int main() {
-	std::string base_path = getenv("WEBSERVER_PATH");
-	//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = getenv("WEBSERVER_PATH");
+		std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
