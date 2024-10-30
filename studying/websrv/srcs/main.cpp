@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/30 14:10:55 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
@@ -112,8 +124,8 @@ void signal_handler(int sig){
 }
 
 int main() {
-//	std::string base_path = getenv("WEBSERVER_PATH");
-		std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+	std::string base_path = getenv("WEBSERVER_PATH");
+//		std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;

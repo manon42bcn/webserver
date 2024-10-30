@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/14 14:07:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/30 14:19:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ bool SocketHandler::is_cgi_file(const std::string &filename, const std::string& 
 
 
 void SocketHandler::get_cgi_files(const std::string& directory, const std::string& loc_root,
-                                  const std::string& extension, std::map<std::string, std::string>& mapped_files) {
+                                  const std::string& extension, std::map<std::string, t_cgi>& mapped_files) {
 	DIR* dir = opendir(directory.c_str());
 	if (dir == NULL) {
 		_log->log(LOG_WARNING, SH_NAME,
@@ -164,13 +164,14 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 			get_cgi_files(full_path, loc_root, extension, mapped_files);
 		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
 			std::string clean_path = full_path.substr(_config.server_root.length());
+			std::string real_path = clean_path.substr(0, clean_path.find(name));
 			size_t pos = clean_path.find(extension);
 			clean_path = clean_path.substr(0, pos);
 			if (belongs_to_location(clean_path, loc_root)) {
 				_log->log(LOG_DEBUG, SH_NAME,
 				          "CGI found path for location root <" + loc_root + ">: ["
 				                  + clean_path + "] - filename: " + name);
-				mapped_files.insert(std::make_pair(clean_path, name));
+				mapped_files.insert(std::make_pair(clean_path, s_cgi(real_path, name)));
 			}
 		}
 	}
@@ -188,6 +189,9 @@ void SocketHandler::mapping_cgi_locations() {
 			          "Location with CGI activated, mapping for files.");
 			get_cgi_files(_config.server_root + it->second.loc_root,
 			              it->second.loc_root, ".py", it->second.cgi_locations);
+			if (!it->second.cgi_locations.empty()){
+				_config.cgi_locations = true;
+			}
 		}
 	}
 }

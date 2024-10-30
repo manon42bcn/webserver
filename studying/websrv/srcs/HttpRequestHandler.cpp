@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/29 14:27:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:24:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
 	                         &HttpRequestHandler::get_location_config,
+							 &HttpRequestHandler::cgi_normalize_path,
 	                         &HttpRequestHandler::normalize_request_path,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
@@ -67,6 +68,8 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	{
 		(this->*steps[i])();
 		if (!_sanity)
+			break;
+		if (_cgi)
 			break;
 		i++;
 	}
@@ -487,6 +490,41 @@ void HttpRequestHandler::normalize_request_path() {
 	}
 	turn_off_sanity(HTTP_NOT_FOUND,
 	                "Requested path not found " + _path);
+}
+
+void HttpRequestHandler::cgi_normalize_path() {
+	if (!_location->cgi_file) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "No CGI locations at server config.");
+		return ;
+	}
+	std::string saved_key;
+	const t_cgi* cgi_data = NULL;
+
+	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
+		it != _location->cgi_locations.end(); it++) {
+		const std::string& key = it->first;
+		if (starts_with(_path, key)) {
+			if (key.length() > saved_key.length()) {
+				cgi_data = &it->second;
+				saved_key = key;
+			}
+		}
+
+
+	}
+	if (cgi_data) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "CGI - Location Found: " + saved_key);
+		_normalized_path = _config.server_root + cgi_data->cgi_path;
+		_script = cgi_data->script;
+		_path_info = _path.substr(cgi_data->cgi_path.length());
+		_cgi = true;
+		_log->log(LOG_WARNING, RH_NAME, "normalized " + _normalized_path);
+		_log->log(LOG_WARNING, RH_NAME, "script " + _script);
+		_log->log(LOG_WARNING, RH_NAME, "pathinfo " + _path_info);
+		turn_off_sanity(HTTP_I_AM_A_TEAPOT, "Temporal break to test");
+	}
 }
 
 /**

@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
+/*   Updated: 2024/10/30 14:10:29 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   webserver.hpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
@@ -129,12 +141,11 @@ struct s_request {
 			  path_type(pt), query(qy), cgi(cgi){};
 };
 
-struct s_path {
-	e_http_sts  code;
-	bool        found;
-	std::string path;
-	s_path(e_http_sts c, bool f, const std::string p) : code(c), found(f), path(p) {}
-};
+typedef struct s_cgi {
+	std::string	cgi_path;
+	std::string script;
+	s_cgi(std::string cp, std::string s): cgi_path(cp), script(s) {};
+} t_cgi;
 
 struct s_content {
 	bool        status;
@@ -161,7 +172,7 @@ struct LocationConfig {
 	std::vector<t_allowed_methods>      loc_allowed_methods;
 	bool                                autoindex;
 	bool                                cgi_file;
-	std::map<std::string, std::string>  cgi_locations;
+	std::map<std::string, t_cgi>		cgi_locations;
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
 	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), cgi_file(true) {};
@@ -178,6 +189,7 @@ struct ServerConfig {
     std::string                                   client_max_body_size;
     bool                                          autoindex;
 	std::string                                   template_error_page;
+	bool										  cgi_locations;  // set after mappig, to avoid config vs files errors
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
