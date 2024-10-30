@@ -28,8 +28,8 @@ private:
 	std::string         _port_str;
 
 	bool set_nonblocking(int fd);
-	bool is_cgi_file(const std::string& filename, const std::string& extension) const;
-	bool get_location(const std::string& path, const std::string& loc_root);
+	static bool is_cgi_file(const std::string& filename, const std::string& extension) ;
+	bool belongs_to_location(const std::string& path, const std::string& loc_root);
 	void get_cgi_files(const std::string& directory, const std::string& loc_root,
 	                   const std::string& extension, std::map<std::string, std::string>& mapped_files);
 	void mapping_cgi_locations();

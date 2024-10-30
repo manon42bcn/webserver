@@ -108,7 +108,7 @@ bool SocketHandler::set_nonblocking(int fd) {
 }
 
 
-bool SocketHandler::get_location(const std::string& path, const std::string& loc_root) {
+bool SocketHandler::belongs_to_location(const std::string& path, const std::string& loc_root) {
 	std::string saved_key;
 	LocationConfig* result = NULL;
 
@@ -123,7 +123,6 @@ bool SocketHandler::get_location(const std::string& path, const std::string& loc
 		}
 	}
 	if (result) {
-		_log->log(LOG_DEBUG, SH_NAME, result->loc_root + " result + loc " + loc_root);
 		return (result->loc_root == loc_root);
 	} else {
 		return (false);
@@ -131,7 +130,7 @@ bool SocketHandler::get_location(const std::string& path, const std::string& loc
 }
 
 
-bool SocketHandler::is_cgi_file(const std::string &filename, const std::string& extension) const {
+bool SocketHandler::is_cgi_file(const std::string &filename, const std::string& extension) {
 	return (filename.size() >= extension.length()
 	        && filename.compare(filename.size() - extension.length(),
         extension.length(), extension) == 0);
@@ -164,8 +163,14 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 		if (S_ISDIR(info.st_mode)) {
 			get_cgi_files(full_path, loc_root, extension, mapped_files);
 		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
-			if (get_location(directory, loc_root)) {
-				mapped_files.insert(std::make_pair(full_path, name));
+			std::string clean_path = full_path.substr(_config.server_root.length());
+			size_t pos = clean_path.find(extension);
+			clean_path = clean_path.substr(0, pos);
+			if (belongs_to_location(clean_path, loc_root)) {
+				_log->log(LOG_DEBUG, SH_NAME,
+				          "CGI found path for location root <" + loc_root + ">: ["
+				                  + clean_path + "] - filename: " + name);
+				mapped_files.insert(std::make_pair(clean_path, name));
 			}
 		}
 	}
@@ -176,21 +181,13 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 void SocketHandler::mapping_cgi_locations() {
 	_log->log(LOG_DEBUG, SH_NAME,
 	          "mapping cgi locations.");
+	std::map<std::string, std::string> results;
 	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin(); it != _config.locations.end(); it++) {
 		if (it->second.cgi_file) {
 			_log->log(LOG_DEBUG, SH_NAME,
 			          "Location with CGI activated, mapping for files.");
 			get_cgi_files(_config.server_root + it->second.loc_root,
 			              it->second.loc_root, ".py", it->second.cgi_locations);
-		}
-	}
-	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin(); it != _config.locations.end(); it++) {
-		if (it->second.cgi_file) {
-			_log->log(LOG_DEBUG, SH_NAME, "LocationROOT " + it->second.loc_root);
-			for (std::map<std::string, std::string>::iterator it_p = it->second.cgi_locations.begin(); it_p != it->second.cgi_locations.end(); it_p++) {
-				_log->log(LOG_DEBUG, SH_NAME,
-				          "path : " + it_p->first + " file " + it_p->second);
-			}
 		}
 	}
 }
