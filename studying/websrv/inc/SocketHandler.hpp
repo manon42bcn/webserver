@@ -41,7 +41,7 @@ public:
 	int get_socket_fd() const;
 	const ServerConfig& get_config() const;
 	const bool& is_cgi_server() const;
-	std::string& get_port();
+	std::string& get_port() const;
 	class SocketCreationError : public std::exception {
 	public:
 		virtual const char *what() const throw();

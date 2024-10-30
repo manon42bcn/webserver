@@ -419,7 +419,7 @@ bool HttpResponseHandler::handle_post() {
 				turn_off_sanity(HTTP_CONFLICT,
 				                "File already exists and cannot be overwritten.");
 				check_file.close();
-				return send_error_response();
+				return (send_error_response());
 			}
 			std::ofstream file(save_path.c_str());
 			if (!file.is_open()) {
@@ -442,7 +442,7 @@ bool HttpResponseHandler::handle_delete() {
 	if (_location->loc_access < ACCESS_DELETE) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "Insufficient permissions to delete the resource.");
-		return send_error_response();
+		return (send_error_response());
 	}
 
 	std::string delete_path = _request.normalized_path;
@@ -450,20 +450,20 @@ bool HttpResponseHandler::handle_delete() {
 	if (!std::ifstream(delete_path.c_str()).good()) {
 		turn_off_sanity(HTTP_NOT_FOUND,
 		                "Resource not found for deletion.");
-		return send_error_response();
+		return (send_error_response());
 	}
 
 	if (std::remove(delete_path.c_str()) != 0) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 		                "Failed to delete the resource.");
-		return send_error_response();
+		return (send_error_response());
 	}
 
 	_request.status = HTTP_NO_CONTENT;
 	_log->log(LOG_DEBUG, RSP_NAME,
 	          "Resource deleted successfully: " + delete_path);
 	sender("Resource Deleted.", delete_path);
-	return true;
+	return (true);
 }
 
 std::vector<char*> HttpResponseHandler::cgi_environment() {
@@ -476,19 +476,18 @@ std::vector<char*> HttpResponseHandler::cgi_environment() {
 	env_vars.push_back("QUERY_STRING=" + _request.query);
 	env_vars.push_back("CONTENT_TYPE=" + _request.content_type);
 	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));
-	env_vars.push_back("PATH_INFO=" + _request.normalized_path);
-	env_vars.push_back("SCRIPT_NAME=" + _request.query);
+	env_vars.push_back("PATH_INFO=" + _request.path_info);
+	env_vars.push_back("SCRIPT_NAME=" + _request.script);
 	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-//	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
+	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
 
-	// Convertir cada variable de entorno a `char*`
 	std::vector<char *> env_ptrs;
 	for (size_t i = 0; i < env_vars.size(); ++i) {
 		env_ptrs.push_back(const_cast<char *>(env_vars[i].c_str()));
 	}
 	env_ptrs.push_back(NULL);
 
-	return env_ptrs;
+	return (env_ptrs);
 }
 
 
