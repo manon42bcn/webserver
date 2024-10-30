@@ -11,28 +11,29 @@
 /* ************************************************************************** */
 
 #include "HttpRequestHandler.hpp"
-#include <unistd.h>
-#include <fstream>
-#include <sstream>
-#include <fcntl.h>
-#include <iostream>
-#include <sys/socket.h>
 
 /**
  * @brief Constructs an HttpRequestHandler to process and validate an HTTP request.
  *
  * This constructor initializes the request handler with the logger and client data,
- * then proceeds to process and validate the HTTP request by calling a series of validation steps.
- * If any validation step fails, it stops the process and logs the failure.
+ * then proceeds through a series of validation and processing steps.
+ * If any validation step fails or a CGI flag is set, it stops further processing.
  *
  * @details
- * - The constructor first validates the logger pointer, throwing an exception if it's null.
- * - It reads the HTTP request data, parses it, and then executes a series of validation steps:
- *   1. `parse_method_and_path()`
- *   2. `validate_request()`
- *   3. `get_location_config()`
- *   4. `normalize_request_path()`
- * - If any step fails (i.e., `_sanity` is false), the process is halted and the request is handled accordingly.
+ * - First validates the logger pointer and throws an exception if it's null.
+ * - It then performs a series of validation steps in order:
+ *   1. `read_request_header()`
+ *   2. `parse_header()`
+ *   3. `parse_method_and_path()`
+ *   4. `parse_path_type()`
+ *   5. `load_header_data()`
+ *   6. `get_location_config()`
+ *   7. `cgi_normalize_path()`
+ *   8. `normalize_request_path()`
+ *   9. `load_content()`
+ *   10. `validate_request()`
+ * - If any step fails (i.e., `_sanity` is false) or if `_cgi` is true, the process halts.
+ * - Upon completion, it calls `handle_request()` to handle the validated request.
  *
  * @param log A pointer to the logger instance used to log actions and errors.
  * @param client_data The data associated with the client, including the server configuration and file descriptor.
@@ -50,7 +51,6 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
-	size_t i = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
@@ -64,6 +64,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
+	size_t i = 0;
 	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
@@ -78,11 +79,24 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	handle_request();
 }
 
+/**
+ * @brief Destructor for HttpRequestHandler, handles resource cleanup.
+ *
+ * This destructor ensures that any pointers are set to `NULL` after use, signaling
+ * that they are no longer valid. Logs the cleanup process for tracking purposes.
+ *
+ * @details
+ * - Logs the destructor call and resource cleanup for traceability.
+ * - Sets `_client_data`, `_location`, and `_log` to `NULL` for safety, even though no
+ *   explicit memory deallocation is needed.
+ *
+ * @return None
+ */
 HttpRequestHandler::~HttpRequestHandler() {
-	_client_data = NULL;
-	_location = NULL;
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "HttpRequestHandler resources clean up.");
+	_client_data = NULL;
+	_location = NULL;
 	_log = NULL;
 }
 
@@ -230,6 +244,21 @@ void HttpRequestHandler::parse_method_and_path() {
 	}
 }
 
+/**
+ * @brief Parses the path to determine if it contains a query component.
+ *
+ * This method checks if `_path` contains a query string, identified by the presence of
+ * a `?` character. If a query is found, it separates the query from the main path and
+ * updates `_path_type` to `PATH_QUERY`. Otherwise, `_path_type` is set to `PATH_REGULAR`.
+ *
+ * @details
+ * - If a `?` is found in `_path`, the substring after `?` is extracted and assigned to `_query_string`.
+ * - The main path up to `?` is retained in `_path`, and `_path_type` is set to `PATH_QUERY`.
+ * - If no `?` is found, `_path_type` is set to `PATH_REGULAR`, indicating no query is present.
+ * - Logs the detected path type and, if applicable, the query string for debugging.
+ *
+ * @return None
+ */
 void HttpRequestHandler::parse_path_type() {
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Path type.");
@@ -240,7 +269,7 @@ void HttpRequestHandler::parse_path_type() {
 				  "Regular Path to normalize.");
 		return;
 	}
-	_query_encoded = _path.substr(pos + 1);
+	_query_string = _path.substr(pos + 1);
 	_path = _path.substr(0, pos);
 	_path_type = PATH_QUERY;
 	_log->log(LOG_DEBUG, RH_NAME,
@@ -248,17 +277,16 @@ void HttpRequestHandler::parse_path_type() {
 }
 
 /**
- * @brief Parses the HTTP request header to extract the method and path.
+ * @brief Loads and validates header data, including Content-Length, Content-Type, and boundary for multipart data.
  *
- * This method analyzes the `_header` string to extract the HTTP method and the requested path.
- * If the header is malformed or if the method or path are invalid, it disables sanity and sets the
- * appropriate HTTP error status.
+ * This method extracts and verifies critical information from the HTTP request header, including
+ * `Content-Length` and `Content-Type`. It also checks for the `boundary` parameter if the content is multipart.
  *
  * @details
- * - If the header does not contain a space character to separate the method, it sets the status to `HTTP_BAD_REQUEST`.
- * - The method portion is extracted and validated; if it is empty or invalid, it disables sanity.
- * - The path is extracted next; if it exceeds `URI_MAX`, it disables sanity and sets the status to `HTTP_URI_TOO_LONG`.
- * - Upon successful parsing, the method and path are logged for tracking.
+ * - Retrieves `Content-Length` from `_header`, validates it, and assigns it to `_content_length`.
+ * - Retrieves `Content-Type` from `_header`. If it is multipart, it checks for the presence of `boundary`.
+ * - If `Content-Length` or `boundary` is malformed or missing when required, it disables sanity and logs the error.
+ * - For multipart data, trims `_content_type` to exclude any parameters after the type (e.g., `; boundary=`).
  *
  * @return None
  */
@@ -268,13 +296,13 @@ void HttpRequestHandler::load_header_data() {
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
-			_content_leght = str_to_size_t(content_length);
+			_content_length = str_to_size_t(content_length);
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Content-Length malformed.");
 		}
 	} else {
-		_content_leght = 0;
+		_content_length = 0;
 	}
 	if (!_content_type.empty()) {
 		if (starts_with(_content_type, "multipart")) {
@@ -307,7 +335,7 @@ void HttpRequestHandler::load_header_data() {
  * @return None
  */
 void HttpRequestHandler::load_content() {
-	if (_content_leght == 0) {
+	if (_content_length == 0) {
 		_log->log(LOG_INFO, RH_NAME,
 		          "No Content-Length to read from FD.");
 		return ;
@@ -316,7 +344,7 @@ void HttpRequestHandler::load_content() {
 	char buffer[BUFFER_REQUEST];
 	int         read_byte;
 	size_t      size = 0;
-	size_t      to_read = _content_leght - _request.length();
+	size_t      to_read = _content_length - _request.length();
 
 	while (to_read > 0) {
 		read_byte = recv(_fd, buffer, sizeof(buffer) - 1, 0);
@@ -420,16 +448,17 @@ void HttpRequestHandler::get_location_config() {
 }
 
 /**
- * @brief Normalizes the requested path and identifies the correct file or directory to serve.
+ * @brief Normalizes the requested path based on the server root and validates its existence and type.
  *
- * This method combines the server root, location root, and the requested path to determine
- * the final file path. It checks whether the path corresponds to a file or a directory,
- * and if it is a directory, it searches for default pages in that directory.
+ * This method combines the server root with the requested `_path`, and then checks if the resulting path
+ * is valid according to the HTTP method used (GET, POST, DELETE).
  *
  * @details
- * - If the path points to a file, the method sets `_normalized_path` to the file path and the status to `HTTP_OK`.
- * - If the path is a directory, it checks for default pages (e.g., `index.html`) and sets the appropriate path.
- * - If neither a file nor a directory with default pages is found, the method calls `turn_off_sanity()` and sets the HTTP status to `HTTP_NOT_FOUND`.
+ * - **POST**: Ensures the path is a directory to create a new resource. Sets `_normalized_path` if valid.
+ * - **File Check**: For GET requests, checks if the path points to an existing file, updates `_cgi` if it is a CGI, and sets `_status` to `HTTP_OK`.
+ * - **DELETE**: Ensures the resource exists; if the target is a directory, the operation is not allowed.
+ * - **Directory Check**: If the path is a directory, attempts to locate default files. If found, sets `_normalized_path`.
+ * - If no valid path or resource is found, it disables sanity and sets `_status` to `HTTP_NOT_FOUND`.
  *
  * @return None
  */
@@ -439,7 +468,6 @@ void HttpRequestHandler::normalize_request_path() {
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
 
-	// TODO: After CGI is fully implemented, this condition must be reviewed.
 	if (_method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Path build to a POST request");
@@ -467,7 +495,6 @@ void HttpRequestHandler::normalize_request_path() {
 		return ;
 	}
 	if (is_dir(eval_path)) {
-		// TODO: After CGI is fully implemented, this condition must be reviewed.
 		if (_method == METHOD_DELETE) {
 			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 							"Delete method over a dir is not allowed.");
@@ -492,15 +519,47 @@ void HttpRequestHandler::normalize_request_path() {
 	                "Requested path not found " + _path);
 }
 
+/**
+ * @brief Evaluates if the requested path corresponds to a CGI script and adjusts path attributes accordingly.
+ *
+ * This method checks if the requested path points to a CGI file or a mapped CGI script in the configuration.
+ * If a CGI path is detected, it updates `_normalized_path`, `_script`, `_path_info`, and sets `_cgi` to true.
+ *
+ * @details
+ * - If the path is a CGI file directly (not a directory), it sets `_script` and `_normalized_path` appropriately.
+ * - Searches for mapped CGI paths in `_location->cgi_locations`. If a match is found, `_normalized_path` and `_script` are updated.
+ * - Sets `_cgi` to true if the path corresponds to a CGI file or location.
+ * - Logs each step, including the path, type, and any CGI configurations detected.
+ *
+ * @return None
+ */
 void HttpRequestHandler::cgi_normalize_path() {
 	if (!_location->cgi_file) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "No CGI locations at server config.");
 		return ;
 	}
+	std::string eval_path = _config.server_root + _path;
+	if (is_dir(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI test - Directory exist.");
+		return ;
+	}
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "The user is over a real CGI file. It should be handle as script.");
+		size_t dot_pos = eval_path.find_last_of('/');
+		_script = eval_path.substr(dot_pos + 1);
+		_normalized_path = eval_path.substr(0, dot_pos);
+		_cgi = true;
+		return ;
+	}
+
 	std::string saved_key;
 	const t_cgi* cgi_data = NULL;
 
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "Request will be testing against mapped CGI scripts.");
 	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
 		it != _location->cgi_locations.end(); it++) {
 		const std::string& key = it->first;
@@ -510,42 +569,35 @@ void HttpRequestHandler::cgi_normalize_path() {
 				saved_key = key;
 			}
 		}
-
-
 	}
 	if (cgi_data) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "CGI - Location Found: " + saved_key);
 		_normalized_path = _config.server_root + cgi_data->cgi_path;
 		_script = cgi_data->script;
-		_path_info = _path.substr(cgi_data->cgi_path.length());
+		_path_info = _path.substr(saved_key.length());
 		_cgi = true;
-		_log->log(LOG_WARNING, RH_NAME, "normalized " + _normalized_path);
-		_log->log(LOG_WARNING, RH_NAME, "script " + _script);
-		_log->log(LOG_WARNING, RH_NAME, "pathinfo " + _path_info);
-		turn_off_sanity(HTTP_I_AM_A_TEAPOT, "Temporal break to test");
 	}
 }
 
 /**
- * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
+ * @brief Creates a request wrapper and delegates processing to HttpResponseHandler.
  *
- * This method wraps the HTTP request details into an `s_request` structure and creates a single instance
- * of `HttpResponseHandler`. If the sanity check (`_sanity`) is false, it sends an error response; otherwise,
- * it processes the request normally.
+ * This method initializes an `s_request` structure to encapsulate the details of the current request.
+ * It then creates an `HttpResponseHandler` instance, passing the request wrapper and other relevant data,
+ * and calls `handle_request()` to manage the response.
  *
  * @details
- * - The method creates a request wrapper containing the body, method, path, normalized path, access, sanity, and status.
- * - It then creates a single instance of `HttpResponseHandler` and uses it to either send an error response (if the
- *   sanity check fails) or to handle the request.
+ * - Constructs `s_request` with all necessary request details, including `_body`, `_method`, `_path`, and CGI indicators.
+ * - Delegates the wrapped request to `HttpResponseHandler` for further processing and response handling.
  *
  * @return None
  */
 void HttpRequestHandler::handle_request() {
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
-	                                      _status, _content_leght, _content_type,
-										  _boundary, _path_type, _query_encoded, _cgi);
+	                                      _status, _content_length, _content_type,
+										  _boundary, _path_type, _query_string, _cgi);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	response.handle_request();
 }

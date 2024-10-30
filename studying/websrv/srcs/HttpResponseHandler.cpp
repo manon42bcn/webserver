@@ -24,7 +24,8 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 		_request(request) {
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
-	_log->log(LOG_DEBUG, RSP_NAME, "HttpResponseHandler init.");
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "HttpResponseHandler init.");
 }
 
 bool HttpResponseHandler::handle_request() {
@@ -32,6 +33,9 @@ bool HttpResponseHandler::handle_request() {
 	if (!_request.sanity) {
 		send_error_response();
 		return (false);
+	}
+	if (_request.cgi) {
+		turn_off_sanity(HTTP_I_AM_A_TEAPOT, "temporal disable to tests.");
 	}
 	switch (_request.method) {
 		case METHOD_GET:
