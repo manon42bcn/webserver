@@ -67,8 +67,8 @@ SocketHandler::~SocketHandler() {
 	_log = NULL;
 }
 
-std::string& SocketHandler::get_port(){
-	return (this->_port_str);
+std::string SocketHandler::get_port() const {
+	return (_port_str);
 }
 
 int SocketHandler::accept_connection() {

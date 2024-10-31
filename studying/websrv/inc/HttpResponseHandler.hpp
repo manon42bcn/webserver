@@ -61,6 +61,7 @@ private:
 	std::vector<s_multi_part>	_multi_content;
 	std::string            		_content;
 	s_request&              	_request;
+	std::string                 _response;
 
 public:
 	HttpResponseHandler(const LocationConfig *location,
@@ -71,6 +72,7 @@ public:
 	bool handle_get();
 	bool handle_post();
 	bool handle_delete();
+	bool handle_cgi();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	s_content get_file_content(std::string& path);

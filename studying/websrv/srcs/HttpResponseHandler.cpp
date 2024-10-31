@@ -35,7 +35,11 @@ bool HttpResponseHandler::handle_request() {
 		return (false);
 	}
 	if (_request.cgi) {
-		turn_off_sanity(HTTP_I_AM_A_TEAPOT, "temporal disable to tests.");
+		handle_cgi();
+		if (!_request.sanity) {
+			send_error_response();
+		}
+		sender(_response, _request.path);
 	}
 	switch (_request.method) {
 		case METHOD_GET:
@@ -464,6 +468,73 @@ bool HttpResponseHandler::handle_delete() {
 	          "Resource deleted successfully: " + delete_path);
 	sender("Resource Deleted.", delete_path);
 	return (true);
+}
+
+bool HttpResponseHandler::handle_cgi() {
+	int input_pipe[2];  // Pipe para la entrada al CGI (body)
+	int output_pipe[2]; // Pipe para la salida del CGI (respuesta)
+
+	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                "Error building pipes to CGI handle.");
+		return (false);
+	}
+	std::vector<char*> env = cgi_environment();
+	pid_t pid = fork();
+
+	if (pid == -1) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                "Fork process error.");
+		return (false);
+	} else if (pid == 0) {
+
+		// Proceso hijo - Ejecuta el CGI
+
+		// Redirigir stdin a la entrada del CGI (lectura desde input_pipe[0])
+		dup2(input_pipe[0], STDIN_FILENO);
+		close(input_pipe[1]);  // Cerrar el extremo de escritura en el hijo
+
+		// Redirigir stdout a la salida del CGI (escritura hacia output_pipe[1])
+		dup2(output_pipe[1], STDOUT_FILENO);
+		close(output_pipe[0]);  // Cerrar el extremo de lectura en el hijo
+
+		// Ejecutar el CGI
+//		char * const envo[] = {"PATH=PATH"};
+		std::string cgi_path = _request.normalized_path + _request.script;
+		char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
+		_log->log(LOG_DEBUG, RSP_NAME, "path: " + cgi_path);
+		execve(cgi_path.c_str(), argv, env.data());
+
+		// Si execve falla
+		std::cerr << "Error ejecutando el CGI" << std::endl;
+		exit(1);
+	} else {
+		// Proceso padre - Maneja la comunicación con el CGI
+
+		close(input_pipe[0]);   // Cerrar el extremo de lectura de input_pipe en el padre
+		close(output_pipe[1]);  // Cerrar el extremo de escritura de output_pipe en el padre
+
+		// Enviar el cuerpo de la petición al CGI a través de input_pipe
+		if (!_request.body.empty()) {
+			write(input_pipe[1], _request.body.c_str(), _request.body.size());
+		}
+		close(input_pipe[1]);  // Cerrar después de enviar el cuerpo
+
+		// Leer la salida del CGI desde output_pipe
+		char buffer[1024];
+		std::string response;
+		ssize_t bytes_read;
+		while ((bytes_read = read(output_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
+			buffer[bytes_read] = '\0';
+			response += buffer;
+		}
+		close(output_pipe[0]);  // Cerrar el pipe de salida después de leer
+
+		// Esperar a que el proceso hijo termine
+		waitpid(pid, NULL, 0);
+		_response = response;
+		return (true);
+	}
 }
 
 std::vector<char*> HttpResponseHandler::cgi_environment() {
