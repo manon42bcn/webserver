@@ -22,6 +22,7 @@
 #include <string>
 #include <iostream>
 #include <sys/socket.h>
+#include <sys/wait.h>
 
 #define RSP_NAME "HttpResponseHandler"
 
@@ -62,6 +63,9 @@ private:
 	std::string            		_content;
 	s_request&              	_request;
 	std::string                 _response;
+	std::string                 _response_type;
+	std::vector<char*>          _cgi_env;
+	std::vector<std::string>    _response_header;
 
 public:
 	HttpResponseHandler(const LocationConfig *location,
@@ -73,6 +77,8 @@ public:
 	bool handle_post();
 	bool handle_delete();
 	bool handle_cgi();
+	bool cgi_execute();
+	void free_cgi_env();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	s_content get_file_content(std::string& path);
@@ -87,3 +93,29 @@ public:
 };
 
 #endif
+
+//int	ft_child_monitor(t_ms *mini, int total, pid_t lastpid)
+//{
+//	int		status;
+//	int		sig;
+//	pid_t	child;
+//
+//	while (--total >= 0)
+//	{
+//		child = waitpid(-1, &status, 0);
+//		if (child == lastpid)
+//		{
+//			mini->exitstatus = WEXITSTATUS(status);
+//			if (WIFSIGNALED(status) != 0)
+//			{
+//				sig = WTERMSIG(status);
+//				if (sig != 13)
+//					ft_child_signals_msg(sig);
+//				else
+//					mini->exitstatus = 127;
+//			}
+//		}
+//	}
+//	mini->process = 0;
+//	return (SUCCESS);
+//}

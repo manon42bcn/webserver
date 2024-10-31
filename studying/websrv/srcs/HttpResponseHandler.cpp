@@ -296,7 +296,13 @@ bool HttpResponseHandler::send_error_response() {
  */
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
 	try {
-		std::string response = header(_request.status, body.length(), get_mime_type(path));
+		std::string mime_type;
+		if (_response_type.empty()) {
+			mime_type = get_mime_type(path);
+		} else {
+			mime_type = _response_type;
+		}
+		std::string response = header(_request.status, body.length(), mime_type);
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
@@ -470,77 +476,104 @@ bool HttpResponseHandler::handle_delete() {
 	return (true);
 }
 
-bool HttpResponseHandler::handle_cgi() {
-	int input_pipe[2];  // Pipe para la entrada al CGI (body)
-	int output_pipe[2]; // Pipe para la salida del CGI (respuesta)
 
-	if (pipe(input_pipe) == -1 || pipe(output_pipe) == -1) {
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Error building pipes to CGI handle.");
-		return (false);
+bool HttpResponseHandler::handle_cgi() {
+	cgi_execute();
+	if (!_response.empty()) {
+		size_t header_pos = _response.find("\n\n");
+		if (header_pos == std::string::npos) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+							"CGI Response does not include a valid header.");
+			send_error_response();
+			return (false);
+		}
+		std::string header = _response.substr(header_pos);
+		_response_type = get_header_value(_response, "content-type:", "\n");
+		_response = _response.substr(_response.find('\n') + 1);
+		return (true);
 	}
-	std::vector<char*> env = cgi_environment();
+	return (false);
+}
+
+bool HttpResponseHandler::cgi_execute() {
+	int cgi_in[2];  // Pipe para la entrada al CGI (body)
+	int cgi_out[2]; // Pipe para la salida del CGI (respuesta)
+
+	if (pipe(cgi_in) == -1 || pipe(cgi_out) == -1) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Error building pipes to CGI handle.");
+		return false;
+	}
+
+	_cgi_env = cgi_environment();
+
 	pid_t pid = fork();
 
 	if (pid == -1) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Fork process error.");
+						"Fork process error.");
+		close(cgi_in[0]);
+		close(cgi_in[1]);
+		close(cgi_out[0]);
+		close(cgi_out[1]);
+		free_cgi_env();
 		return (false);
 	} else if (pid == 0) {
+		dup2(cgi_in[0], STDIN_FILENO);
+		dup2(cgi_out[1], STDOUT_FILENO);
+		close(cgi_in[1]);
+		close(cgi_out[0]);
+		close(cgi_in[0]);
+		close(cgi_out[1]);
 
-		// Proceso hijo - Ejecuta el CGI
-
-		// Redirigir stdin a la entrada del CGI (lectura desde input_pipe[0])
-		dup2(input_pipe[0], STDIN_FILENO);
-		close(input_pipe[1]);  // Cerrar el extremo de escritura en el hijo
-
-		// Redirigir stdout a la salida del CGI (escritura hacia output_pipe[1])
-		dup2(output_pipe[1], STDOUT_FILENO);
-		close(output_pipe[0]);  // Cerrar el extremo de lectura en el hijo
-
-		// Ejecutar el CGI
-//		char * const envo[] = {"PATH=PATH"};
 		std::string cgi_path = _request.normalized_path + _request.script;
 		char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
-		_log->log(LOG_DEBUG, RSP_NAME, "path: " + cgi_path);
-		execve(cgi_path.c_str(), argv, env.data());
+		execve(cgi_path.c_str(), argv, _cgi_env.data());
 
-		// Si execve falla
-		std::cerr << "Error ejecutando el CGI" << std::endl;
+		perror("execve");
 		exit(1);
 	} else {
-		// Proceso padre - Maneja la comunicación con el CGI
 
-		close(input_pipe[0]);   // Cerrar el extremo de lectura de input_pipe en el padre
-		close(output_pipe[1]);  // Cerrar el extremo de escritura de output_pipe en el padre
+		close(cgi_in[0]);
+		close(cgi_out[1]);
 
-		// Enviar el cuerpo de la petición al CGI a través de input_pipe
 		if (!_request.body.empty()) {
-			write(input_pipe[1], _request.body.c_str(), _request.body.size());
+			ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
+			if (written == -1) {
+				_log->log(LOG_ERROR, RSP_NAME,
+						  "Error writing to CGI input.");
+			}
 		}
-		close(input_pipe[1]);  // Cerrar después de enviar el cuerpo
+		close(cgi_in[1]);
 
-		// Leer la salida del CGI desde output_pipe
 		char buffer[1024];
 		std::string response;
 		ssize_t bytes_read;
-		while ((bytes_read = read(output_pipe[0], buffer, sizeof(buffer) - 1)) > 0) {
+		while ((bytes_read = read(cgi_out[0], buffer, sizeof(buffer) - 1)) > 0) {
 			buffer[bytes_read] = '\0';
 			response += buffer;
 		}
-		close(output_pipe[0]);  // Cerrar el pipe de salida después de leer
+		close(cgi_out[0]);
+
+		if (bytes_read == -1) {
+			_log->log(LOG_ERROR, RSP_NAME, "Error reading from CGI output.");
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Error reading CGI response.");
+			return send_error_response();
+		}
 
 		// Esperar a que el proceso hijo termine
 		waitpid(pid, NULL, 0);
+		free_cgi_env();
+		// Configurar la respuesta para el cliente
 		_response = response;
-		return (true);
+		return true;
 	}
 }
+
 
 std::vector<char*> HttpResponseHandler::cgi_environment() {
 	std::vector<std::string> env_vars;
 
-
+	// Variables estándar de CGI
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vars.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	env_vars.push_back("REQUEST_METHOD=" + method_enum_to_string(_request.method));
@@ -552,14 +585,25 @@ std::vector<char*> HttpResponseHandler::cgi_environment() {
 	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
 	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
 
-	std::vector<char *> env_ptrs;
-	for (size_t i = 0; i < env_vars.size(); ++i) {
-		env_ptrs.push_back(const_cast<char *>(env_vars[i].c_str()));
-	}
-	env_ptrs.push_back(NULL);
+	// Variables adicionales de CGI
+//	env_vars.push_back("REMOTE_ADDR=" + _client_data->get_client_ip());
+//	env_vars.push_back("HTTP_USER_AGENT=" + _request.user_agent);
 
-	return (env_ptrs);
+	// Convertir std::vector<std::string> a std::vector<char*>
+	std::vector<char*> env_ptrs;
+	for (size_t i = 0; i < env_vars.size(); ++i) {
+		// Usamos strdup para crear una copia mutable de cada cadena
+		env_ptrs.push_back(strdup(env_vars[i].c_str()));
+	}
+	env_ptrs.push_back(NULL);  // Finalización del entorno con NULL
+//	for (size_t i = 0; i < env_ptrs.size(); i++){
+//		_log->log(LOG_DEBUG, RSP_NAME, env_ptrs[i]);
+//	}
+	return env_ptrs;
 }
 
-
-
+void HttpResponseHandler::free_cgi_env() {
+	for (size_t i = 0; i < _cgi_env.size() - 1; ++i) {
+		free(_cgi_env[i]);  // Libera cada cadena duplicada con strdup
+	}
+}
