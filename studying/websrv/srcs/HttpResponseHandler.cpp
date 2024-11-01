@@ -529,16 +529,16 @@ bool HttpResponseHandler::handle_cgi() {
 }
 
 bool HttpResponseHandler::cgi_execute() {
-	int cgi_in[2];  // Pipe para la entrada al CGI (body)
-	int cgi_out[2]; // Pipe para la salida del CGI (respuesta)
+	int cgi_in[2];
+	int cgi_out[2];
 
 	if (pipe(cgi_in) == -1 || pipe(cgi_out) == -1) {
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Error building pipes to CGI handle.");
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						"Error building pipes to CGI handle.");
 		return false;
 	}
 
 	_cgi_env = cgi_environment();
-
 	pid_t pid = fork();
 
 	if (pid == -1) {
@@ -597,13 +597,14 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	struct pollfd pfd;
 	pfd.fd = fd[0];
 	pfd.events = POLLIN;
-
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "Reading CGI response.");
 	while (true) {
 		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
-		if (poll_result == 0) {  // Timeout de poll
+		if (poll_result == 0) {
 			active = false;
 			break;
-		} else if (poll_result == -1) {  // Error en poll
+		} else if (poll_result == -1) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"Poll error on CGI pipe.");
 			active = false;
