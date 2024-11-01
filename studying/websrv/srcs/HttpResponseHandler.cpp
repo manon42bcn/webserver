@@ -476,22 +476,55 @@ bool HttpResponseHandler::handle_delete() {
 	return (true);
 }
 
+size_t end_of_header_system(std::string& header)
+{
+	size_t  pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos) {
+		pos = header.find("\n\n");
+	}
+	return (pos);
+}
 
 bool HttpResponseHandler::handle_cgi() {
 	cgi_execute();
 	if (!_response.empty()) {
-		size_t header_pos = _response.find("\n\n");
+		size_t header_pos = end_of_header_system(_response);
 		if (header_pos == std::string::npos) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"CGI Response does not include a valid header.");
 			send_error_response();
 			return (false);
 		}
-		std::string header = _response.substr(header_pos);
+		_response_type = get_header_value(_response, "content-type:", "\n");
+		if (_response_type.empty()){
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+							"Content-Type not present at CGI response.");
+			send_error_response();
+			return (false);
+		}
+		std::string status = get_header_value(_response, "Status:", " ");
+		if (status.empty()) {
+			status = "200";
+		}
+		if (is_valid_size_t(status)) {
+			_request.status = (e_http_sts)str_to_size_t(status);
+		} else {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+							"Malformed Status included at CGI response.");
+			send_error_response();
+			return (false);
+		}
+		std::string header = _response.substr(0,header_pos);
+		std::string response = _response.substr(header_pos + 1);
 		_response_type = get_header_value(_response, "content-type:", "\n");
 		_response = _response.substr(_response.find('\n') + 1);
 		return (true);
+	} else {
+		turn_off_sanity(HTTP_BAD_GATEWAY,
+						"CGI does not include a response.");
+		send_error_response();
 	}
+
 	return (false);
 }
 
@@ -529,7 +562,6 @@ bool HttpResponseHandler::cgi_execute() {
 		char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
 		execve(cgi_path.c_str(), argv, _cgi_env.data());
 
-		perror("execve");
 		exit(1);
 	} else {
 
@@ -544,31 +576,96 @@ bool HttpResponseHandler::cgi_execute() {
 			}
 		}
 		close(cgi_in[1]);
-
-		char buffer[1024];
-		std::string response;
-		ssize_t bytes_read;
-		while ((bytes_read = read(cgi_out[0], buffer, sizeof(buffer) - 1)) > 0) {
-			buffer[bytes_read] = '\0';
-			response += buffer;
-		}
-		close(cgi_out[0]);
-
-		if (bytes_read == -1) {
-			_log->log(LOG_ERROR, RSP_NAME, "Error reading from CGI output.");
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Error reading CGI response.");
-			return send_error_response();
-		}
-
-		// Esperar a que el proceso hijo termine
-		waitpid(pid, NULL, 0);
+		bool reading = read_from_cgi(pid, cgi_out);
+		close(cgi_in[0]);
 		free_cgi_env();
-		// Configurar la respuesta para el cliente
-		_response = response;
-		return true;
+		if (!reading) {
+			send_error_response();
+		}
+		return (true);
 	}
 }
 
+bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
+	char buffer[2048];
+	std::string response;
+	ssize_t bytes_read;
+	bool active = true;
+
+	fcntl(fd[0], F_SETFL, O_NONBLOCK);
+
+	struct pollfd pfd;
+	pfd.fd = fd[0];
+	pfd.events = POLLIN;
+
+	while (true) {
+		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
+		if (poll_result == 0) {  // Timeout de poll
+			active = false;
+			break;
+		} else if (poll_result == -1) {  // Error en poll
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+							"Poll error on CGI pipe.");
+			active = false;
+			break;
+		}
+
+		if (pfd.revents & POLLIN) {
+			bytes_read = read(fd[0], buffer, sizeof(buffer) - 1);
+			if (bytes_read > 0) {
+				buffer[bytes_read] = '\0';
+				response += buffer;
+			} else if (bytes_read == 0) {
+				break;
+			} else {
+				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+								"Error reading CGI response.");
+				break;
+			}
+		}
+	}
+	if (!active) {
+		kill(pid, SIGKILL);
+		turn_off_sanity(HTTP_GATEWAY_TIMEOUT,
+						"CGI Response timed out.");
+	}
+	waitpid(pid, NULL, 0);
+
+	_response = response;
+	return (active);
+}
+//bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
+//
+//	char buffer[1024];
+//	std::string response;
+//	ssize_t bytes_read;
+//	_client_data->chronos_reset();
+//	bool active = true;
+//	while ((bytes_read = read(fd[0], buffer, sizeof(buffer) - 1)) > 0) {
+//		if (!(active = _client_data->chronos())) {
+//			break;
+//		}
+//		buffer[bytes_read] = '\0';
+//		response += buffer;
+//	}
+//	close(fd[0]);
+//	if (active){
+////		TODO: Verificar si vale la pena obtener el status de salida.
+//		waitpid(pid, NULL, 0);
+//	} else {
+//		kill(pid, SIGKILL);
+//		turn_off_sanity(HTTP_GATEWAY_TIMEOUT,
+//		                "CGI Response timed out.");
+//	}
+//	if (bytes_read == -1) {
+//		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+//		                "Error reading CGI response.");
+//	}
+//	_log->log(LOG_DEBUG, RSP_NAME,
+//			  "LLegamos aqui...");
+//	_response = response;
+//	return (active);
+//}
 
 std::vector<char*> HttpResponseHandler::cgi_environment() {
 	std::vector<std::string> env_vars;

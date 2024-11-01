@@ -46,8 +46,12 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	server_addr.sin_port = htons(port);
 	_port_str = int_to_string(port);
 	_log->log(LOG_DEBUG, SH_NAME, "Linking Socket.");
-	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
-		_log->fatal_log(SH_NAME, "Error linking Socket.");
+	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+		close(_socket_fd);
+		_log->fatal_log(SH_NAME,
+						"Error linking Socket.");
+
+	}
 	_log->log(LOG_DEBUG, SH_NAME, "Socket to listening mode.");
 	if (listen(_socket_fd, 10) < 0)
 		_log->fatal_log(SH_NAME, "Error at listening process.");

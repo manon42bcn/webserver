@@ -39,7 +39,7 @@ class ClientData {
 	    struct pollfd get_fd();
 	    void deactivate();
 		void close_fd();
-	    int chronos();
+	    bool chronos();
 	    void chronos_reset();
 };
 

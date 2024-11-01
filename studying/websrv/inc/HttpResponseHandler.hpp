@@ -25,6 +25,7 @@
 #include <sys/wait.h>
 
 #define RSP_NAME "HttpResponseHandler"
+#define CGI_TIMEOUT 5000
 
 enum e_content_type {
 	CT_UNKNOWN = 0,
@@ -78,6 +79,7 @@ public:
 	bool handle_delete();
 	bool handle_cgi();
 	bool cgi_execute();
+	bool read_from_cgi(int pid, int (&fd)[2]);
 	void free_cgi_env();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();

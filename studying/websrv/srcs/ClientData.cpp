@@ -34,7 +34,7 @@ ClientData::~ClientData() {
 	_log = NULL;
 }
 
-int ClientData::chronos() {
+bool ClientData::chronos() {
 	std::time_t now = std::time(NULL);
 	if (now - _timestamp > TIMEOUT_LIMIT) {
 		_active = false;
