@@ -145,7 +145,7 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
                                   const std::string& extension, std::map<std::string, t_cgi>& mapped_files) {
 	DIR* dir = opendir(directory.c_str());
 	if (dir == NULL) {
-		_log->log(LOG_WARNING, SH_NAME,
+		_log->log(LOG_INFO, SH_NAME,
 		          "No directory was found.");
 		return;
 	}
