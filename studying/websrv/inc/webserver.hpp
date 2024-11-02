@@ -132,16 +132,17 @@ struct s_request {
 	bool&        cgi;
 	std::string& script;
 	std::string& path_info;
+	bool&        chunks;
 	s_request(std::string& b, e_methods& m, std::string& p,
 	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
 	          size_t& cl, std::string& ct, std::string& bd,
 			  e_path_type& pt, std::string& qy, bool& cgi,
-	          std::string& sc, std::string& pi):
+	          std::string& sc, std::string& pi, bool& cks):
 			  body(b), method(m), path(p), normalized_path(np),
               access(a), sanity(s), status(sts),
 			  content_length(cl), content_type(ct), boundary(bd),
 			  path_type(pt), query(qy), cgi(cgi),
-			  script(sc), path_info(pi) {};
+			  script(sc), path_info(pi), chunks(cks) {};
 };
 
 typedef struct s_cgi {

@@ -33,6 +33,11 @@
 #define MAX_REQUEST     52428800 // 50mb -> it should be loaded by config...
 #define URI_MAX         2048
 
+typedef struct e_chunk {
+	size_t      size;
+	std::string chunk;
+} t_chunk;
+
 /**
  * @class HttpRequestHandler
  * @brief Handles and validates incoming HTTP requests, managing the request path, headers, and body.
@@ -105,6 +110,7 @@ class HttpRequestHandler {
 	    e_http_sts              _status;
 		bool					_cgi;
 		std::string 			_script;
+		bool                    _chunks;
 
 		void read_request_header();
 		void parse_method_and_path();
@@ -112,6 +118,9 @@ class HttpRequestHandler {
 	    void parse_header();
 	    void load_header_data();
 	    void load_content();
+		void load_content_normal();
+		void load_content_chunks();
+		bool parse_chunks(std::string& chunk_data, long& chunk_size);
 	    void validate_request();
 	    void get_location_config();
 		void handle_request();

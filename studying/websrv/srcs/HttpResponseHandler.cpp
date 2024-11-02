@@ -334,7 +334,7 @@ void HttpResponseHandler::get_post_content(){
 	if (!_request.sanity) {
 		return;
 	}
-	if (_request.content_length == 0) {
+	if (_request.content_length == 0 && !_request.chunks) {
 		turn_off_sanity(HTTP_LENGTH_REQUIRED,
 		                "Content-length required at POST request.");
 		return;
@@ -357,6 +357,8 @@ void HttpResponseHandler::get_post_content(){
 	}
 	if (!_request.boundary.empty()) {
 		parse_multipart_data();
+	} else {
+		_multi_content.push_back(s_multi_part(_request.normalized_path, CT_FILE, _request.body));
 	}
 }
 
@@ -421,9 +423,14 @@ bool HttpResponseHandler::handle_post() {
 	if (!_request.sanity) {
 		send_error_response();
 	}
+	std::string save_path;
 	for (size_t i = 0; i < _multi_content.size(); i++) {
 		if (_multi_content[i].data_type == CT_FILE) {
-			std::string save_path = _request.normalized_path + _multi_content[i].filename;
+			save_path = _multi_content[1].filename;
+			if (!_request.boundary.empty()) {
+				save_path = _request.normalized_path + _multi_content[i].filename;
+			}
+			_log->log(LOG_DEBUG, RSP_NAME, "path: " + save_path);
 			std::ifstream check_file(save_path.c_str());
 			if (check_file.good()) {
 				turn_off_sanity(HTTP_CONFLICT,

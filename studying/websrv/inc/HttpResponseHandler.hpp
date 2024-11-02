@@ -46,6 +46,8 @@ struct s_multi_part {
 				 std::string d): disposition(di), name(n),
 				 filename(fn), type(t), data(d), data_type(CT_FILE),
                  status(HTTP_CREATED) {};
+	s_multi_part(std::string fn, e_content_type dt, std::string d):
+				 filename(fn), data(d), data_type(dt) {};
 };
 
 /**

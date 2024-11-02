@@ -51,6 +51,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
+	_chunks = false;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
@@ -316,6 +317,14 @@ void HttpRequestHandler::load_header_data() {
 			}
 		}
 	}
+	std::string chunks = get_header_value(_header, "transfer-encoding:", "\r\n");
+	_log->log(LOG_DEBUG, RSP_NAME, chunks);
+	if (!chunks.empty()) {
+		chunks = trim(chunks, " ");
+		if (chunks == "chunked") {
+			_chunks = true;
+		}
+	}
 }
 
 /**
@@ -495,7 +504,161 @@ void HttpRequestHandler::normalize_request_path() {
 }
 
 /**
- * @brief Loads the HTTP request content from the client socket.
+ * @brief Loads the request content based on the specified transfer encoding (chunks or normal).
+ *
+ * This method checks whether the request content is chunked by evaluating `_chunks`.
+ * It then calls either `load_content_chunks()` or `load_content_normal()` to handle the loading process.
+ *
+ * @details
+ * - Logs the type of content loading (chunked or normal) for tracing purposes.
+ * - Calls `load_content_chunks()` if `_chunks` is true, otherwise calls `load_content_normal()`.
+ *
+ * @return None
+ */
+void HttpRequestHandler::load_content() {
+	if (_chunks) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Chunk content. Load body request.");
+		load_content_chunks();
+		_content_length = _body.length();
+	} else {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Normal content. Load body request.");
+		load_content_normal();
+	}
+	_log->log(LOG_DEBUG, RH_NAME, _request);
+	_log->log(LOG_DEBUG, RH_NAME, _body);
+}
+
+/**
+ * @brief Loads chunked content from the request, handling each chunk size and appending data to the request body.
+ *
+ * This method reads the chunked content from the socket and processes each chunk based on its size,
+ * as specified in the `Transfer-Encoding: chunked` format. It handles errors in chunk formatting,
+ * content length, and enforces a timeout.
+ *
+ * @details
+ * - Each chunk is read and validated. The chunk size is parsed as a hexadecimal value.
+ * - If `chunk_size` is zero, it indicates the end of the content.
+ * - Validates against `_max_request` to ensure content size does not exceed limits.
+ * - Uses `chronos` to enforce a read timeout, preventing the loop from stalling indefinitely.
+ * - Logs any issues with chunk formatting, content size, and connection timeout.
+ *
+ * @return None
+ */
+void HttpRequestHandler::load_content_chunks() {
+	char buffer[BUFFER_REQUEST];
+	int read_byte;
+	size_t size = 0;
+	std::string chunk_data = _request;
+	_request.clear();
+	long chunk_size = 1;
+
+	while (true) {
+		if (!_client_data->chronos()) {
+			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+			                "Request Timeout.");
+			_log->log(LOG_DEBUG, RH_NAME, "so far: " + _request);
+			return;
+		}
+		parse_chunks(chunk_data, chunk_size);
+		_log->log(LOG_DEBUG, RH_NAME, "Size after talque " + int_to_string(chunk_size));
+		if (chunk_size == 0) {
+			size = _request.length();
+			break ;
+		}
+		read_byte = recv(_fd, buffer, sizeof(buffer), 0);
+		if (read_byte <= 0) {
+			continue;
+		} else {
+			size += read_byte;
+		}
+		if (size > _max_request) {
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+			                "Body Content too Large.");
+			return ;
+		}
+		chunk_data.append(buffer, read_byte);
+		_log->log(LOG_DEBUG, RH_NAME, chunk_data);
+	}
+
+	if (size == 0) {
+		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+		                "Client Close Request");
+		return ;
+	}
+	if (read_byte < 0 && size == 0) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                "Error Reading From Socket. " + int_to_string(read_byte));
+		return ;
+	}
+	_body = _request;
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Chunked Request read.");
+}
+
+bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size) {
+	size_t pos = 0;
+
+	while (true) {
+		// Buscar el final del tamaño del chunk
+		size_t chunk_size_end = chunk_data.find("\r\n", pos);
+		if (chunk_size_end == std::string::npos) {
+			break;  // Esperar más datos si no se encuentra el final
+		}
+
+		// Extraer el tamaño del chunk y convertirlo de hexadecimal a decimal
+		std::string chunk_size_str = chunk_data.substr(pos, chunk_size_end - pos);
+		char* endptr;
+		errno = 0;
+		chunk_size = strtol(chunk_size_str.c_str(), &endptr, 16);
+
+		if (errno == ERANGE || chunk_size < 0 || *endptr != '\0') {
+			turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk size format.");
+			return false;
+		}
+
+		pos = chunk_size_end + 2;  // Saltar "\r\n" después del tamaño
+
+		// Si el tamaño es `0`, es el final de la transferencia chunked
+		if (chunk_size == 0) {
+			// Confirmar que termina con "\r\n"
+			if (chunk_data.size() < pos + 2) {
+				break; // Esperar más datos si no están disponibles
+			}
+			if (chunk_data.compare(pos, 2, "\r\n") == 0) {
+				chunk_data.erase(0, pos + 2);  // Eliminar el "0\r\n" final
+				return true; // Fin de la transferencia chunked
+			} else {
+				turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk ending.");
+				return false;
+			}
+		}
+
+		// Verificar si hay suficientes datos para leer el chunk completo
+		if (chunk_data.size() < pos + chunk_size + 2) {
+			break;  // Salir y esperar más datos
+		}
+
+		// Agregar el chunk al cuerpo de la solicitud
+		_request.append(chunk_data, pos, chunk_size);
+		pos += chunk_size + 2;  // Saltar el chunk y el "\r\n" final
+
+		// Verificar límite de tamaño del cuerpo
+		if (_request.size() > _max_request) {
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE, "Body Content too Large.");
+			return false;
+		}
+	}
+
+	// Eliminar los datos ya procesados del buffer de chunk_data
+	chunk_data.erase(0, pos);
+	return true;
+}
+
+
+/**
+ * @brief Loads the HTTP request content from the client socket when we are dealing with a "normal" request.
  *
  * This method reads the body content of the HTTP request up to the specified `Content-Length`.
  * It verifies that the body does not exceed `_max_request`, and checks for timeout during the reading process.
@@ -509,7 +672,7 @@ void HttpRequestHandler::normalize_request_path() {
  *
  * @return None
  */
-void HttpRequestHandler::load_content() {
+void HttpRequestHandler::load_content_normal() {
 	if (_content_length == 0) {
 		_log->log(LOG_INFO, RH_NAME,
 		          "No Content-Length to read from FD.");
@@ -522,7 +685,7 @@ void HttpRequestHandler::load_content() {
 	size_t      to_read = _content_length - _request.length();
 
 	while (to_read > 0) {
-		read_byte = recv(_fd, buffer, sizeof(buffer) - 1, 0);
+		read_byte = recv(_fd, buffer, sizeof(buffer), 0);
 		if (read_byte < 0) {
 			continue ;
 		}
@@ -602,7 +765,7 @@ void HttpRequestHandler::handle_request() {
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_length, _content_type,
 										  _boundary, _path_type, _query_string, _cgi,
-	                                      _script, _path_info);
+	                                      _script, _path_info, _chunks);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	response.handle_request();
 }
