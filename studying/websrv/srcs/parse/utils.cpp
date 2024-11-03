@@ -33,6 +33,8 @@ std::string clean_line(std::string line)
         line.erase(line.size() - 1);
     if (line.empty() || line[0] == '#')
         return "";
+    if (line.find_first_not_of(" \t\n") == std::string::npos)
+        return "";
 
     return line;
 }

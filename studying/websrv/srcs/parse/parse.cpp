@@ -13,21 +13,16 @@
 #include "webserver.hpp"
 #include <set>
 
-// Dudo de la calidad de esta funcion
 std::vector<t_allowed_methods> parse_limit_except(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
     std::vector<t_allowed_methods> all_methods;
     std::vector<t_allowed_methods> methods;
 
-    // generar copia de start
     std::vector<std::string>::iterator start_copy = start;
 
     for (int i = 0; i < 4; i++)
         all_methods.push_back(static_cast<t_allowed_methods>(i));
 
     logger->log(LOG_DEBUG, "parse_limit_except", "Parsing limit except block");
-
-    // std::string cleaned_string = delete_brackets_clean(*start_copy);
-    // *start_copy = cleaned_string;
 
     std::string methods_line = start_copy->substr(12);
     std::istringstream iss(methods_line);
@@ -62,16 +57,9 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     location.cgi = false;
     location.loc_root = "";
 
-    // print all block hasta valor end
-    // for (std::vector<std::string>::iterator it = start; it != end; it++) {
-        // std::cout << BLUE << *it << "   " << &it << RESET << std::endl;
-    // }
-    // imprimir direccion de memoria de end
-    // std::cout << BLUE << &end << RESET << std::endl;
 
     start++;
     for (std::vector<std::string>::iterator it = start; it != end; it++) {
-        // std::cout << GRAY << "Location block: " << *it << RESET << std::endl;
         if (find_exact_string(*it, "index"))
         {
             if (check_default_page(get_value(*it, "index")))
@@ -90,7 +78,6 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
             else
                 logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");
         }
-        // TO FIX: Comentado porque me da problemas, no se cual es la ruta correcta que se tiene que usar
         else if (find_exact_string(*it, "root"))
         {
             std::string root = get_value(*it, "root");
@@ -113,9 +100,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
         else if (find_exact_string(*it, "limit_except"))
         {
-            // std::cout << RED << "LIMIT EXCEC ENCONTRADO CON VALOR " << *it << RESET << std::endl;
             location.loc_allowed_methods = parse_limit_except(it, find_block_end(it, end), logger);
-            // std::cout << RED << "INTENTANDO BUSCAR EL FINAL DEL BLOQUE "<< *it << RESET << std::endl;
             it = skip_block(it, find_block_end(it, end));
             if (it == end)
                 break;
@@ -140,20 +125,40 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
         else
         {
-            std::cout << RED << "Error: " << *it << " is not valid parameter in location block" << RESET << std::endl;
+            std::cout << RED << "Error: [" << *it << "] is not valid parameter in location block" << RESET << std::endl;
             // std::cout << RED << "Get value: " << find_exact_string(*it, "location") << RESET << std::endl;
             continue;
         }
     }
-    location.loc_access = ACCESS_WRITE;
 
+    if (location.loc_allowed_methods.empty()) {
+        location.loc_access = ACCESS_FORBIDDEN; 
+    } else {
+        bool has_write = false;
+        bool has_delete = false;
+        
+        for (std::vector<t_allowed_methods>::iterator it = location.loc_allowed_methods.begin(); 
+             it != location.loc_allowed_methods.end(); ++it) {
+            if (*it == POST || *it == PUT) {
+                has_write = true;
+            } else if (*it == DELETE) {
+                has_delete = true;
+            }
+        }
+        
+        if (has_delete) {
+            location.loc_access = ACCESS_DELETE;
+        } else if (has_write) {
+            location.loc_access = ACCESS_WRITE;
+        } else {
+            location.loc_access = ACCESS_READ;
+        }
+    }
+
+    // Obligatorios
     if (location.loc_root == "")
         logger->fatal_log("parse_location_block", "Location root is not valid.");
 
-
-    // std::cout << GRAY << "Location parsed" << RESET << std::endl << std::endl << std::endl;
-    // Configuracion por defecto
-    // Aun falta verificar los parametros obligatorios
     return location;
 }
 
@@ -294,11 +299,12 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
             it->second = join_paths(server.server_root, it->second);
     }
+    // Obligatorios
     if (server.port == -42)
         logger->fatal_log("parse_server_block", "Port is not valid.");
     if (server.server_root == "")
         logger->fatal_log("parse_server_block", "Server root is not valid.");
-    // Aun falta verificar los parametros obligatorios
+    
 
     return server;
 }
