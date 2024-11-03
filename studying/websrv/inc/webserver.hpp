@@ -157,6 +157,7 @@ struct LocationConfig {
 	std::map<int, std::string>  loc_error_pages;
 	std::vector<t_allowed_methods>    loc_allowed_methods;
 	bool                        autoindex;
+	bool                        cgi;
 
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
@@ -217,7 +218,7 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
 std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end);
 std::string get_location_path(std::string line);
 t_mode string_to_error_mode(std::string error_mode);
-
+std::string join_paths(std::string path1, std::string path2);
 
 // Verifications
 
@@ -233,6 +234,8 @@ bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::s
 bool check_autoindex(std::string autoindex);
 t_allowed_methods string_to_method(std::string method);
 bool check_error_mode(std::string error_mode);
+bool check_duplicate_servers(std::vector<ServerConfig> servers);
+bool check_cgi(std::string cgi);
 
 
 # endif

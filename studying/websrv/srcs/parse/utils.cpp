@@ -138,7 +138,7 @@ std::string get_server_root()
 {
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) != NULL) {
-        return std::string(buffer);
+        return std::string(buffer) + "/";
     }
     return "";
 }
@@ -240,3 +240,12 @@ t_mode string_to_error_mode(std::string error_mode) {
         return TEMPLATE;
     return INVALID_ERROR_MODE;
 }
+
+std::string join_paths(std::string path1, std::string path2) {
+    if (path1[path1.length() - 1] == '/')
+        path1.erase(path1.length() - 1);
+    if (path2[0] == '/')
+        path2.erase(0, 1);
+    return path1 + "/" + path2;
+}
+

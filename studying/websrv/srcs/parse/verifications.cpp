@@ -128,7 +128,7 @@ int check_port(std::string port)
             return -1;
     }
     port_int = atoi(port.c_str());
-    if (port_int < 1 || port_int > 65535)
+    if (port_int <= 1024 || port_int > 65535)
         return -1;
     return port_int;
 }
@@ -310,4 +310,23 @@ bool check_autoindex(std::string autoindex)
 bool check_error_mode(std::string error_mode)
 {
     return (error_mode == "literal" || error_mode == "template");
+}
+
+bool check_duplicate_servers(std::vector<ServerConfig> servers)
+{
+    for (size_t i = 0; i < servers.size(); i++)
+    {
+        for (size_t j = i + 1; j < servers.size(); j++)
+        {
+            if (servers[i].port == servers[j].port && 
+                servers[i].server_name == servers[j].server_name)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool check_cgi(std::string cgi)
+{
+    return (cgi == "on" || cgi == "off");
 }

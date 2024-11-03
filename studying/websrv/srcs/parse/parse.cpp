@@ -59,6 +59,8 @@ std::vector<t_allowed_methods> parse_limit_except(std::vector<std::string>::iter
 LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
     std::map<std::string, std::string> locations;
     LocationConfig location;
+    location.cgi = false;
+    location.loc_root = "";
 
     // print all block hasta valor end
     // for (std::vector<std::string>::iterator it = start; it != end; it++) {
@@ -93,7 +95,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         {
             std::string root = get_value(*it, "root");
             if (check_root(root))
-                location.loc_root = get_server_root() + get_value(*it, "root");
+                location.loc_root = join_paths(get_server_root(), get_value(*it, "root"));
             else
                 logger->fatal_log("parse_location_block", "Root " + root + " is not valid.");
         }
@@ -118,6 +120,18 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
             if (it == end)
                 break;
         }
+        else if (find_exact_string(*it, "cgi"))
+        {
+            if (check_cgi(get_value(*it, "cgi")))
+            {
+                if (get_value(*it, "cgi") == "on")
+                    location.cgi = true;
+                else if (get_value(*it, "cgi") == "off")
+                    location.cgi = false;
+            }
+            else
+                logger->fatal_log("parse_location_block", "CGI " + get_value(*it, "cgi") + " is not valid.");
+        }
         else if (it->find("}") != std::string::npos)
         {
             std::cout << RED << "Saliendo porque encontre } en location block" << RESET << std::endl;
@@ -133,6 +147,10 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     }
     location.loc_access = ACCESS_WRITE;
 
+    if (location.loc_root == "")
+        logger->fatal_log("parse_location_block", "Location root is not valid.");
+
+
     // std::cout << GRAY << "Location parsed" << RESET << std::endl << std::endl << std::endl;
     // Configuracion por defecto
     // Aun falta verificar los parametros obligatorios
@@ -142,15 +160,17 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
 ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
     ServerConfig server;
+    server.port = -42;
+    server.server_root = "";
     
     start++;
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server block");
-
     for (std::vector<std::string>::iterator it = start; it != end; ++it)
     {
         // std::cout << BLUE << "Server block: " << *it << RESET << std::endl;
         if (find_exact_string(*it, "location"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing location block");
             std::string location_path = get_location_path(*it);
             LocationConfig location = parse_location_block(it, find_block_end(it, end), logger);
             // Hardcodeado
@@ -162,10 +182,12 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "template_error_page"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing template error page");
             server.template_error_page = get_value(*it, "template_error_page");
         }
         else if (find_exact_string(*it, "port"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing port");
             int port = check_port(get_value(*it, "port"));
             if (port != -1)
                 server.port = port;
@@ -174,6 +196,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "server_name"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing server name");
             std::string serverName = get_value(*it, "server_name");
             if (check_server_name(serverName))
                 server.server_name = serverName;
@@ -182,14 +205,16 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "root"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing server root");
             std::string root = get_value(*it, "root");
             if (check_root(root))
-                server.server_root = get_server_root() + get_value(*it, "root");
+                server.server_root = join_paths(get_server_root(), get_value(*it, "root"));
             else
                 logger->fatal_log("parse_server_block", "Server root " + root + " is not valid.");
         }
         else if (find_exact_string(*it, "index"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing default pages");
             if (check_default_page(get_value(*it, "index")))
                 server.default_pages = split_default_pages(get_value(*it, "index"));
             else
@@ -197,6 +222,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "client_max_body_size"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing client max body size");
             std::string client_max_body_size = get_value(*it, "client_max_body_size");
             if (check_client_max_body_size(client_max_body_size))
                 server.client_max_body_size = get_value(*it, "client_max_body_size");
@@ -205,18 +231,27 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "error_page")) // Solucion temporal
         {
-            // std::cout << RED << "ERROR PAGE ENCONTRADO CON VALOR " << *it << RESET << std::endl;
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing error page");
             std::string error_page = get_value(*it, "error_page");
             if (check_error_page(error_page))
             {
-                std::map<int, std::string> new_error_pages = split_error_pages(error_page);
-                server.error_pages.insert(new_error_pages.begin(), new_error_pages.end());
+                try {
+                    logger->log(LOG_DEBUG, "parse_server_block", "Splitting error pages");
+                    std::map<int, std::string> new_error_pages = split_error_pages(error_page);
+                    logger->log(LOG_DEBUG, "parse_server_block", "Inserting error pages");
+                    server.error_pages.insert(new_error_pages.begin(), new_error_pages.end());
+                    logger->log(LOG_DEBUG, "parse_server_block", "Error pages inserted");
+                } catch (const std::exception& e) {
+                    logger->log(LOG_ERROR, "parse_server_block", "Error splitting error pages: " + std::string(e.what()));
+                    continue;
+                }
             }
             else
                 logger->fatal_log("parse_server_block", "Error page " + error_page + " is not valid.");
         }
         else if (find_exact_string(*it, "autoindex"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing autoindex");
             if (check_autoindex(get_value(*it, "autoindex")))
             {
                 if (get_value(*it, "autoindex") == "on")
@@ -229,6 +264,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
         else if (find_exact_string(*it, "error_mode"))
         {
+            logger->log(LOG_DEBUG, "parse_server_block", "Parsing error mode");
             if (check_error_mode(get_value(*it, "error_mode")))
                 server.error_mode = string_to_error_mode(get_value(*it, "error_mode"));
             else
@@ -253,7 +289,15 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     if (!server.autoindex)
         server.autoindex = false;
     server.ws_root = get_server_root();
-
+    if (server.error_pages.size() > 0)
+    {
+        for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
+            it->second = join_paths(server.server_root, it->second);
+    }
+    if (server.port == -42)
+        logger->fatal_log("parse_server_block", "Port is not valid.");
+    if (server.server_root == "")
+        logger->fatal_log("parse_server_block", "Server root is not valid.");
     // Aun falta verificar los parametros obligatorios
 
     return server;
@@ -267,7 +311,7 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 
     logger->log(LOG_DEBUG, "parse_servers", "Checking brackets");
     if (!check_brackets(rawLines.begin(), rawLines.end()))  
-        logger->log(LOG_ERROR, "parse_servers", "Brackets are not closed");
+        logger->fatal_log("parse_servers", "Brackets are not closed");
     for (std::vector<std::string>::iterator it = rawLines.begin(); it != rawLines.end(); it++)
     {
         if (find_exact_string(*it, "server"))
@@ -282,7 +326,9 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 
     logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
     logger->log(LOG_DEBUG, "parse_servers", "Locations found: " + int_to_string(servers.size()));
-    // print_servers(servers);
+    //print_servers(servers);
+    if (check_duplicate_servers(servers))
+        logger->fatal_log("parse_servers", "Duplicate servers found");
     return servers;
 }
 

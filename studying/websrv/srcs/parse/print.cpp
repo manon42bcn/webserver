@@ -118,6 +118,8 @@ void print_location_config(LocationConfig location) {
         }
     }
 
+    std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi) ? "true" : "false") << std::endl;
+
     // std::cout << GRAY << "      Location root: " RESET << location.loc_root << std::endl;
 }
 

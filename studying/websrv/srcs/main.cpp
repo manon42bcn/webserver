@@ -116,7 +116,7 @@ void signal_handler(int sig){
 }
 
 int main(int argc, char *argv[]) {
-	Logger logger(LOG_ERROR, false);
+	Logger logger(LOG_DEBUG, false);
 	// std::string base_path = getenv("WEBSERVER_PATH");
 	if (!check_args(argc, argv))
         exit(1);
