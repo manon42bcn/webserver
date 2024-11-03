@@ -30,7 +30,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs, const Logger* l
 		}
 	} catch (const SocketHandler::SocketCreationError &e) {
 		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw WebServerException("Error");
+		throw ServerManager::ServerSocketHandledError();
 	} catch (const SocketHandler::SocketLinkingError &e) {
 		_log->log(LOG_ERROR, SM_NAME, e.what());
 		throw ServerManager::ServerSocketHandledError();
