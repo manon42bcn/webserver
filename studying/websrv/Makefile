@@ -32,6 +32,7 @@ HEADER			=	webserver.hpp \
 					ClientData.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \
+					WebserverException.hpp \
 					ServerManager.hpp
 SRCS_DIR		=	srcs
 OBJS_DIR		=	obj

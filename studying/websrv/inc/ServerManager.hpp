@@ -51,6 +51,14 @@ public:
 			public:
 			    virtual const char *what() const throw();
 	    };
+		class ServerSocketHandledError : public std::exception {
+		public:
+			virtual const char *what() const throw();
+		};
+		class ServerSocketNotHandledError : public std::exception {
+		public:
+			virtual const char *what() const throw();
+		};
 };
 
 #endif

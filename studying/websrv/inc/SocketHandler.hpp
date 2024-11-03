@@ -12,12 +12,14 @@
 
 #ifndef _SOCKETHANDLER_HPP_
 # define _SOCKETHANDLER_HPP_
+# include "WebserverException.hpp"
 # include "webserver.hpp"
 # include "http_enum_codes.hpp"
 # include "Logger.hpp"
 # include <string>
 
 # define SH_NAME "SocketHandler"
+# define SOCKET_BACKLOG_QUEUE 10
 
 class SocketHandler {
 private:
@@ -43,6 +45,18 @@ public:
 	const bool& is_cgi_server() const;
 	std::string get_port() const;
 	class SocketCreationError : public std::exception {
+	public:
+		virtual const char *what() const throw();
+	};
+	class SocketLinkingError : public std::exception {
+	public:
+		virtual const char *what() const throw();
+	};
+	class SocketListeningError : public std::exception {
+	public:
+		virtual const char *what() const throw();
+	};
+	class SocketNonBlockingError : public std::exception {
 	public:
 		virtual const char *what() const throw();
 	};

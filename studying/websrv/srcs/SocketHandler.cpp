@@ -31,15 +31,14 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
+	_log->log(LOG_INFO, SH_NAME,
+			  "Instance building start.");
 	_log->log(LOG_DEBUG, SH_NAME,
 	          "Creating Sockets.");
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0) {
 		throw SocketHandler::SocketCreationError();
 	}
-
-	_log->log(LOG_DEBUG, SH_NAME, "Configure server address.");
-	mapping_cgi_locations();
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -48,16 +47,29 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	_log->log(LOG_DEBUG, SH_NAME, "Linking Socket.");
 	if (bind(_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 		close(_socket_fd);
-		_log->fatal_log(SH_NAME,
-						"Error linking Socket.");
-
+		_log->log(LOG_ERROR, SH_NAME,
+				  "Error Linking Socker.");
+		throw SocketHandler::SocketLinkingError();
 	}
-	_log->log(LOG_DEBUG, SH_NAME, "Socket to listening mode.");
-	if (listen(_socket_fd, 10) < 0)
-		_log->fatal_log(SH_NAME, "Error at listening process.");
-	set_nonblocking(_socket_fd);
+	_log->log(LOG_DEBUG, SH_NAME,
+			  "Socket to listening mode.");
+	if (listen(_socket_fd, SOCKET_BACKLOG_QUEUE) < 0) {
+		_log->log(LOG_ERROR, SH_NAME,
+				  "Error at listening process.");
+		throw SocketHandler::SocketListeningError();
+	}
+	if (!set_nonblocking(_socket_fd)) {
+		_log->log(LOG_ERROR, SH_NAME,
+		          "Error setting _socket_fd as non blocking.");
+		throw SocketHandler::SocketNonBlockingError();
+	}
 	_log->log(LOG_INFO, SH_NAME,
 			  "Server listening. Port: " + int_to_string(port));
+
+	mapping_cgi_locations();
+	_log->log(LOG_INFO, SH_NAME,
+	          "Instance built.");
+	_log->status(SH_NAME, "Socket Handler Instance is ready.");
 }
 
 SocketHandler::~SocketHandler() {
@@ -97,17 +109,21 @@ const ServerConfig& SocketHandler::get_config() const {
 }
 
 bool SocketHandler::set_nonblocking(int fd) {
-	_log->log(LOG_DEBUG, SH_NAME, "Set connection as nonblocking.");
+	_log->log(LOG_DEBUG, SH_NAME,
+			  "Set connection as nonblocking.");
 	int flags = fcntl(fd, F_GETFL, 0);
 	if (flags == -1) {
-		_log->log(LOG_ERROR, SH_NAME, "Error getting socket flags.");
+		_log->log(LOG_ERROR, SH_NAME,
+				  "Error getting socket flags.");
 		return (false);
 	}
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		_log->log(LOG_ERROR, SH_NAME, "Error setting socket as nonblocking.");
+		_log->log(LOG_ERROR, SH_NAME,
+				  "Error setting socket as nonblocking.");
 		return (false);
 	}
-	_log->log(LOG_INFO, SH_NAME, "Socket set as nonblocking.");
+	_log->log(LOG_INFO, SH_NAME,
+			  "Socket set as nonblocking.");
 	return (true);
 }
 
@@ -195,11 +211,25 @@ void SocketHandler::mapping_cgi_locations() {
 			              it->second.loc_root, ".py", it->second.cgi_locations);
 			if (!it->second.cgi_locations.empty()){
 				_config.cgi_locations = true;
+			} else {
+				_config.cgi_locations = false;
 			}
 		}
 	}
 }
 
 const char* SocketHandler::SocketCreationError::what(void) const throw() {
-	return ("Error Creating Socket.");
+	return ("SocketHandler Module: Error Creating Socket.");
+}
+
+const char* SocketHandler::SocketLinkingError::what(void) const throw() {
+	return ("SocketHandler Module: Error Linking Socked.");
+}
+
+const char* SocketHandler::SocketListeningError::what(void) const throw() {
+	return ("SocketHandler Module: Error Listening at listening process.");
+}
+
+const char* SocketHandler::SocketNonBlockingError::what(void) const throw() {
+	return ("SocketHandler Module: Error setting connections as nonblocking.");
 }

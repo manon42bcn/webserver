@@ -55,7 +55,7 @@ public:
 	void new_log(int level, const std::string& module, T message) const;
 	void log(int level, const std::string& module, const std::string& message) const;
 	void fatal_log(const std::string& module, const std::string& message) const;
-
+	void status(const std::string& module, const std::string& message) const;
 
 	class NoLoggerPointer : public std::exception {
 		public:

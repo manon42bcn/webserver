@@ -22,16 +22,33 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs, const Logger* l
 		throw Logger::NoLoggerPointer();
 	}
 	_poll_fds.reserve(100);
+	_log->log(LOG_DEBUG, SM_NAME,
+			  "Server Manager Instance init.");
 	try {
 		for (size_t i = 0; i < configs.size(); ++i) {
 			add_server(configs[i].port, configs[i]);
 		}
 	} catch (const SocketHandler::SocketCreationError &e) {
 		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerBuildError();
+		throw WebServerException("Error");
+	} catch (const SocketHandler::SocketLinkingError &e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw ServerManager::ServerSocketHandledError();
+	} catch (const SocketHandler::SocketListeningError &e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw ServerManager::ServerSocketHandledError();
+	} catch (const SocketHandler::SocketNonBlockingError &e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw ServerManager::ServerSocketHandledError();
+	} catch (const std::exception& e) {
+		_log->log(LOG_ERROR, SM_NAME, e.what());
+		throw ServerManager::ServerSocketNotHandledError();
 	}
+
 	_active = true;
-	_log->log(LOG_DEBUG, SM_NAME, "instance init and ready.");
+	_log->log(LOG_DEBUG, SM_NAME,
+			  "instance init and ready.");
+	_log->status(SM_NAME, "ServerManager Instance Ready.");
 }
 
 ServerManager::~ServerManager() {
@@ -68,7 +85,7 @@ void ServerManager::add_server(int port, ServerConfig& config) {
 		if (!add_server_to_poll(server->get_socket_fd())) {
 			_log->log(LOG_ERROR, SM_NAME, "Failed to add server to poll list.");
 			_servers.pop_back();
-			delete server;
+			delete (server);
 		}
 	} catch (const SocketHandler::SocketCreationError &e) {
 		_log->log(LOG_ERROR, SM_NAME, e.what());
@@ -186,4 +203,10 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t p
 
 const char* ServerManager::ServerBuildError::what() const throw() {
 	return ("Error Building Server.");
+}
+const char* ServerManager::ServerSocketHandledError::what() const throw() {
+	return ("Error at Socket Creation Process. Check Log for details.");
+}
+const char* ServerManager::ServerSocketNotHandledError::what() const throw() {
+	return ("Unknown Error. Check Logs for details.");
 }

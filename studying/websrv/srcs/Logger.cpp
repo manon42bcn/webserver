@@ -129,6 +129,10 @@ void Logger::to_out(const char c) const {
 	*(_log_out) << "[" << c << "]" << std::endl;
 }
 
+void Logger::status(const std::string &module, const std::string &message) const {
+	 std::cout << "[" << module << "]" << message << std::endl;
+ }
+
  /**
  * @brief Provides an error message when a Logger pointer is null.
  *
