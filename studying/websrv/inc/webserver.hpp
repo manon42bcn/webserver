@@ -179,6 +179,8 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
+
+	ServerConfig() {server_name = ""; autoindex = false;};
 };
 
 void print_server_config(const ServerConfig& config, std::string location);
@@ -236,6 +238,19 @@ t_allowed_methods string_to_method(std::string method);
 bool check_error_mode(std::string error_mode);
 bool check_duplicate_servers(std::vector<ServerConfig> servers);
 bool check_cgi(std::string cgi);
+
+// Parse Server
+void parse_location(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, ServerConfig& server);
+void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_port(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_server_name(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_root(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_index(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_client_max_body_size(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_error_page(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+void parse_error_mode(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
+
 
 
 # endif
