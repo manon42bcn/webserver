@@ -59,7 +59,6 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
 
-
 run: re
 	@./webserver configs/test1.conf
 

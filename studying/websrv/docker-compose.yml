@@ -8,5 +8,7 @@ services:
     restart: always
     stdin_open: true  # Mantener el STDIN abierto para bash
     tty: true         # Asignar una terminal para que bash funcione correctamente
-    volumes:
-      - .:/ws
+#    volumes:
+#      - .:/ws
+    environment:
+      WEBSERVER_PATH: $WEBSERVER_PATH

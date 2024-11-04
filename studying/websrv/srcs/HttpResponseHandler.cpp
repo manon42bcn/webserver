@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/04 10:34:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/04 12:11:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -506,6 +506,7 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	pfd.events = POLLIN;
 	_log->log(LOG_DEBUG, RSP_NAME,
 	          "Reading CGI response.");
+//	TODO: Improve WAIT to get exit status
 	while (true) {
 		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
 		if (pfd.revents & POLLHUP) {
@@ -514,6 +515,8 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 			break;
 		}
 		if (poll_result == 0) {
+			turn_off_sanity(HTTP_GATEWAY_TIMEOUT,
+							"CGI Timeout.");
 			active = false;
 			break;
 		} else if (poll_result == -1) {
@@ -531,6 +534,9 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 			} else if (bytes_read == 0) {
 				break;
 			} else {
+				if (errno == EINTR || errno == EAGAIN) {
+					continue ;
+				}
 				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 								"Error reading CGI response.");
 				break;

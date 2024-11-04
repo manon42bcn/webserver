@@ -15,9 +15,9 @@ RUN apk update && apk add --no-cache \
 #WORKDIR /usr/src/webserv
 WORKDIR /ws
 
-#COPY . .
-#RUN chmod -R 755 /ws
-#RUN make
+COPY . .
+RUN chmod -R 755 /ws
+RUN make
 #RUN make
 EXPOSE 8080
 EXPOSE 9090
