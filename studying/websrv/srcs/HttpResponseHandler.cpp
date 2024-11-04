@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 16:25:13 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/04 10:34:27 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -501,7 +501,6 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	bool active = true;
 
 	fcntl(fd[0], F_SETFL, O_NONBLOCK);
-
 	struct pollfd pfd;
 	pfd.fd = fd[0];
 	pfd.events = POLLIN;
@@ -509,6 +508,11 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	          "Reading CGI response.");
 	while (true) {
 		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
+		if (pfd.revents & POLLHUP) {
+			_log->log(LOG_DEBUG, RSP_NAME,
+					  "CGI pipe closed by writer.");
+			break;
+		}
 		if (poll_result == 0) {
 			active = false;
 			break;
@@ -518,9 +522,9 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 			active = false;
 			break;
 		}
-
 		if (pfd.revents & POLLIN) {
 			bytes_read = read(fd[0], buffer, sizeof(buffer) - 1);
+
 			if (bytes_read > 0) {
 				buffer[bytes_read] = '\0';
 				response += buffer;
@@ -535,8 +539,7 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	}
 	if (!active) {
 		kill(pid, SIGKILL);
-		turn_off_sanity(HTTP_GATEWAY_TIMEOUT,
-						"CGI Response timed out.");
+		waitpid(pid, NULL, WNOHANG);
 	}
 	waitpid(pid, NULL, 0);
 
