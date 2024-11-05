@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 19:11:42 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/05 21:57:46 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ struct LocationConfig {
 	bool                        autoindex;
 	bool                        cgi;
 
-	LocationConfig() {};
+	LocationConfig() { cgi = false; loc_root = ""; };
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
 	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
 };
@@ -180,7 +180,7 @@ struct ServerConfig {
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
 
-	ServerConfig() {server_name = ""; autoindex = false;};
+	ServerConfig() {server_name = "localhost"; autoindex = false; port = -42; server_root = "";};
 };
 
 void print_server_config(const ServerConfig& config, std::string location);
@@ -238,6 +238,7 @@ t_allowed_methods string_to_method(std::string method);
 bool check_error_mode(std::string error_mode);
 bool check_duplicate_servers(std::vector<ServerConfig> servers);
 bool check_cgi(std::string cgi);
+bool check_obligatory_params(ServerConfig server, Logger* logger);
 
 // Parse Server
 void parse_location(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, ServerConfig& server);
@@ -251,7 +252,13 @@ void parse_error_page(std::vector<std::string>::iterator& it, Logger* logger, Se
 void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
 void parse_error_mode(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server);
 
-
+// Parse Location
+void parse_location_index(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+void parse_root(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+void parse_limit_except(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, LocationConfig& location);
+void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 
 # endif
 

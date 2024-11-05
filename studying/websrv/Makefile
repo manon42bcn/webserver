@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 22:26:19 by mporras-          #+#    #+#              #
-#    Updated: 2024/10/28 19:10:11 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/11/05 21:30:57 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ SRCS_FILES		=	webserver.cpp \
 					parse/utils.cpp \
 					parse/print.cpp \
 					parse/split.cpp \
-					parse/parse_server.cpp
+					parse/parse_server.cpp \
+					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					http_enum_codes.hpp \

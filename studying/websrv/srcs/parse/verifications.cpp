@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/26 20:51:04 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/05 21:55:41 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,4 +329,10 @@ bool check_duplicate_servers(std::vector<ServerConfig> servers)
 bool check_cgi(std::string cgi)
 {
     return (cgi == "on" || cgi == "off");
+}
+
+bool check_obligatory_params(ServerConfig server, Logger* logger)
+{
+    logger->log(LOG_DEBUG, "check_obligatory_params", "Checking obligatory parameters");
+    return (server.port == -42 || server.server_root == "");
 }

@@ -6,97 +6,25 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/28 19:01:48 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/05 21:58:34 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserver.hpp"
 
-std::vector<t_allowed_methods> parse_limit_except(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
-    std::vector<t_allowed_methods> all_methods;
-    std::vector<t_allowed_methods> methods;
-
-    std::vector<std::string>::iterator start_copy = start;
-
-    for (int i = 0; i < 4; i++)
-        all_methods.push_back(static_cast<t_allowed_methods>(i));
-
-    logger->log(LOG_DEBUG, "parse_limit_except", "Parsing limit except block");
-
-    std::string methods_line = start_copy->substr(12);
-    std::istringstream iss(methods_line);
-    std::vector<std::string> method_tokens;
-    std::string token;
-    while (iss >> token) {
-        method_tokens.push_back(token);
-    }
-    for (std::vector<std::string>::iterator it = method_tokens.begin(); it != method_tokens.end(); it++) {
-        methods.push_back(string_to_method(*it));
-    }
-    start_copy++;
-    for (std::vector<std::string>::iterator it = start_copy; it != end; it++) {
-        if (find_exact_string(*it, "deny"))
-        {
-            for (std::vector<t_allowed_methods>::iterator mit = methods.begin(); mit != methods.end(); mit++) {
-                for (std::vector<t_allowed_methods>::iterator ait = all_methods.begin(); ait != all_methods.end(); ait++) {
-                    if (*mit == *ait) {
-                        all_methods.erase(ait);
-                    }
-                }
-            }
-        }
-    }
-
-    return all_methods;
-}
-
 LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
-    std::map<std::string, std::string> locations;
     LocationConfig location;
-    location.cgi = false;
-    location.loc_root = "";
-
 
     start++;
     for (std::vector<std::string>::iterator it = start; it != end; it++) {
         if (find_exact_string(*it, "index"))
-        {
-            if (check_default_page(get_value(*it, "index")))
-                location.loc_default_pages = split_default_pages(get_value(*it, "index"));
-            else
-                logger->fatal_log("parse_location_block", "Default page " + get_value(*it, "index") + " is not valid.");
-        }
+            parse_location_index(it, logger, location);
         else if (find_exact_string(*it, "error_page"))
-        {
-            std::string error_page = get_value(*it, "error_page");
-            if (check_error_page(error_page))
-            {
-                std::map<int, std::string> new_error_pages = split_error_pages(error_page);
-                location.loc_error_pages.insert(new_error_pages.begin(), new_error_pages.end());
-            }
-            else
-                logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");
-        }
+            parse_location_error_page(it, logger, location);
         else if (find_exact_string(*it, "root"))
-        {
-            std::string root = get_value(*it, "root");
-            if (check_root(root))
-                location.loc_root = join_paths(get_server_root(), get_value(*it, "root"));
-            else
-                logger->fatal_log("parse_location_block", "Root " + root + " is not valid.");
-        }
+            parse_root(it, logger, location);
         else if (find_exact_string(*it, "autoindex"))
-        {   
-            if (check_autoindex(get_value(*it, "autoindex")))
-            {
-                if (get_value(*it, "autoindex") == "on")
-                    location.autoindex = true;
-                else if (get_value(*it, "autoindex") == "off")
-                    location.autoindex = false;
-            }
-            else
-                logger->fatal_log("parse_location_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
-        }
+            parse_autoindex(it, logger, location);
         else if (find_exact_string(*it, "limit_except"))
         {
             location.loc_allowed_methods = parse_limit_except(it, find_block_end(it, end), logger);
@@ -105,29 +33,15 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
                 break;
         }
         else if (find_exact_string(*it, "cgi"))
-        {
-            if (check_cgi(get_value(*it, "cgi")))
-            {
-                if (get_value(*it, "cgi") == "on")
-                    location.cgi = true;
-                else if (get_value(*it, "cgi") == "off")
-                    location.cgi = false;
-            }
-            else
-                logger->fatal_log("parse_location_block", "CGI " + get_value(*it, "cgi") + " is not valid.");
-        }
+            parse_cgi(it, logger, location);
         else if (it->find("}") != std::string::npos)
         {
-            std::cout << RED << "Saliendo porque encontre } en location block" << RESET << std::endl;
-            // return location;
+            // Realmente no se si llega aqui
+            logger->log(LOG_DEBUG, "parse_location_block", "Saliendo porque encontre } en location block");
             break;
         }
         else
-        {
-            std::cout << RED << "Error: [" << *it << "] is not valid parameter in location block" << RESET << std::endl;
-            // std::cout << RED << "Get value: " << find_exact_string(*it, "location") << RESET << std::endl;
-            continue;
-        }
+            logger->fatal_log("parse_location_block", "Error: [" + *it + "] is not valid parameter in location block");
     }
 
     if (location.loc_allowed_methods.empty()) {
@@ -164,8 +78,6 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
 ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
     ServerConfig server;
-    server.port = -42;
-    server.server_root = "";
     
     start++;
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server block");
@@ -194,36 +106,26 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         else if (it->find("}") != std::string::npos)
         {
             // deberia ser break o continue?, no se si llega aqui
-            std::cout << RED << "Saliendo porque encontre } en server block" << RESET << std::endl;
+            logger->log(LOG_DEBUG, "parse_server_block", "Saliendo porque encontre } en server block");
             break;
         }
         else
-        {
-            std::cout << RED << "Error: " << *it << " is not valid parameter in server block" << RESET << std::endl;
-            continue;
-        }
+            logger->fatal_log("parse_server_block", "Error: [" + *it + "] is not valid parameter in server block");
     }
-
-    // Configuracion por defecto
-    //if (server.server_name == "")
-    //    server.server_name = "localhost";
-    //if (!server.autoindex)
-    //    server.autoindex = false;
+    logger->log(LOG_DEBUG, "parse_server_block", "Server block parsed");
 
     // Configuracion de variables
     server.ws_root = get_server_root();
-    if (server.error_pages.size() > 0)
+    if (server.error_pages.size() > 0 && server.server_root != "")
     {
+        logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
         for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
             it->second = join_paths(server.server_root, it->second);
     }
-    // Obligatorios
-    if (server.port == -42)
-        logger->fatal_log("parse_server_block", "Port is not valid.");
-    if (server.server_root == "")
-        logger->fatal_log("parse_server_block", "Server root is not valid.");
-    
 
+    if (check_obligatory_params(server, logger))
+        logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");
+    
     return server;
 }
 
