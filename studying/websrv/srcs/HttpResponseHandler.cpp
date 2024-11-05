@@ -65,13 +65,13 @@ bool HttpResponseHandler::handle_request() {
 }
 
 bool HttpResponseHandler::handle_get() {
-//	parse_content_range();
+	parse_content_range();
 	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}
 	s_content content = get_file_content(_request.normalized_path);
-//	get_file_content_range(_request.normalized_path);
+	get_file_content_range(_request.normalized_path);q
 	_log->log(LOG_DEBUG, RSP_NAME, "?? " + int_to_string(_response_data.content.length()));
 	if (content.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
@@ -625,121 +625,124 @@ void HttpResponseHandler::free_cgi_env() {
 		free(_cgi_env[i]);  // Libera cada cadena duplicada con strdup
 	}
 }
-//
-//void HttpResponseHandler::parse_content_range() {
-//	_response_data.ranged = false;
-//	_response_data.start = 0;
-//	_response_data.end = static_cast<size_t>(-1);
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "range: " + _request.range + " len " + int_to_string(_request.range.length()));
-//	if (!_request.range.empty()) {
-//		std::string range_value = _request.range;
-//
-//		if (sscanf(range_value.c_str(), "bytes=%zu-%zu", &_response_data.start, &_response_data.end) == 2) {
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_RANGE;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range complete (start - end).");
-//		} else if (sscanf(range_value.c_str(), "bytes=%zu-", &_response_data.start) == 1) {
-//			_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_INIT;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range to end (0 - ).");
-//		} else if (sscanf(range_value.c_str(), "bytes=-%zu", &_response_data.end) == 1) {
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_LAST;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range end ( - end).");
-//		} else {
-//			turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
-//			                "Malformed Range Header.");
-//			return ;
-//		}
-//	} else {
-//		_log->log(LOG_DEBUG, RSP_NAME,
-//		          "No range found at header request.");
-//	}
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "range found = " + int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
-//}
-//
-//bool HttpResponseHandler::validate_content_range(size_t file_size) {
-//	if (_response_data.range_scenario == CR_LAST) {
-//		_response_data.start = file_size > _response_data.end ? file_size - _response_data.end : 0;
-//		_response_data.end = file_size - 1;
-//	} else if (_response_data.range_scenario == CR_INIT) {
-//		_response_data.end = std::min(_response_data.end, file_size - 1);
-//	} else if (_response_data.range_scenario == CR_RANGE) {
-//		if (_response_data.end >= file_size) {
-//			_response_data.end = file_size - 1;
-//		}
-//	}
-//
-//	if (_response_data.start >= file_size || _response_data.start > _response_data.end) {
-//		turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
-//						"Requested range is not satisfiable.");
-//		return (false);
-//	}
-//	return (true);
-//}
-//
-//
-//void HttpResponseHandler::get_file_content_range(std::string& path) {
-//
-//	// Check if path is empty. To avoid further unnecessary errors
-//	if (path.empty()) {
-//		_response_data.status = false;
-//		return ;
-//	}
-//	try {
-//		std::string content;
-//		parse_content_range();
-//		_response_data.status = false;
-////		std::ifstream file(path.c_str(), std::ios::binary);
-//		std::ifstream file(path.c_str(), std::ios::binary);
-//		if (!file) {
-//			turn_off_sanity(HTTP_FORBIDDEN,
-//							"Failed to open file " + path);
-//			return ;
-//		}
-//		size_t file_size = file.tellg();
-//		_log->log(LOG_DEBUG, RSP_NAME, "Pasamos cacao " + path);
-//		_log->log(LOG_DEBUG, RSP_NAME, "Pasamos aqui..." + int_to_string(file_size));
-//		_response_data.filesize = file_size;
-//		file.seekg(0, std::ios::beg);
-//		if (_response_data.ranged) {
-//			if (validate_content_range(file_size)) {
-//				size_t content_length = _response_data.end - _response_data.start + 1;
-//				_log->log(LOG_DEBUG, RSP_NAME,
-//						  "start-end: " + int_to_string(_response_data.start) + " <> " + int_to_string(_response_data.end));
-//				file.seekg(_response_data.start);
-//				file.read(&content[0], content_length);
-//				_response_data.status = true;
-//			}
-//		} else {
-//			_log->log(LOG_DEBUG, RSP_NAME, "Deberíamos estar aqui...");
-//			file.read(&content[0], file_size);
-//			_log->log(LOG_DEBUG, RSP_NAME, "Y ahora aqui...");
-//			_response_data.status = true;
-//		}
-//		if (!file) {
-//			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//							"Error reading file: " + path);
-//			_response_data.status = false;
-//		}
-//		file.close();
-//		_response_data.content = content;
-//
-//	} catch (const std::ios_base::failure& e) {
-//		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//						"I/O failure: " + std::string(e.what()));
-//	} catch (const std::exception& e) {
-//		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//						"Unhandled Exeption: " + std::string(e.what()));
-//	}
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//	          "File content read OK.");
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "FileData " + int_to_string(_response_data.content.length()));
-//}
+
+void HttpResponseHandler::parse_content_range() {
+	_response_data.ranged = false;
+	_response_data.start = 0;
+	_response_data.end = static_cast<size_t>(-1);
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "range: " + _request.range + " len " + int_to_string(_request.range.length()));
+	if (!_request.range.empty()) {
+		std::string range_value = _request.range;
+		unsigned long start = 0, end = static_cast<unsigned long>(-1); // Variables temporales
+
+		if (sscanf(range_value.c_str(), "bytes=%lu-%lu", &start, &end) == 2) {
+			_response_data.start = start;
+			_response_data.end = end;
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_RANGE;
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Range complete (start - end).");
+		} else if (sscanf(range_value.c_str(), "bytes=%lu-", &start) == 1) {
+			_response_data.start = start;
+			_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_INIT;
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Range to end (0 - ).");
+		} else if (sscanf(range_value.c_str(), "bytes=-%lu", &end) == 1) {
+			_response_data.end = end;
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_LAST;
+			_log->log(LOG_DEBUG, RSP_NAME,
+			          "Range end ( - end).");
+		} else {
+			turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
+			                "Malformed Range Header.");
+			return;
+		}
+	} else {
+		_log->log(LOG_DEBUG, RSP_NAME,
+		          "No range found at header request.");
+	}
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "range found = " + int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
+}
+
+bool HttpResponseHandler::validate_content_range(size_t file_size) {
+	if (_response_data.range_scenario == CR_LAST) {
+		_response_data.start = file_size > _response_data.end ? file_size - _response_data.end : 0;
+		_response_data.end = file_size - 1;
+	} else if (_response_data.range_scenario == CR_INIT) {
+		_response_data.end = std::min(_response_data.end, file_size - 1);
+	} else if (_response_data.range_scenario == CR_RANGE) {
+		if (_response_data.end >= file_size) {
+			_response_data.end = file_size - 1;
+		}
+	}
+
+	if (_response_data.start >= file_size || _response_data.start > _response_data.end) {
+		turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
+						"Requested range is not satisfiable.");
+		return (false);
+	}
+	return (true);
+}
+
+
+void HttpResponseHandler::get_file_content_range(std::string& path) {
+	if (path.empty()) {
+		_response_data.status = false;
+		return ;
+	}
+	try {
+		std::string content;
+		parse_content_range();
+		_response_data.status = false;
+		std::ifstream file(path.c_str(), std::ios::binary);
+		if (!file) {
+			turn_off_sanity(HTTP_FORBIDDEN,
+							"Failed to open file " + path);
+			return ;
+		}
+		file.seekg(0, std::ios::end);
+		std::streampos file_size = file.tellg();
+		_response_data.filesize = file_size;
+		file.seekg(0, std::ios::beg);
+		if (_response_data.ranged) {
+			if (validate_content_range(file_size)) {
+				size_t content_length = _response_data.end - _response_data.start;
+				content.resize(content_length);
+				_log->log(LOG_DEBUG, RSP_NAME,
+						  "start-end: " + int_to_string(_response_data.start) + " <> " + int_to_string(_response_data.end));
+				file.seekg(_response_data.start);
+				file.read(&content[0], content_length);
+				_response_data.status = true;
+				_request.status = HTTP_PARTIAL_CONTENT;
+			}
+		} else {
+			content.resize(file_size);
+			_log->log(LOG_DEBUG, RSP_NAME, "Deberíamos estar aqui...");
+			file.read(&content[0], file_size);
+			_log->log(LOG_DEBUG, RSP_NAME, "Y ahora aqui...");
+			_response_data.status = true;
+			_request.status = HTTP_OK;
+		}
+		if (!file) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+							"Error reading file: " + path);
+			_response_data.status = false;
+		}
+		file.close();
+		_response_data.content = content;
+
+	} catch (const std::ios_base::failure& e) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						"I/O failure: " + std::string(e.what()));
+	} catch (const std::exception& e) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						"Unhandled Exeption: " + std::string(e.what()));
+	}
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "File content read OK.");
+}

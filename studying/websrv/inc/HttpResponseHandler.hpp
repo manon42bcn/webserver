@@ -99,9 +99,9 @@ public:
 	void turn_off_sanity(e_http_sts status, std::string detail);
 	std::vector<char *> cgi_environment ();
 // dirty implementation
-//	void parse_content_range();
-//	void get_file_content_range(std::string& path);
-//	bool validate_content_range(size_t file_size);
+	void parse_content_range();
+	void get_file_content_range(std::string& path);
+	bool validate_content_range(size_t file_size);
 };
 
 #endif
