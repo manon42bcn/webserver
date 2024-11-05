@@ -140,13 +140,20 @@ void HttpResponseHandler::get_file_content(std::string& path) {
 std::string HttpResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
 	std::string connection = "Connection: close\r\n";
-
+	if (_client_data->keep_alive()) {
+		connection = "Connection: keep-alive\r\n";
+	}
+	std::ostringstream ranged;
+	if (_response_data.ranged) {
+		ranged << "Content-Range: bytes " << _response_data.start << "-" << _response_data.end << "/" << _response_data.filesize << "\r\n";
+	}
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
 	       << "Content-Length: " << content_size << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
-	       << "Connection: close\r\n"
+	       << connection
+		   << ranged.str()
 	       << "\r\n";
-
+	_log->log(LOG_DEBUG, RSP_NAME, header.str());
 	return (header.str());
 }
 
@@ -211,7 +218,7 @@ bool HttpResponseHandler::sender(const std::string& body, const std::string& pat
 		} else {
 			mime_type = _response_data.mime;
 		}
-		std::string response = header(_request.status, body.length(), mime_type);
+		std::string response = header(_request.status, _response_data.content.length(), mime_type);
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
@@ -655,20 +662,20 @@ void HttpResponseHandler::parse_content_range() {
 			_response_data.ranged = true;
 			_response_data.range_scenario = CR_RANGE;
 			_log->log(LOG_DEBUG, RSP_NAME,
-			          "Range complete (start - end).");
+			          "Range complete (start - end). " + int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
 		} else if (sscanf(range_value.c_str(), "bytes=%lu-", &start) == 1) {
 			_response_data.start = start;
 			_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;
 			_response_data.ranged = true;
 			_response_data.range_scenario = CR_INIT;
 			_log->log(LOG_DEBUG, RSP_NAME,
-			          "Range to end (0 - ).");
+			          "Range to end (0 - )." + int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
 		} else if (sscanf(range_value.c_str(), "bytes=-%lu", &end) == 1) {
 			_response_data.end = end;
 			_response_data.ranged = true;
 			_response_data.range_scenario = CR_LAST;
 			_log->log(LOG_DEBUG, RSP_NAME,
-			          "Range end ( - end).");
+			          "Range end ( - end)."+ int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
 		} else {
 			turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
 			                "Malformed Range Header.");

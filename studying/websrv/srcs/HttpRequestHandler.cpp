@@ -328,6 +328,12 @@ void HttpRequestHandler::load_header_data() {
 		}
 	}
 	_range = get_header_value(_header, "range:", "\r\n");
+	std::string keep = get_header_value(_header, "connection:", "\r\n");
+	if (keep == "keep-alive") {
+		_client_data->keep_active();
+	} else {
+		_client_data->deactivate();
+	}
 }
 
 /**

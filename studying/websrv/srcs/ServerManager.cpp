@@ -162,8 +162,10 @@ bool    ServerManager::process_request(size_t& poll_index) {
 	std::map<int, ClientData*>::iterator it = _clients_map.find(poll_fd);
 	if (it != _clients_map.end()) {
 		HttpRequestHandler request_handler(_log, it->second);
-		remove_client_from_poll(it, poll_index);
-		--poll_index;
+		if (!it->second->keep_alive()) {
+			remove_client_from_poll(it, poll_index);
+			--poll_index;
+		}
 		return (true);
 	} else {
 		_log->log(LOG_WARNING, SM_NAME,

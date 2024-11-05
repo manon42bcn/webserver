@@ -15,7 +15,7 @@
 ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	_server(server),
 	_log(log),
-    _active(true),
+    _active(false),
 	_client_fd() {
 	if (_log == NULL){
 		throw Logger::NoLoggerPointer();
