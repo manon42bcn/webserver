@@ -26,12 +26,15 @@
 
 #define RSP_NAME "HttpResponseHandler"
 #define CGI_TIMEOUT 5000
+#define DEFAULT_RANGE_BYTES 262144
 
 enum e_content_type {
 	CT_UNKNOWN = 0,
 	CT_FILE = 1,
 	CT_JSON = 2
 };
+
+
 
 struct s_multi_part {
 	std::string 	disposition;
@@ -69,6 +72,7 @@ private:
 	std::string                 _response_type;
 	std::vector<char*>          _cgi_env;
 	std::vector<std::string>    _response_header;
+	s_content                   _response_data;
 
 public:
 	HttpResponseHandler(const LocationConfig *location,
@@ -94,6 +98,10 @@ public:
 	bool handle_request();
 	void turn_off_sanity(e_http_sts status, std::string detail);
 	std::vector<char *> cgi_environment ();
+// dirty implementation
+//	void parse_content_range();
+//	void get_file_content_range(std::string& path);
+//	bool validate_content_range(size_t file_size);
 };
 
 #endif

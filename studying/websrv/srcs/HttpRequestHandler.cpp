@@ -327,7 +327,7 @@ void HttpRequestHandler::load_header_data() {
 			_chunks = true;
 		}
 	}
-	_range = get_header_value(_header, "Range:", "\r\n");
+	_range = get_header_value(_header, "range:", "\r\n");
 }
 
 /**
