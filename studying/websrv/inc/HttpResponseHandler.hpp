@@ -48,6 +48,9 @@ struct s_content {
 	e_range_scenario    range_scenario;
 	bool                status;
 	std::string         content;
+	std::string         mime;
+	e_http_sts          http_status;
+	std::string         header;
 	s_content() {};
 	s_content(bool s, std::string c): status(s), content(c) {};
 };

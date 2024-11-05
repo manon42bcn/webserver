@@ -39,7 +39,7 @@ bool HttpResponseHandler::handle_request() {
 		if (!_request.sanity) {
 			send_error_response();
 		}
-		sender(_response, _request.path);
+		sender(_response_data.content, _request.path);
 	}
 	switch (_request.method) {
 		case METHOD_GET:
@@ -71,8 +71,9 @@ bool HttpResponseHandler::handle_get() {
 		return (false);
 	}
 	s_content content = get_file_content(_request.normalized_path);
+	s_content content = get_file_content(_request.normalized_path);
 	get_file_content_range(_request.normalized_path);
-	_log->log(LOG_DEBUG, RSP_NAME, "?? " + int_to_string(_response_data.content.length()));
+
 	if (content.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
@@ -200,10 +201,10 @@ bool HttpResponseHandler::send_error_response() {
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
 	try {
 		std::string mime_type;
-		if (_response_type.empty()) {
+		if (_response_data.mime.empty()) {
 			mime_type = get_mime_type(path);
 		} else {
-			mime_type = _response_type;
+			mime_type = _response_data.mime;
 		}
 		std::string response = header(_request.status, body.length(), mime_type);
 		response += body;
@@ -398,37 +399,42 @@ size_t end_of_header_system(std::string& header)
 
 bool HttpResponseHandler::handle_cgi() {
 	cgi_execute();
-	if (!_response.empty()) {
-		size_t header_pos = end_of_header_system(_response);
+	if (!_response_data.content.empty()) {
+		size_t header_pos = end_of_header_system(_response_data.content);
 		if (header_pos == std::string::npos) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"CGI Response does not include a valid header.");
 			send_error_response();
 			return (false);
 		}
-		_response_type = get_header_value(_response, "content-type:", "\n");
-		if (_response_type.empty()){
+		_response_data.mime = get_header_value(_response_data.content, "content-type:", "\n");
+		if (_response_data.mime.empty()){
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"Content-Type not present at CGI response.");
 			send_error_response();
 			return (false);
 		}
-		std::string status = get_header_value(_response, "Status:", " ");
+		std::string status = get_header_value(_response_data.content, "status:", " ");
 		if (status.empty()) {
-			status = "200";
-		}
-		if (is_valid_size_t(status)) {
-			_request.status = (e_http_sts)str_to_size_t(status);
+			_response_data.http_status = HTTP_OK;
+			_request.status = HTTP_OK;
+			_response_data.header = http_status_description(HTTP_OK);
 		} else {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-							"Malformed Status included at CGI response.");
-			send_error_response();
-			return (false);
+			int http_status = atoi(status.c_str());
+			if (http_status_description((e_http_sts)http_status) != "No Info Associated") {
+				_response_data.http_status = (e_http_sts)http_status;
+			} else {
+				turn_off_sanity(HTTP_BAD_GATEWAY,
+								"Non valid HTTP status provided by CGI.");
+				send_error_response();
+				return (false);
+			}
 		}
-		std::string header = _response.substr(0,header_pos);
-		std::string response = _response.substr(header_pos + 1);
-		_response_type = get_header_value(_response, "content-type:", "\n");
+
+//		std::string header = _response.substr(0,header_pos);
+//		std::string response = _response.substr(header_pos + 1);
 		_response = _response.substr(_response.find('\n') + 1);
+		_response_data.content = _response_data.content.substr(header_pos + 1);
 		return (true);
 	} else {
 		turn_off_sanity(HTTP_BAD_GATEWAY,
@@ -552,7 +558,9 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	}
 	waitpid(pid, NULL, 0);
 
-	_response = response;
+//	_response_data.content.resize(response.length());
+	_response_data.content = response;
+//	_response = response;
 	return (active);
 }
 //bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
