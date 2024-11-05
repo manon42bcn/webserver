@@ -70,14 +70,11 @@ bool HttpResponseHandler::handle_get() {
 		send_error_response();
 		return (false);
 	}
-	s_content content = get_file_content(_request.normalized_path);
-	s_content content = get_file_content(_request.normalized_path);
-	get_file_content_range(_request.normalized_path);
-
-	if (content.status) {
+	get_file_content(_request.normalized_path);
+	if (_response_data.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
-		return (sender(content.content, _request.normalized_path));
+		return (sender(_response_data.content, _request.normalized_path));
 	} else {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Get will send a error due to content load fails.");
@@ -85,12 +82,13 @@ bool HttpResponseHandler::handle_get() {
 	}
 }
 
-s_content HttpResponseHandler::get_file_content(std::string& path) {
+void HttpResponseHandler::get_file_content(std::string& path) {
 	std::string content;
 	// Check if path is empty. To avoid further unnecessary errors
-	if (path.empty())
-		return (s_content(false, ""));
-
+	if (path.empty()) {
+		_response_data.status = false;
+		return ;
+	}
 	try {
 		std::ifstream file(path.c_str(), std::ios::binary);
 
@@ -98,7 +96,8 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Failed to open file: " + path);
 			_request.status = HTTP_FORBIDDEN;
-			return (s_content(false, ""));
+			_response_data.status = false;
+			return ;
 		}
 		file.seekg(0, std::ios::end);
 		std::streampos file_size = file.tellg();
@@ -111,23 +110,27 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Error reading file: " + path);
 			_request.status = HTTP_INTERNAL_SERVER_ERROR;
-			return (s_content(false, ""));
+			_response_data.status = false;
+			return ;
 		}
 		file.close();
 	} catch (const std::ios_base::failure& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "I/O failure: " + std::string(e.what()));
 		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		return (s_content(false, ""));
+		_response_data.status = false;
+		return ;
 	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Exception: " + std::string(e.what()));
 		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		return (s_content(false, ""));
+		_response_data.status = false;
+		return ;
 	}
 	_log->log(LOG_DEBUG, RSP_NAME,
 	          "File content read OK.");
-	return (s_content(true, content));
+	_response_data.content = content;
+	_response_data.status = true;
 }
 
 std::string HttpResponseHandler::header(int code, size_t content_size, std::string mime) {
@@ -172,20 +175,19 @@ bool HttpResponseHandler::send_error_response() {
 			it = error_pages->find(_request.status);
 		}
 		if (!error_pages->empty() || it != error_pages->end()) {
-			s_content file_content = get_file_content(error_file);
-			if (!file_content.status) {
+			get_file_content(error_file);
+			if (!_response_data.status) {
 				_log->log(LOG_DEBUG, RSP_NAME,
 				          "Custom error page cannot be load. http status: " + int_to_string(_request.status));
 				content = default_plain_error();
 			} else {
 				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
-				content = file_content.content;
 				file_path = error_file;
 				if (_location->loc_error_mode == TEMPLATE)
 				{
-					content = replace_template(content, "{error_code}",
+					_response_data.content = replace_template(_response_data.content, "{error_code}",
 					                           int_to_string(_request.status));
-					content = replace_template(content, "{error_detail}",
+					_response_data.content = replace_template(_response_data.content, "{error_detail}",
 					                           http_status_description(_request.status));
 					_log->log(LOG_DEBUG, RSP_NAME, "Template update to send.");
 				}
@@ -195,7 +197,7 @@ bool HttpResponseHandler::send_error_response() {
 			          "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
-	return (sender(content, file_path));
+	return (sender(_response_data.content, file_path));
 }
 
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
@@ -433,7 +435,7 @@ bool HttpResponseHandler::handle_cgi() {
 
 //		std::string header = _response.substr(0,header_pos);
 //		std::string response = _response.substr(header_pos + 1);
-		_response = _response.substr(_response.find('\n') + 1);
+//		_response = _response.substr(_response.find('\n') + 1);
 		_response_data.content = _response_data.content.substr(header_pos + 1);
 		return (true);
 	} else {

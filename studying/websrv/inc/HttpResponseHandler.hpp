@@ -108,7 +108,7 @@ public:
 	void free_cgi_env();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-	s_content get_file_content(std::string& path);
+	void get_file_content(std::string& path);
 	void get_post_content();
 	void parse_multipart_data();
 	void validate_payload();
