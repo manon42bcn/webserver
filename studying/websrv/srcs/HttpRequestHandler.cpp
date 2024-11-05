@@ -167,6 +167,7 @@ void HttpRequestHandler::read_request_header() {
  *
  * @return None
  */
+// TODO: This function and next can be merged using getline
 void HttpRequestHandler::parse_header() {
 	size_t header_end = _request.find("\r\n\r\n");
 
@@ -185,6 +186,7 @@ void HttpRequestHandler::parse_header() {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Request parsing error: No header-body delimiter found.");
 	}
+//	_all_headers = parse_headers_map(_header);
 	_log->log(LOG_DEBUG, RH_NAME, _request);
 }
 
@@ -325,6 +327,7 @@ void HttpRequestHandler::load_header_data() {
 			_chunks = true;
 		}
 	}
+	_range = get_header_value(_header, "Range:", "\r\n");
 }
 
 /**
@@ -766,7 +769,8 @@ void HttpRequestHandler::handle_request() {
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_length, _content_type,
 										  _boundary, _path_type, _query_string, _cgi,
-	                                      _script, _path_info, _chunks);
+	                                      _script, _path_info, _chunks, _all_headers,
+										  _range);
 	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 	response.handle_request();
 }

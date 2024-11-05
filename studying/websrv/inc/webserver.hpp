@@ -96,6 +96,8 @@ std::string to_lowercase(const std::string& input);
 std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
 std::string trim(const std::string& str, const std::string& chars_to_trim);
 bool is_cgi(const std::string& filename);
+std::map<std::string, std::string> parse_headers_map(const std::string& headers);
+
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1,
@@ -133,16 +135,21 @@ struct s_request {
 	std::string& script;
 	std::string& path_info;
 	bool&        chunks;
+	std::map<std::string, std::string>& all_headers;
+	std::string& range;
 	s_request(std::string& b, e_methods& m, std::string& p,
 	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
 	          size_t& cl, std::string& ct, std::string& bd,
 			  e_path_type& pt, std::string& qy, bool& cgi,
-	          std::string& sc, std::string& pi, bool& cks):
+	          std::string& sc, std::string& pi, bool& cks,
+			  std::map<std::string, std::string>& ah,
+			  std::string& rng):
 			  body(b), method(m), path(p), normalized_path(np),
               access(a), sanity(s), status(sts),
 			  content_length(cl), content_type(ct), boundary(bd),
 			  path_type(pt), query(qy), cgi(cgi),
-			  script(sc), path_info(pi), chunks(cks) {};
+			  script(sc), path_info(pi), chunks(cks),
+			  all_headers(ah), range(rng) {};
 };
 
 typedef struct s_cgi {
