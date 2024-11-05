@@ -149,20 +149,21 @@ void ServerManager::run() {
 				} else {
 					// Handle client request
 					process_request(i);
-					--i;
+//					--i;
 				}
 			}
 		}
 	}
 }
 
-bool    ServerManager::process_request(size_t poll_index) {
+bool    ServerManager::process_request(size_t& poll_index) {
 	int poll_fd = _poll_fds[poll_index].fd;
 
 	std::map<int, ClientData*>::iterator it = _clients_map.find(poll_fd);
 	if (it != _clients_map.end()) {
 		HttpRequestHandler request_handler(_log, it->second);
 		remove_client_from_poll(it, poll_index);
+		--poll_index;
 		return (true);
 	} else {
 		_log->log(LOG_WARNING, SM_NAME,
