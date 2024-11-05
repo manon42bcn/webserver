@@ -71,7 +71,7 @@ bool HttpResponseHandler::handle_get() {
 		return (false);
 	}
 	s_content content = get_file_content(_request.normalized_path);
-	get_file_content_range(_request.normalized_path);q
+	get_file_content_range(_request.normalized_path);
 	_log->log(LOG_DEBUG, RSP_NAME, "?? " + int_to_string(_response_data.content.length()));
 	if (content.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,

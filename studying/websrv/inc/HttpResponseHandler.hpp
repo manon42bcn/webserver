@@ -34,7 +34,23 @@ enum e_content_type {
 	CT_JSON = 2
 };
 
+enum e_range_scenario {
+	CR_INIT = 0,
+	CR_RANGE = 1,
+	CR_LAST = 2
+};
 
+struct s_content {
+	bool                ranged;
+	size_t              start;
+	size_t              end;
+	size_t              filesize;
+	e_range_scenario    range_scenario;
+	bool                status;
+	std::string         content;
+	s_content() {};
+	s_content(bool s, std::string c): status(s), content(c) {};
+};
 
 struct s_multi_part {
 	std::string 	disposition;

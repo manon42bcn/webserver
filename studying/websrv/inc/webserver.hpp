@@ -158,23 +158,7 @@ typedef struct s_cgi {
 	s_cgi(std::string cp, std::string s): cgi_path(cp), script(s) {};
 } t_cgi;
 
-enum e_range_scenario {
-	CR_INIT = 0,
-	CR_RANGE = 1,
-	CR_LAST = 2
-};
 
-struct s_content {
-	bool        ranged;
-	size_t      start;
-	size_t      end;
-	size_t      filesize;
-	e_range_scenario range_scenario;
-	bool        status;
-	std::string content;
-	s_content() {};
-	s_content(bool s, std::string c): status(s), content(c) {};
-};
 
 typedef enum e_allowed_methods {
 	GET=0,
