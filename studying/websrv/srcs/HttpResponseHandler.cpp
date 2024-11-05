@@ -70,7 +70,11 @@ bool HttpResponseHandler::handle_get() {
 		send_error_response();
 		return (false);
 	}
-	get_file_content(_request.normalized_path);
+	if (_response_data.ranged) {
+		get_file_content_range(_request.normalized_path);
+	} else {
+		get_file_content(_request.normalized_path);
+	}
 	if (_response_data.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
@@ -135,6 +139,8 @@ void HttpResponseHandler::get_file_content(std::string& path) {
 
 std::string HttpResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
+	std::string connection = "Connection: close\r\n";
+
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
 	       << "Content-Length: " << content_size << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
@@ -143,7 +149,6 @@ std::string HttpResponseHandler::header(int code, size_t content_size, std::stri
 
 	return (header.str());
 }
-
 
 std::string HttpResponseHandler::default_plain_error() {
 	std::ostringstream content;
@@ -160,11 +165,9 @@ std::string HttpResponseHandler::default_plain_error() {
 }
 
 bool HttpResponseHandler::send_error_response() {
-	std::string content;
 	std::string error_file;
 	std::string file_path = ".html";
 
-	content = default_plain_error();
 	if (_location)
 	{
 		std::map<int, std::string>::const_iterator it;
@@ -179,7 +182,7 @@ bool HttpResponseHandler::send_error_response() {
 			if (!_response_data.status) {
 				_log->log(LOG_DEBUG, RSP_NAME,
 				          "Custom error page cannot be load. http status: " + int_to_string(_request.status));
-				content = default_plain_error();
+				_response_data.content = default_plain_error();
 			} else {
 				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
 				file_path = error_file;

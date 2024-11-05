@@ -78,3 +78,11 @@ void ClientData::close_fd() {
 	}
 	_active = false;
 }
+
+bool ClientData::keep_alive() {
+	return (_active);
+}
+
+void ClientData::keep_active() {
+	_active = true;
+}

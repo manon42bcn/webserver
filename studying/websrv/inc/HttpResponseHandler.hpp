@@ -87,8 +87,6 @@ private:
 	std::vector<s_multi_part>	_multi_content;
 	std::string            		_content;
 	s_request&              	_request;
-	std::string                 _response;
-	std::string                 _response_type;
 	std::vector<char*>          _cgi_env;
 	std::vector<std::string>    _response_header;
 	s_content                   _response_data;
