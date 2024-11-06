@@ -19,7 +19,7 @@
 # include <string>
 
 # define SH_NAME "SocketHandler"
-# define SOCKET_BACKLOG_QUEUE 10
+# define SOCKET_BACKLOG_QUEUE 25
 
 class SocketHandler {
 private:

@@ -168,7 +168,7 @@ int main() {
 	server2.ws_root = base_path + "/data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	Logger logger(LOG_DEBUG, true);
+	Logger logger(LOG_ERROR, true);
 	try {
 		ServerManager server_manager(configs, &logger);
 		signal(SIGINT, signal_handler);
