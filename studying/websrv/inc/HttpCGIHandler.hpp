@@ -20,18 +20,19 @@ class HttpCGIHandler : public WsResponseHandler {
 	std::vector<char*>          _cgi_env;
 
 	public:
-	HttpCGIHandler(const LocationConfig *location,
-						const Logger *log,
-						ClientData* client_data,
-						s_request& request,
-						int fd) : WsResponseHandler(location, log, client_data, request, fd) {};
-//	~HttpCGIHandler(){};
+		HttpCGIHandler(const LocationConfig *location,
+							const Logger *log,
+							ClientData* client_data,
+							s_request& request,
+							int fd) : WsResponseHandler(location, log, client_data,
+														request, fd) {};
+		~HttpCGIHandler();
+		bool handle_request();
 	private:
-	bool cgi_execute();
-	bool handle_cgi();
-	bool read_from_cgi(int pid, int (&fd)[2]);
-	std::vector<char*> cgi_environment();
-	void free_cgi_env();
+		bool cgi_execute();
+		bool read_from_cgi(int pid, int (&fd)[2]);
+		std::vector<char*> cgi_environment();
+		void free_cgi_env();
 };
 
 #endif

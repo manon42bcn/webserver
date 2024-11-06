@@ -13,20 +13,21 @@
 #include "WebServerResponseHandler.hpp"
 
 WsResponseHandler::WsResponseHandler(const LocationConfig *location,
-										 const Logger *log,
-										 ClientData* client_data,
-										 s_request& request,
-										 int fd):
-		_fd(fd),
-		_location(location),
-		_log(log),
-		_client_data(client_data),
-		_request(request) {
+									 const Logger *log,
+									 ClientData* client_data,
+									 s_request& request,
+									 int fd):
+_fd(fd),
+_location(location),
+_log(log),
+_client_data(client_data),
+_request(request) {
+
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
-	_log->log(LOG_DEBUG, RSP_NAME,
-			  "WsResponseHandler init.");
 }
+
+WsResponseHandler::~WsResponseHandler(){}
 
 bool WsResponseHandler::handle_request() {
 
@@ -34,13 +35,6 @@ bool WsResponseHandler::handle_request() {
 		send_error_response();
 		return (false);
 	}
-//	if (_request.cgi) {
-//		handle_cgi();
-//		if (!_request.sanity) {
-//			send_error_response();
-//		}
-//		sender(_response_data.content, _request.path);
-//	}
 	switch (_request.method) {
 		case METHOD_GET:
 			_log->log(LOG_DEBUG, RSP_NAME,

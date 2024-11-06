@@ -10,18 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/29 11:01:43 by mporras-         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -126,8 +114,8 @@ void signal_handler(int sig){
 
 int main() {
 //	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
-	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
+	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;

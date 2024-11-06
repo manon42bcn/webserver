@@ -15,14 +15,18 @@
 
 #include "WebServerResponseHandler.hpp"
 
+#define RHB_NAME "Basic Request Handler Init."
+
 class HttpResponseHandler : public WsResponseHandler {
 	public:
 	HttpResponseHandler(const LocationConfig *location,
 						const Logger *log,
 						ClientData* client_data,
 						s_request& request,
-						int fd) : WsResponseHandler(location, log, client_data, request, fd) {};
+						int fd);
+	~HttpResponseHandler();
 };
+
 //#include "webserver.hpp"
 //#include "http_enum_codes.hpp"
 //#include "Logger.hpp"

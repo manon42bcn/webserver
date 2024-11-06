@@ -10,7 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "HttpResponseHandler.hpp"
+#include "HttpResponseHandler.hpp"
+
+HttpResponseHandler::~HttpResponseHandler() {}
+
+HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
+										 const Logger *log,
+										 ClientData *client_data,
+										 s_request &request,
+                                         int fd) :
+										 WsResponseHandler(location, log,
+														   client_data, request,
+														   fd) {
+	_log->log(LOG_DEBUG, RHB_NAME,
+			  "Static Response Handler Init.");
+}
+
 //
 //HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 //                                         const Logger *log,

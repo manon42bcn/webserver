@@ -12,20 +12,22 @@
 
 #include "HttpCGIHandler.hpp"
 
-bool HttpCGIHandler::handle_cgi() {
+HttpCGIHandler::~HttpCGIHandler () {}
+
+bool HttpCGIHandler::handle_request() {
 	cgi_execute();
 	if (!_response_data.content.empty()) {
 		size_t header_pos = end_of_header_system(_response_data.content);
 		if (header_pos == std::string::npos) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-							"CGI Response does not include a valid header.");
+			                "CGI Response does not include a valid header.");
 			send_error_response();
 			return (false);
 		}
 		_response_data.mime = get_header_value(_response_data.content, "content-type:", "\n");
 		if (_response_data.mime.empty()){
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-							"Content-Type not present at CGI response.");
+			                "Content-Type not present at CGI response.");
 			send_error_response();
 			return (false);
 		}
@@ -40,21 +42,20 @@ bool HttpCGIHandler::handle_cgi() {
 				_response_data.http_status = (e_http_sts)http_status;
 			} else {
 				turn_off_sanity(HTTP_BAD_GATEWAY,
-								"Non valid HTTP status provided by CGI.");
+				                "Non valid HTTP status provided by CGI.");
 				send_error_response();
 				return (false);
 			}
 		}
-
 		_response_data.content = _response_data.content.substr(header_pos + 1);
+		sender(_response_data.content, _request.normalized_path);
 		return (true);
 	} else {
 		turn_off_sanity(HTTP_BAD_GATEWAY,
-						"CGI does not include a response.");
+		                "CGI does not include a response.");
 		send_error_response();
+		return (false);
 	}
-
-	return (false);
 }
 
 bool HttpCGIHandler::cgi_execute() {
@@ -63,7 +64,7 @@ bool HttpCGIHandler::cgi_execute() {
 
 	if (pipe(cgi_in) == -1 || pipe(cgi_out) == -1) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-						"Error building pipes to CGI handle.");
+		                "Error building pipes to CGI handle.");
 		return false;
 	}
 
@@ -72,7 +73,7 @@ bool HttpCGIHandler::cgi_execute() {
 
 	if (pid == -1) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-						"Fork process error.");
+		                "Fork process error.");
 		close(cgi_in[0]);
 		close(cgi_in[1]);
 		close(cgi_out[0]);
@@ -101,7 +102,7 @@ bool HttpCGIHandler::cgi_execute() {
 			ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
 			if (written == -1) {
 				_log->log(LOG_ERROR, RSP_NAME,
-						  "Error writing to CGI input.");
+				          "Error writing to CGI input.");
 			}
 		}
 		close(cgi_in[1]);
@@ -170,7 +171,6 @@ bool HttpCGIHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	}
 	waitpid(pid, NULL, 0);
 
-//	_response_data.content.resize(response.length());
 	_response_data.content = response;
 	return (active);
 }
@@ -179,7 +179,6 @@ bool HttpCGIHandler::read_from_cgi(int pid, int (&fd)[2]) {
 std::vector<char*> HttpCGIHandler::cgi_environment() {
 	std::vector<std::string> env_vars;
 
-	// Variables estándar de CGI
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vars.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	env_vars.push_back("REQUEST_METHOD=" + method_enum_to_string(_request.method));
@@ -191,25 +190,16 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
 	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
 
-	// Variables adicionales de CGI
-//	env_vars.push_back("REMOTE_ADDR=" + _client_data->get_client_ip());
-//	env_vars.push_back("HTTP_USER_AGENT=" + _request.user_agent);
-
-	// Convertir std::vector<std::string> a std::vector<char*>
 	std::vector<char*> env_ptrs;
 	for (size_t i = 0; i < env_vars.size(); ++i) {
-		// Usamos strdup para crear una copia mutable de cada cadena
 		env_ptrs.push_back(strdup(env_vars[i].c_str()));
 	}
-	env_ptrs.push_back(NULL);  // Finalización del entorno con NULL
-//	for (size_t i = 0; i < env_ptrs.size(); i++){
-//		_log->log(LOG_DEBUG, RSP_NAME, env_ptrs[i]);
-//	}
-	return env_ptrs;
+	env_ptrs.push_back(NULL);
+	return (env_ptrs);
 }
 
 void HttpCGIHandler::free_cgi_env() {
 	for (size_t i = 0; i < _cgi_env.size() - 1; ++i) {
-		free(_cgi_env[i]);  // Libera cada cadena duplicada con strdup
+		free(_cgi_env[i]);
 	}
 }

@@ -773,7 +773,7 @@ void HttpRequestHandler::validate_request() {
  * @return None
  */
 void HttpRequestHandler::handle_request() {
-	if (_active == false) {
+	if (!_active) {
 		_client_data->deactivate();
 		return;
 	}
@@ -783,8 +783,13 @@ void HttpRequestHandler::handle_request() {
 										  _boundary, _path_type, _query_string, _cgi,
 	                                      _script, _path_info, _chunks, _all_headers,
 										  _range);
-	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
-	response.handle_request();
+	if (_cgi) {
+		HttpCGIHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		response.handle_request();
+	} else {
+		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		response.handle_request();
+	}
 }
 
 /**

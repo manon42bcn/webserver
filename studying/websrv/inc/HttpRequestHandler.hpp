@@ -19,6 +19,7 @@
 #include "ClientData.hpp"
 #include "Logger.hpp"
 #include "HttpResponseHandler.hpp"
+#include "HttpCGIHandler.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>

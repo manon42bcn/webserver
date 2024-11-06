@@ -84,22 +84,20 @@ protected:
 	ClientData*             	_client_data;
 	s_request&              	_request;
 	s_content                   _response_data;
+
 public:
 	WsResponseHandler(const LocationConfig *location,
-	const Logger *log,
-	ClientData* client_data,
-	s_request& request,
-	int fd);
+		              const Logger *log,
+					  ClientData* client_data,
+					  s_request& request,
+					  int fd);
 
+	virtual ~WsResponseHandler() = 0;
+	virtual bool handle_request();
 	bool handle_get();
 	bool handle_post();
-	bool handle_delete();
 
-	virtual ~WsResponseHandler() {};
-//	bool handle_cgi();
-//	bool cgi_execute();
-//	bool read_from_cgi(int pid, int (&fd)[2]);
-//	void free_cgi_env();
+	bool handle_delete();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
 	void get_file_content(std::string& path);
@@ -108,14 +106,11 @@ public:
 	void validate_payload();
 	bool send_error_response();
 	bool sender(const std::string& body, const std::string& path);
-	bool handle_request();
 	void turn_off_sanity(e_http_sts status, std::string detail);
-//	std::vector<char *> cgi_environment ();
 // dirty implementation
 	void parse_content_range();
 	void get_file_content_range(std::string& path);
 	bool validate_content_range(size_t file_size);
-
 };
 
 #endif
