@@ -30,7 +30,7 @@ class HttpCGIHandler : public WsResponseHandler {
 		bool handle_request();
 	private:
 		bool cgi_execute();
-		bool read_from_cgi(int pid, int (&fd)[2]);
+		void get_file_content(int pid, int (&fd)[2]);
 		std::vector<char*> cgi_environment();
 		void free_cgi_env();
 };

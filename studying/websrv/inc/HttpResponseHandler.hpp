@@ -25,6 +25,7 @@ class HttpResponseHandler : public WsResponseHandler {
 						s_request& request,
 						int fd);
 	~HttpResponseHandler();
+	void get_file_content(int pid, int (&fd)[2]);
 };
 
 //#include "webserver.hpp"

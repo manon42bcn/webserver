@@ -26,6 +26,11 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 			  "Static Response Handler Init.");
 }
 
+void HttpResponseHandler::get_file_content(int pid, int (&fd)[2]) {
+	UNUSED(pid);
+	UNUSED(fd);
+}
+
 //
 //HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 //                                         const Logger *log,

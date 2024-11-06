@@ -48,7 +48,7 @@ bool HttpCGIHandler::handle_request() {
 			}
 		}
 		_response_data.content = _response_data.content.substr(header_pos + 1);
-		sender(_response_data.content, _request.normalized_path);
+		send_response(_response_data.content, _request.normalized_path);
 		return (true);
 	} else {
 		turn_off_sanity(HTTP_BAD_GATEWAY,
@@ -65,7 +65,7 @@ bool HttpCGIHandler::cgi_execute() {
 	if (pipe(cgi_in) == -1 || pipe(cgi_out) == -1) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 		                "Error building pipes to CGI handle.");
-		return false;
+		return (false);
 	}
 
 	_cgi_env = cgi_environment();
@@ -91,13 +91,12 @@ bool HttpCGIHandler::cgi_execute() {
 		std::string cgi_path = _request.normalized_path + _request.script;
 		char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
 		execve(cgi_path.c_str(), argv, _cgi_env.data());
-
+		_log->log(LOG_ERROR, RSP_NAME,
+				  "execve function error.");
 		exit(1);
 	} else {
-
 		close(cgi_in[0]);
 		close(cgi_out[1]);
-
 		if (!_request.body.empty()) {
 			ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
 			if (written == -1) {
@@ -106,21 +105,21 @@ bool HttpCGIHandler::cgi_execute() {
 			}
 		}
 		close(cgi_in[1]);
-		bool reading = read_from_cgi(pid, cgi_out);
+		get_file_content(pid, cgi_out);
 		close(cgi_in[0]);
 		free_cgi_env();
-		if (!reading) {
+		if (!_response_data.status) {
 			send_error_response();
 		}
 		return (true);
 	}
 }
 
-bool HttpCGIHandler::read_from_cgi(int pid, int (&fd)[2]) {
+void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	char buffer[2048];
 	std::string response;
 	ssize_t bytes_read;
-	bool active = true;
+	_response_data.status = true;
 
 	fcntl(fd[0], F_SETFL, O_NONBLOCK);
 	struct pollfd pfd;
@@ -139,12 +138,10 @@ bool HttpCGIHandler::read_from_cgi(int pid, int (&fd)[2]) {
 		if (poll_result == 0) {
 			turn_off_sanity(HTTP_GATEWAY_TIMEOUT,
 							"CGI Timeout.");
-			active = false;
 			break;
 		} else if (poll_result == -1) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"Poll error on CGI pipe.");
-			active = false;
 			break;
 		}
 		if (pfd.revents & POLLIN) {
@@ -165,14 +162,13 @@ bool HttpCGIHandler::read_from_cgi(int pid, int (&fd)[2]) {
 			}
 		}
 	}
-	if (!active) {
+	if (!_response_data.status) {
 		kill(pid, SIGKILL);
 		waitpid(pid, NULL, WNOHANG);
 	}
 	waitpid(pid, NULL, 0);
 
 	_response_data.content = response;
-	return (active);
 }
 
 

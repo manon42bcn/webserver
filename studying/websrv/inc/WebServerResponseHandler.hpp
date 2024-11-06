@@ -25,6 +25,7 @@
 
 #define RSP_NAME "HttpResponseHandler"
 #define CGI_TIMEOUT 5000
+#define UNUSED(x) (void)(x)
 #define DEFAULT_RANGE_BYTES 65536
 
 enum e_content_type {
@@ -84,6 +85,7 @@ protected:
 	ClientData*             	_client_data;
 	s_request&              	_request;
 	s_content                   _response_data;
+	std::string                 _headers;
 
 public:
 	WsResponseHandler(const LocationConfig *location,
@@ -93,19 +95,20 @@ public:
 					  int fd);
 
 	virtual ~WsResponseHandler() = 0;
+	virtual void get_file_content(int pid, int (&fd)[2]) = 0;
+	virtual void get_file_content(std::string& path);
 	virtual bool handle_request();
+	virtual bool send_response(const std::string& body, const std::string& path);
 	bool handle_get();
 	bool handle_post();
-
 	bool handle_delete();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-	void get_file_content(std::string& path);
 	void get_post_content();
 	void parse_multipart_data();
 	void validate_payload();
 	bool send_error_response();
-	bool sender(const std::string& body, const std::string& path);
+	bool sender(const std::string& body);
 	void turn_off_sanity(e_http_sts status, std::string detail);
 // dirty implementation
 	void parse_content_range();

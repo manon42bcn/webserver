@@ -72,7 +72,7 @@ bool WsResponseHandler::handle_get() {
 	if (_response_data.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 				  "File content will be sent.");
-		return (sender(_response_data.content, _request.normalized_path));
+		return (send_response(_response_data.content, _request.normalized_path));
 	} else {
 		_log->log(LOG_ERROR, RSP_NAME,
 				  "Get will send a error due to content load fails.");
@@ -82,7 +82,7 @@ bool WsResponseHandler::handle_get() {
 
 void WsResponseHandler::get_file_content(std::string& path) {
 	std::string content;
-	// Check if path is empty. To avoid further unnecessary errors
+
 	if (path.empty()) {
 		_response_data.status = false;
 		return ;
@@ -91,10 +91,9 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		std::ifstream file(path.c_str(), std::ios::binary);
 
 		if (!file) {
-			_log->log(LOG_ERROR, RSP_NAME,
-					  "Failed to open file: " + path);
+			turn_off_sanity(HTTP_FORBIDDEN,
+							"Fail to open file " + path);
 			_request.status = HTTP_FORBIDDEN;
-			_response_data.status = false;
 			return ;
 		}
 		file.seekg(0, std::ios::end);
@@ -203,24 +202,27 @@ bool WsResponseHandler::send_error_response() {
 					  "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
-	return (sender(_response_data.content, file_path));
+	return (send_response(_response_data.content, file_path));
 }
 
-bool WsResponseHandler::sender(const std::string& body, const std::string& path) {
+bool WsResponseHandler::send_response(const std::string &body, const std::string &path) {
+	std::string mime_type;
+	if (_response_data.mime.empty()) {
+		mime_type = get_mime_type(path);
+	} else {
+		mime_type = _response_data.mime;
+	}
+	_headers = header(_request.status, _response_data.content.length(), mime_type);
+	return(sender(body));
+}
+
+bool WsResponseHandler::sender(const std::string& body) {
 	try {
-		std::string mime_type;
-		if (_response_data.mime.empty()) {
-			mime_type = get_mime_type(path);
-		} else {
-			mime_type = _response_data.mime;
-		}
-		std::string response = header(_request.status, _response_data.content.length(), mime_type);
-		response += body;
+		std::string response = _headers + body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
 		while (total_sent < to_send) {
 			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
-			// TODO: videos can overlog errors... check for a reasonable fix
 			if (sent_bytes == -1) {
 				_log->log(LOG_DEBUG, RSP_NAME,
 						  "Error sending the response.");
@@ -240,6 +242,7 @@ void WsResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
 	_log->log(LOG_ERROR, RSP_NAME, detail);
 	_request.sanity = false;
 	_request.status = status;
+	_response_data.status = false;
 }
 
 void WsResponseHandler::get_post_content(){
@@ -364,7 +367,7 @@ bool WsResponseHandler::handle_post() {
 					  "File Data Recieved and saved.");
 		}
 	}
-	sender("Created", _request.normalized_path);
+	send_response("Created", _request.normalized_path);
 	return (true);
 }
 
@@ -392,7 +395,7 @@ bool WsResponseHandler::handle_delete() {
 	_request.status = HTTP_NO_CONTENT;
 	_log->log(LOG_DEBUG, RSP_NAME,
 			  "Resource deleted successfully: " + delete_path);
-	sender("Resource Deleted.", delete_path);
+	send_response("Resource Deleted.", delete_path);
 	return (true);
 }
 
