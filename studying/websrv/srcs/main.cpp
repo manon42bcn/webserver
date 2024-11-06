@@ -41,6 +41,7 @@
 //#include "SocketHandler.hpp"
 #include <cstdlib>
 #include <signal.h>
+#include "WebserverCache.hpp"
 
 void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "FROM: " << location << std::endl;
@@ -169,6 +170,7 @@ int main() {
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
 	Logger logger(LOG_ERROR, true);
+	WebServerCache cache(200);
 	try {
 		ServerManager server_manager(configs, &logger);
 		signal(SIGINT, signal_handler);

@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
+					WebserverCache.cpp \
 					http_codes_helper.cpp \
 					main.cpp \
 					Logger.cpp \
@@ -26,6 +27,7 @@ SRCS_FILES		=	webserver.cpp \
 					parse/split.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					WebserverCache.hpp \
 					http_enum_codes.hpp \
 					Logger.hpp \
 					SocketHandler.hpp \
