@@ -26,7 +26,7 @@
 
 #define RSP_NAME "HttpResponseHandler"
 #define CGI_TIMEOUT 5000
-#define DEFAULT_RANGE_BYTES 262144
+#define DEFAULT_RANGE_BYTES 65536
 
 enum e_content_type {
 	CT_UNKNOWN = 0,
@@ -34,7 +34,26 @@ enum e_content_type {
 	CT_JSON = 2
 };
 
+enum e_range_scenario {
+	CR_INIT = 0,
+	CR_RANGE = 1,
+	CR_LAST = 2
+};
 
+struct s_content {
+	bool                ranged;
+	size_t              start;
+	size_t              end;
+	size_t              filesize;
+	e_range_scenario    range_scenario;
+	bool                status;
+	std::string         content;
+	std::string         mime;
+	e_http_sts          http_status;
+	std::string         header;
+	s_content() {};
+	s_content(bool s, std::string c): status(s), content(c) {};
+};
 
 struct s_multi_part {
 	std::string 	disposition;
@@ -68,8 +87,6 @@ private:
 	std::vector<s_multi_part>	_multi_content;
 	std::string            		_content;
 	s_request&              	_request;
-	std::string                 _response;
-	std::string                 _response_type;
 	std::vector<char*>          _cgi_env;
 	std::vector<std::string>    _response_header;
 	s_content                   _response_data;
@@ -89,7 +106,7 @@ public:
 	void free_cgi_env();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-	s_content get_file_content(std::string& path);
+	void get_file_content(std::string& path);
 	void get_post_content();
 	void parse_multipart_data();
 	void validate_payload();
@@ -99,9 +116,9 @@ public:
 	void turn_off_sanity(e_http_sts status, std::string detail);
 	std::vector<char *> cgi_environment ();
 // dirty implementation
-//	void parse_content_range();
-//	void get_file_content_range(std::string& path);
-//	bool validate_content_range(size_t file_size);
+	void parse_content_range();
+	void get_file_content_range(std::string& path);
+	bool validate_content_range(size_t file_size);
 };
 
 #endif

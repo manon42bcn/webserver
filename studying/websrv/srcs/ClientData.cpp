@@ -15,7 +15,7 @@
 ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	_server(server),
 	_log(log),
-    _active(true),
+    _active(false),
 	_client_fd() {
 	if (_log == NULL){
 		throw Logger::NoLoggerPointer();
@@ -77,4 +77,12 @@ void ClientData::close_fd() {
 		_log->log(LOG_WARNING, CD_MODULE, "client fd is not active.");
 	}
 	_active = false;
+}
+
+bool ClientData::keep_alive() {
+	return (_active);
+}
+
+void ClientData::keep_active() {
+	_active = true;
 }

@@ -38,9 +38,11 @@ class ClientData {
 	    const SocketHandler* get_server();
 	    struct pollfd get_fd();
 	    void deactivate();
+		void keep_active();
 		void close_fd();
 	    bool chronos();
 	    void chronos_reset();
+		bool keep_alive();
 };
 
 #endif

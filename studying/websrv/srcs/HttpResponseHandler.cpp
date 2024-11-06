@@ -39,7 +39,7 @@ bool HttpResponseHandler::handle_request() {
 		if (!_request.sanity) {
 			send_error_response();
 		}
-		sender(_response, _request.path);
+		sender(_response_data.content, _request.path);
 	}
 	switch (_request.method) {
 		case METHOD_GET:
@@ -65,18 +65,20 @@ bool HttpResponseHandler::handle_request() {
 }
 
 bool HttpResponseHandler::handle_get() {
-//	parse_content_range();
 	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
 		send_error_response();
 		return (false);
 	}
-	s_content content = get_file_content(_request.normalized_path);
-//	get_file_content_range(_request.normalized_path);
-	_log->log(LOG_DEBUG, RSP_NAME, "?? " + int_to_string(_response_data.content.length()));
-	if (content.status) {
+	parse_content_range();
+	if (_response_data.ranged) {
+		get_file_content_range(_request.normalized_path);
+	} else {
+		get_file_content(_request.normalized_path);
+	}
+	if (_response_data.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
-		return (sender(content.content, _request.normalized_path));
+		return (sender(_response_data.content, _request.normalized_path));
 	} else {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Get will send a error due to content load fails.");
@@ -84,12 +86,13 @@ bool HttpResponseHandler::handle_get() {
 	}
 }
 
-s_content HttpResponseHandler::get_file_content(std::string& path) {
+void HttpResponseHandler::get_file_content(std::string& path) {
 	std::string content;
 	// Check if path is empty. To avoid further unnecessary errors
-	if (path.empty())
-		return (s_content(false, ""));
-
+	if (path.empty()) {
+		_response_data.status = false;
+		return ;
+	}
 	try {
 		std::ifstream file(path.c_str(), std::ios::binary);
 
@@ -97,7 +100,8 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Failed to open file: " + path);
 			_request.status = HTTP_FORBIDDEN;
-			return (s_content(false, ""));
+			_response_data.status = false;
+			return ;
 		}
 		file.seekg(0, std::ios::end);
 		std::streampos file_size = file.tellg();
@@ -110,36 +114,50 @@ s_content HttpResponseHandler::get_file_content(std::string& path) {
 			_log->log(LOG_ERROR, RSP_NAME,
 			          "Error reading file: " + path);
 			_request.status = HTTP_INTERNAL_SERVER_ERROR;
-			return (s_content(false, ""));
+			_response_data.status = false;
+			return ;
 		}
 		file.close();
 	} catch (const std::ios_base::failure& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "I/O failure: " + std::string(e.what()));
 		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		return (s_content(false, ""));
+		_response_data.status = false;
+		return ;
 	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME,
 		          "Exception: " + std::string(e.what()));
 		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		return (s_content(false, ""));
+		_response_data.status = false;
+		return ;
 	}
 	_log->log(LOG_DEBUG, RSP_NAME,
 	          "File content read OK.");
-	return (s_content(true, content));
+	_response_data.content = content;
+	_response_data.status = true;
 }
 
 std::string HttpResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
+	std::string connection = "Connection: close\r\n";
+	if (_client_data->keep_alive()) {
+		connection = "Connection: keep-alive\r\n";
+	}
+	std::ostringstream ranged;
+	if (_response_data.ranged) {
+		ranged  << "Content-Range: bytes " << _response_data.start << "-" << _response_data.end
+				<< "/" << _response_data.filesize << "\r\n"
+				<< "Accept-Ranges: bytes\r\n";
+	}
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
 	       << "Content-Length: " << content_size << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
-	       << "Connection: close\r\n"
+	       << connection
+		   << ranged.str()
 	       << "\r\n";
-
+	_log->log(LOG_DEBUG, RSP_NAME, header.str());
 	return (header.str());
 }
-
 
 std::string HttpResponseHandler::default_plain_error() {
 	std::ostringstream content;
@@ -156,11 +174,9 @@ std::string HttpResponseHandler::default_plain_error() {
 }
 
 bool HttpResponseHandler::send_error_response() {
-	std::string content;
 	std::string error_file;
 	std::string file_path = ".html";
 
-	content = default_plain_error();
 	if (_location)
 	{
 		std::map<int, std::string>::const_iterator it;
@@ -171,20 +187,19 @@ bool HttpResponseHandler::send_error_response() {
 			it = error_pages->find(_request.status);
 		}
 		if (!error_pages->empty() || it != error_pages->end()) {
-			s_content file_content = get_file_content(error_file);
-			if (!file_content.status) {
+			get_file_content(error_file);
+			if (!_response_data.status) {
 				_log->log(LOG_DEBUG, RSP_NAME,
 				          "Custom error page cannot be load. http status: " + int_to_string(_request.status));
-				content = default_plain_error();
+				_response_data.content = default_plain_error();
 			} else {
 				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
-				content = file_content.content;
 				file_path = error_file;
 				if (_location->loc_error_mode == TEMPLATE)
 				{
-					content = replace_template(content, "{error_code}",
+					_response_data.content = replace_template(_response_data.content, "{error_code}",
 					                           int_to_string(_request.status));
-					content = replace_template(content, "{error_detail}",
+					_response_data.content = replace_template(_response_data.content, "{error_detail}",
 					                           http_status_description(_request.status));
 					_log->log(LOG_DEBUG, RSP_NAME, "Template update to send.");
 				}
@@ -194,18 +209,18 @@ bool HttpResponseHandler::send_error_response() {
 			          "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
-	return (sender(content, file_path));
+	return (sender(_response_data.content, file_path));
 }
 
 bool HttpResponseHandler::sender(const std::string& body, const std::string& path) {
 	try {
 		std::string mime_type;
-		if (_response_type.empty()) {
+		if (_response_data.mime.empty()) {
 			mime_type = get_mime_type(path);
 		} else {
-			mime_type = _response_type;
+			mime_type = _response_data.mime;
 		}
-		std::string response = header(_request.status, body.length(), mime_type);
+		std::string response = header(_request.status, _response_data.content.length(), mime_type);
 		response += body;
 		int total_sent = 0;
 		int to_send = (int)response.length();
@@ -398,37 +413,42 @@ size_t end_of_header_system(std::string& header)
 
 bool HttpResponseHandler::handle_cgi() {
 	cgi_execute();
-	if (!_response.empty()) {
-		size_t header_pos = end_of_header_system(_response);
+	if (!_response_data.content.empty()) {
+		size_t header_pos = end_of_header_system(_response_data.content);
 		if (header_pos == std::string::npos) {
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"CGI Response does not include a valid header.");
 			send_error_response();
 			return (false);
 		}
-		_response_type = get_header_value(_response, "content-type:", "\n");
-		if (_response_type.empty()){
+		_response_data.mime = get_header_value(_response_data.content, "content-type:", "\n");
+		if (_response_data.mime.empty()){
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 							"Content-Type not present at CGI response.");
 			send_error_response();
 			return (false);
 		}
-		std::string status = get_header_value(_response, "Status:", " ");
+		std::string status = get_header_value(_response_data.content, "status:", " ");
 		if (status.empty()) {
-			status = "200";
-		}
-		if (is_valid_size_t(status)) {
-			_request.status = (e_http_sts)str_to_size_t(status);
+			_response_data.http_status = HTTP_OK;
+			_request.status = HTTP_OK;
+			_response_data.header = http_status_description(HTTP_OK);
 		} else {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-							"Malformed Status included at CGI response.");
-			send_error_response();
-			return (false);
+			int http_status = atoi(status.c_str());
+			if (http_status_description((e_http_sts)http_status) != "No Info Associated") {
+				_response_data.http_status = (e_http_sts)http_status;
+			} else {
+				turn_off_sanity(HTTP_BAD_GATEWAY,
+								"Non valid HTTP status provided by CGI.");
+				send_error_response();
+				return (false);
+			}
 		}
-		std::string header = _response.substr(0,header_pos);
-		std::string response = _response.substr(header_pos + 1);
-		_response_type = get_header_value(_response, "content-type:", "\n");
-		_response = _response.substr(_response.find('\n') + 1);
+
+//		std::string header = _response.substr(0,header_pos);
+//		std::string response = _response.substr(header_pos + 1);
+//		_response = _response.substr(_response.find('\n') + 1);
+		_response_data.content = _response_data.content.substr(header_pos + 1);
 		return (true);
 	} else {
 		turn_off_sanity(HTTP_BAD_GATEWAY,
@@ -552,7 +572,9 @@ bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
 	}
 	waitpid(pid, NULL, 0);
 
-	_response = response;
+//	_response_data.content.resize(response.length());
+	_response_data.content = response;
+//	_response = response;
 	return (active);
 }
 //bool HttpResponseHandler::read_from_cgi(int pid, int (&fd)[2]) {
@@ -625,121 +647,128 @@ void HttpResponseHandler::free_cgi_env() {
 		free(_cgi_env[i]);  // Libera cada cadena duplicada con strdup
 	}
 }
-//
-//void HttpResponseHandler::parse_content_range() {
-//	_response_data.ranged = false;
-//	_response_data.start = 0;
-//	_response_data.end = static_cast<size_t>(-1);
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "range: " + _request.range + " len " + int_to_string(_request.range.length()));
-//	if (!_request.range.empty()) {
-//		std::string range_value = _request.range;
-//
-//		if (sscanf(range_value.c_str(), "bytes=%zu-%zu", &_response_data.start, &_response_data.end) == 2) {
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_RANGE;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range complete (start - end).");
-//		} else if (sscanf(range_value.c_str(), "bytes=%zu-", &_response_data.start) == 1) {
-//			_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_INIT;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range to end (0 - ).");
-//		} else if (sscanf(range_value.c_str(), "bytes=-%zu", &_response_data.end) == 1) {
-//			_response_data.ranged = true;
-//			_response_data.range_scenario = CR_LAST;
-//			_log->log(LOG_DEBUG, RSP_NAME,
-//			          "Range end ( - end).");
-//		} else {
-//			turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
-//			                "Malformed Range Header.");
-//			return ;
-//		}
-//	} else {
-//		_log->log(LOG_DEBUG, RSP_NAME,
-//		          "No range found at header request.");
-//	}
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "range found = " + int_to_string(_response_data.start) + " - " + int_to_string(_response_data.end));
-//}
-//
-//bool HttpResponseHandler::validate_content_range(size_t file_size) {
-//	if (_response_data.range_scenario == CR_LAST) {
-//		_response_data.start = file_size > _response_data.end ? file_size - _response_data.end : 0;
-//		_response_data.end = file_size - 1;
-//	} else if (_response_data.range_scenario == CR_INIT) {
-//		_response_data.end = std::min(_response_data.end, file_size - 1);
-//	} else if (_response_data.range_scenario == CR_RANGE) {
-//		if (_response_data.end >= file_size) {
-//			_response_data.end = file_size - 1;
-//		}
-//	}
-//
-//	if (_response_data.start >= file_size || _response_data.start > _response_data.end) {
-//		turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
-//						"Requested range is not satisfiable.");
-//		return (false);
-//	}
-//	return (true);
-//}
-//
-//
-//void HttpResponseHandler::get_file_content_range(std::string& path) {
-//
-//	// Check if path is empty. To avoid further unnecessary errors
-//	if (path.empty()) {
-//		_response_data.status = false;
-//		return ;
-//	}
-//	try {
-//		std::string content;
-//		parse_content_range();
-//		_response_data.status = false;
-////		std::ifstream file(path.c_str(), std::ios::binary);
-//		std::ifstream file(path.c_str(), std::ios::binary);
-//		if (!file) {
-//			turn_off_sanity(HTTP_FORBIDDEN,
-//							"Failed to open file " + path);
-//			return ;
-//		}
-//		size_t file_size = file.tellg();
-//		_log->log(LOG_DEBUG, RSP_NAME, "Pasamos cacao " + path);
-//		_log->log(LOG_DEBUG, RSP_NAME, "Pasamos aqui..." + int_to_string(file_size));
-//		_response_data.filesize = file_size;
-//		file.seekg(0, std::ios::beg);
-//		if (_response_data.ranged) {
-//			if (validate_content_range(file_size)) {
-//				size_t content_length = _response_data.end - _response_data.start + 1;
-//				_log->log(LOG_DEBUG, RSP_NAME,
-//						  "start-end: " + int_to_string(_response_data.start) + " <> " + int_to_string(_response_data.end));
-//				file.seekg(_response_data.start);
-//				file.read(&content[0], content_length);
-//				_response_data.status = true;
-//			}
-//		} else {
-//			_log->log(LOG_DEBUG, RSP_NAME, "Deberíamos estar aqui...");
-//			file.read(&content[0], file_size);
-//			_log->log(LOG_DEBUG, RSP_NAME, "Y ahora aqui...");
-//			_response_data.status = true;
-//		}
-//		if (!file) {
-//			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//							"Error reading file: " + path);
-//			_response_data.status = false;
-//		}
-//		file.close();
-//		_response_data.content = content;
-//
-//	} catch (const std::ios_base::failure& e) {
-//		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//						"I/O failure: " + std::string(e.what()));
-//	} catch (const std::exception& e) {
-//		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-//						"Unhandled Exeption: " + std::string(e.what()));
-//	}
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//	          "File content read OK.");
-//	_log->log(LOG_DEBUG, RSP_NAME,
-//			  "FileData " + int_to_string(_response_data.content.length()));
-//}
+
+void HttpResponseHandler::parse_content_range() {
+	_response_data.ranged = false;
+	_response_data.start = 0;
+	_response_data.end = static_cast<size_t>(-1); // Inicia con un valor indicativo
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "Parsing Range header: " + _request.range);
+
+	if (!_request.range.empty()) {
+		std::string range_value = _request.range;
+		unsigned long start = 0, end = static_cast<unsigned long>(-1);
+
+		if (sscanf(range_value.c_str(), "bytes=%lu-%lu", &start, &end) == 2) {
+			_response_data.start = start;
+			_response_data.end = end;
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_RANGE;
+		} else if (sscanf(range_value.c_str(), "bytes=%lu-", &start) == 1) {
+			_response_data.start = start;
+			_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;  // Se ajustará en validate_content_range
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_INIT;
+		} else if (sscanf(range_value.c_str(), "bytes=-%lu", &end) == 1) {
+			_response_data.end = end;
+			_response_data.ranged = true;
+			_response_data.range_scenario = CR_LAST;
+		} else {
+			turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE, "Malformed Range Header.");
+			return;
+		}
+	} else {
+		_log->log(LOG_DEBUG, RSP_NAME, "No Range header found.");
+	}
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "Parsed range: start=" + int_to_string(_response_data.start) + ", end=" + int_to_string(_response_data.end));
+}
+
+bool HttpResponseHandler::validate_content_range(size_t file_size) {
+	// Ajuste para los tres escenarios de rango según el tamaño del archivo
+	if (_response_data.range_scenario == CR_LAST) {
+		// Ejemplo: bytes=-500 (últimos 500 bytes)
+		_response_data.start = (file_size > _response_data.end) ? file_size - _response_data.end : 0;
+		_response_data.end = file_size - 1;
+	} else if (_response_data.range_scenario == CR_INIT) {
+		// Ejemplo: bytes=500- (desde 500 hasta el final o el máximo permitido)
+		_response_data.end = std::min(_response_data.end, file_size - 1);
+	} else if (_response_data.range_scenario == CR_RANGE) {
+		// Ejemplo: bytes=200-300
+		if (_response_data.end >= file_size) {
+			_response_data.end = file_size - 1;
+		}
+	}
+
+	// Verificación final de coherencia en el rango
+	if (_response_data.start >= file_size || _response_data.start > _response_data.end) {
+		turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE, "Requested range is not satisfiable.");
+		return false;
+	}
+	if (_response_data.end == file_size) {
+		_request.status = HTTP_OK;
+	}
+	_log->log(LOG_DEBUG, RSP_NAME,
+	          "Validated content range: start=" + int_to_string(_response_data.start) +
+	          ", end=" + int_to_string(_response_data.end) + ", file size=" + int_to_string(file_size));
+	return true;
+}
+
+
+void HttpResponseHandler::get_file_content_range(std::string& path) {
+	if (path.empty()) {
+		_response_data.status = false;
+		return;
+	}
+	try {
+		std::string content;
+		parse_content_range();
+		_response_data.status = false;
+
+		std::ifstream file(path.c_str(), std::ios::binary);
+		if (!file) {
+			turn_off_sanity(HTTP_FORBIDDEN, "Failed to open file " + path);
+			return;
+		}
+
+		// Obtiene el tamaño del archivo
+		file.seekg(0, std::ios::end);
+		std::streampos file_size = file.tellg();
+		_response_data.filesize = file_size;
+		file.seekg(0, std::ios::beg);
+
+		if (_response_data.ranged) {
+			if (validate_content_range(file_size)) {
+				size_t content_length = _response_data.end - _response_data.start + 1; // +1 para incluir el byte final
+				content.resize(content_length, '\0');
+				file.seekg(_response_data.start);
+				file.read(&content[0], content_length);
+				_log->log(LOG_DEBUG, RSP_NAME,
+				          "Read range content: start=" + int_to_string(_response_data.start) +
+				          ", end=" + int_to_string(_response_data.end) +
+				          ", length=" + int_to_string(content.length()));
+				_response_data.status = true;
+				_request.status = HTTP_PARTIAL_CONTENT;
+			}
+		} else {
+			content.resize(file_size);
+			file.read(&content[0], file_size);
+			_response_data.status = true;
+			_request.status = HTTP_OK;
+		}
+
+		if (!file) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Error reading file: " + path);
+			_response_data.status = false;
+		}
+
+		file.close();
+		_response_data.content = content;
+	} catch (const std::ios_base::failure& e) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "I/O failure: " + std::string(e.what()));
+	} catch (const std::exception& e) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, "Unhandled Exception: " + std::string(e.what()));
+	}
+	_log->log(LOG_DEBUG, RSP_NAME, "File content read completed.");
+}
+
