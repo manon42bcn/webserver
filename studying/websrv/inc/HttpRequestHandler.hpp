@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/30 15:45:04 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/06 10:09:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ class HttpRequestHandler {
 		bool                    _chunks;
 		std::map<std::string, std::string>  _all_headers;
 		std::string             _range;
+		bool					_active;
 
 		void read_request_header();
 		void parse_method_and_path();

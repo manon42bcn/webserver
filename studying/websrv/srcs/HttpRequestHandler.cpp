@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/30 16:24:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/06 10:11:14 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
+	_active = true;
 	_chunks = false;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
@@ -144,6 +145,7 @@ void HttpRequestHandler::read_request_header() {
 		return ;
 	}
 	if (size == 0) {
+		_active = false;
 		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 		                "Client Close Request");
 		return ;
@@ -771,6 +773,10 @@ void HttpRequestHandler::validate_request() {
  * @return None
  */
 void HttpRequestHandler::handle_request() {
+	if (_active == false) {
+		_client_data->deactivate();
+		return;
+	}
 	s_request request_wrapper = s_request(_body, _method, _path,
 	                                      _normalized_path, _access, _sanity,
 	                                      _status, _content_length, _content_type,

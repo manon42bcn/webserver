@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 12:39:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:21:26 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,15 @@ bool is_cgi(const std::string& filename){
 		}
 	}
 	return (false);
+}
+
+size_t end_of_header_system(std::string& header)
+{
+	size_t  pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos) {
+		pos = header.find("\n\n");
+	}
+	return (pos);
 }
 
 //std::map<std::string, std::string> parse_headers_map(const std::string& headers) {

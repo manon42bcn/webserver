@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/30 14:10:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:21:42 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ std::string to_lowercase(const std::string& input);
 std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
 std::string trim(const std::string& str, const std::string& chars_to_trim);
 bool is_cgi(const std::string& filename);
+size_t end_of_header_system(std::string& header);
 //std::map<std::string, std::string> parse_headers_map(const std::string& headers);
 
 typedef enum e_mode {
