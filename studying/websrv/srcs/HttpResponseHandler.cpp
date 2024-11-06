@@ -70,11 +70,11 @@ bool HttpResponseHandler::handle_get() {
 		send_error_response();
 		return (false);
 	}
-	if (_response_data.ranged) {
-		get_file_content_range(_request.normalized_path);
-	} else {
+//	if (_response_data.ranged) {
+//		get_file_content_range(_request.normalized_path);
+//	} else {
 		get_file_content(_request.normalized_path);
-	}
+//	}
 	if (_response_data.status) {
 		_log->log(LOG_DEBUG, RSP_NAME,
 		          "File content will be sent.");
@@ -144,9 +144,11 @@ std::string HttpResponseHandler::header(int code, size_t content_size, std::stri
 		connection = "Connection: keep-alive\r\n";
 	}
 	std::ostringstream ranged;
-	if (_response_data.ranged) {
-		ranged << "Content-Range: bytes " << _response_data.start << "-" << _response_data.end << "/" << _response_data.filesize << "\r\n";
-	}
+//	if (_response_data.ranged) {
+//		ranged  << "Content-Range: bytes " << _response_data.start << "-" << _response_data.end
+//				<< "/" << _response_data.filesize << "\r\n"
+//				<< "Accept-Ranges: bytes\r\n";
+//	}
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
 	       << "Content-Length: " << content_size << "\r\n"
 	       << "Content-Type: " <<  mime << "\r\n"
@@ -737,6 +739,8 @@ void HttpResponseHandler::get_file_content_range(std::string& path) {
 						  "start-end: " + int_to_string(_response_data.start) + " <> " + int_to_string(_response_data.end));
 				file.seekg(_response_data.start);
 				file.read(&content[0], content_length);
+				_log->log(LOG_DEBUG, RSP_NAME,
+						  " esto lo leímos? " + int_to_string(content.length()));
 				_response_data.status = true;
 				_request.status = HTTP_PARTIAL_CONTENT;
 			}
@@ -754,6 +758,7 @@ void HttpResponseHandler::get_file_content_range(std::string& path) {
 			_response_data.status = false;
 		}
 		file.close();
+		_response_data.content.resize(content.length());
 		_response_data.content = content;
 
 	} catch (const std::ios_base::failure& e) {

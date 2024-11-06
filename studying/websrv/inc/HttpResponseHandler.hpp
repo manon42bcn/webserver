@@ -26,7 +26,7 @@
 
 #define RSP_NAME "HttpResponseHandler"
 #define CGI_TIMEOUT 5000
-#define DEFAULT_RANGE_BYTES 262144
+#define DEFAULT_RANGE_BYTES 65536
 
 enum e_content_type {
 	CT_UNKNOWN = 0,
