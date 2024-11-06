@@ -202,7 +202,10 @@ bool WsResponseHandler::send_error_response() {
 					  "Custom error page was not found. Error: " + int_to_string(_request.status));
 		}
 	}
-	return (send_response(_response_data.content, file_path));
+	_headers = header(_request.status,
+					  _response_data.content.length(),
+					  get_mime_type(file_path));
+	return (sender(_response_data.content));
 }
 
 bool WsResponseHandler::send_response(const std::string &body, const std::string &path) {

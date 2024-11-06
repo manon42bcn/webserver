@@ -35,10 +35,14 @@ bool HttpCGIHandler::handle_request() {
 		if (status.empty()) {
 			_response_data.http_status = HTTP_OK;
 			_request.status = HTTP_OK;
-			_response_data.header = http_status_description(HTTP_OK);
+			std::ostringstream header;
+			header << "HTTP/1.1 " << HTTP_OK << " " << http_status_description(HTTP_OK) << "\r\n"
+			       << _response_data.content.substr(0,header_pos) << "\r\n";
+			_headers = header.str();
 		} else {
 			int http_status = atoi(status.c_str());
 			if (http_status_description((e_http_sts)http_status) != "No Info Associated") {
+				_headers = _response_data.content.substr(0,header_pos) + "\r\n";
 				_response_data.http_status = (e_http_sts)http_status;
 			} else {
 				turn_off_sanity(HTTP_BAD_GATEWAY,
@@ -198,4 +202,9 @@ void HttpCGIHandler::free_cgi_env() {
 	for (size_t i = 0; i < _cgi_env.size() - 1; ++i) {
 		free(_cgi_env[i]);
 	}
+}
+
+bool HttpCGIHandler::send_response(const std::string &body, const std::string &path) {
+	UNUSED(path);
+	return(sender(body));
 }

@@ -33,6 +33,7 @@ class HttpCGIHandler : public WsResponseHandler {
 		void get_file_content(int pid, int (&fd)[2]);
 		std::vector<char*> cgi_environment();
 		void free_cgi_env();
+		bool send_response(const std::string &body, const std::string &path);
 };
 
 #endif
