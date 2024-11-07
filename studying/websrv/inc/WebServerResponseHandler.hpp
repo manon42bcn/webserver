@@ -99,7 +99,7 @@ public:
 	virtual void get_file_content(std::string& path);
 	virtual bool handle_request();
 	virtual bool send_response(const std::string& body, const std::string& path);
-	bool handle_get();
+	virtual bool handle_get();
 	bool handle_post();
 	bool handle_delete();
 	std::string header(int code, size_t content_size, std::string mime);
@@ -111,9 +111,7 @@ public:
 	bool sender(const std::string& body);
 	void turn_off_sanity(e_http_sts status, std::string detail);
 // dirty implementation
-	void parse_content_range();
-	void get_file_content_range(std::string& path);
-	bool validate_content_range(size_t file_size);
+
 };
 
 #endif

@@ -786,6 +786,9 @@ void HttpRequestHandler::handle_request() {
 	if (_cgi) {
 		HttpCGIHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
+	} else if (!_range.empty()) {
+		HttpRangeHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		response.handle_request();
 	} else {
 		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();

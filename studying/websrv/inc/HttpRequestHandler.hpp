@@ -20,6 +20,7 @@
 #include "Logger.hpp"
 #include "HttpResponseHandler.hpp"
 #include "HttpCGIHandler.hpp"
+#include "HttpRangeHandler.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>
