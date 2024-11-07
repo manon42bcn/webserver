@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _HTTP_CGI_HANDLER_
-#define _HTTP_CGI_HANDLER_
+#ifndef _HTTP_CGI_HANDLER_HPP_
+#define _HTTP_CGI_HANDLER_HPP_
 
 #include "WebServerResponseHandler.hpp"
 #define CGI_NAME "HttpCGIHandler"
@@ -39,8 +39,13 @@
  */
 class HttpCGIHandler : public WsResponseHandler {
 	private:
-	std::vector<char*>          _cgi_env;
+		std::vector<char*>          _cgi_env;
 
+		bool cgi_execute();
+		void get_file_content(int pid, int (&fd)[2]);
+		std::vector<char*> cgi_environment();
+		void free_cgi_env();
+		bool send_response(const std::string &body, const std::string &path);
 	public:
 		HttpCGIHandler(const LocationConfig *location,
 							const Logger *log,
@@ -49,12 +54,7 @@ class HttpCGIHandler : public WsResponseHandler {
 							int fd);
 		~HttpCGIHandler();
 		bool handle_request();
-	private:
-		bool cgi_execute();
-		void get_file_content(int pid, int (&fd)[2]);
-		std::vector<char*> cgi_environment();
-		void free_cgi_env();
-		bool send_response(const std::string &body, const std::string &path);
+
 };
 
 #endif

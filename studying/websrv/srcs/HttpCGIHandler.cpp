@@ -93,14 +93,16 @@ bool HttpCGIHandler::handle_request() {
 			send_error_response();
 			return (false);
 		}
-		_response_data.mime = get_header_value(_response_data.content, "content-type:", "\n");
+		_response_data.mime = get_header_value(_response_data.content,
+											   "content-type:", "\n");
 		if (_response_data.mime.empty()){
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 			                "Content-Type not present at CGI response.");
 			send_error_response();
 			return (false);
 		}
-		std::string status = get_header_value(_response_data.content, "status:", " ");
+		std::string status = get_header_value(_response_data.content,
+											  "status:", " ");
 		if (status.empty()) {
 			_response_data.http_status = HTTP_OK;
 			_request.status = HTTP_OK;
@@ -199,7 +201,7 @@ bool HttpCGIHandler::cgi_execute() {
 			return (false);
 		} else if (pid == 0) {
 			if (dup2(cgi_in[0], STDIN_FILENO) == -1 || dup2(cgi_out[1], STDOUT_FILENO) == -1) {
-				_log->log(LOG_ERROR, RSP_NAME,
+				_log->log(LOG_ERROR, CGI_NAME,
 						  "Error duplicating file descriptor.");
 				exit(1);
 			}
@@ -211,7 +213,7 @@ bool HttpCGIHandler::cgi_execute() {
 			std::string cgi_path = _request.normalized_path + _request.script;
 			char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
 			execve(cgi_path.c_str(), argv, _cgi_env.data());
-			_log->log(LOG_ERROR, RSP_NAME,
+			_log->log(LOG_ERROR, CGI_NAME,
 			          "execve function error.");
 			exit(1);
 		} else {
@@ -220,7 +222,7 @@ bool HttpCGIHandler::cgi_execute() {
 			if (!_request.body.empty()) {
 				ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
 				if (written == -1) {
-					_log->log(LOG_ERROR, RSP_NAME,
+					_log->log(LOG_ERROR, CGI_NAME,
 					          "Error writing to CGI input.");
 				}
 			}
@@ -282,12 +284,12 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	struct pollfd pfd;
 	pfd.fd = fd[0];
 	pfd.events = POLLIN;
-	_log->log(LOG_DEBUG, RSP_NAME,
+	_log->log(LOG_DEBUG, CGI_NAME,
 			  "Reading CGI response.");
 	while (true) {
 		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
 		if (pfd.revents & POLLHUP) {
-			_log->log(LOG_DEBUG, RSP_NAME,
+			_log->log(LOG_DEBUG, CGI_NAME,
 					  "CGI pipe closed by writer.");
 			break;
 		}
