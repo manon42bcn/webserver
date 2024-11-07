@@ -11,9 +11,53 @@
 /* ************************************************************************** */
 
 #include "HttpCGIHandler.hpp"
+HttpCGIHandler::HttpCGIHandler(const LocationConfig *location,
+							   const Logger *log,
+							   ClientData* client_data,
+							   s_request& request,
+							   int fd) :
+							   WsResponseHandler(location, log, client_data,
+												 request, fd)
+{
+	_log->log(LOG_DEBUG, CGI_NAME,
+			  "Cgi Handler init.");
+}
 
-HttpCGIHandler::~HttpCGIHandler () {}
-
+/**
+ * @brief Handles the CGI request and processes the response headers and body.
+ *
+ * This method is responsible for handling and processing the response
+ * from a CGI (Common Gateway Interface) script. The CGI is executed, and its
+ * output, which includes HTTP headers and the body content, is read and parsed.
+ * This method ensures the response includes essential headers and verifies their
+ * validity before constructing the HTTP response for the client.
+ *
+ * @details
+ * Steps of operation:
+ * - Executes the CGI script and stores the output in `_response_data.content`.
+ * - Verifies that the CGI response is not empty. If it is, an HTTP 502 (Bad Gateway)
+ *   error is sent to the client.
+ * - Finds the end of the headers in the CGI response content using the
+ *   `end_of_header_system()` helper function. If a valid header boundary is
+ *   not found, the function considers it an invalid CGI response.
+ * - Parses and verifies the presence of the "Content-Type" header:
+ *   - The "Content-Type" header is required for CGI responses to indicate
+ *     the type of data being sent to the client.
+ *   - If this header is missing, an HTTP 500 (Internal Server Error) is sent.
+ * - Parses and verifies the presence of an HTTP status header:
+ *   - The CGI can optionally specify an HTTP status using the "Status" header.
+ *   - If a valid "Status" header is not found, the status defaults to 200 OK.
+ *   - If an invalid status code is provided, an HTTP 502 (Bad Gateway) is sent.
+ * - Extracts and removes the CGI headers from `_response_data.content`, leaving only
+ *   the body, which will be sent to the client.
+ * - Constructs the final HTTP response headers, including the appropriate
+ *   status and content type, and sends the complete response to the client.
+ *
+ * @return true if the CGI request was successfully handled and the response was
+ *         prepared and sent to the client.
+ * @return false if there was an error in handling the CGI request, in which
+ *         case an error response is sent to the client.
+ */
 bool HttpCGIHandler::handle_request() {
 	cgi_execute();
 	if (!_response_data.content.empty()) {
@@ -62,6 +106,48 @@ bool HttpCGIHandler::handle_request() {
 	}
 }
 
+/**
+ * @brief Destructor to accomplish Abstract class.
+ */
+HttpCGIHandler::~HttpCGIHandler () {}
+
+/**
+ * @brief Executes the CGI script, handling input and output through pipes.
+ *
+ * This method sets up the environment and pipes needed to execute a CGI
+ * script and manages the data flow between the server and the CGI process.
+ * It ensures proper redirection of input and output streams for the CGI and
+ * processes the result accordingly.
+ *
+ * @details
+ * Steps of operation:
+ * - Creates two pipes (`cgi_in` and `cgi_out`) to handle the input and output
+ *   for the CGI process.
+ *   - `cgi_in` will be used to send the request body to the CGI's standard input.
+ *   - `cgi_out` will be used to capture the CGI’s output to standard output.
+ * - Calls `fork()` to create a new process:
+ *   - If `fork()` fails, it logs the error, closes all pipes, frees environment
+ *     variables, and sets an HTTP 500 (Internal Server Error).
+ *   - In the child process:
+ *     - Redirects `STDIN_FILENO` to `cgi_in[0]` to allow reading from the pipe.
+ *     - Redirects `STDOUT_FILENO` to `cgi_out[1]` to capture the output from CGI.
+ *     - Closes unused ends of the pipes to prevent unwanted I/O operations.
+ *     - Executes the CGI script using `execve`, passing the path, arguments,
+ *       and environment variables.
+ *     - If `execve` fails, logs the error and exits the child process.
+ *   - In the parent process:
+ *     - Closes the unused pipe ends and writes the request body to `cgi_in[1]`
+ *       (CGI’s standard input), if present.
+ *     - Closes `cgi_in[1]` after writing to signal end of input.
+ *     - Calls `get_file_content()` to read the CGI output from `cgi_out`.
+ *     - Closes pipes and frees environment resources.
+ * - Error handling includes cleanup of pipes and environment variables in case
+ *   of unexpected issues, and logging error details.
+ *
+ * @return true if the CGI request was successfully executed and processed.
+ * @return false if there was an error in handling the CGI request, in which case
+ *         an error response is prepared for the client.
+ */
 bool HttpCGIHandler::cgi_execute() {
 	int cgi_in[2];
 	int cgi_out[2];
@@ -71,54 +157,93 @@ bool HttpCGIHandler::cgi_execute() {
 		                "Error building pipes to CGI handle.");
 		return (false);
 	}
-
 	_cgi_env = cgi_environment();
-	pid_t pid = fork();
-
-	if (pid == -1) {
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Fork process error.");
-		close(cgi_in[0]);
-		close(cgi_in[1]);
-		close(cgi_out[0]);
-		close(cgi_out[1]);
-		free_cgi_env();
-		return (false);
-	} else if (pid == 0) {
-		dup2(cgi_in[0], STDIN_FILENO);
-		dup2(cgi_out[1], STDOUT_FILENO);
-		close(cgi_in[1]);
-		close(cgi_out[0]);
-		close(cgi_in[0]);
-		close(cgi_out[1]);
-
-		std::string cgi_path = _request.normalized_path + _request.script;
-		char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
-		execve(cgi_path.c_str(), argv, _cgi_env.data());
-		_log->log(LOG_ERROR, RSP_NAME,
-				  "execve function error.");
-		exit(1);
-	} else {
-		close(cgi_in[0]);
-		close(cgi_out[1]);
-		if (!_request.body.empty()) {
-			ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
-			if (written == -1) {
+	try {
+		pid_t pid = fork();
+		if (pid == -1) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Fork process error.");
+			close(cgi_in[0]);
+			close(cgi_in[1]);
+			close(cgi_out[0]);
+			close(cgi_out[1]);
+			free_cgi_env();
+			return (false);
+		} else if (pid == 0) {
+			if (dup2(cgi_in[0], STDIN_FILENO) == -1 || dup2(cgi_out[1], STDOUT_FILENO) == -1) {
 				_log->log(LOG_ERROR, RSP_NAME,
-				          "Error writing to CGI input.");
+						  "Error duplicating file descriptor.");
+				exit(1);
 			}
+			close(cgi_in[1]);
+			close(cgi_out[0]);
+			close(cgi_in[0]);
+			close(cgi_out[1]);
+
+			std::string cgi_path = _request.normalized_path + _request.script;
+			char* const argv[] = { const_cast<char*>(cgi_path.c_str()), NULL };
+			execve(cgi_path.c_str(), argv, _cgi_env.data());
+			_log->log(LOG_ERROR, RSP_NAME,
+			          "execve function error.");
+			exit(1);
+		} else {
+			close(cgi_in[0]);
+			close(cgi_out[1]);
+			if (!_request.body.empty()) {
+				ssize_t written = write(cgi_in[1], _request.body.c_str(), _request.body.size());
+				if (written == -1) {
+					_log->log(LOG_ERROR, RSP_NAME,
+					          "Error writing to CGI input.");
+				}
+			}
+			close(cgi_in[1]);
+			get_file_content(pid, cgi_out);
+			close(cgi_in[0]);
+			free_cgi_env();
+			if (!_response_data.status) {
+				send_error_response();
+			}
+			return (true);
 		}
-		close(cgi_in[1]);
-		get_file_content(pid, cgi_out);
-		close(cgi_in[0]);
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unexpected Error at pipe execution.: " << e.what();
 		free_cgi_env();
-		if (!_response_data.status) {
-			send_error_response();
-		}
-		return (true);
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						detail.str());
+		return (false);
 	}
 }
 
+/**
+ * @brief Reads the output from a CGI process through a non-blocking pipe.
+ *
+ * This method reads the response from a CGI script using a non-blocking pipe
+ * and waits for data to become available with a timeout mechanism.
+ * The method ensures that the CGI script does not block the server indefinitely
+ * by using `poll()` to monitor the pipe for input and to implement a timeout.
+ *
+ * @details
+ * Steps of operation:
+ * - Sets the CGI output pipe (fd[0]) to non-blocking mode using `fcntl`.
+ * - Initializes a `pollfd` structure and monitors the pipe for readable events (`POLLIN`).
+ * - Enters a loop where it waits for input on the pipe with a specified timeout (`CGI_TIMEOUT`):
+ *   - If the pipe closes from the CGI side (`POLLHUP`), it logs this and exits the loop.
+ *   - If the timeout expires, it logs an HTTP 504 (Gateway Timeout) error, sets `_response_data.status`
+ *     to indicate an error, and exits.
+ *   - If an error occurs in `poll`, it logs an HTTP 500 (Internal Server Error) and exits.
+ *   - If input is available (`POLLIN`), it reads the available data into a buffer:
+ *     - If `read` returns data, it appends this to `response`.
+ *     - If `read` returns `0`, indicating EOF, it breaks out of the loop.
+ *     - If `read` returns an error, it retries for `EINTR` or `EAGAIN` errors. For other errors,
+ *       it logs an HTTP 500 (Internal Server Error) and exits the loop.
+ * - If `_response_data.status` is false after the loop, it kills the CGI process (`SIGKILL`) and
+ *   calls `waitpid` to clean up the process resources.
+ * - Once the data is fully read or an error occurs, the output is stored in `_response_data.content`.
+ *
+ * @param pid Process ID of the CGI script, which is killed if a timeout or critical error occurs.
+ * @param fd An array representing the CGI pipe; `fd[0]` is used for reading the CGI's output.
+ */
 void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	char buffer[2048];
 	std::string response;
@@ -131,7 +256,6 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	pfd.events = POLLIN;
 	_log->log(LOG_DEBUG, RSP_NAME,
 			  "Reading CGI response.");
-//	TODO: Improve WAIT to get exit status
 	while (true) {
 		int poll_result = poll(&pfd, 1, CGI_TIMEOUT);
 		if (pfd.revents & POLLHUP) {
@@ -169,6 +293,8 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	if (!_response_data.status) {
 		kill(pid, SIGKILL);
 		waitpid(pid, NULL, WNOHANG);
+		_log->log(LOG_WARNING, CGI_NAME,
+				  "CGI process was kill due to a timeout error.");
 	}
 	waitpid(pid, NULL, 0);
 

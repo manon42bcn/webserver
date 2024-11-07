@@ -14,6 +14,7 @@
 #define _HTTP_CGI_HANDLER_
 
 #include "WebServerResponseHandler.hpp"
+#define CGI_NAME "HttpCGIHandler"
 
 class HttpCGIHandler : public WsResponseHandler {
 	private:
@@ -24,8 +25,7 @@ class HttpCGIHandler : public WsResponseHandler {
 							const Logger *log,
 							ClientData* client_data,
 							s_request& request,
-							int fd) : WsResponseHandler(location, log, client_data,
-														request, fd) {};
+							int fd);
 		~HttpCGIHandler();
 		bool handle_request();
 	private:
