@@ -11,6 +11,31 @@
 /* ************************************************************************** */
 
 #include "HttpCGIHandler.hpp"
+
+/**
+ * @brief Constructs the `HttpCGIHandler` object, initializing it with request
+ *        details and logging the initialization.
+ *
+ * This constructor initializes an `HttpCGIHandler` instance to handle CGI
+ * requests within the server. It inherits initialization parameters and behavior
+ * from the `WsResponseHandler` class, which provides essential elements for
+ * response handling, including the configuration, logging, client data, and
+ * request details.
+ *
+ * @param location Pointer to a `LocationConfig` object that provides the
+ *        configuration for the CGI execution environment.
+ * @param log Pointer to the `Logger` object for logging server activities
+ *        and CGI-specific events.
+ * @param client_data Pointer to the `ClientData` structure containing
+ *        information about the connected client.
+ * @param request Reference to the `s_request` structure that encapsulates
+ *        request data, including headers, body, and method details.
+ * @param fd The file descriptor associated with the client, used for
+ *        sending and receiving data.
+ *
+ * @note The constructor logs the initialization of the CGI handler at the
+ *       DEBUG level to indicate successful setup.
+ */
 HttpCGIHandler::HttpCGIHandler(const LocationConfig *location,
 							   const Logger *log,
 							   ClientData* client_data,
@@ -158,6 +183,9 @@ bool HttpCGIHandler::cgi_execute() {
 		return (false);
 	}
 	_cgi_env = cgi_environment();
+	if (!_request.sanity) {
+		return (false);
+	}
 	try {
 		pid_t pid = fork();
 		if (pid == -1) {
@@ -273,11 +301,9 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 			break;
 		}
 		if (pfd.revents & POLLIN) {
-			bytes_read = read(fd[0], buffer, sizeof(buffer) - 1);
-
+			bytes_read = read(fd[0], buffer, sizeof(buffer));
 			if (bytes_read > 0) {
-				buffer[bytes_read] = '\0';
-				response += buffer;
+				response.append(buffer, bytes_read);
 			} else if (bytes_read == 0) {
 				break;
 			} else {
@@ -297,11 +323,40 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 				  "CGI process was kill due to a timeout error.");
 	}
 	waitpid(pid, NULL, 0);
-
 	_response_data.content = response;
 }
 
-
+/**
+ * @brief Prepares the CGI environment variables for the CGI process.
+ *
+ * This method builds a set of environment variables as required by the CGI
+ * specification. It assembles these environment variables into a `std::vector`
+ * of `char*`, formatted as expected by the `execve` system call. Each variable
+ * is allocated dynamically to ensure compatibility with the `execve` requirements.
+ *
+ * @details
+ * Steps of operation:
+ * - Fills a `std::vector<std::string>` with CGI-required environment variables,
+ *   setting values based on the current request properties:
+ *   - `GATEWAY_INTERFACE`: CGI version (hardcoded as "CGI/1.1").
+ *   - `SERVER_PROTOCOL`: HTTP version (hardcoded as "HTTP/1.1").
+ *   - `REQUEST_METHOD`: HTTP method of the request (e.g., GET, POST).
+ *   - `QUERY_STRING`: Any query string from the URL.
+ *   - `CONTENT_TYPE`: MIME type of the request content, if available.
+ *   - `CONTENT_LENGTH`: Length of the request body, if provided.
+ *   - `PATH_INFO`: Path info derived from the request URL.
+ *   - `SCRIPT_NAME`: Name of the CGI script.
+ *   - `SERVER_NAME`: Server name as specified in the configuration.
+ *   - `SERVER_PORT`: Server port handling the request.
+ * - Converts each environment variable to `char*` using `strdup` and stores
+ *   pointers in a `std::vector<char*>` for compatibility with `execve`.
+ * - Appends a final `NULL` pointer to signal the end of the environment list.
+ * - Returns the vector of environment variables, leaving responsibility for
+ *   freeing memory to the caller.
+ *
+ * @return A `std::vector<char*>` containing environment variables as `char*`
+ *         strings. The caller is responsible for freeing each element.
+ */
 std::vector<char*> HttpCGIHandler::cgi_environment() {
 	std::vector<std::string> env_vars;
 
@@ -315,21 +370,61 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	env_vars.push_back("SCRIPT_NAME=" + _request.script);
 	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
 	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
-
 	std::vector<char*> env_ptrs;
-	for (size_t i = 0; i < env_vars.size(); ++i) {
-		env_ptrs.push_back(strdup(env_vars[i].c_str()));
+	try {
+		for (size_t i = 0; i < env_vars.size(); ++i) {
+			char* env_entry = strdup(env_vars[i].c_str());
+			if (!env_entry) {
+				for (size_t j = 0; j < env_ptrs.size(); ++j) {
+					free(env_ptrs[j]);
+				}
+				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+								"Error Allocating env vars.");
+			}
+			env_ptrs.push_back(env_entry);
+		}
+		env_ptrs.push_back(NULL);
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Failed to set up CGI environment variables.: " << e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                detail.str());
 	}
-	env_ptrs.push_back(NULL);
 	return (env_ptrs);
 }
 
+/**
+ * @brief Frees the dynamically allocated memory in the CGI environment vector.
+ *
+ * This method iterates through `_cgi_env`, freeing each dynamically allocated
+ * `char*` entry created by `strdup` in `cgi_environment`. It skips the last
+ * element (NULL pointer) to avoid undefined behavior.
+ *
+ * @details
+ * - Assumes that `_cgi_env` was populated by `cgi_environment`, which uses
+ *   `strdup` to create each `char*` entry.
+ * - Frees each `char*` in `_cgi_env` except for the last NULL pointer.
+ */
 void HttpCGIHandler::free_cgi_env() {
 	for (size_t i = 0; i < _cgi_env.size() - 1; ++i) {
 		free(_cgi_env[i]);
 	}
 }
 
+/**
+ * @brief Sends the HTTP response to the client, using the specified body.
+ *
+ * This method prepares the response to be sent to the client by calling
+ * `sender` with the body content. It is designed to handle the final response
+ * preparation and delivery, making it easily callable after processing the
+ * CGI response. Due to CGI will return its own headers, this method is
+ * overload to avoid extra checks here, and base one.
+ *
+ * @param body The content to be sent as the HTTP response body.
+ * @param path The path associated with the response (unused here).
+ * @return true if the response was successfully sent.
+ * @return false if an error occurred in sending the response.
+ */
 bool HttpCGIHandler::send_response(const std::string &body, const std::string &path) {
 	UNUSED(path);
 	return(sender(body));
