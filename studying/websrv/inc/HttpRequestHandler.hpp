@@ -116,6 +116,7 @@ class HttpRequestHandler {
 		std::map<std::string, std::string>  _all_headers;
 		std::string             _range;
 		bool					_active;
+		int                     _factory;
 
 		void read_request_header();
 		void parse_method_and_path();

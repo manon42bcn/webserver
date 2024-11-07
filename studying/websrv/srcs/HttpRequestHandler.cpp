@@ -53,6 +53,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	}
 	_active = true;
 	_chunks = false;
+	_factory = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
@@ -330,6 +331,9 @@ void HttpRequestHandler::load_header_data() {
 		}
 	}
 	_range = get_header_value(_header, "range:", "\r\n");
+	if (!_range.empty()) {
+		_factory++;
+	}
 	std::string keep = get_header_value(_header, "connection:", "\r\n");
 	if (keep == "keep-alive") {
 		_client_data->keep_active();
@@ -409,6 +413,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_script = eval_path.substr(dot_pos + 1);
 		_normalized_path = eval_path.substr(0, dot_pos);
 		_cgi = true;
+		_factory++;
 		return ;
 	}
 
@@ -434,6 +439,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_script = cgi_data->script;
 		_path_info = _path.substr(saved_key.length());
 		_cgi = true;
+		_factory++;
 	}
 }
 
@@ -783,14 +789,16 @@ void HttpRequestHandler::handle_request() {
 										  _boundary, _path_type, _query_string, _cgi,
 	                                      _script, _path_info, _chunks, _all_headers,
 										  _range);
+	if (_factory == 0) {
+		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		response.handle_request();
+		return ;
+	}
 	if (_cgi) {
 		HttpCGIHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
-	} else if (!_range.empty()) {
+	} else if (!_range.empty()){
 		HttpRangeHandler response(_location, _log, _client_data, request_wrapper, _fd);
-		response.handle_request();
-	} else {
-		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
 	}
 }
