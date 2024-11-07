@@ -1,14 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponseHandlerB.hpp                           :+:      :+:    :+:   */
+/*   WebServerResponseHandler.hpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/06 08:52:35 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 16:57:57 by mporras-         ###   ########.fr       */
+/*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/07 17:18:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #ifndef _WEBSERVER_RESPONSE_HANDLER_
 #define _WEBSERVER_RESPONSE_HANDLER_
@@ -51,8 +53,6 @@ struct s_content {
 	std::string         mime;
 	e_http_sts          http_status;
 	std::string         header;
-	s_content() {};
-	s_content(bool s, std::string c): status(s), content(c) {};
 };
 
 struct s_multi_part {

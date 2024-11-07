@@ -1,14 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponseHandler.cpp                            :+:      :+:    :+:   */
+/*   WebServerResponseHandler.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 09:48:26 by mporras-         ###   ########.fr       */
+/*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/07 17:18:17 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include "WebServerResponseHandler.hpp"
 
@@ -44,18 +46,16 @@ bool WsResponseHandler::handle_request() {
 			_log->log(LOG_DEBUG, RSP_NAME,
 					  "Handle POST request.");
 			return 	(handle_post());
-			break;
 		case METHOD_DELETE:
 			_log->log(LOG_DEBUG, RSP_NAME,
 					  "Handle DELETE request.");
-			handle_delete();
+			return (handle_delete());
 			break;
 		default:
 			turn_off_sanity(HTTP_NOT_IMPLEMENTED,
 							"Method not allowed.");
-			send_error_response();
+			return (send_error_response());
 	}
-	return (true);
 }
 
 bool WsResponseHandler::handle_get() {
@@ -68,11 +68,10 @@ bool WsResponseHandler::handle_get() {
 		_log->log(LOG_DEBUG, RSP_NAME,
 				  "File content will be sent.");
 		return (send_response(_response_data.content, _request.normalized_path));
-	} else {
-		_log->log(LOG_ERROR, RSP_NAME,
-				  "Get will send a error due to content load fails.");
-		return (send_error_response());
 	}
+	_log->log(LOG_DEBUG, RSP_NAME,
+			  "Get will send a error due to content load fails.");
+	return (send_error_response());
 }
 
 void WsResponseHandler::get_file_content(std::string& path) {
