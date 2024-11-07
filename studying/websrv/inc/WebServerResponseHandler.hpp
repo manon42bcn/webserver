@@ -94,7 +94,7 @@ public:
 					  s_request& request,
 					  int fd);
 
-	virtual ~WsResponseHandler() = 0;
+	virtual ~WsResponseHandler();
 	virtual void get_file_content(int pid, int (&fd)[2]) = 0;
 	virtual void get_file_content(std::string& path);
 	virtual bool handle_request();
