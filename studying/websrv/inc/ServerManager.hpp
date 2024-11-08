@@ -37,6 +37,7 @@ class ServerManager {
 		const Logger*			        _log;
 		WebServerCache*					_cache;
 		bool                            _active;
+		bool                            _healthy;
 
 public:
 		typedef std::map<int, ClientData*>::iterator t_client_it;
@@ -44,6 +45,7 @@ public:
 					  const Logger* logger,
 					  WebServerCache* cache);
 	    ~ServerManager();
+		void init_server();
 	    void add_server(int port, ServerConfig& config);
 		void run();
 		void cleanup_invalid_fds();
@@ -53,6 +55,8 @@ public:
 	    bool process_request(size_t& poll_fd_index);
 	    void turn_off_server();
 		void timeout_clients();
+		void clear_clients();
+		void clear_servers();
 	    class ServerBuildError : public std::exception {
 			public:
 			    virtual const char *what() const throw();

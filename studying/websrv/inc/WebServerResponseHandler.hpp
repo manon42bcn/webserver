@@ -101,11 +101,9 @@ public:
 	virtual bool handle_get();
 	virtual bool handle_post();
 	virtual bool validate_payload();
+	virtual std::string header(int code, size_t content_size, std::string mime);
 	bool handle_delete();
-	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-//	void parse_multipart_data();
-//	void validate_payload();
 	bool send_error_response();
 	bool sender(const std::string& body);
 	void turn_off_sanity(e_http_sts status, std::string detail);

@@ -345,6 +345,7 @@ void HttpRequestHandler::load_header_data() {
 	} else {
 		_client_data->deactivate();
 	}
+	_cookie = get_header_value(_header, "cookie", "\r\n");
 }
 
 /**
@@ -793,7 +794,7 @@ void HttpRequestHandler::handle_request() {
 	                                      _status, _content_length, _content_type,
 										  _boundary, _path_type, _query_string, _cgi,
 	                                      _script, _path_info, _chunks, _all_headers,
-										  _range);
+										  _range, _cookie);
 	if (_factory == 0) {
 		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd, _cache);
 		response.handle_request();
@@ -802,12 +803,16 @@ void HttpRequestHandler::handle_request() {
 	if (_cgi) {
 		HttpCGIHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
+		_client_data->deactivate();
+		return ;
 	} else if (!_range.empty()){
 		HttpRangeHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
+		return ;
 	} else if (!_boundary.empty()){
 		HttpMultipartHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
+		return ;
 	}
 }
 

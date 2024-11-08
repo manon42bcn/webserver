@@ -19,12 +19,12 @@ WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 									 ClientData* client_data,
 									 s_request& request,
 									 int fd):
-_fd(fd),
-_location(location),
-_log(log),
-_client_data(client_data),
-_request(request) {
-
+									_fd(fd),
+									_location(location),
+									_log(log),
+									_client_data(client_data),
+									_request(request)
+{
 	if (_log == NULL)
 		throw Logger::NoLoggerPointer();
 }
@@ -126,14 +126,14 @@ void WsResponseHandler::get_file_content(std::string& path) {
 std::string WsResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
 	std::ostringstream connection;
-	if (_client_data->keep_alive()) {
+	if (_client_data->keep_alive() && _request.sanity) {
 		connection << "Connection: keep-alive\r\n"
 				   << "Keep-Alive: timeout=" << TIMEOUT_CLIENT << "\r\n";
 	} else {
 		connection << "Connection: close\r\n";
 	}
 	std::ostringstream ranged;
-	if (_response_data.ranged) {
+	if (_response_data.ranged && _request.sanity) {
 		ranged  << "Content-Range: bytes " << _response_data.start << "-" << _response_data.end
 				<< "/" << _response_data.filesize << "\r\n"
 				<< "Accept-Ranges: bytes\r\n";

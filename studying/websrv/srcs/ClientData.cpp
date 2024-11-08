@@ -28,12 +28,18 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 }
 
 ClientData::~ClientData() {
-	if (_client_fd.fd >= 0) {
-		close(_client_fd.fd);
+	try {
+		if (_client_fd.fd >= 0) {
+			close(_client_fd.fd);
+		}
+		_log->log(LOG_DEBUG, CD_MODULE,
+		          "Client Data Resources clean up.");
+	} catch (std::exception& e) {
+		std::ostringstream details;
+		details << "Error closing ClientData FD: " << e.what();
+		_log->log(LOG_ERROR, CD_MODULE,
+				  details.str());
 	}
-	_log->log(LOG_DEBUG, CD_MODULE,
-	          "Client Data Resources clean up.");
-	_log = NULL;
 }
 
 bool ClientData::chronos() {

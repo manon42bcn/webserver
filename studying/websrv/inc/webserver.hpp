@@ -128,19 +128,20 @@ struct s_request {
 	bool&        chunks;
 	std::map<std::string, std::string>& all_headers;
 	std::string& range;
+	std::string& cookie;
 	s_request(std::string& b, e_methods& m, std::string& p,
 	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
 	          size_t& cl, std::string& ct, std::string& bd,
 			  e_path_type& pt, std::string& qy, bool& cgi,
 	          std::string& sc, std::string& pi, bool& cks,
 			  std::map<std::string, std::string>& ah,
-			  std::string& rng):
+			  std::string& rng, std::string& ck):
 			  body(b), method(m), path(p), normalized_path(np),
               access(a), sanity(s), status(sts),
 			  content_length(cl), content_type(ct), boundary(bd),
 			  path_type(pt), query(qy), cgi(cgi),
 			  script(sc), path_info(pi), chunks(cks),
-			  all_headers(ah), range(rng) {};
+			  all_headers(ah), range(rng), cookie(ck) {};
 };
 
 typedef struct s_cgi {

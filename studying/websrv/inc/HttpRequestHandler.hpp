@@ -120,6 +120,7 @@ class HttpRequestHandler {
 		std::string             _range;
 		bool					_active;
 		int                     _factory;
+		std::string             _cookie;
 
 		void read_request_header();
 		void parse_method_and_path();

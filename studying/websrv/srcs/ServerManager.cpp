@@ -24,28 +24,36 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
-	_poll_fds.reserve(100);
+	_poll_fds.reserve(1000);
 	_log->log(LOG_DEBUG, SM_NAME,
 			  "Server Manager Instance init.");
+	std::ostringstream detail;
 	try {
 		for (size_t i = 0; i < configs.size(); ++i) {
 			add_server(configs[i].port, configs[i]);
 		}
 	} catch (const SocketHandler::SocketCreationError &e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerSocketHandledError();
+		detail << "Socket Creation Error: " << e.what();
+		_log->log(LOG_ERROR, SM_NAME,
+				  detail.str());
+		throw WebServerException(detail.str());
 	} catch (const SocketHandler::SocketLinkingError &e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerSocketHandledError();
+		detail << "Socket Linking Error: " << e.what();
+		_log->log(LOG_ERROR, SM_NAME,
+		          detail.str());
+		throw WebServerException(detail.str());
 	} catch (const SocketHandler::SocketListeningError &e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerSocketHandledError();
+		_log->log(LOG_ERROR, SM_NAME,
+		          detail.str());
+		throw WebServerException(detail.str());
 	} catch (const SocketHandler::SocketNonBlockingError &e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerSocketHandledError();
+		_log->log(LOG_ERROR, SM_NAME,
+		          detail.str());
+		throw WebServerException(detail.str());
 	} catch (const std::exception& e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw ServerManager::ServerSocketNotHandledError();
+		_log->log(LOG_ERROR, SM_NAME,
+		          detail.str());
+		throw WebServerException(detail.str());
 	}
 
 	_active = true;
@@ -54,59 +62,72 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 	_log->status(SM_NAME, "ServerManager Instance Ready.");
 }
 
-ServerManager::~ServerManager() {
+void ServerManager::clear_clients() {
 	if (!_clients_map.empty()) {
-		_log->log(LOG_DEBUG, SM_NAME,
-		          "Cleaning remaining clients.");
-		for (std::map<int, ClientData*>::iterator it = _clients_map.begin(); it != _clients_map.end(); it++){
-			it->second->close_fd();
-			delete it->second;
-			_clients_map.erase(it);
+		try {
+			for (t_client_it it = _clients_map.begin(); it != _clients_map.end(); it++) {
+				ClientData* data = it->second;
+				_clients_map.erase(it);
+				delete data;
+			}
+			_log->log(LOG_DEBUG, SM_NAME,
+			          "ClientData Cleared.");
+		} catch (std::exception &e) {
+			std::ostringstream details;
+			details << "Error closing Clearing Client Data: " << e.what();
+			_log->log(LOG_ERROR, SM_NAME,
+			          details.str());
 		}
 	}
-	_log->log(LOG_DEBUG, SM_NAME,
-	          "Cleaning sockets servers.");
-	for (size_t i = 0; i < _servers.size(); i++) {
-		delete _servers[i];
-	}
-	_log->log(LOG_DEBUG, SM_NAME,
-	          "Erasing from _polls_fds vector.");
-	for (size_t i = 0; i < _poll_fds.size(); i++) {
-		_poll_fds.erase(_poll_fds.begin() + (int)i);
-	}
+}
+
+ServerManager::~ServerManager() {
+	clear_clients();
+	clear_servers();
 	_log->log(LOG_DEBUG, SM_NAME,
 	          "Server Manager Resources Clean Up.");
 }
 
-void ServerManager::add_server(int port, ServerConfig& config) {
+void ServerManager::clear_servers() {
 	try {
-		SocketHandler* server = new SocketHandler(port, config, _log);
-		_servers.push_back(server);
-		_log->log(LOG_DEBUG, SM_NAME,
-		          "SocketHandler instance created and added to _servers.");
-
-		if (!add_server_to_poll(server->get_socket_fd())) {
-			_log->log(LOG_ERROR, SM_NAME, "Failed to add server to poll list.");
-			_servers.pop_back();
-			delete (server);
+		for (size_t i = 0; i < _servers.size(); i++) {
+			delete _servers[i];
 		}
-	} catch (const SocketHandler::SocketCreationError &e) {
-		_log->log(LOG_ERROR, SM_NAME, e.what());
-		throw SocketHandler::SocketCreationError();
-	} catch (const std::exception& e) {
-		_log->log(LOG_ERROR, SM_NAME, "Error creating or adding SocketHandler: " + std::string(e.what()));
-		throw ServerManager::ServerBuildError();
+		_log->log(LOG_DEBUG, SM_NAME,
+				  "Servers were cleared.");
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Error deleting Servers: " << e.what();
+		_log->log(LOG_ERROR, SM_NAME,
+				  detail.str());
+	}
+}
+
+void ServerManager::add_server(int port, ServerConfig& config) {
+
+	SocketHandler* server = new SocketHandler(port, config, _log);
+	_servers.push_back(server);
+	_log->log(LOG_DEBUG, SM_NAME,
+	          "SocketHandler instance created and added to _servers.");
+
+	if (!add_server_to_poll(server->get_socket_fd())) {
+		_log->log(LOG_ERROR, SM_NAME,
+				  "Failed to add server to poll list.");
+		_servers.pop_back();
+		delete (server);
 	}
 }
 
 bool ServerManager::add_server_to_poll(int server_fd) {
 	if (server_fd < 0) {
-    _log->log(LOG_ERROR, SM_NAME, "Invalid server file descriptor.");
-    return (false);
+        _log->log(LOG_ERROR, SM_NAME,
+			  "Invalid server file descriptor.");
+        return (false);
     }
 	for (size_t i = 0; i < _poll_fds.size(); ++i) {
 		if (_poll_fds[i].fd == server_fd) {
-		  _log->log(LOG_WARNING, SM_NAME, "Server fd already in _poll_fds.");
+		  _log->log(LOG_WARNING, SM_NAME,
+					"Server fd already in _poll_fds.");
 		  return (false);
 		}
 	}
@@ -159,46 +180,60 @@ void ServerManager::timeout_clients() {
 
 void ServerManager::run() {
 	_log->log(LOG_DEBUG, SM_NAME, "Event loop started.");
-
-	while (_active) {
-		timeout_clients();
-		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
-		if (poll_count < 0 && _active) {
-			if (errno == EINTR) {
-				_log->log(LOG_WARNING, SM_NAME,
-						  "Poll interrupted by a signal, retrying.");
-				continue ;
-			} else if (errno == EBADF) {
-				_log->log(LOG_WARNING, SM_NAME,
-						  "Poll found a bad file descriptor.");
-				cleanup_invalid_fds();
-				continue ;
-			} else {
-				_log->log(LOG_ERROR, RSP_NAME,
-						  "Fatal error. Errno : " + int_to_string(errno));
-				throw WebServerException("Fatal error at Poll Process. Shutting Down Server.");
+	_healthy = true;
+	try {
+		while (_active) {
+			timeout_clients();
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
+			if (poll_count < 0 && _active) {
+				if (errno == EINTR) {
+					_log->log(LOG_WARNING, SM_NAME,
+					          "Poll interrupted by a signal, retrying.");
+					continue ;
+				} else if (errno == EBADF) {
+					_log->log(LOG_WARNING, SM_NAME,
+					          "Poll found a bad file descriptor.");
+					cleanup_invalid_fds();
+					continue ;
+				} else {
+					_log->log(LOG_ERROR, RSP_NAME,
+					          "Fatal error. Errno : " + int_to_string(errno));
+					_healthy = false;
+					break;
+				}
 			}
-		}
-		for (size_t i = 0; i < _poll_fds.size(); ++i) {
-			if (_poll_fds[i].revents & POLLIN) {
-				bool is_server = false;
-				SocketHandler* server = NULL;
-				// Check if the descriptor corresponds to a server socket
-				for (size_t s = 0; s < _servers.size(); ++s) {
-					if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
-						_log->log(LOG_DEBUG, SM_NAME, "fd belongs to a server.");
-						is_server = true;
-						server = _servers[s];
-						break;
+			for (size_t i = 0; i < _poll_fds.size(); ++i) {
+				if (_poll_fds[i].revents & POLLIN) {
+					bool is_server = false;
+					SocketHandler* server = NULL;
+					// Check if the descriptor corresponds to a server socket
+					for (size_t s = 0; s < _servers.size(); ++s) {
+						if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
+							_log->log(LOG_DEBUG, SM_NAME, "fd belongs to a server.");
+							is_server = true;
+							server = _servers[s];
+							break;
+						}
+					}
+					if (is_server) {
+						new_client(server);
+					} else {
+						process_request(i);
 					}
 				}
-				if (is_server) {
-					new_client(server);
-				} else {
-					process_request(i);
-				}
 			}
 		}
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Fatal Error: " << e.what();
+		_log->log(LOG_ERROR, SM_NAME,
+				  detail.str());
+		throw WebServerException(detail.str());
+	}
+	if (!_healthy) {
+		_log->log(LOG_ERROR, SM_NAME,
+				  "Unrecoverable Error. Check Log for details.");
+		throw WebServerException("Unrecoverable Error. Check Log for details.");
 	}
 }
 

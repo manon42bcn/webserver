@@ -73,14 +73,22 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 }
 
 SocketHandler::~SocketHandler() {
-	if (_socket_fd >= 0) {
-		close(_socket_fd);
-		_log->log(LOG_DEBUG, SH_NAME,
-		          "Socket closed.");
-	}
+	close_socket();
 	_log->log(LOG_DEBUG, SH_NAME,
 	          "SockedHandler resources clean up.");
-	_log = NULL;
+}
+
+void SocketHandler::close_socket() {
+	try {
+		if (_socket_fd >= 0) {
+			close(_socket_fd);
+		}
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Error closing socket fd.: " << e.what();
+		_log->log(LOG_ERROR, SH_NAME,
+				  detail.str());
+	}
 }
 
 std::string SocketHandler::get_port() const {

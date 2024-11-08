@@ -42,6 +42,7 @@ class HttpCGIHandler : public WsResponseHandler {
 		std::vector<char*>          _cgi_env;
 
 		bool cgi_execute();
+		bool cgi_headers();
 		void get_file_content(int pid, int (&fd)[2]);
 		std::vector<char*> cgi_environment();
 		void free_cgi_env();
@@ -54,7 +55,6 @@ class HttpCGIHandler : public WsResponseHandler {
 							int fd);
 		~HttpCGIHandler();
 		bool handle_request();
-
 };
 
 #endif

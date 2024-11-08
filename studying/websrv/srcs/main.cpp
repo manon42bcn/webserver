@@ -114,8 +114,8 @@ void signal_handler(int sig){
 
 int main() {
 //	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
-	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
+	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -167,6 +167,8 @@ int main() {
 	} catch (Logger::NoLoggerPointer& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	} catch (ServerManager::ServerBuildError& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (WebServerException& e){
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	} catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
