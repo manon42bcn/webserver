@@ -21,6 +21,7 @@
 
 # define CD_MODULE "ClientData"
 # define TIMEOUT_LIMIT 10
+# define TIMEOUT_CLIENT 2000
 
 //TODO READ ABOUT vsnprintf
 class ClientData {
@@ -28,6 +29,7 @@ class ClientData {
 		const SocketHandler*    _server;
 		const Logger*           _log;
 	    bool                    _active;
+		bool                    _alive;
 		struct pollfd           _client_fd;
 	    std::time_t             _timestamp;
 

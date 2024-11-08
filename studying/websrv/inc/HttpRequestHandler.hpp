@@ -21,6 +21,7 @@
 #include "HttpResponseHandler.hpp"
 #include "HttpCGIHandler.hpp"
 #include "HttpRangeHandler.hpp"
+#include "HttpMultipartHandler.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>

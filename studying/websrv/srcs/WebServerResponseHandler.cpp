@@ -227,7 +227,7 @@ bool WsResponseHandler::sender(const std::string& body) {
 			}
 			total_sent += sent_bytes;
 		}
-		_log->log(LOG_DEBUG, RSP_NAME, "Response was sent.");
+		_log->log(LOG_DEBUG, RSP_NAME, "Response was sent.\n" + response);
 		return (true);
 	} catch(const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME, e.what());
@@ -235,137 +235,82 @@ bool WsResponseHandler::sender(const std::string& body) {
 	}
 }
 
-void WsResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
-	_log->log(LOG_ERROR, RSP_NAME, detail);
-	_request.sanity = false;
-	_request.status = status;
-	_response_data.status = false;
-}
-
-void WsResponseHandler::get_post_content(){
+bool WsResponseHandler::validate_payload(){
 	if (!_request.sanity) {
-		return;
+		return (false);
 	}
 	if (_request.content_length == 0) {
 		turn_off_sanity(HTTP_LENGTH_REQUIRED,
 						"Content-length required at POST request.");
-		return;
+		return (false);
 	}
 	if (_request.content_type.empty()) {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 						"Content-Type required at POST request.");
-		return;
+		return (false);
 	}
 	if (_request.body.empty()) {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 						"No body request required at POST request.");
-		return;
+		return (false);
 	} else {
 		if (_request.body.length() != _request.content_length) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 							"Received content-length and content size does not match.");
-			return ;
+			return (false);
 		}
 	}
-	if (!_request.boundary.empty()) {
-		parse_multipart_data();
-	} else {
-		_multi_content.push_back(s_multi_part(_request.normalized_path, CT_FILE, _request.body));
+	if (black_list_extension(_request.normalized_path)) {
+		turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
+		                "File extension is on black-list.");
+		return (false);
 	}
+	return (true);
 }
 
-void WsResponseHandler::parse_multipart_data() {
-	size_t part_start = _request.body.find(_request.boundary);
-	while (part_start != std::string::npos) {
-		part_start += _request.boundary.length() + 2;
-		size_t headers_end = _request.body.find("\r\n\r\n", part_start);
-		if (headers_end != std::string::npos) {
-			_log->log(LOG_DEBUG, RSP_NAME,
-					  "Looking for Post multi-part related data.");
-			std::string content_info = _request.body.substr(part_start, headers_end - part_start);
-			size_t file_data_start = headers_end + 4;
-			size_t next_boundary = _request.body.find(_request.boundary, file_data_start);
-			std::string content_data = _request.body.substr(file_data_start, next_boundary - file_data_start);
-			if (content_info.empty() || content_data.empty()) {
-				turn_off_sanity(HTTP_BAD_REQUEST,
-								"Multi-part body request is incomplete.");
-				return ;
-			}
-			std::string content_disposition = get_header_value(content_info, "content-disposition:", "\r\n");
-			s_multi_part part_data(get_header_value(content_info, "content-disposition:", ";"),
-								   trim(get_header_value(content_disposition, "name", ";"), "\""),
-								   trim(get_header_value(content_disposition, "filename", ";"), "\""),
-								   get_header_value(content_info, "content-type:", "\r\n"),
-								   content_data);
-			if (part_data.filename.empty()) {
-				part_data.data_type = CT_UNKNOWN;
-			}
-			_multi_content.push_back(part_data);
-			part_start = next_boundary;
-		} else {
-			_log->log(LOG_DEBUG, RSP_NAME,
-					  "End of multi-part body request.");
-			break;
-		}
-	}
-}
-
-void WsResponseHandler::validate_payload() {
-	if (!_request.sanity) {
-		return;
-	}
-	for (size_t i = 0; i < _multi_content.size(); i++) {
-		if (!_multi_content[i].filename.empty() && black_list_extension(_multi_content[i].filename)) {
-			turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
-							"File extension is on black-list.");
-			return ;
-		}
-	}
-}
-
-// Validation of access privileges will be done before.
 bool WsResponseHandler::handle_post() {
 	if (_location->loc_access < ACCESS_WRITE) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 						"No post data available.");
+		return (send_error_response());
 	}
-	get_post_content();
 	validate_payload();
 	_client_data->chronos_reset();
 	if (!_request.sanity) {
-		send_error_response();
+		return (send_error_response());
 	}
-
-	std::string save_path;
-	for (size_t i = 0; i < _multi_content.size(); i++) {
-		if (_multi_content[i].data_type == CT_FILE) {
-			save_path = _multi_content[1].filename;
-			if (!_request.boundary.empty()) {
-				save_path = _request.normalized_path + _multi_content[i].filename;
-			}
-			_log->log(LOG_DEBUG, RSP_NAME, "path: " + save_path);
-			std::ifstream check_file(save_path.c_str());
-			if (check_file.good()) {
-				turn_off_sanity(HTTP_CONFLICT,
-								"File already exists and cannot be overwritten.");
-				check_file.close();
-				return (send_error_response());
-			}
-			std::ofstream file(save_path.c_str());
-			if (!file.is_open()) {
-				turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-								"Unable to open file to write.");
-				return (send_error_response());
-			}
-			file << _multi_content[i].data;
-			file.close();
-			_request.status = HTTP_CREATED;
-			_log->log(LOG_DEBUG, RSP_NAME,
-					  "File Data Recieved and saved.");
-		}
+	if (!save_file(_request.normalized_path, _request.body)) {
+		return (send_error_response());
 	}
 	send_response("Created", _request.normalized_path);
 	return (true);
+}
+
+bool WsResponseHandler::save_file(const std::string &save_path, const std::string& content) {
+	try {
+		std::ifstream check_file(save_path.c_str());
+		if (check_file.good()) {
+			turn_off_sanity(HTTP_CONFLICT,
+			                "File already exists and cannot be overwritten.");
+			check_file.close();
+			return (false);
+		}
+		std::ofstream file(save_path.c_str());
+		if (!file.is_open()) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Unable to open file to write.");
+			return (false);
+		}
+		file << content;
+		file.close();
+		return (true);
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unable to open file to write due to unexpected error: " << e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                detail.str());
+		return (false);
+	}
 }
 
 bool WsResponseHandler::handle_delete() {
@@ -396,4 +341,9 @@ bool WsResponseHandler::handle_delete() {
 	return (true);
 }
 
-
+void WsResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
+	_log->log(LOG_ERROR, RSP_NAME, detail);
+	_request.sanity = false;
+	_request.status = status;
+	_response_data.status = false;
+}

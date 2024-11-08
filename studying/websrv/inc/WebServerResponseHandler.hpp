@@ -75,7 +75,6 @@ struct s_multi_part {
 class WsResponseHandler {
 private:
 	int                     	_fd;
-	std::vector<s_multi_part>	_multi_content;
 	std::string            		_content;
 	std::vector<std::string>    _response_header;
 
@@ -100,16 +99,17 @@ public:
 	virtual bool handle_request();
 	virtual bool send_response(const std::string& body, const std::string& path);
 	virtual bool handle_get();
-	bool handle_post();
+	virtual bool handle_post();
+	virtual bool validate_payload();
 	bool handle_delete();
 	std::string header(int code, size_t content_size, std::string mime);
 	std::string default_plain_error();
-	void get_post_content();
-	void parse_multipart_data();
-	void validate_payload();
+//	void parse_multipart_data();
+//	void validate_payload();
 	bool send_error_response();
 	bool sender(const std::string& body);
 	void turn_off_sanity(e_http_sts status, std::string detail);
+	bool save_file(const std::string& save_path, const std::string& content);
 // dirty implementation
 
 };

@@ -17,6 +17,7 @@ ClientData::ClientData(const SocketHandler* server, const Logger* log, int fd):
 	_server(server),
 	_log(log),
     _active(false),
+	_alive(true),
 	_client_fd() {
 	if (_log == NULL){
 		throw Logger::NoLoggerPointer();
@@ -37,10 +38,10 @@ ClientData::~ClientData() {
 
 bool ClientData::chronos() {
 	std::time_t now = std::time(NULL);
-	if (now - _timestamp > TIMEOUT_LIMIT) {
-		_active = false;
+	if ((now - _timestamp) > TIMEOUT_LIMIT) {
+		_alive = false;
 	}
-	return (_active);
+	return (_alive);
 }
 
 void ClientData::chronos_reset() {

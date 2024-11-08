@@ -68,6 +68,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_dat
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
 	size_t i = 0;
+	_client_data->chronos_reset();
 	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
@@ -316,6 +317,7 @@ void HttpRequestHandler::load_header_data() {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
 			}
+			_factory++;
 			size_t end_type = _content_type.find(';');
 			if (end_type != std::string::npos) {
 				_content_type = _content_type.substr(0, end_type);
@@ -799,6 +801,9 @@ void HttpRequestHandler::handle_request() {
 		response.handle_request();
 	} else if (!_range.empty()){
 		HttpRangeHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		response.handle_request();
+	} else if (!_boundary.empty()){
+		HttpMultipartHandler response(_location, _log, _client_data, request_wrapper, _fd);
 		response.handle_request();
 	}
 }
