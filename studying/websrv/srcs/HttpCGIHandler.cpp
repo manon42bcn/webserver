@@ -12,6 +12,20 @@
 
 #include "HttpCGIHandler.hpp"
 
+/**
+ * @brief Constructs an `HttpCGIHandler` for processing CGI requests.
+ *
+ * Initializes the CGI handler with the given location configuration, logger,
+ * client data, request details, and file descriptor. It logs the initialization
+ * process and ensures that critical pointers are valid.
+ *
+ * @param location Pointer to the `LocationConfig` containing server configuration.
+ * @param log Pointer to the `Logger` instance for logging activities.
+ * @param client_data Pointer to `ClientData` containing client connection details.
+ * @param request Reference to the `s_request` structure with the request information.
+ * @param fd File descriptor associated with the client connection.
+ *
+ */
 HttpCGIHandler::HttpCGIHandler(const LocationConfig *location,
 							   const Logger *log,
 							   ClientData* client_data,
@@ -24,6 +38,41 @@ HttpCGIHandler::HttpCGIHandler(const LocationConfig *location,
 			  "Cgi Handler init.");
 }
 
+/**
+ * @brief Destructor for `HttpCGIHandler`, responsible for cleaning up resources.
+ *
+ * This destructor frees the allocated CGI environment variables and logs the cleanup process.
+ * It ensures that no exceptions escape the destructor to maintain exception safety.
+ */
+HttpCGIHandler::~HttpCGIHandler () {
+	try {
+		free_cgi_env();
+		_log->log(LOG_DEBUG, CGI_NAME,
+		          "CGI envs freed.");
+	} catch (std::exception& e) {
+		std::ostringstream details;
+		details << "Error during CGI Destructor: " << e.what();
+		_log->log(LOG_WARNING, CGI_NAME,
+		          details.str());
+	}
+}
+
+
+/**
+ * @brief Handles the CGI request by executing the CGI script and sending the response.
+ *
+ * This method executes the CGI script, processes its output, and constructs an HTTP response
+ * to be sent back to the client. It performs validation on the CGI output, ensuring that
+ * necessary headers like `Content-Type` are present.
+ *
+ * @return `true` if the response is successfully sent; `false` if an error occurs.
+ *
+ * @details
+ * - **CGI Execution**: Calls `cgi_execute()` to run the CGI script.
+ * - **Response Validation**: Checks if the CGI script produced any output.
+ * - **Header Parsing**: Extracts headers and status code from the CGI response.
+ * - **Error Handling**: Sends appropriate error responses if validation fails.
+ */
 bool HttpCGIHandler::handle_request() {
 	if (!cgi_execute()) {
 		send_error_response();
@@ -67,11 +116,12 @@ bool HttpCGIHandler::handle_request() {
 				return (false);
 			}
 		}
+		_response_data.content = _response_data.content.substr(header_pos + 1);
+		_headers += "Content-Length: " + int_to_string((int)_response_data.content.length()) + "\r\n";
 		std::string keep = get_header_value(_headers, "connection:", "\n");
 		if (keep.empty()) {
 			_headers += "Connection: close\r\n";
 		}
-		_response_data.content = _response_data.content.substr(header_pos + 1);
 		send_response(_response_data.content, _request.normalized_path);
 		return (true);
 	} else {
@@ -82,19 +132,24 @@ bool HttpCGIHandler::handle_request() {
 	}
 }
 
-HttpCGIHandler::~HttpCGIHandler () {
-	try {
-		free_cgi_env();
-		_log->log(LOG_DEBUG, CGI_NAME,
-				  "CGI envs freed.");
-	} catch (std::exception& e) {
-		std::ostringstream details;
-		details << "Error during CGI Destructor: " << e.what();
-		_log->log(LOG_WARNING, CGI_NAME,
-				  details.str());
-	}
-}
-
+/**
+ * @brief Executes the CGI script by setting up pipes and handling the process execution.
+ *
+ * This method creates input and output pipes for communication with the CGI script,
+ * forks a child process to execute the script, and manages data exchange between
+ * the server and the CGI process. It handles errors related to pipe creation,
+ * forking, and execution, ensuring resources are properly cleaned up.
+ *
+ * @return `true` if the CGI execution is successful; `false` if an error occurs.
+ *
+ * @details
+ * - **Pipe Setup**: Creates pipes `cgi_in` and `cgi_out` for CGI communication.
+ * - **Environment Setup**: Prepares the CGI environment variables.
+ * - **Forking Process**:
+ *   - **Child Process**: Duplicates file descriptors, executes the CGI script using `execve`.
+ *   - **Parent Process**: Writes request body to the CGI input pipe, reads the output.
+ * - **Error Handling**: Cleans up file descriptors and environment variables on errors.
+ */
 bool HttpCGIHandler::cgi_execute() {
 	int cgi_in[2];
 	int cgi_out[2];
@@ -164,6 +219,23 @@ bool HttpCGIHandler::cgi_execute() {
 	}
 }
 
+/**
+ * @brief Reads the CGI script output from the pipe and handles timeouts.
+ *
+ * This method reads the CGI script's output using non-blocking I/O and `poll` to
+ * handle potential timeouts. It assembles the output into a response string and
+ * ensures that the CGI process is properly terminated in case of errors or timeouts.
+ *
+ * @param pid The process ID of the CGI child process.
+ * @param fd Array of file descriptors for the output pipe.
+ *
+ * @details
+ * - **Non-Blocking Read**: Sets the file descriptor to non-blocking mode.
+ * - **Polling**: Uses `poll()` to wait for data with a timeout defined by `CGI_TIMEOUT`.
+ * - **Data Reading**: Reads data from the pipe when available and appends to the response.
+ * - **Process Termination**: Kills the CGI process if a timeout or error occurs.
+ * - **Resource Cleanup**: Closes file descriptors and waits for the child process to prevent zombies.
+ */
 void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	char buffer[2048];
 	std::string response;
@@ -218,6 +290,21 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
 	_response_data.content = response;
 }
 
+/**
+ * @brief Sets up the environment variables required for CGI execution.
+ *
+ * This method prepares the necessary environment variables according to the CGI specification,
+ * converting them into a format suitable for `execve`. It handles memory allocation and ensures
+ * proper cleanup in case of errors.
+ *
+ * @return A vector of C-style strings (`char*`) representing the environment variables.
+ *
+ * @details
+ * - **Environment Variables**: Populates variables such as `REQUEST_METHOD`, `CONTENT_LENGTH`, `SCRIPT_NAME`, etc.
+ * - **Memory Allocation**: Uses `strdup` to allocate memory for each environment string.
+ * - **Error Handling**: If allocation fails, it disables sanity and frees any allocated memory.
+ * - **Null-Termination**: Ensures the environment array is null-terminated as required by `execve`.
+ */
 std::vector<char*> HttpCGIHandler::cgi_environment() {
 	std::vector<std::string> env_vars;
 
@@ -256,12 +343,28 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	return (env_ptrs);
 }
 
+/**
+ * @brief Frees the allocated CGI environment variables.
+ *
+ * This method iterates over the `_cgi_env` vector and frees each allocated string.
+ * It then clears the vector to remove any dangling pointers.
+ */
 void HttpCGIHandler::free_cgi_env() {
 	for (size_t i = 0; i < _cgi_env.size() - 1; ++i) {
 		free(_cgi_env[i]);
 	}
 }
 
+/**
+ * @brief Sends the CGI response body to the client.
+ *
+ * This method invokes the `sender` function to transmit the response body to the client.
+ * The `path` parameter is unused in this context.
+ *
+ * @param body The response body content to be sent.
+ * @param path The file path (unused in this method).
+ * @return `true` if the response is successfully sent; `false` otherwise.
+ */
 bool HttpCGIHandler::send_response(const std::string &body, const std::string &path) {
 	UNUSED(path);
 	return(sender(body));

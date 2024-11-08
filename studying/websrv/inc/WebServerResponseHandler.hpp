@@ -26,7 +26,6 @@
 #include <sys/wait.h>
 
 #define RSP_NAME "HttpResponseHandler"
-#define CGI_TIMEOUT 5000
 #define UNUSED(x) (void)(x)
 #define DEFAULT_RANGE_BYTES 65536
 
