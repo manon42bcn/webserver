@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 10:11:14 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:13:25 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,13 @@
  * @param client_data The data associated with the client, including the server configuration and file descriptor.
  * @throws Logger::NoLoggerPointer if the logger pointer is null.
  */
-HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_data):
+HttpRequestHandler::HttpRequestHandler(const Logger* log,
+									   ClientData* client_data,
+									   WebServerCache* cache):
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
+	_cache(cache),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST),
@@ -792,7 +795,7 @@ void HttpRequestHandler::handle_request() {
 	                                      _script, _path_info, _chunks, _all_headers,
 										  _range);
 	if (_factory == 0) {
-		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
+		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd, _cache);
 		response.handle_request();
 		return ;
 	}

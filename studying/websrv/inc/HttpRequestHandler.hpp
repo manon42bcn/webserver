@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 09:37:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:48:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "HttpCGIHandler.hpp"
 #include "HttpRangeHandler.hpp"
 #include "HttpMultipartHandler.hpp"
+#include "WebserverCache.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>
@@ -91,6 +92,7 @@ class HttpRequestHandler {
 		const ServerConfig&     _config;
 		const Logger*           _log;
 		ClientData*             _client_data;
+		WebServerCache*			_cache;
 		const LocationConfig*   _location;
 		int                     _fd;
 		size_t 					_max_request;
@@ -136,7 +138,9 @@ class HttpRequestHandler {
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
-		HttpRequestHandler(const Logger* log, ClientData* client_data);
+		HttpRequestHandler(const Logger* log,
+						   ClientData* client_data,
+						   WebServerCache* cache);
 	    ~HttpRequestHandler();
 
 };

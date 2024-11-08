@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:11:21 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:39:01 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ ClientData::~ClientData() {
 
 bool ClientData::chronos() {
 	std::time_t now = std::time(NULL);
-	if ((now - _timestamp) > TIMEOUT_LIMIT) {
+	if ((now - _timestamp) > TIMEOUT_REQUEST) {
 		_alive = false;
 	}
 	return (_alive);

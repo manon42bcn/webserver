@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:18:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 15:40:23 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 #include <cstring>
 
 
-ServerManager::ServerManager(std::vector<ServerConfig>& configs, const Logger* logger):
-							_log(logger) {
+ServerManager::ServerManager(std::vector<ServerConfig>& configs,
+							 const Logger* logger,
+							 WebServerCache* cache):
+							_log(logger),
+							_cache(cache) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
@@ -134,8 +137,10 @@ void ServerManager::cleanup_invalid_fds() {
 				t_client_it it = _clients_map.find(_poll_fds[i].fd);
 				remove_client_from_poll(it, i);
 			} else {
+				std::ostringstream detail;
+				detail << "Unexpected error when checking fd." << strerror(errno);
 				_log->log(LOG_ERROR, SM_NAME,
-						  "Unexpected error when checking fd.");
+						  detail.str());
 			}
 		}
 	}
@@ -202,7 +207,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 
 	std::map<int, ClientData*>::iterator it = _clients_map.find(poll_fd);
 	if (it != _clients_map.end()) {
-		HttpRequestHandler request_handler(_log, it->second);
+		HttpRequestHandler request_handler(_log, it->second, _cache);
 		if (!it->second->keep_alive()) {
 			remove_client_from_poll(it, poll_index);
 		}

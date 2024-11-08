@@ -22,4 +22,8 @@ print("<p>Request Method: {}</p>".format(os.environ.get("REQUEST_METHOD", "unkno
 print("<p>Query String: {}</p>".format(os.environ.get("QUERY_STRING", "")))
 print("<p>Content Type: {}</p>".format(os.environ.get("CONTENT_TYPE", "")))
 print("<p>Content Length: {}</p>".format(os.environ.get("CONTENT_LENGTH", "")))
+print("<p>Path info: {}</p>".format(os.environ.get("PATH_INFO", "")))
+print("<p>Script Name: {}</p>".format(os.environ.get("SCRIPT_NAME", "")))
+print("<p>Server Name: {}</p>".format(os.environ.get("SERVER_NAME", "")))
+print("<p>Server Port: {}</p>".format(os.environ.get("SERVER_PORT", "")))
 print("</body></html>")

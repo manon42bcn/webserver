@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:23:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:41:29 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <ctime>
 
 # define CD_MODULE "ClientData"
-# define TIMEOUT_LIMIT 10
+# define TIMEOUT_REQUEST 10
 # define TIMEOUT_CLIENT 10
 
 //TODO READ ABOUT vsnprintf

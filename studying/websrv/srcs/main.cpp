@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:22:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:11:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ int main() {
 	Logger logger(LOG_DEBUG, true);
 	WebServerCache cache(200);
 	try {
-		ServerManager server_manager(configs, &logger);
+		ServerManager server_manager(configs, &logger, &cache);
 		signal(SIGINT, signal_handler);
 		running_server = &server_manager;
 		server_manager.run();

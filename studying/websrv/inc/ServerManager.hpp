@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:18:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:43:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
+#include "WebserverCache.hpp"
 #include "ClientData.hpp"
 #include "webserver.hpp"
 #include "Logger.hpp"
@@ -34,11 +35,14 @@ class ServerManager {
 	    std::vector<ClientData> 	    _clients;
 	    std::map<int, ClientData*>      _clients_map;
 		const Logger*			        _log;
+		WebServerCache*					_cache;
 		bool                            _active;
 
 public:
 		typedef std::map<int, ClientData*>::iterator t_client_it;
-		ServerManager(std::vector<ServerConfig>& configs, const Logger* logger);
+		ServerManager(std::vector<ServerConfig>& configs,
+					  const Logger* logger,
+					  WebServerCache* cache);
 	    ~ServerManager();
 	    void add_server(int port, ServerConfig& config);
 		void run();

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 09:37:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:04:48 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,22 @@
 #define HTTPRESPONSEHANDLER_HPP
 
 #include "WebServerResponseHandler.hpp"
+#include "WebserverCache.hpp"
 
 #define RHB_NAME "Basic Request Handler Init."
 
 class HttpResponseHandler : public WsResponseHandler {
+	private:
+		WebServerCache* _cache;
 	public:
-	HttpResponseHandler(const LocationConfig *location,
-						const Logger *log,
-						ClientData* client_data,
-						s_request& request,
-						int fd);
-	~HttpResponseHandler();
+		HttpResponseHandler(const LocationConfig *location,
+							const Logger *log,
+							ClientData* client_data,
+							s_request& request,
+							int fd,
+							WebServerCache* cache);
+		~HttpResponseHandler();
+	void get_file_content(std::string& path);
 	void get_file_content(int pid, int (&fd)[2]);
 };
 

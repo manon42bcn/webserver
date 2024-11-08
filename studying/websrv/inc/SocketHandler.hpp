@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 08:43:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 14:55:37 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <string>
 
 # define SH_NAME "SocketHandler"
-# define SOCKET_BACKLOG_QUEUE 25
+# define SOCKET_BACKLOG_QUEUE 1024
 
 class SocketHandler {
 private:
