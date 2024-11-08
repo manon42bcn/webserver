@@ -54,22 +54,7 @@ struct s_content {
 	std::string         header;
 };
 
-struct s_multi_part {
-	std::string 	disposition;
-	std::string 	name;
-	std::string 	filename;
-	std::string 	type;
-	std::string 	data;
-	e_content_type	data_type;
-	e_http_sts      status;
-	s_multi_part(std::string di, std::string n,
-				 std::string fn, std::string t,
-				 std::string d): disposition(di), name(n),
-								 filename(fn), type(t), data(d), data_type(CT_FILE),
-								 status(HTTP_CREATED) {};
-	s_multi_part(std::string fn, e_content_type dt, std::string d):
-			filename(fn), data(d), data_type(dt) {};
-};
+
 
 class WsResponseHandler {
 private:

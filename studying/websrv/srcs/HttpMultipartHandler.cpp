@@ -1,5 +1,18 @@
 #include "HttpMultipartHandler.hpp"
 
+/**
+ * @brief Constructs an `HttpMultipartHandler` for handling multipart HTTP requests.
+ *
+ * Initializes the handler with the specified location configuration, logger, client data,
+ * and file descriptor. Logs the initialization process.
+ *
+ * @param location Pointer to the `LocationConfig` object containing server configuration details.
+ * @param log Pointer to the `Logger` instance for logging.
+ * @param client_data Pointer to `ClientData` with details of the client connection.
+ * @param request Reference to `s_request` with the incoming request information.
+ * @param fd File descriptor associated with the client connection.
+ *
+ */
 HttpMultipartHandler::HttpMultipartHandler(const LocationConfig *location,
 										   const Logger *log,
 										   ClientData *client_data,
@@ -12,8 +25,19 @@ HttpMultipartHandler::HttpMultipartHandler(const LocationConfig *location,
 	          "Multipart Handler init.");
 }
 
+/**
+ * @brief Processes the HTTP request based on the method type.
+ *
+ * This function validates the request method and sanity status, and if the method
+ * is `POST`, it forwards the request to the `handle_post` method.
+ *
+ * @return `true` if the request was successfully processed, `false` otherwise.
+ *
+ * @details
+ * - **Sanity Check**: Ensures that `_request.sanity` is `true`.
+ * - **Supported Method**: Only `POST` method is allowed; other methods will trigger an error response.
+ */
 bool HttpMultipartHandler::handle_request() {
-
 	if (!_request.sanity) {
 		send_error_response();
 		return (false);
@@ -30,6 +54,19 @@ bool HttpMultipartHandler::handle_request() {
 	}
 }
 
+/**
+ * @brief Handles the `POST` method for multipart form-data by saving each part of the content.
+ *
+ * This function checks permissions, validates the request payload, and saves uploaded files
+ * or data in the specified directory.
+ *
+ * @return `true` if all parts are saved successfully; `false` if there are errors.
+ *
+ * @details
+ * - **Permission Check**: Ensures the current location has `WRITE` access.
+ * - **Payload Validation**: Verifies request content length and type.
+ * - **File Saving**: Iterates through `_multi_content` to save each file part.
+ */
 bool HttpMultipartHandler::handle_post() {
 	if (_location->loc_access < ACCESS_WRITE) {
 		turn_off_sanity(HTTP_FORBIDDEN,
@@ -65,6 +102,19 @@ bool HttpMultipartHandler::handle_post() {
 	return(send_response("Created", _request.normalized_path));
 }
 
+/**
+ * @brief Validates the payload of a multipart `POST` request.
+ *
+ * This function checks the request's content length, type, and body for compliance with
+ * multipart requirements. If any validation fails, it deactivates the request sanity.
+ *
+ * @return `true` if the payload is valid; `false` otherwise.
+ *
+ * @details
+ * - **Content Length**: Ensures that `content_length` is non-zero.
+ * - **Content Type**: Checks for a valid `Content-Type` header.
+ * - **Boundary**: Verifies the presence of the boundary in multipart data.
+ */
 bool HttpMultipartHandler::validate_payload() {
 	if (!_request.sanity) {
 		return (false);
@@ -101,6 +151,17 @@ bool HttpMultipartHandler::validate_payload() {
 	return (true);
 }
 
+/**
+ * @brief Parses the multipart data in the request body, extracting each part.
+ *
+ * This function identifies and extracts individual parts from the multipart payload,
+ * storing them in `_multi_content`. Each part includes metadata like `filename`, `content-type`,
+ * and actual content data.
+ *
+ * @details
+ * - **Part Extraction**: Uses `_request.boundary` to identify separate parts.
+ * - **Error Handling**: Ensures complete data for each part; otherwise, it disables sanity.
+ */
 void HttpMultipartHandler::parse_multipart_data() {
 	size_t part_start = _request.body.find(_request.boundary);
 	while (part_start != std::string::npos) {
@@ -138,9 +199,10 @@ void HttpMultipartHandler::parse_multipart_data() {
 }
 
 /**
- * @brief Placeholder for retrieving file content using process ID and file descriptor array.
+ * @brief Placeholder for pure abstract method
  *
- * @note Unused function
+ * @param pid Process ID (unused).
+ * @param fd File descriptor array (unused).
  */
 void HttpMultipartHandler::get_file_content(int pid, int (&fd)[2]) {
 	UNUSED(pid);
