@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 17:16:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:11:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,14 @@ bool ClientData::chronos() {
 	return (_alive);
 }
 
+bool ClientData::timeout_connection() {
+	std::time_t now = std::time(NULL);
+	if ((now - _timestamp) > TIMEOUT_CLIENT) {
+		_alive = false;
+	}
+	return (_alive);
+}
+
 void ClientData::chronos_reset() {
 	_timestamp = std::time(NULL);
 }
@@ -55,7 +63,9 @@ ClientData& ClientData::operator=(const ClientData& orig)
 	this->_server = orig._server;
 	this->_log = orig._log;
 	this->_active = orig._active;
+	this->_alive = orig._alive;
 	this->_client_fd = orig._client_fd;
+	this->_timestamp = orig._timestamp;
 	return (*this);
 }
 
@@ -81,7 +91,7 @@ void ClientData::close_fd() {
 	_active = false;
 }
 
-bool ClientData::keep_alive() {
+bool ClientData::keep_alive() const {
 	return (_active);
 }
 

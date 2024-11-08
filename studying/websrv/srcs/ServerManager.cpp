@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/30 10:37:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:18:26 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,13 +123,56 @@ void ServerManager::turn_off_server() {
 	_active = false;
 }
 
+void ServerManager::cleanup_invalid_fds() {
+	_log->log(LOG_DEBUG, SM_NAME,
+			  "Cleaning up invalid file descriptors.");
+	for (size_t i = 0; i < _poll_fds.size(); i++) {
+		if (fcntl(_poll_fds[i].fd, F_GETFD) == -1) {
+			if (errno == EBADF) {
+				_log->log(LOG_WARNING, SM_NAME,
+						  "Removing invalid file descriptor and its client.");
+				t_client_it it = _clients_map.find(_poll_fds[i].fd);
+				remove_client_from_poll(it, i);
+			} else {
+				_log->log(LOG_ERROR, SM_NAME,
+						  "Unexpected error when checking fd.");
+			}
+		}
+	}
+	_log->log(LOG_DEBUG, SM_NAME,
+			  "Cleanup completed.");
+}
+
+void ServerManager::timeout_clients() {
+	for (size_t i = 0; i < _poll_fds.size(); i++) {
+		t_client_it it = _clients_map.find(_poll_fds[i].fd);
+		if (it != _clients_map.end() && !it->second->timeout_connection()) {
+			remove_client_from_poll(it, i);
+		}
+	}
+}
+
 void ServerManager::run() {
 	_log->log(LOG_DEBUG, SM_NAME, "Event loop started.");
 
 	while (_active) {
+		timeout_clients();
 		int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 		if (poll_count < 0 && _active) {
-			_log->fatal_log(SM_NAME, "error in poll process.");
+			if (errno == EINTR) {
+				_log->log(LOG_WARNING, SM_NAME,
+						  "Poll interrupted by a signal, retrying.");
+				continue ;
+			} else if (errno == EBADF) {
+				_log->log(LOG_WARNING, SM_NAME,
+						  "Poll found a bad file descriptor.");
+				cleanup_invalid_fds();
+				continue ;
+			} else {
+				_log->log(LOG_ERROR, RSP_NAME,
+						  "Fatal error. Errno : " + int_to_string(errno));
+				throw WebServerException("Fatal error at Poll Process. Shutting Down Server.");
+			}
 		}
 		for (size_t i = 0; i < _poll_fds.size(); ++i) {
 			if (_poll_fds[i].revents & POLLIN) {
@@ -147,9 +190,7 @@ void ServerManager::run() {
 				if (is_server) {
 					new_client(server);
 				} else {
-					// Handle client request
 					process_request(i);
-//					--i;
 				}
 			}
 		}
@@ -164,7 +205,6 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		HttpRequestHandler request_handler(_log, it->second);
 		if (!it->second->keep_alive()) {
 			remove_client_from_poll(it, poll_index);
-			--poll_index;
 		}
 		return (true);
 	} else {
@@ -187,7 +227,7 @@ void    ServerManager::new_client(SocketHandler *server) {
 	          "New Client accepted on port: " + server->get_port());
 }
 
-void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t poll_index) {
+void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t& poll_index) {
 
 	if (client_data != _clients_map.end()) {
 		ClientData* current_client = client_data->second;
@@ -195,7 +235,7 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t p
 		_poll_fds.erase(_poll_fds.begin() + (int)poll_index);
 		current_client->close_fd();
 		delete current_client;
-		// Remove the client descriptor from _poll_fds
+		--poll_index;
 		_log->log(LOG_DEBUG, SM_NAME,
 		          "fd remove from _polls_fds vector");
 	} else {

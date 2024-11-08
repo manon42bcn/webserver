@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 17:18:17 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/08 13:21:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ bool WsResponseHandler::handle_request() {
 			_log->log(LOG_DEBUG, RSP_NAME,
 					  "Handle DELETE request.");
 			return (handle_delete());
-			break;
 		default:
 			turn_off_sanity(HTTP_NOT_IMPLEMENTED,
 							"Method not allowed.");
@@ -126,9 +125,12 @@ void WsResponseHandler::get_file_content(std::string& path) {
 
 std::string WsResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
-	std::string connection = "Connection: close\r\n";
+	std::ostringstream connection;
 	if (_client_data->keep_alive()) {
-		connection = "Connection: keep-alive\r\n";
+		connection << "Connection: keep-alive\r\n"
+				   << "Keep-Alive: timeout=" << TIMEOUT_CLIENT << "\r\n";
+	} else {
+		connection << "Connection: close\r\n";
 	}
 	std::ostringstream ranged;
 	if (_response_data.ranged) {
@@ -139,7 +141,7 @@ std::string WsResponseHandler::header(int code, size_t content_size, std::string
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
 		   << "Content-Length: " << content_size << "\r\n"
 		   << "Content-Type: " <<  mime << "\r\n"
-		   << connection
+		   << connection.str()
 		   << ranged.str()
 		   << "\r\n";
 	_log->log(LOG_DEBUG, RSP_NAME, header.str());
