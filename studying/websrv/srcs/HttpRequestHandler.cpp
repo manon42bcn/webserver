@@ -138,7 +138,7 @@ void HttpRequestHandler::read_request_header() {
 		if (_request.find("\r\n\r\n") != std::string::npos) {
 			break ;
 		}
-		if (!_client_data->chronos()) {
+		if (!_client_data->chronos_request()) {
 			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 			                "Request Timeout.");
 			return ;
@@ -576,7 +576,7 @@ void HttpRequestHandler::load_content_chunks() {
 	long chunk_size = 1;
 
 	while (true) {
-		if (!_client_data->chronos()) {
+		if (!_client_data->chronos_request()) {
 			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 			                "Request Timeout.");
 			return ;
@@ -721,7 +721,7 @@ void HttpRequestHandler::load_content_normal() {
 			return ;
 		}
 		_request.append(buffer, read_byte);
-		if (!_client_data->chronos()) {
+		if (!_client_data->chronos_request()) {
 			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 			                "Request Timeout.");
 			return ;

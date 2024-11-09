@@ -126,7 +126,7 @@ void WsResponseHandler::get_file_content(std::string& path) {
 std::string WsResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
 	std::ostringstream connection;
-	if (_client_data->keep_alive() && _request.sanity) {
+	if (_client_data->is_active() && _request.sanity) {
 		connection << "Connection: keep-alive\r\n"
 				   << "Keep-Alive: timeout=" << TIMEOUT_CLIENT << "\r\n";
 	} else {

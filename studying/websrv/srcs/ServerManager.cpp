@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 15:40:23 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 00:15:59 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void ServerManager::cleanup_invalid_fds() {
 void ServerManager::timeout_clients() {
 	for (size_t i = 0; i < _poll_fds.size(); i++) {
 		t_client_it it = _clients_map.find(_poll_fds[i].fd);
-		if (it != _clients_map.end() && !it->second->timeout_connection()) {
+		if (it != _clients_map.end() && !it->second->chronos_connection()) {
 			remove_client_from_poll(it, i);
 		}
 	}
@@ -243,8 +243,10 @@ bool    ServerManager::process_request(size_t& poll_index) {
 	std::map<int, ClientData*>::iterator it = _clients_map.find(poll_fd);
 	if (it != _clients_map.end()) {
 		HttpRequestHandler request_handler(_log, it->second, _cache);
-		if (!it->second->keep_alive()) {
+		if (!it->second->is_active()) {
 			remove_client_from_poll(it, poll_index);
+		} else {
+			it->second->chronos_reset();
 		}
 		return (true);
 	} else {

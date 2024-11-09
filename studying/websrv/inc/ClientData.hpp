@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:41:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 00:28:54 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,16 @@
 # define TIMEOUT_REQUEST 10
 # define TIMEOUT_CLIENT 10
 
-//TODO READ ABOUT vsnprintf
+/**
+ * @class ClientData
+ * @brief Manages individual client connections in the web server, tracking their state and activity.
+ *
+ * The `ClientData` class encapsulates client connection data and provides
+ * methods to monitor and control the client's connection state, such as
+ * handling timeouts, deactivation, and status checks. Each instance is
+ * associated with a specific client connection, providing an interface
+ * for managing socket file descriptors, connection timestamps, and logging.
+ */
 class ClientData {
 	private:
 		const SocketHandler*    _server;
@@ -36,16 +45,15 @@ class ClientData {
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
-	    ClientData& operator=(const ClientData& orig);
-	    const SocketHandler* get_server();
-	    struct pollfd get_fd();
-	    void deactivate();
-		void keep_active();
 		void close_fd();
-	    bool chronos();
-	    void chronos_reset();
-		bool keep_alive() const;
-		bool timeout_connection();
+	const SocketHandler* get_server();
+	struct pollfd get_fd();
+	bool chronos_request();
+	void chronos_reset();
+	bool chronos_connection();
+	void deactivate();
+	bool is_active() const;
+	void keep_active();
 };
 
 #endif
