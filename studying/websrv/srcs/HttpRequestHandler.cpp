@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 02:52:21 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 03:09:45 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 
 	_request_data.sanity = true;
 	_request_data.chunks = false;
+	_request_data.cgi = false;
 	_factory = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
