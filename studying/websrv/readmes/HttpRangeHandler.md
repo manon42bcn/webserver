@@ -17,7 +17,11 @@ The `HttpRangeHandler` class processes HTTP GET requests that include a "Range" 
 
 The `HttpRangeHandler` follows a structured flow to process HTTP range requests. Below is a breakdown of its primary methods and their responsibilities in the handling flow.
 
-### 1. Constructor: `HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)`
+### 1. Constructor: 
+
+```cpp
+HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)
+```
 
 The constructor initializes the range handler by setting up necessary configurations, such as location and logging. It takes a `LocationConfig`, `Logger`, `ClientData`, `s_request`, and file descriptor `fd` as parameters, which provide context for request processing.
 
