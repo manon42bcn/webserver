@@ -62,6 +62,13 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 	_log->status(SM_NAME, "ServerManager Instance Ready.");
 }
 
+ServerManager::~ServerManager() {
+	clear_clients();
+	clear_servers();
+	_log->log(LOG_DEBUG, SM_NAME,
+	          "Server Manager Resources Clean Up.");
+}
+
 void ServerManager::clear_clients() {
 	if (!_clients_map.empty()) {
 		try {
@@ -79,13 +86,6 @@ void ServerManager::clear_clients() {
 			          details.str());
 		}
 	}
-}
-
-ServerManager::~ServerManager() {
-	clear_clients();
-	clear_servers();
-	_log->log(LOG_DEBUG, SM_NAME,
-	          "Server Manager Resources Clean Up.");
 }
 
 void ServerManager::clear_servers() {

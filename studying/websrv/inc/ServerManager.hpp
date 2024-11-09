@@ -45,7 +45,6 @@ public:
 					  const Logger* logger,
 					  WebServerCache* cache);
 	    ~ServerManager();
-		void init_server();
 	    void add_server(int port, ServerConfig& config);
 		void run();
 		void cleanup_invalid_fds();

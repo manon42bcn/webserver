@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 04:07:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 00:05:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -590,25 +590,45 @@ void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_active()) {
 		return;
 	}
-
-	if (_factory == 0) {
-		HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
-		response.handle_request();
-		return ;
-	}
-	if (_request_data.cgi) {
-		HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
-		response.handle_request();
+	try {
+		if (_factory == 0) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			response.handle_request();
+			return ;
+		}
+		if (_request_data.cgi) {
+			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			_client_data->deactivate();
+			return ;
+		} else if (!_request_data.range.empty()){
+			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		} else if (!_request_data.boundary.empty()){
+			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log(LOG_ERROR, RH_NAME,
+				  detail.str());
 		_client_data->deactivate();
-		return ;
-	} else if (!_request_data.range.empty()){
-		HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
-		response.handle_request();
-		return ;
-	} else if (!_request_data.boundary.empty()){
-		HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
-		response.handle_request();
-		return ;
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+			   << "Server Sanity could be compromise.";
+		_log->log(LOG_ERROR, RH_NAME,
+		          detail.str());
+		_client_data->deactivate();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log(LOG_ERROR, RH_NAME,
+		          detail.str());
+		_client_data->deactivate();
 	}
 }
 

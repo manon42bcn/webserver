@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/30 14:19:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 22:10:06 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,8 +177,9 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 	struct dirent* entry;
 	while ((entry = readdir(dir)) != NULL) {
 		std::string name = entry->d_name;
-
-		if (name == "." || name == "..") continue;
+		if (name == "." || name == "..") {
+			continue;
+		}
 
 		std::string full_path = directory + "/" + name;
 		struct stat info;
@@ -196,16 +197,17 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 			size_t pos = clean_path.find(extension);
 			clean_path = clean_path.substr(0, pos);
 			if (belongs_to_location(clean_path, loc_root)) {
+				std::ostringstream detail;
+				detail << "CGI found path for location root <" << loc_root << ">: ["
+					   << clean_path << "] - filename : " << name;
 				_log->log(LOG_DEBUG, SH_NAME,
-				          "CGI found path for location root <" + loc_root + ">: ["
-				                  + clean_path + "] - filename: " + name);
+				          detail.str());
 				mapped_files.insert(std::make_pair(clean_path, s_cgi(real_path, name)));
 			}
 		}
 	}
 	closedir(dir);
 }
-
 
 void SocketHandler::mapping_cgi_locations() {
 	_log->log(LOG_DEBUG, SH_NAME,
@@ -225,6 +227,65 @@ void SocketHandler::mapping_cgi_locations() {
 		}
 	}
 }
+
+// ############################################
+//bool SocketHandler::is_default_file(const std::string &filename, const std::string& extension) {
+//	return (filename.size() >= extension.length()
+//	        && filename.compare(filename.size() - extension.length(),
+//	                            extension.length(), extension) == 0);
+//}
+//
+//void SocketHandler::det_files() {
+//	for (std::map<std::string, struct LocationConfig>::iterator it = _config.locations.begin();
+//		it != _config.locations.end(); it++) {
+//
+//	}
+//}
+
+//void SocketHandler::get_default_files(const std::string &directory, const std::string &loc_root, const std::string &extension,
+//                                      std::map<std::string, t_cgi> &mapped_files) {
+//	DIR* dir = opendir(directory.c_str());
+//	if (dir == NULL) {
+//		_log->log(LOG_INFO, SH_NAME,
+//		          "No directory was found.");
+//		return;
+//	}
+//
+//	struct dirent* entry;
+//	while ((entry = readdir(dir)) != NULL) {
+//		std::string name = entry->d_name;
+//
+//		if (name == "." || name == "..") {
+//			continue;
+//		}
+//
+//		std::string full_path = directory + "/" + name;
+//		struct stat info;
+//		if (stat(full_path.c_str(), &info) != 0) {
+//			_log->log(LOG_WARNING, SH_NAME,
+//			          full_path + " : is not accessible.");
+//			continue ;
+//		}
+//
+//		if (S_ISDIR(info.st_mode)) {
+//			get_cgi_files(full_path, loc_root, extension, mapped_files);
+//		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
+//			std::string clean_path = full_path.substr(_config.server_root.length());
+//			std::string real_path = clean_path.substr(0, clean_path.find(name));
+//			size_t pos = clean_path.find(extension);
+//			clean_path = clean_path.substr(0, pos);
+//			if (belongs_to_location(clean_path, loc_root)) {
+//				std::ostringstream detail;
+//				detail << "CGI found path for location root <" << loc_root << ">: ["
+//				       << clean_path << "] - filename : " << name;
+//				_log->log(LOG_DEBUG, SH_NAME,
+//				          detail.str());
+//				mapped_files.insert(std::make_pair(clean_path, s_cgi(real_path, name)));
+//			}
+//		}
+//	}
+//	closedir(dir);
+//}
 
 const char* SocketHandler::SocketCreationError::what(void) const throw() {
 	return ("SocketHandler Module: Error Creating Socket.");
