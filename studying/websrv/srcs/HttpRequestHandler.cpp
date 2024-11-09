@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 14:13:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 02:52:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
  *   8. `normalize_request_path()`
  *   9. `load_content()`
  *   10. `validate_request()`
- * - If any step fails (i.e., `_sanity` is false), the process halts.
+ * - If any step fails (i.e., `_request_data.sanity` is false), the process halts.
  * - Upon completion, it calls `handle_request()` to handle the validated request.
  *
  * @param log A pointer to the logger instance used to log actions and errors.
@@ -48,14 +48,10 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_cache(cache),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
-	_max_request(MAX_REQUEST),
-	_sanity(true),
-	_cgi(false) {
-	if (_log == NULL) {
-		throw Logger::NoLoggerPointer();
-	}
-	_active = true;
-	_chunks = false;
+	_max_request(MAX_REQUEST) {
+
+	_request_data.sanity = true;
+	_request_data.chunks = false;
 	_factory = 0;
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
@@ -75,7 +71,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
-		if (!_sanity)
+		if (!_request_data.sanity)
 			break;
 		i++;
 	}
@@ -150,7 +146,7 @@ void HttpRequestHandler::read_request_header() {
 		return ;
 	}
 	if (size == 0) {
-		_active = false;
+		_client_data->deactivate();
 		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 		                "Client Close Request");
 		return ;
@@ -167,8 +163,8 @@ void HttpRequestHandler::read_request_header() {
  * It verifies that the header is not empty before continuing, assigning any remaining data as the body in `_request`.
  *
  * @details
- * - If the delimiter `\r\n\r\n` is found, the method extracts and assigns the header to `_header`.
- * - If `_header` is empty, the method disables sanity and sets the status to `HTTP_BAD_REQUEST`.
+ * - If the delimiter `\r\n\r\n` is found, the method extracts and assigns the header to `_request_data.header`.
+ * - If `_request_data.header` is empty, the method disables sanity and sets the status to `HTTP_BAD_REQUEST`.
  * - The remaining content after the delimiter is assigned to `_request` as the body.
  * - If the delimiter is not found, it disables sanity and sets the status to `HTTP_BAD_REQUEST`.
  *
@@ -179,8 +175,8 @@ void HttpRequestHandler::parse_header() {
 	size_t header_end = _request.find("\r\n\r\n");
 
 	if (header_end != std::string::npos) {
-		_header = _request.substr(0, header_end);
-		if (_header.empty()) {
+		_request_data.header = _request.substr(0, header_end);
+		if (_request_data.header.empty()) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Request Header is empty.");
 			return ;
@@ -193,14 +189,13 @@ void HttpRequestHandler::parse_header() {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Request parsing error: No header-body delimiter found.");
 	}
-//	_all_headers = parse_headers_map(_header);
 	_log->log(LOG_DEBUG, RH_NAME, _request);
 }
 
 /**
  * @brief Parses the HTTP request header to extract the method and path.
  *
- * This method analyzes the `_header` string to extract the HTTP method and the requested path.
+ * This method analyzes the `_request_data.header` string to extract the HTTP method and the requested path.
  * If the header is malformed or if the method or path are invalid, it disables sanity and sets the
  * appropriate HTTP error status.
  *
@@ -218,18 +213,18 @@ void HttpRequestHandler::parse_method_and_path() {
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Request to get path and method.");
-	size_t method_end = _header.find(' ');
+	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
-		method = _header.substr(0, method_end);
-		if (method.empty() || (_method = method_string_to_enum(method)) == METHOD_ERR ) {
+		method = _request_data.header.substr(0, method_end);
+		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == METHOD_ERR ) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Error parsing request: Method is empty or not valid.");
 			return ;
 		}
 
-		size_t path_end = _header.find(' ', method_end + 1);
+		size_t path_end = _request_data.header.find(' ', method_end + 1);
 		if (path_end != std::string::npos) {
-			path = _header.substr(method_end + 1, path_end - method_end - 1);
+			path = _request_data.header.substr(method_end + 1, path_end - method_end - 1);
 			if (path.size() > URI_MAX) {
 				turn_off_sanity(HTTP_URI_TOO_LONG,
 				                "Request path too long.");
@@ -237,7 +232,7 @@ void HttpRequestHandler::parse_method_and_path() {
 			}
 			_log->log(LOG_DEBUG, RH_NAME,
 			          "Request header fully parsed.");
-			_path = path;
+			_request_data.path = path;
 			return ;
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
@@ -247,7 +242,7 @@ void HttpRequestHandler::parse_method_and_path() {
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Error parsing request: method malformed.");
-		_method = METHOD_ERR;
+		_request_data.method = METHOD_ERR;
 		return ;
 	}
 }
@@ -255,14 +250,14 @@ void HttpRequestHandler::parse_method_and_path() {
 /**
  * @brief Parses the path to determine if it contains a query component.
  *
- * This method checks if `_path` contains a query string, identified by the presence of
+ * This method checks if `_request_data.path` contains a query string, identified by the presence of
  * a `?` character. If a query is found, it separates the query from the main path and
- * updates `_path_type` to `PATH_QUERY`. Otherwise, `_path_type` is set to `PATH_REGULAR`.
+ * updates `_request_data.path_type` to `PATH_QUERY`. Otherwise, `_request_data.path_type` is set to `PATH_REGULAR`.
  *
  * @details
- * - If a `?` is found in `_path`, the substring after `?` is extracted and assigned to `_query_string`.
- * - The main path up to `?` is retained in `_path`, and `_path_type` is set to `PATH_QUERY`.
- * - If no `?` is found, `_path_type` is set to `PATH_REGULAR`, indicating no query is present.
+ * - If a `?` is found in `_request_data.path`, the substring after `?` is extracted and assigned to `_request_data.query`.
+ * - The main path up to `?` is retained in `_request_data.path`, and `_request_data.path_type` is set to `PATH_QUERY`.
+ * - If no `?` is found, `_request_data.path_type` is set to `PATH_REGULAR`, indicating no query is present.
  * - Logs the detected path type and, if applicable, the query string for debugging.
  *
  * @return None
@@ -270,16 +265,16 @@ void HttpRequestHandler::parse_method_and_path() {
 void HttpRequestHandler::parse_path_type() {
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Path type.");
-	size_t pos = _path.find('?');
+	size_t pos = _request_data.path.find('?');
 	if (pos == std::string::npos) {
-		_path_type = PATH_REGULAR;
+		_request_data.path_type = PATH_REGULAR;
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Regular Path to normalize.");
 		return;
 	}
-	_query_string = _path.substr(pos + 1);
-	_path = _path.substr(0, pos);
-	_path_type = PATH_QUERY;
+	_request_data.query = _request_data.path.substr(pos + 1);
+	_request_data.path = _request_data.path.substr(0, pos);
+	_request_data.path_type = PATH_QUERY;
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Query found and parse from path.");
 }
@@ -291,61 +286,61 @@ void HttpRequestHandler::parse_path_type() {
  * `Content-Length` and `Content-Type`. It also checks for the `boundary` parameter if the content is multipart.
  *
  * @details
- * - Retrieves `Content-Length` from `_header`, validates it, and assigns it to `_content_length`.
- * - Retrieves `Content-Type` from `_header`. If it is multipart, it checks for the presence of `boundary`.
+ * - Retrieves `Content-Length` from `_request_data.header`, validates it, and assigns it to `_content_length`.
+ * - Retrieves `Content-Type` from `_request_data.header`. If it is multipart, it checks for the presence of `boundary`.
  * - If `Content-Length` or `boundary` is malformed or missing when required, it disables sanity and logs the error.
  * - For multipart data, trims `_content_type` to exclude any parameters after the type (e.g., `; boundary=`).
  *
  * @return None
  */
 void HttpRequestHandler::load_header_data() {
-	_log->log(LOG_DEBUG, RH_NAME, _header);
-	std::string content_length = get_header_value(_header, "content-length:", "\r\n");
-	_content_type = get_header_value(_header, "content-type:", "\r\n");
+	_log->log(LOG_DEBUG, RH_NAME, _request_data.header);
+	std::string content_length = get_header_value(_request_data.header, "content-length:", "\r\n");
+	_request_data.content_type = get_header_value(_request_data.header, "content-type:", "\r\n");
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
-			_content_length = str_to_size_t(content_length);
+			_request_data.content_length = str_to_size_t(content_length);
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Content-Length malformed.");
 		}
 	} else {
-		_content_length = 0;
+		_request_data.content_length = 0;
 	}
-	if (!_content_type.empty()) {
-		if (starts_with(_content_type, "multipart")) {
-			_boundary = get_header_value(_content_type, "boundary", "\r\n");
-			if (_boundary.empty()) {
+	if (!_request_data.content_type.empty()) {
+		if (starts_with(_request_data.content_type, "multipart")) {
+			_request_data.boundary = get_header_value(_request_data.content_type, "boundary", "\r\n");
+			if (_request_data.boundary.empty()) {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
 			}
 			_factory++;
-			size_t end_type = _content_type.find(';');
+			size_t end_type = _request_data.content_type.find(';');
 			if (end_type != std::string::npos) {
-				_content_type = _content_type.substr(0, end_type);
+				_request_data.content_type = _request_data.content_type.substr(0, end_type);
 			}
 		}
 	}
-	std::string chunks = get_header_value(_header, "transfer-encoding:", "\r\n");
+	std::string chunks = get_header_value(_request_data.header, "transfer-encoding:", "\r\n");
 	_log->log(LOG_DEBUG, RSP_NAME, chunks);
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
-			_chunks = true;
+			_request_data.chunks = true;
 		}
 	}
-	_range = get_header_value(_header, "range:", "\r\n");
-	if (!_range.empty()) {
+	_request_data.range = get_header_value(_request_data.header, "range:", "\r\n");
+	if (!_request_data.range.empty()) {
 		_factory++;
 	}
-	std::string keep = get_header_value(_header, "connection:", "\r\n");
+	std::string keep = get_header_value(_request_data.header, "connection:", "\r\n");
 	if (keep == "keep-alive") {
 		_client_data->keep_active();
 	} else {
 		_client_data->deactivate();
 	}
-	_cookie = get_header_value(_header, "cookie", "\r\n");
+	_request_data.cookie = get_header_value(_request_data.header, "cookie", "\r\n");
 }
 
 /**
@@ -357,7 +352,7 @@ void HttpRequestHandler::load_header_data() {
  * @details
  * - The method logs the start of the search and iterates through the `locations` map in `_config`.
  * - It checks if the requested path starts with each location key, and selects the longest matching key.
- * - If a matching location is found, it sets `_location` and updates the access permissions (`_access`).
+ * - If a matching location is found, it sets `_location` and updates the access permissions (`_request_data.access`).
  * - If no location is found, it calls `turn_off_sanity()` and sets the HTTP status to `HTTP_BAD_REQUEST`.
  *
  * @return None
@@ -370,7 +365,7 @@ void HttpRequestHandler::get_location_config() {
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
 	     it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
-		if (starts_with(_path, key)) {
+		if (starts_with(_request_data.path, key)) {
 			if (key.length() > saved_key.length()) {
 				result = &it->second;
 				saved_key = key;
@@ -380,7 +375,7 @@ void HttpRequestHandler::get_location_config() {
 	if (result) {
 		_log->log(LOG_DEBUG, RH_NAME, "Location Found: " + saved_key);
 		_location = result;
-		_access = result->loc_access;
+		_request_data.access = result->loc_access;
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST, "Location Not Found");
 	}
@@ -390,12 +385,12 @@ void HttpRequestHandler::get_location_config() {
  * @brief Evaluates if the requested path corresponds to a CGI script and adjusts path attributes accordingly.
  *
  * This method checks if the requested path points to a CGI file or a mapped CGI script in the configuration.
- * If a CGI path is detected, it updates `_normalized_path`, `_script`, `_path_info`, and sets `_cgi` to true.
+ * If a CGI path is detected, it updates `_request_data.normalized_path`, `_request_data.script`, `_request_data.path_info`, and sets `_request_data.cgi` to true.
  *
  * @details
- * - If the path is a CGI file directly (not a directory), it sets `_script` and `_normalized_path` appropriately.
- * - Searches for mapped CGI paths in `_location->cgi_locations`. If a match is found, `_normalized_path` and `_script` are updated.
- * - Sets `_cgi` to true if the path corresponds to a CGI file or location.
+ * - If the path is a CGI file directly (not a directory), it sets `_request_data.script` and `_request_data.normalized_path` appropriately.
+ * - Searches for mapped CGI paths in `_location->cgi_locations`. If a match is found, `_request_data.normalized_path` and `_request_data.script` are updated.
+ * - Sets `_request_data.cgi` to true if the path corresponds to a CGI file or location.
  * - Logs each step, including the path, type, and any CGI configurations detected.
  *
  * @return None
@@ -406,7 +401,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		          "No CGI locations at server config.");
 		return ;
 	}
-	std::string eval_path = _config.server_root + _path;
+	std::string eval_path = _config.server_root + _request_data.path;
 	if (is_dir(eval_path)) {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "CGI test - Directory exist.");
@@ -416,9 +411,9 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "The user is over a real CGI file. It should be handle as script.");
 		size_t dot_pos = eval_path.find_last_of('/');
-		_script = eval_path.substr(dot_pos + 1);
-		_normalized_path = eval_path.substr(0, dot_pos);
-		_cgi = true;
+		_request_data.script = eval_path.substr(dot_pos + 1);
+		_request_data.normalized_path = eval_path.substr(0, dot_pos);
+		_request_data.cgi = true;
 		_factory++;
 		return ;
 	}
@@ -431,7 +426,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
 	     it != _location->cgi_locations.end(); it++) {
 		const std::string& key = it->first;
-		if (starts_with(_path, key)) {
+		if (starts_with(_request_data.path, key)) {
 			if (key.length() > saved_key.length()) {
 				cgi_data = &it->second;
 				saved_key = key;
@@ -441,10 +436,10 @@ void HttpRequestHandler::cgi_normalize_path() {
 	if (cgi_data) {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "CGI - Location Found: " + saved_key);
-		_normalized_path = _config.server_root + cgi_data->cgi_path;
-		_script = cgi_data->script;
-		_path_info = _path.substr(saved_key.length());
-		_cgi = true;
+		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
+		_request_data.script = cgi_data->script;
+		_request_data.path_info = _request_data.path.substr(saved_key.length());
+		_request_data.cgi = true;
 		_factory++;
 	}
 }
@@ -452,30 +447,30 @@ void HttpRequestHandler::cgi_normalize_path() {
 /**
  * @brief Normalizes the requested path based on the server root and validates its existence and type.
  *
- * This method combines the server root with the requested `_path`, and then checks if the resulting path
+ * This method combines the server root with the requested `_request_data.path`, and then checks if the resulting path
  * is valid according to the HTTP method used (GET, POST, DELETE).
  *
  * @details
  * - If CGI is true, this step won't be executed. CGI paths are normalized previously.
- * - **POST**: Ensures the path is a directory to create a new resource. Sets `_normalized_path` if valid.
- * - **File Check**: For GET requests, checks if the path points to an existing file, updates `_cgi` if it is a CGI, and sets `_status` to `HTTP_OK`.
+ * - **POST**: Ensures the path is a directory to create a new resource. Sets `_request_data.normalized_path` if valid.
+ * - **File Check**: For GET requests, checks if the path points to an existing file, updates `_request_data.cgi` if it is a CGI, and sets `_request_data.status` to `HTTP_OK`.
  * - **DELETE**: Ensures the resource exists; if the target is a directory, the operation is not allowed.
- * - **Directory Check**: If the path is a directory, attempts to locate default files. If found, sets `_normalized_path`.
- * - If no valid path or resource is found, it disables sanity and sets `_status` to `HTTP_NOT_FOUND`.
+ * - **Directory Check**: If the path is a directory, attempts to locate default files. If found, sets `_request_data.normalized_path`.
+ * - If no valid path or resource is found, it disables sanity and sets `_request_data.status` to `HTTP_NOT_FOUND`.
  *
  * @return None
  */
 void HttpRequestHandler::normalize_request_path() {
-	if (_cgi) {
+	if (_request_data.cgi) {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "CGI context. path has been normalized");
 		return ;
 	}
-	std::string eval_path = _config.server_root + _path;
+	std::string eval_path = _config.server_root + _request_data.path;
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
-	if (_method == METHOD_POST) {
+	if (_request_data.method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Path build to a POST request");
 		if (eval_path[eval_path.size() - 1] != '/') {
@@ -486,23 +481,23 @@ void HttpRequestHandler::normalize_request_path() {
 			                "Non valid path to create resource.");
 			return ;
 		}
-		_normalized_path = eval_path;
+		_request_data.normalized_path = eval_path;
 		return ;
 	}
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
-		_normalized_path = eval_path;
-		_cgi = is_cgi(_normalized_path);
-		_status = HTTP_OK;
+		_request_data.normalized_path = eval_path;
+		_request_data.cgi = is_cgi(_request_data.normalized_path);
+		_request_data.status = HTTP_OK;
 		return ;
 	}
-	if (_method == METHOD_DELETE) {
+	if (_request_data.method == METHOD_DELETE) {
 		turn_off_sanity(HTTP_NOT_FOUND,
 		                "Resource to be deleted, not found.");
 		return ;
 	}
 	if (is_dir(eval_path)) {
-		if (_method == METHOD_DELETE) {
+		if (_request_data.method == METHOD_DELETE) {
 			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 							"Delete method over a dir is not allowed.");
 			return ;
@@ -515,42 +510,42 @@ void HttpRequestHandler::normalize_request_path() {
 			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
 				_log->log(LOG_INFO, RH_NAME, "Default File found");
-				_normalized_path = eval_path + _location->loc_default_pages[i];
-				_cgi = is_cgi(_normalized_path);
-				_status = HTTP_OK;
+				_request_data.normalized_path = eval_path + _location->loc_default_pages[i];
+				_request_data.cgi = is_cgi(_request_data.normalized_path);
+				_request_data.status = HTTP_OK;
 				return ;
 			}
 		}
 	}
 	turn_off_sanity(HTTP_NOT_FOUND,
-	                "Requested path not found " + _path);
+	                "Requested path not found " + _request_data.path);
 }
 
 /**
  * @brief Loads the request content based on the specified transfer encoding (chunks or normal).
  *
- * This method checks whether the request content is chunked by evaluating `_chunks`.
+ * This method checks whether the request content is chunked by evaluating `_request_data.chunks`.
  * It then calls either `load_content_chunks()` or `load_content_normal()` to handle the loading process.
  *
  * @details
  * - Logs the type of content loading (chunked or normal) for tracing purposes.
- * - Calls `load_content_chunks()` if `_chunks` is true, otherwise calls `load_content_normal()`.
+ * - Calls `load_content_chunks()` if `_request_data.chunks` is true, otherwise calls `load_content_normal()`.
  *
  * @return None
  */
 void HttpRequestHandler::load_content() {
-	if (_chunks) {
+	if (_request_data.chunks) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Chunk content. Load body request.");
 		load_content_chunks();
-		_content_length = _body.length();
+		_request_data.content_length = _request_data.body.length();
 	} else {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Normal content. Load body request.");
 		load_content_normal();
 	}
 	_log->log(LOG_DEBUG, RH_NAME, _request);
-	_log->log(LOG_DEBUG, RH_NAME, _body);
+	_log->log(LOG_DEBUG, RH_NAME, _request_data.body);
 }
 
 /**
@@ -601,6 +596,7 @@ void HttpRequestHandler::load_content_chunks() {
 	}
 
 	if (size == 0) {
+		_client_data->deactivate();
 		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 		                "Client Close Request");
 		return ;
@@ -610,7 +606,7 @@ void HttpRequestHandler::load_content_chunks() {
 		                "Error Reading From Socket. " + int_to_string(read_byte));
 		return ;
 	}
-	_body = _request;
+	_request_data.body = _request;
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Chunked Request read.");
 }
@@ -697,7 +693,7 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
  * @return None
  */
 void HttpRequestHandler::load_content_normal() {
-	if (_content_length == 0) {
+	if (_request_data.content_length == 0) {
 		_log->log(LOG_INFO, RH_NAME,
 		          "No Content-Length to read from FD.");
 		return ;
@@ -706,7 +702,7 @@ void HttpRequestHandler::load_content_normal() {
 	char buffer[BUFFER_REQUEST];
 	int         read_byte;
 	size_t      size = 0;
-	size_t      to_read = _content_length - _request.length();
+	size_t      to_read = _request_data.content_length - _request.length();
 
 	while (to_read > 0) {
 		read_byte = recv(_fd, buffer, sizeof(buffer), 0);
@@ -733,12 +729,13 @@ void HttpRequestHandler::load_content_normal() {
 		return ;
 	}
 	if (size == 0) {
+		_client_data->deactivate();
 		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 		                "Client Close Request");
 		return ;
 	}
 	_client_data->chronos_reset();
-	_body = _request;
+	_request_data.body = _request;
 	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
 }
 
@@ -757,14 +754,14 @@ void HttpRequestHandler::load_content_normal() {
  * @return None
  */
 void HttpRequestHandler::validate_request() {
-	if (!_body.empty()) {
-		if (_method == METHOD_GET || _method == METHOD_HEAD || _method == METHOD_OPTIONS) {
+	if (!_request_data.body.empty()) {
+		if (_request_data.method == METHOD_GET || _request_data.method == METHOD_HEAD || _request_data.method == METHOD_OPTIONS) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body received with GET, HEAD or OPTION method.");
 			return ;
 		}
 	} else {
-		if (_method == METHOD_POST || _method == METHOD_PUT || _method == METHOD_PATCH) {
+		if (_request_data.method == METHOD_POST || _request_data.method == METHOD_PUT || _request_data.method == METHOD_PATCH) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body empty with POST, PUT or PATCH method.");
 		}
@@ -779,38 +776,32 @@ void HttpRequestHandler::validate_request() {
  * and calls `handle_request()` to manage the response.
  *
  * @details
- * - Constructs `s_request` with all necessary request details, including `_body`, `_method`, `_path`, and CGI indicators.
+ * - Constructs `s_request` with all necessary request details, including `_body`, `_request_data.method`, `_request_data.path`, and CGI indicators.
  * - Delegates the wrapped request to `HttpResponseHandler` for further processing and response handling.
  *
  * @return None
  */
 void HttpRequestHandler::handle_request() {
-	if (!_active) {
-		_client_data->deactivate();
+	if (!_client_data->is_active()) {
 		return;
 	}
-	s_request request_wrapper = s_request(_body, _method, _path,
-	                                      _normalized_path, _access, _sanity,
-	                                      _status, _content_length, _content_type,
-										  _boundary, _path_type, _query_string, _cgi,
-	                                      _script, _path_info, _chunks, _all_headers,
-										  _range, _cookie);
+
 	if (_factory == 0) {
-		HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd, _cache);
+		HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
 		response.handle_request();
 		return ;
 	}
-	if (_cgi) {
-		HttpCGIHandler response(_location, _log, _client_data, request_wrapper, _fd);
+	if (_request_data.cgi) {
+		HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
 		response.handle_request();
 		_client_data->deactivate();
 		return ;
-	} else if (!_range.empty()){
-		HttpRangeHandler response(_location, _log, _client_data, request_wrapper, _fd);
+	} else if (!_request_data.range.empty()){
+		HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
 		response.handle_request();
 		return ;
-	} else if (!_boundary.empty()){
-		HttpMultipartHandler response(_location, _log, _client_data, request_wrapper, _fd);
+	} else if (!_request_data.boundary.empty()){
+		HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
 		response.handle_request();
 		return ;
 	}
@@ -820,11 +811,11 @@ void HttpRequestHandler::handle_request() {
  * @brief Disables the request sanity check and sets an HTTP status.
  *
  * This method logs an error detail, turns off the request processing sanity check by setting
- * `_sanity` to false, and updates the HTTP status of the request.
+ * `_request_data.sanity` to false, and updates the HTTP status of the request.
  *
  * @details
  * - The method logs the provided detail as an error.
- * - It sets the `_sanity` flag to false, indicating that the request should no longer be considered "sane."
+ * - It sets the `_request_data.sanity` flag to false, indicating that the request should no longer be considered "sane."
  * - The HTTP status is updated to the provided value.
  *
  * @param status The HTTP status to be set (e.g., `HTTP_BAD_REQUEST`).
@@ -833,6 +824,6 @@ void HttpRequestHandler::handle_request() {
  */
 void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
 	_log->log(LOG_ERROR, RH_NAME, detail);
-	_sanity = false;
-	_status = status;
+	_request_data.sanity = false;
+	_request_data.status = status;
 }

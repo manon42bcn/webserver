@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 14:34:37 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 01:30:39 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ bool HttpCGIHandler::handle_request() {
 			}
 		}
 		_response_data.content = _response_data.content.substr(header_pos + 1);
-		_headers += "Content-Length: " + int_to_string((int)_response_data.content.length()) + "\r\n";
 		std::string keep = get_header_value(_headers, "connection:", "\n");
 		if (keep.empty()) {
 			_headers += "Connection: close\r\n";

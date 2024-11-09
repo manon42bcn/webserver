@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 17:16:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 02:56:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,39 +109,62 @@ enum e_path_type {
 	PATH_ENCODED = 2
 };
 
+//struct s_request {
+//	std::string& body;
+//	e_methods&   method;
+//	std::string& path;
+//	std::string& normalized_path;
+//	e_access&    access;
+//	bool&        sanity;
+//	e_http_sts&  status;
+//	size_t&      content_length;
+//	std::string& content_type;
+//	std::string& boundary;
+//	e_path_type& path_type;
+//	std::string& query;
+//	bool&        cgi;
+//	std::string& script;
+//	std::string& path_info;
+//	bool&        chunks;
+//	std::map<std::string, std::string>& all_headers;
+//	std::string& range;
+//	std::string& cookie;
+//	s_request(std::string& b, e_methods& m, std::string& p,
+//	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
+//	          size_t& cl, std::string& ct, std::string& bd,
+//			  e_path_type& pt, std::string& qy, bool& cgi,
+//	          std::string& sc, std::string& pi, bool& cks,
+//			  std::map<std::string, std::string>& ah,
+//			  std::string& rng, std::string& ck):
+//			  body(b), method(m), path(p), normalized_path(np),
+//              access(a), sanity(s), status(sts),
+//			  content_length(cl), content_type(ct), boundary(bd),
+//			  path_type(pt), query(qy), cgi(cgi),
+//			  script(sc), path_info(pi), chunks(cks),
+//			  all_headers(ah), range(rng), cookie(ck) {};
+//};
+
 struct s_request {
-	std::string& body;
-	e_methods&   method;
-	std::string& path;
-	std::string& normalized_path;
-	e_access&    access;
-	bool&        sanity;
-	e_http_sts&  status;
-	size_t&      content_length;
-	std::string& content_type;
-	std::string& boundary;
-	e_path_type& path_type;
-	std::string& query;
-	bool&        cgi;
-	std::string& script;
-	std::string& path_info;
-	bool&        chunks;
-	std::map<std::string, std::string>& all_headers;
-	std::string& range;
-	std::string& cookie;
-	s_request(std::string& b, e_methods& m, std::string& p,
-	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
-	          size_t& cl, std::string& ct, std::string& bd,
-			  e_path_type& pt, std::string& qy, bool& cgi,
-	          std::string& sc, std::string& pi, bool& cks,
-			  std::map<std::string, std::string>& ah,
-			  std::string& rng, std::string& ck):
-			  body(b), method(m), path(p), normalized_path(np),
-              access(a), sanity(s), status(sts),
-			  content_length(cl), content_type(ct), boundary(bd),
-			  path_type(pt), query(qy), cgi(cgi),
-			  script(sc), path_info(pi), chunks(cks),
-			  all_headers(ah), range(rng), cookie(ck) {};
+	std::string header;
+	std::string body;
+	e_methods   method;
+	std::string path;
+	e_path_type path_type;
+	std::string normalized_path;
+	e_access    access;
+	bool        sanity;
+	e_http_sts  status;
+	size_t      content_length;
+	std::string content_type;
+	std::string boundary;
+	std::string query;
+	bool        cgi;
+	std::string script;
+	std::string path_info;
+	bool        chunks;
+	std::map<std::string, std::string> all_headers;
+	std::string range;
+	std::string cookie;
 };
 
 typedef struct s_cgi {

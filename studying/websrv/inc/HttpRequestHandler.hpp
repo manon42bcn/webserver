@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/08 13:48:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 02:47:12 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,29 +98,8 @@ class HttpRequestHandler {
 		size_t 					_max_request;
 //	    request
 	    std::string             _request;
-	    std::string             _header;
-	    std::string             _body;
-//	    parsed
-	    e_methods               _method;
-		std::string 			_content_type;
-		size_t                  _content_length;
-		std::string             _path;
-	    std::string             _normalized_path;
-		std::string 			_query_string;
-		std::string 			_path_info;
-		e_path_type				_path_type;
-	    std::string             _boundary;
-	    e_access                _access;
-	    bool                    _sanity;
-	    e_http_sts              _status;
-		bool					_cgi;
-		std::string 			_script;
-		bool                    _chunks;
-		std::map<std::string, std::string>  _all_headers;
-		std::string             _range;
-		bool					_active;
 		int                     _factory;
-		std::string             _cookie;
+		s_request               _request_data;
 
 		void read_request_header();
 		void parse_method_and_path();
