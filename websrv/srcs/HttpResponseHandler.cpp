@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 22:14:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:24:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void HttpResponseHandler::get_file_content(std::string &path) {
 		if (_request.sanity) {
 			_cache->put(path, _response_data.content);
 		}
+	} else {
+		_response_data.status = true;
 	}
 }
 
