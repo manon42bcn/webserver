@@ -6,23 +6,12 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 02:32:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 03:21:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "SocketHandler.hpp"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <vector>
-#include <sys/types.h>
-#include <dirent.h>
-#include <sys/stat.h>
+
 
 SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logger):
 		_socket_fd(-1),
@@ -66,7 +55,8 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	_log->log(LOG_INFO, SH_NAME,
 			  "Server listening. Port: " + int_to_string(port));
 
-	mapping_cgi_locations();
+	mapping_cgi_locations(".py");
+	mapping_cgi_locations(".pl");
 	_log->log(LOG_INFO, SH_NAME,
 	          "Instance built.");
 	_log->status(SH_NAME, "Socket Handler Instance is ready.");
@@ -209,7 +199,7 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 	closedir(dir);
 }
 
-void SocketHandler::mapping_cgi_locations() {
+void SocketHandler::mapping_cgi_locations(const std::string& extension) {
 	_log->log(LOG_DEBUG, SH_NAME,
 	          "mapping cgi locations.");
 	std::map<std::string, std::string> results;
@@ -218,7 +208,7 @@ void SocketHandler::mapping_cgi_locations() {
 			_log->log(LOG_DEBUG, SH_NAME,
 			          "Location with CGI activated, mapping for files.");
 			get_cgi_files(_config.server_root + it->second.loc_root,
-			              it->second.loc_root, ".py", it->second.cgi_locations);
+			              it->second.loc_root, extension, it->second.cgi_locations);
 			if (!it->second.cgi_locations.empty()){
 				_config.cgi_locations = true;
 			} else {

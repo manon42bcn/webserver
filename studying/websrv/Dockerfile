@@ -10,7 +10,8 @@ RUN apk update && apk add --no-cache \
     libc-dev \
     tree \
     bash \
-    python3
+    python3 \
+    perl
 
 #WORKDIR /usr/src/webserv
 WORKDIR /ws
