@@ -46,12 +46,13 @@ WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 	if (!location || !client_data) {
 		throw WebServerException("Ws Response Handler missing pointers.");
 	}
+	_response_data.ranged = false;
 }
 
 /**
  * @brief Destructor for the `WsResponseHandler` class.
  *
- * Cleans up any resources held by the `WsResponseHandler` instance.
+ * Cleans up any dresources held by the `WsResponseHandler` instance.
  * Abstract class does not need to free any resource.
  */
 WsResponseHandler::~WsResponseHandler(){}

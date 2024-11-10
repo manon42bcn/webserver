@@ -114,51 +114,16 @@ void signal_handler(int sig){
 
 int main(int argc, char **argv) {
 
-	(void)argc;
-	(void)argv;
 	Logger logger(LOG_ERROR, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
 
+	if (!check_args(argc, argv))
+		exit(1);
+	configs = parse_file(argv[1], &logger);
 
-	// Datos de prueba
-	std::vector<std::string> default_pages;
-	default_pages.push_back("index.html");
-	default_pages.push_back("home.html");
-	std::map<int, std::string> error_pages;
-	error_pages[404] = "404.html";
 
-	// Insertar datos en el vector
-	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
-	locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
-
-	ServerConfig server1;
-	server1.port = 8080;
-	server1.server_name = "localhost";
-	server1.server_root = base_path + "/data";
-	server1.error_pages[404] = "/404.html";
-	server1.locations = locations;
-	server1.default_pages.push_back("index.html");
-	server1.ws_root = base_path + "/data";
-	server1.ws_errors_root = base_path + "default_error_pages";
-	configs.push_back(server1);
-
-	ServerConfig server2;
-	server2.port = 9090;
-	server2.server_name = "localhost";
-	server2.server_root =  base_path + "/data/9090";
-	server2.error_pages[404] = "/404.html";
-	server2.locations = locations;
-	server2.default_pages.push_back("index.html");
-	server2.default_pages.push_back("home.html");
-	server2.default_pages.push_back("index.htm");
-	server2.ws_root = base_path + "/data";
-	server2.ws_errors_root = base_path + "default_error_pages";
-	configs.push_back(server2);
 	WebServerCache cache(200);
 	try {
 		ServerManager server_manager(configs, &logger, &cache);
