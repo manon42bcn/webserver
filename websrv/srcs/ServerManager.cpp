@@ -428,9 +428,20 @@ bool ServerManager::turn_off_sanity(const std::string &detail) {
  * This method is be used by signal handler.
  */
 void ServerManager::turn_off_server() {
-	_log->log(LOG_INFO, SM_NAME,
-	          "Server it will be gracefully stop.");
+	_log->log(LOG_INFO, SM_NAME, "Server shutdown initiated.");
 	_active = false;
+	_healthy = false;
+	
+	// Primero cerrar todos los clientes
+	clear_clients();
+	
+	// Luego cerrar todos los servidores
+	clear_servers();
+	
+	// Finalmente limpiar los poll_fds
+	clear_poll();
+	
+	_log->log(LOG_INFO, SM_NAME, "Server shutdown completed.");
 }
 
 /**
@@ -473,16 +484,15 @@ void ServerManager::clear_clients() {
  */
 void ServerManager::clear_servers() {
 	try {
-		for (size_t i = 0; i < _servers.size(); i++) {
-			delete _servers[i];
+		for (std::vector<SocketHandler*>::iterator it = _servers.begin();
+			 it != _servers.end(); ++it) {
+			delete *it;
 		}
-		_log->log(LOG_DEBUG, SM_NAME,
-		          "Servers were cleared.");
+		_servers.clear();
+		_log->log(LOG_DEBUG, SM_NAME, "Servers cleared successfully.");
 	} catch (std::exception& e) {
-		std::ostringstream detail;
-		detail << "Error deleting Servers: " << e.what();
 		_log->log(LOG_ERROR, SM_NAME,
-		          detail.str());
+				  "Error clearing servers: " + std::string(e.what()));
 	}
 }
 

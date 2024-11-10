@@ -107,16 +107,18 @@ bool starts_with(const std::string& str, const std::string& prefix) {
 
 ServerManager* running_server = NULL;
 
-void signal_handler(int sig){
-	(void)sig;
-	running_server->turn_off_server();
+void signal_handler(int sig) {
+	if (running_server != NULL) {
+		std::cout << "\nReceived signal " << sig << ". Shutting down server..." << std::endl;
+		running_server->turn_off_server();
+	}
 }
 
 int main(int argc, char **argv) {
 
 	(void)argc;
 	(void)argv;
-	Logger logger(LOG_ERROR, false);
+	Logger logger(LOG_ERROR, true);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
@@ -160,17 +162,20 @@ int main(int argc, char **argv) {
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
 	WebServerCache cache(200);
+	
 	try {
 		ServerManager server_manager(configs, &logger, &cache);
-		signal(SIGINT, signal_handler);
 		running_server = &server_manager;
+		signal(SIGINT, signal_handler);
+		signal(SIGTERM, signal_handler);
+		signal(SIGTSTP, signal_handler);
 		server_manager.run();
-	} catch (Logger::NoLoggerPointer& e) {
+	} catch (const std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
-	} catch (WebServerException& e){
-		std::cerr << "ERROR: " << e.what() << std::endl;
-	} catch (std::exception& e) {
-		std::cerr << "ERROR: " << e.what() << std::endl;
+		if (running_server != NULL) {
+			running_server->turn_off_server();
+		}
 	}
+	
 	return 0;
 }

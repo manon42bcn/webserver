@@ -28,6 +28,13 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	if (_socket_fd < 0) {
 		throw WebServerException("Error Creating Socket.");
 	}
+
+	int opt = 1;
+	if (setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+		close(_socket_fd);
+		throw WebServerException("Error setting socket options.");
+	}
+
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
