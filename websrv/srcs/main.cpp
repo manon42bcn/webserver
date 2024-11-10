@@ -113,8 +113,11 @@ void signal_handler(int sig){
 }
 
 int main() {
-	std::string base_path = getenv("WEBSERVER_PATH");
-//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+	//std::string base_path = getenv("WEBSERVER_PATH");
+	std::string base_path = get_server_root();
+	//std::cout << "BASE PATH: " << base_path << std::endl;
+
+//	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
 //	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
@@ -157,7 +160,7 @@ int main() {
 	server2.ws_root = base_path + "/data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	Logger logger(LOG_ERROR, true);
+	Logger logger(LOG_DEBUG, true);
 	WebServerCache cache(200);
 	try {
 		ServerManager server_manager(configs, &logger, &cache);
