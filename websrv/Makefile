@@ -28,7 +28,9 @@ SRCS_FILES		=	webserver.cpp \
 					parse/verifications.cpp \
 					parse/utils.cpp \
 					parse/print.cpp \
-					parse/split.cpp
+					parse/split.cpp \
+					parse/parse_server.cpp \
+					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					WebserverCache.hpp \

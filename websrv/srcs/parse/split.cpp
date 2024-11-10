@@ -26,7 +26,7 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
     std::string token;
     std::vector<int> error_codes;
     std::string path;
-    std::string base_path = getenv("WEBSERVER_PATH");
+    //std::string base_path = get_server_root();
 
     while (iss >> token)
     {
@@ -59,7 +59,7 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
             ss << (*it % 10);
             adjusted_path.replace(x_pos, 1, ss.str());
         }
-        error_pages_map[*it] = base_path + adjusted_path;
+        error_pages_map[*it] = adjusted_path;
     }
 
     return error_pages_map;
