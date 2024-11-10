@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 23:59:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:23:50 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,12 @@ WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 	if (!location || !client_data) {
 		throw WebServerException("Ws Response Handler missing pointers.");
 	}
-	_response_data.ranged = false;
 }
 
 /**
  * @brief Destructor for the `WsResponseHandler` class.
  *
- * Cleans up any dresources held by the `WsResponseHandler` instance.
+ * Cleans up any resources held by the `WsResponseHandler` instance.
  * Abstract class does not need to free any resource.
  */
 WsResponseHandler::~WsResponseHandler(){}
@@ -257,7 +256,6 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		if (!file) {
 			turn_off_sanity(HTTP_FORBIDDEN,
 							"Fail to open file " + path);
-			_request.status = HTTP_FORBIDDEN;
 			return ;
 		}
 		file.seekg(0, std::ios::end);
@@ -268,24 +266,22 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		file.read(&content[0], file_size);
 
 		if (!file) {
-			_log->log(LOG_ERROR, RSP_NAME,
-					  "Error reading file: " + path);
-			_request.status = HTTP_INTERNAL_SERVER_ERROR;
-			_response_data.status = false;
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Error reading file: " + path);
 			return ;
 		}
 		file.close();
 	} catch (const std::ios_base::failure& e) {
-		_log->log(LOG_ERROR, RSP_NAME,
-				  "I/O failure: " + std::string(e.what()));
-		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		_response_data.status = false;
+		std::ostringstream detail;
+		detail << "I/O filure: "<< e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						detail.str());
 		return ;
 	} catch (const std::exception& e) {
-		_log->log(LOG_ERROR, RSP_NAME,
-				  "Exception: " + std::string(e.what()));
-		_request.status = HTTP_INTERNAL_SERVER_ERROR;
-		_response_data.status = false;
+		std::ostringstream detail;
+		detail << "Unexpected exception: "<< e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+		                detail.str());
 		return ;
 	}
 	_log->log(LOG_DEBUG, RSP_NAME,

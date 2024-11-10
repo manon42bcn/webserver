@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 23:46:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:12:14 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ struct s_content {
 	std::string         mime;
 	e_http_sts          http_status;
 	std::string         header;
+	s_content(): ranged(false), start(0), end(0), filesize(0),
+	             range_scenario(CR_INIT),status(false), content(""),
+	             mime(""), http_status(HTTP_I_AM_A_TEAPOT), header("") {};
 };
 
 
