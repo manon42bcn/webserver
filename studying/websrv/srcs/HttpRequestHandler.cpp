@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 00:05:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 01:17:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,32 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST) {
-
+	if (!log) {
+		throw Logger::NoLoggerPointer();
+	}
+	if (!client_data || !cache) {
+		throw WebServerException("Some pointers are not valid. Server health is compromised.");
+	}
 	_request_data.sanity = true;
 	_request_data.chunks = false;
 	_request_data.cgi = false;
 	_request_data.access = ACCESS_BAD_REQUEST;
 	_factory = 0;
+}
+
+HttpRequestHandler::~HttpRequestHandler() {
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "HttpRequestHandler resources clean up.");
+}
+
+void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
 	                         &HttpRequestHandler::get_location_config,
-							 &HttpRequestHandler::cgi_normalize_path,
+	                         &HttpRequestHandler::cgi_normalize_path,
 	                         &HttpRequestHandler::normalize_request_path,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
@@ -52,16 +65,11 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 		i++;
 	}
 	_log->log(LOG_DEBUG, RH_NAME,
-	          "Request Validation Process. End.");
+	          "Request Validation Process. End. Send to Response Handler.");
 	handle_request();
-}
-
-
-HttpRequestHandler::~HttpRequestHandler() {
 	_log->log(LOG_DEBUG, RH_NAME,
-	          "HttpRequestHandler resources clean up.");
+	          "Response Process end.");
 }
-
 
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];

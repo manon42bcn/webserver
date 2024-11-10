@@ -52,7 +52,6 @@ private:
 public:
 	Logger(int level, bool log_to_file);
 	~Logger();
-	void to_out(const char c) const;
 	template<typename T>
 	void new_log(int level, const std::string& module, T message) const;
 	void log(int level, const std::string& module, const std::string& message) const;

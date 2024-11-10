@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 22:09:45 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 02:32:45 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,6 @@ public:
 	const ServerConfig& get_config() const;
 	std::string get_port() const;
 
-	class SocketCreationError : public std::exception {
-	public:
-		virtual const char *what() const throw();
-	};
-	class SocketLinkingError : public std::exception {
-	public:
-		virtual const char *what() const throw();
-	};
-	class SocketListeningError : public std::exception {
-	public:
-		virtual const char *what() const throw();
-	};
-	class SocketNonBlockingError : public std::exception {
-	public:
-		virtual const char *what() const throw();
-	};
 };
 
 #endif

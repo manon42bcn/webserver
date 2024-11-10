@@ -6,13 +6,13 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 08:43:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 02:44:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-# ifndef _WEBSERVER_EXCEPTION_
-#define _WEBSERVER_EXCEPTION_
+# ifndef _WEBSERVER_EXCEPTION_HPP_
+#define _WEBSERVER_EXCEPTION_HPP_
 
 #include <exception>
 #include <string>
@@ -48,6 +48,7 @@ public:
 	explicit WebServerException(const std::string& message) : _message(message) {};
 	explicit WebServerException(const char* message) : _message(message) {};
 	explicit WebServerException() : _message("WebServer Error.") {};
+	WebServerException(const WebServerException& other) : _message(other._message) {}
 	virtual ~WebServerException() throw() {};
 	virtual const char* what() const throw() {
 		return (_message.c_str());

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 22:10:06 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 02:32:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 	          "Creating Sockets.");
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0) {
-		throw SocketHandler::SocketCreationError();
+		throw WebServerException("Error Creating Socket.");
 	}
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
@@ -49,19 +49,19 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 		close(_socket_fd);
 		_log->log(LOG_ERROR, SH_NAME,
 				  "Error Linking Socker.");
-		throw SocketHandler::SocketLinkingError();
+		throw WebServerException("Error Linking Socket.");
 	}
 	_log->log(LOG_DEBUG, SH_NAME,
 			  "Socket to listening mode.");
 	if (listen(_socket_fd, SOCKET_BACKLOG_QUEUE) < 0) {
 		_log->log(LOG_ERROR, SH_NAME,
 				  "Error at listening process.");
-		throw SocketHandler::SocketListeningError();
+		throw WebServerException("Error Listening Socket.");
 	}
 	if (!set_nonblocking(_socket_fd)) {
 		_log->log(LOG_ERROR, SH_NAME,
 		          "Error setting _socket_fd as non blocking.");
-		throw SocketHandler::SocketNonBlockingError();
+		throw WebServerException("Error setting socket as non blocking.");
 	}
 	_log->log(LOG_INFO, SH_NAME,
 			  "Server listening. Port: " + int_to_string(port));
@@ -286,19 +286,3 @@ void SocketHandler::mapping_cgi_locations() {
 //	}
 //	closedir(dir);
 //}
-
-const char* SocketHandler::SocketCreationError::what(void) const throw() {
-	return ("SocketHandler Module: Error Creating Socket.");
-}
-
-const char* SocketHandler::SocketLinkingError::what(void) const throw() {
-	return ("SocketHandler Module: Error Linking Socked.");
-}
-
-const char* SocketHandler::SocketListeningError::what(void) const throw() {
-	return ("SocketHandler Module: Error Listening at listening process.");
-}
-
-const char* SocketHandler::SocketNonBlockingError::what(void) const throw() {
-	return ("SocketHandler Module: Error setting connections as nonblocking.");
-}

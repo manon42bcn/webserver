@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 04:09:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 01:35:06 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,6 @@ int main() {
 		running_server = &server_manager;
 		server_manager.run();
 	} catch (Logger::NoLoggerPointer& e) {
-		std::cerr << "ERROR: " << e.what() << std::endl;
-	} catch (ServerManager::ServerBuildError& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	} catch (WebServerException& e){
 		std::cerr << "ERROR: " << e.what() << std::endl;

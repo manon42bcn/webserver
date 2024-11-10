@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 03:50:37 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 01:10:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ class HttpRequestHandler {
 						   ClientData* client_data,
 						   WebServerCache* cache);
 	    ~HttpRequestHandler();
-
+		void request_workflow();
 };
 
 
