@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 19:11:42 by vaguilar         ###   ########.fr       */
+/*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/09 03:40:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 # ifndef WEBSERVER_HPP
 # define WEBSERVER_HPP
@@ -84,6 +86,9 @@ std::string to_lowercase(const std::string& input);
 std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
 std::string trim(const std::string& str, const std::string& chars_to_trim);
 bool is_cgi(const std::string& filename);
+size_t end_of_header_system(std::string& header);
+//std::map<std::string, std::string> parse_headers_map(const std::string& headers);
+
 typedef enum e_mode {
 	TEMPLATE=0,
 	LITERAL=1,
@@ -105,42 +110,40 @@ enum e_path_type {
 };
 
 struct s_request {
-	std::string& body;
-	e_methods&   method;
-	std::string& path;
-	std::string& normalized_path;
-	e_access&    access;
-	bool&        sanity;
-	e_http_sts&  status;
-	size_t&      content_length;
-	std::string& content_type;
-	std::string& boundary;
-	e_path_type& path_type;
-	std::string& query;
-	bool&        cgi;
-
-	s_request(std::string& b, e_methods& m, std::string& p,
-	          std::string& np, e_access& a, bool& s, e_http_sts& sts,
-	          size_t& cl, std::string& ct, std::string& bd,
-			  e_path_type& pt, std::string& qy, bool& cgi):
-			  body(b), method(m), path(p), normalized_path(np),
-              access(a), sanity(s), status(sts),
-			  content_length(cl), content_type(ct), boundary(bd),
-			  path_type(pt), query(qy), cgi(cgi){};
-};
-
-struct s_path {
-	e_http_sts  code;
-	bool        found;
+	std::string header;
+	std::string body;
+	e_methods   method;
 	std::string path;
-	s_path(e_http_sts c, bool f, const std::string p) : code(c), found(f), path(p) {}
+	e_path_type path_type;
+	std::string query;
+	std::string normalized_path;
+	std::string path_info;
+	size_t      content_length;
+	std::string content_type;
+	bool        cgi;
+	std::string script;
+	std::string boundary;
+	bool        chunks;
+	std::string range;
+	std::string cookie;
+	e_access    access;
+	bool        sanity;
+	e_http_sts  status;
+	s_request() : header(""), body(""), method(METHOD_TO_PARSE), path(""),
+				  path_type(PATH_REGULAR), query(""), normalized_path(""),
+				  path_info(""), content_length(0), content_type(""),
+				  cgi(false), script(""), boundary(""), chunks(false),
+				  range(""), cookie(""), access(ACCESS_BAD_REQUEST), sanity(true),
+				  status(HTTP_MAX_STATUS) {};
 };
 
-struct s_content {
-	bool        status;
-	std::string content;
-	s_content(bool s, std::string c): status(s), content(c){};
-};
+typedef struct s_cgi {
+	std::string	cgi_path;
+	std::string script;
+	s_cgi(std::string cp, std::string s): cgi_path(cp), script(s) {};
+} t_cgi;
+
+
 
 typedef enum e_allowed_methods {
 	GET=0,
@@ -153,18 +156,18 @@ typedef enum e_allowed_methods {
 
 std::string int_to_string(int number);
 struct LocationConfig {
-	std::string                 loc_root;
-	e_access                    loc_access; // (?)
-	std::vector<std::string>    loc_default_pages;
-	t_mode                      loc_error_mode; // (?)
-	std::map<int, std::string>  loc_error_pages;
-	std::vector<t_allowed_methods>    loc_allowed_methods;
-	bool                        autoindex;
-	bool                        cgi_file;
-
+	std::string                         loc_root;
+	e_access                            loc_access; // (?)
+	std::vector<std::string>            loc_default_pages;
+	t_mode                              loc_error_mode; // (?)
+	std::map<int, std::string>          loc_error_pages;
+	std::vector<t_allowed_methods>      loc_allowed_methods;
+	bool                                autoindex;
+	bool                                cgi_file;
+	std::map<std::string, t_cgi>		cgi_locations;
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
-	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep) {};
+	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), cgi_file(true) {};
 };
 
 struct ServerConfig {
@@ -178,6 +181,7 @@ struct ServerConfig {
     std::string                                   client_max_body_size;
     bool                                          autoindex;
 	std::string                                   template_error_page;
+	bool										  cgi_locations;  // set after mappig, to avoid config vs files errors
 //	------>>> General config, apply to all servers. Here to make it faster at exec
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)

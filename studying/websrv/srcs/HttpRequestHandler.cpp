@@ -6,157 +6,123 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/29 14:27:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/10 01:17:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpRequestHandler.hpp"
-#include <unistd.h>
-#include <fstream>
-#include <sstream>
-#include <fcntl.h>
-#include <iostream>
-#include <sys/socket.h>
 
-/**
- * @brief Constructs an HttpRequestHandler to process and validate an HTTP request.
- *
- * This constructor initializes the request handler with the logger and client data,
- * then proceeds to process and validate the HTTP request by calling a series of validation steps.
- * If any validation step fails, it stops the process and logs the failure.
- *
- * @details
- * - The constructor first validates the logger pointer, throwing an exception if it's null.
- * - It reads the HTTP request data, parses it, and then executes a series of validation steps:
- *   1. `parse_method_and_path()`
- *   2. `validate_request()`
- *   3. `get_location_config()`
- *   4. `normalize_request_path()`
- * - If any step fails (i.e., `_sanity` is false), the process is halted and the request is handled accordingly.
- *
- * @param log A pointer to the logger instance used to log actions and errors.
- * @param client_data The data associated with the client, including the server configuration and file descriptor.
- * @throws Logger::NoLoggerPointer if the logger pointer is null.
- */
-HttpRequestHandler::HttpRequestHandler(const Logger* log, ClientData* client_data):
+
+HttpRequestHandler::HttpRequestHandler(const Logger* log,
+									   ClientData* client_data,
+									   WebServerCache* cache):
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
+	_cache(cache),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
-	_max_request(MAX_REQUEST),
-	_sanity(true),
-	_cgi(false) {
-	if (_log == NULL) {
+	_max_request(MAX_REQUEST) {
+	if (!log) {
 		throw Logger::NoLoggerPointer();
 	}
-	size_t i = 0;
+	if (!client_data || !cache) {
+		throw WebServerException("Some pointers are not valid. Server health is compromised.");
+	}
+	_request_data.sanity = true;
+	_request_data.chunks = false;
+	_request_data.cgi = false;
+	_request_data.access = ACCESS_BAD_REQUEST;
+	_factory = 0;
+}
+
+HttpRequestHandler::~HttpRequestHandler() {
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "HttpRequestHandler resources clean up.");
+}
+
+void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
 	                         &HttpRequestHandler::get_location_config,
+	                         &HttpRequestHandler::cgi_normalize_path,
 	                         &HttpRequestHandler::normalize_request_path,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "Parse and Validation Request Process. Start");
+	size_t i = 0;
+	_client_data->chronos_reset();
 	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
-		if (!_sanity)
+		if (!_request_data.sanity)
 			break;
 		i++;
 	}
 	_log->log(LOG_DEBUG, RH_NAME,
-	          "Request Validation Process. End.");
+	          "Request Validation Process. End. Send to Response Handler.");
 	handle_request();
-}
-
-HttpRequestHandler::~HttpRequestHandler() {
-	_client_data = NULL;
-	_location = NULL;
 	_log->log(LOG_DEBUG, RH_NAME,
-	          "HttpRequestHandler resources clean up.");
-	_log = NULL;
+	          "Response Process end.");
 }
 
-/**
- * @brief Reads the HTTP request header from the client socket with a timeout check.
- *
- * This method reads the header data from the client socket in chunks and appends it to `_request`.
- * It stops reading when the header size exceeds `_max_request`, the timeout defined in `_client_data`
- * expires, or when the header-body delimiter `\r\n\r\n` is found.
- *
- * @details
- * - The method reads data in chunks using `recv` and appends it to `_request`.
- * - If the accumulated size exceeds `_max_request`, it disables sanity and sets the HTTP status to `HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE`.
- * - If the timeout in `_client_data` expires, it disables sanity and sets the status to `HTTP_REQUEST_TIMEOUT`.
- * - If the client closes the connection, it sets the status to `HTTP_CLIENT_CLOSE_REQUEST`.
- * - On successful read, it resets the timeout counter in `_client_data`.
- *
- * @return None
- */
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
 	int         read_byte;
 	size_t      size = 0;
 
-	_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-	while ((read_byte = recv(_fd, buffer, sizeof(buffer), 0)) > 0) {
-		size += read_byte;
-		if (size > _max_request) {
-			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
-			                "Request Header too large.");
+	try {
+		_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
+		while ((read_byte = recv(_fd, buffer, sizeof(buffer), 0)) > 0) {
+			size += read_byte;
+			if (size > _max_request) {
+				turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
+				                "Request Header too large.");
+				return ;
+			}
+			_request.append(buffer, read_byte);
+			if (_request.find("\r\n\r\n") != std::string::npos) {
+				break ;
+			}
+			if (!_client_data->chronos_request()) {
+				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+				                "Request Timeout.");
+				return ;
+			}
+		}
+		if (read_byte < 0 && size == 0) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Error Reading From Socket. " + int_to_string(read_byte));
 			return ;
 		}
-		_request.append(buffer, read_byte);
-		if (_request.find("\r\n\r\n") != std::string::npos) {
-			break ;
-		}
-		if (!_client_data->chronos()) {
-			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-			                "Request Timeout.");
+		if (size == 0) {
+			_client_data->deactivate();
+			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+			                "Client Close Request");
 			return ;
 		}
+		_client_data->chronos_reset();
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "Request read.");
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Error Getting Header Data Request: " << e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, detail.str());
 	}
-	if (read_byte < 0 && size == 0) {
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Error Reading From Socket. " + int_to_string(read_byte));
-		return ;
-	}
-	if (size == 0) {
-		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-		                "Client Close Request");
-		return ;
-	}
-	_client_data->chronos_reset();
-	_log->log(LOG_DEBUG, RH_NAME,
-	          "Request read.");
 }
 
-/**
- * @brief Parses the HTTP request to separate the header from the body, ensuring the header is not empty.
- *
- * This method locates the header-body delimiter `\r\n\r\n` within the request and separates the header portion.
- * It verifies that the header is not empty before continuing, assigning any remaining data as the body in `_request`.
- *
- * @details
- * - If the delimiter `\r\n\r\n` is found, the method extracts and assigns the header to `_header`.
- * - If `_header` is empty, the method disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- * - The remaining content after the delimiter is assigned to `_request` as the body.
- * - If the delimiter is not found, it disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- *
- * @return None
- */
+
 void HttpRequestHandler::parse_header() {
 	size_t header_end = _request.find("\r\n\r\n");
 
 	if (header_end != std::string::npos) {
-		_header = _request.substr(0, header_end);
-		if (_header.empty()) {
+		_request_data.header = _request.substr(0, header_end);
+		if (_request_data.header.empty()) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Request Header is empty.");
 			return ;
@@ -164,47 +130,34 @@ void HttpRequestHandler::parse_header() {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "Header successfully parsed.");
 		header_end += 4;
-		_request = _request.substr(header_end);
+		std::string tmp = _request.substr(header_end);
+		_request.clear();
+		_request = tmp;
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Request parsing error: No header-body delimiter found.");
+		return;
 	}
-	_log->log(LOG_DEBUG, RH_NAME, _request);
 }
 
-/**
- * @brief Parses the HTTP request header to extract the method and path.
- *
- * This method analyzes the `_header` string to extract the HTTP method and the requested path.
- * If the header is malformed or if the method or path are invalid, it disables sanity and sets the
- * appropriate HTTP error status.
- *
- * @details
- * - If the header does not contain a space character to separate the method, it sets the status to `HTTP_BAD_REQUEST`.
- * - The method portion is extracted and validated; if it is empty or invalid, it disables sanity.
- * - The path is extracted next; if it exceeds `URI_MAX`, it disables sanity and sets the status to `HTTP_URI_TOO_LONG`.
- * - Upon successful parsing, the method and path are logged for tracking.
- *
- * @return None
- */
 void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Request to get path and method.");
-	size_t method_end = _header.find(' ');
+	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
-		method = _header.substr(0, method_end);
-		if (method.empty() || (_method = method_string_to_enum(method)) == METHOD_ERR ) {
+		method = _request_data.header.substr(0, method_end);
+		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == METHOD_ERR ) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Error parsing request: Method is empty or not valid.");
 			return ;
 		}
 
-		size_t path_end = _header.find(' ', method_end + 1);
+		size_t path_end = _request_data.header.find(' ', method_end + 1);
 		if (path_end != std::string::npos) {
-			path = _header.substr(method_end + 1, path_end - method_end - 1);
+			path = _request_data.header.substr(method_end + 1, path_end - method_end - 1);
 			if (path.size() > URI_MAX) {
 				turn_off_sanity(HTTP_URI_TOO_LONG,
 				                "Request path too long.");
@@ -212,7 +165,7 @@ void HttpRequestHandler::parse_method_and_path() {
 			}
 			_log->log(LOG_DEBUG, RH_NAME,
 			          "Request header fully parsed.");
-			_path = path;
+			_request_data.path = path;
 			return ;
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
@@ -222,185 +175,98 @@ void HttpRequestHandler::parse_method_and_path() {
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Error parsing request: method malformed.");
-		_method = METHOD_ERR;
+		_request_data.method = METHOD_ERR;
 		return ;
 	}
 }
 
+
 void HttpRequestHandler::parse_path_type() {
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Path type.");
-	size_t pos = _path.find('?');
+	size_t pos = _request_data.path.find('?');
 	if (pos == std::string::npos) {
-		_path_type = PATH_REGULAR;
+		_request_data.path_type = PATH_REGULAR;
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Regular Path to normalize.");
 		return;
 	}
-	_query_encoded = _path.substr(pos + 1);
-	_path = _path.substr(0, pos);
-	_path_type = PATH_QUERY;
+	_request_data.query = _request_data.path.substr(pos + 1);
+	_request_data.path = _request_data.path.substr(0, pos);
+	_request_data.path_type = PATH_QUERY;
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Query found and parse from path.");
 }
 
-/**
- * @brief Parses the HTTP request header to extract the method and path.
- *
- * This method analyzes the `_header` string to extract the HTTP method and the requested path.
- * If the header is malformed or if the method or path are invalid, it disables sanity and sets the
- * appropriate HTTP error status.
- *
- * @details
- * - If the header does not contain a space character to separate the method, it sets the status to `HTTP_BAD_REQUEST`.
- * - The method portion is extracted and validated; if it is empty or invalid, it disables sanity.
- * - The path is extracted next; if it exceeds `URI_MAX`, it disables sanity and sets the status to `HTTP_URI_TOO_LONG`.
- * - Upon successful parsing, the method and path are logged for tracking.
- *
- * @return None
- */
+
 void HttpRequestHandler::load_header_data() {
-	std::string content_length = get_header_value(_header, "content-length:", "\r\n");
-	_content_type = get_header_value(_header, "content-type:", "\r\n");
+	_log->log(LOG_DEBUG, RH_NAME, _request_data.header);
+	std::string content_length = get_header_value(_request_data.header,
+												  "content-length:", "\r\n");
+	_request_data.content_type = get_header_value(_request_data.header,
+												  "content-type:", "\r\n");
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
-			_content_leght = str_to_size_t(content_length);
+			_request_data.content_length = str_to_size_t(content_length);
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Content-Length malformed.");
 		}
 	} else {
-		_content_leght = 0;
+		_request_data.content_length = 0;
 	}
-	if (!_content_type.empty()) {
-		if (starts_with(_content_type, "multipart")) {
-			_boundary = get_header_value(_content_type, "boundary", "\r\n");
-			if (_boundary.empty()) {
+	if (!_request_data.content_type.empty()) {
+		if (starts_with(_request_data.content_type, "multipart")) {
+			_request_data.boundary = get_header_value(_request_data.content_type,
+													  "boundary", "\r\n");
+			if (_request_data.boundary.empty()) {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
 			}
-			size_t end_type = _content_type.find(';');
+			_factory++;
+			size_t end_type = _request_data.content_type.find(';');
 			if (end_type != std::string::npos) {
-				_content_type = _content_type.substr(0, end_type);
+				_request_data.content_type = _request_data.content_type.substr(0, end_type);
 			}
 		}
 	}
-}
-
-/**
- * @brief Loads the HTTP request content from the client socket.
- *
- * This method reads the body content of the HTTP request up to the specified `Content-Length`.
- * It verifies that the body does not exceed `_max_request`, and checks for timeout during the reading process.
- *
- * @details
- * - If `Content-Length` is zero, the method logs this information and returns immediately.
- * - Reads in chunks from the socket, accumulating the data in `_request` until the specified length or a timeout occurs.
- * - If the accumulated size exceeds `_max_request`, it disables sanity and sets the status to `HTTP_CONTENT_TOO_LARGE`.
- * - If the client closes the connection or an error occurs, it sets the appropriate HTTP status.
- * - On successful read, it assigns the accumulated content to `_body`.
- *
- * @return None
- */
-void HttpRequestHandler::load_content() {
-	if (_content_leght == 0) {
-		_log->log(LOG_INFO, RH_NAME,
-		          "No Content-Length to read from FD.");
-		return ;
-	}
-
-	char buffer[BUFFER_REQUEST];
-	int         read_byte;
-	size_t      size = 0;
-	size_t      to_read = _content_leght - _request.length();
-
-	while (to_read > 0) {
-		read_byte = recv(_fd, buffer, sizeof(buffer) - 1, 0);
-		if (read_byte < 0) {
-			continue ;
-		}
-		size += read_byte;
-		to_read -= read_byte;
-		if (size > _max_request) {
-			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-			                "Body Content too Large.");
-			return ;
-		}
-		_request.append(buffer, read_byte);
-		if (!_client_data->chronos()) {
-			turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-			                "Request Timeout.");
-			return ;
+	std::string chunks = get_header_value(_request_data.header,
+										  "transfer-encoding:", "\r\n");
+	_log->log(LOG_DEBUG, RSP_NAME, chunks);
+	if (!chunks.empty()) {
+		chunks = trim(chunks, " ");
+		if (chunks == "chunked") {
+			_request_data.chunks = true;
 		}
 	}
-	if (read_byte < 0 && size == 0) {
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-		                "Error Reading From Socket. " + int_to_string(read_byte));
-		return ;
+	_request_data.range = get_header_value(_request_data.header,
+										   "range:", "\r\n");
+	if (!_request_data.range.empty()) {
+		_factory++;
 	}
-	if (size == 0) {
-		turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-		                "Client Close Request");
-		return ;
-	}
-	_client_data->chronos_reset();
-	_body = _request;
-	_log->log(LOG_DEBUG, RH_NAME, "Request read.");
-}
-
-/**
- * @brief Validates the HTTP request to ensure body content is consistent with the method.
- *
- * This method checks that the presence or absence of a request body matches the HTTP method requirements.
- * - Methods GET, HEAD, and OPTIONS should not have a body.
- * - Methods POST, PUT, and PATCH require a body.
- *
- * @details
- * - If a body is present with GET, HEAD, or OPTIONS, it disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- * - If a body is missing with POST, PUT, or PATCH, it also disables sanity and sets the status to `HTTP_BAD_REQUEST`.
- * - Logs warnings indicating mismatches between the method and body presence.
- *
- * @return None
- */
-void HttpRequestHandler::validate_request() {
-	if (!_body.empty()) {
-		if (_method == METHOD_GET || _method == METHOD_HEAD || _method == METHOD_OPTIONS) {
-			turn_off_sanity(HTTP_BAD_REQUEST,
-			                "Body received with GET, HEAD or OPTION method.");
-			return ;
-		}
+	std::string keep = get_header_value(_request_data.header,
+										"connection:", "\r\n");
+	if (keep == "keep-alive") {
+		_client_data->keep_active();
 	} else {
-		if (_method == METHOD_POST || _method == METHOD_PUT || _method == METHOD_PATCH) {
-			turn_off_sanity(HTTP_BAD_REQUEST,
-			                "Body empty with POST, PUT or PATCH method.");
-		}
+		_client_data->deactivate();
 	}
+	_request_data.cookie = get_header_value(_request_data.header,
+											"cookie", "\r\n");
 }
 
-/**
- * @brief Searches for the location configuration that matches the requested path.
- *
- * This method iterates through the available locations and searches for a configuration
- * that matches the requested path. It selects the most specific location if there are multiple matches.
- *
- * @details
- * - The method logs the start of the search and iterates through the `locations` map in `_config`.
- * - It checks if the requested path starts with each location key, and selects the longest matching key.
- * - If a matching location is found, it sets `_location` and updates the access permissions (`_access`).
- * - If no location is found, it calls `turn_off_sanity()` and sets the HTTP status to `HTTP_BAD_REQUEST`.
- *
- * @return None
- */
+
 void HttpRequestHandler::get_location_config() {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	_log->log(LOG_DEBUG, RH_NAME, "Searching related location.");
+	_log->log(LOG_DEBUG, RH_NAME,
+			  "Searching related location.");
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
 	     it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
-		if (starts_with(_path, key)) {
+		if (starts_with(_request_data.path, key)) {
 			if (key.length() > saved_key.length()) {
 				result = &it->second;
 				saved_key = key;
@@ -408,36 +274,78 @@ void HttpRequestHandler::get_location_config() {
 		}
 	}
 	if (result) {
-		_log->log(LOG_DEBUG, RH_NAME, "Location Found: " + saved_key);
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Location Found: " + saved_key);
 		_location = result;
-		_access = result->loc_access;
+		_request_data.access = result->loc_access;
 	} else {
-		turn_off_sanity(HTTP_BAD_REQUEST, "Location Not Found");
+		turn_off_sanity(HTTP_BAD_REQUEST,
+						"Location Not Found");
 	}
 }
 
-/**
- * @brief Normalizes the requested path and identifies the correct file or directory to serve.
- *
- * This method combines the server root, location root, and the requested path to determine
- * the final file path. It checks whether the path corresponds to a file or a directory,
- * and if it is a directory, it searches for default pages in that directory.
- *
- * @details
- * - If the path points to a file, the method sets `_normalized_path` to the file path and the status to `HTTP_OK`.
- * - If the path is a directory, it checks for default pages (e.g., `index.html`) and sets the appropriate path.
- * - If neither a file nor a directory with default pages is found, the method calls `turn_off_sanity()` and sets the HTTP status to `HTTP_NOT_FOUND`.
- *
- * @return None
- */
+
+void HttpRequestHandler::cgi_normalize_path() {
+	if (!_location->cgi_file) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "No CGI locations at server config.");
+		return ;
+	}
+	std::string eval_path = _config.server_root + _request_data.path;
+	if (is_dir(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI test - Directory exist.");
+		return ;
+	}
+	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "The user is over a real CGI file. It should be handle as script.");
+		size_t dot_pos = eval_path.find_last_of('/');
+		_request_data.script = eval_path.substr(dot_pos + 1);
+		_request_data.normalized_path = eval_path.substr(0, dot_pos);
+		_request_data.cgi = true;
+		_factory++;
+		return ;
+	}
+
+	std::string saved_key;
+	const t_cgi* cgi_data = NULL;
+
+	_log->log(LOG_DEBUG, RH_NAME,
+	          "Request will be testing against mapped CGI scripts.");
+	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
+	     it != _location->cgi_locations.end(); it++) {
+		const std::string& key = it->first;
+		if (starts_with(_request_data.path, key)) {
+			if (key.length() > saved_key.length()) {
+				cgi_data = &it->second;
+				saved_key = key;
+			}
+		}
+	}
+	if (cgi_data) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI - Location Found: " + saved_key);
+		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
+		_request_data.script = cgi_data->script;
+		_request_data.path_info = _request_data.path.substr(saved_key.length());
+		_request_data.cgi = true;
+		_factory++;
+	}
+}
+
+
 void HttpRequestHandler::normalize_request_path() {
-	std::string eval_path = _config.server_root + _path;
+	if (_request_data.cgi) {
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "CGI context. path has been normalized");
+		return ;
+	}
+	std::string eval_path = _config.server_root + _request_data.path;
 
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
-
-	// TODO: After CGI is fully implemented, this condition must be reviewed.
-	if (_method == METHOD_POST) {
+	if (_request_data.method == METHOD_POST) {
 		_log->log(LOG_DEBUG, RH_NAME,
 				  "Path build to a POST request");
 		if (eval_path[eval_path.size() - 1] != '/') {
@@ -448,24 +356,23 @@ void HttpRequestHandler::normalize_request_path() {
 			                "Non valid path to create resource.");
 			return ;
 		}
-		_normalized_path = eval_path;
+		_request_data.normalized_path = eval_path;
 		return ;
 	}
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
 		_log->log(LOG_INFO, RH_NAME, "File found.");
-		_normalized_path = eval_path;
-		_cgi = is_cgi(_normalized_path);
-		_status = HTTP_OK;
+		_request_data.normalized_path = eval_path;
+		_request_data.cgi = is_cgi(_request_data.normalized_path);
+		_request_data.status = HTTP_OK;
 		return ;
 	}
-	if (_method == METHOD_DELETE) {
+	if (_request_data.method == METHOD_DELETE) {
 		turn_off_sanity(HTTP_NOT_FOUND,
 		                "Resource to be deleted, not found.");
 		return ;
 	}
 	if (is_dir(eval_path)) {
-		// TODO: After CGI is fully implemented, this condition must be reviewed.
-		if (_method == METHOD_DELETE) {
+		if (_request_data.method == METHOD_DELETE) {
 			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 							"Delete method over a dir is not allowed.");
 			return ;
@@ -478,57 +385,263 @@ void HttpRequestHandler::normalize_request_path() {
 			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
 				_log->log(LOG_INFO, RH_NAME, "Default File found");
-				_normalized_path = eval_path + _location->loc_default_pages[i];
-				_cgi = is_cgi(_normalized_path);
-				_status = HTTP_OK;
+				_request_data.normalized_path = eval_path + _location->loc_default_pages[i];
+				_request_data.cgi = is_cgi(_request_data.normalized_path);
+				_request_data.status = HTTP_OK;
 				return ;
 			}
 		}
 	}
 	turn_off_sanity(HTTP_NOT_FOUND,
-	                "Requested path not found " + _path);
+	                "Requested path not found " + _request_data.path);
 }
 
-/**
- * @brief Handles an HTTP request by creating a request wrapper and delegating the response.
- *
- * This method wraps the HTTP request details into an `s_request` structure and creates a single instance
- * of `HttpResponseHandler`. If the sanity check (`_sanity`) is false, it sends an error response; otherwise,
- * it processes the request normally.
- *
- * @details
- * - The method creates a request wrapper containing the body, method, path, normalized path, access, sanity, and status.
- * - It then creates a single instance of `HttpResponseHandler` and uses it to either send an error response (if the
- *   sanity check fails) or to handle the request.
- *
- * @return None
- */
+
+void HttpRequestHandler::load_content() {
+	if (_request_data.chunks) {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Chunk content. Load body request.");
+		load_content_chunks();
+	} else {
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Normal content. Load body request.");
+		load_content_normal();
+	}
+}
+
+void HttpRequestHandler::load_content_chunks() {
+	char buffer[BUFFER_REQUEST];
+	int read_byte;
+	size_t size = 0;
+	std::string chunk_data = _request;
+	_request.clear();
+	long chunk_size = 1;
+
+	try {
+		while (true) {
+			if (!_client_data->chronos_request()) {
+				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+				                "Request Timeout.");
+				return ;
+			}
+			parse_chunks(chunk_data, chunk_size);
+			if (chunk_size == 0) {
+				size = _request.length();
+				break ;
+			}
+			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
+			if (read_byte <= 0) {
+				continue ;
+			} else {
+				size += read_byte;
+			}
+			if (size > _max_request) {
+				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+				                "Body Content too Large.");
+				return ;
+			}
+			chunk_data.append(buffer, read_byte);
+		}
+
+		if (size == 0) {
+			_client_data->deactivate();
+			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+			                "Client Close Request");
+			return ;
+		}
+		if (read_byte < 0 && size == 0) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Error Reading From Socket.");
+			return ;
+		}
+		_request_data.body = _request;
+		_request_data.content_length = _request_data.body.length();
+		_log->log(LOG_DEBUG, RH_NAME,
+		          "Chunked Request read.");
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Error getting chunk data: " << e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						detail.str());
+	}
+}
+
+
+bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size) {
+	size_t pos = 0;
+
+	while (true) {
+		size_t chunk_size_end = chunk_data.find("\r\n", pos);
+		if (chunk_size_end == std::string::npos) {
+			break ;
+		}
+
+		std::string chunk_size_str = chunk_data.substr(pos, chunk_size_end - pos);
+		char* endptr;
+		errno = 0;
+		chunk_size = strtol(chunk_size_str.c_str(), &endptr, 16);
+
+		if (errno == ERANGE || chunk_size < 0 || *endptr != '\0') {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+							"Invalid chunk size format.");
+			return (false);
+		}
+
+		pos = chunk_size_end + 2;
+		//	TODO: Check if any char is left?
+		if (chunk_size == 0) {
+			if (chunk_data.size() < pos + 2) {
+				break ;
+			}
+			if (chunk_data.compare(pos, 2, "\r\n") == 0) {
+				chunk_data.erase(0, pos + 2);
+				return (true);
+			} else {
+				turn_off_sanity(HTTP_BAD_REQUEST,
+								"Invalid chunk ending.");
+				return (false);
+			}
+		}
+		if (chunk_data.size() < pos + chunk_size + 2) {
+			break ;
+		}
+		_request.append(chunk_data, pos, chunk_size);
+		pos += chunk_size + 2;
+		if (_request.size() > _max_request) {
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+							"Body Content too Large.");
+			return (false);
+		}
+	}
+	chunk_data.erase(0, pos);
+	return (true);
+}
+
+
+void HttpRequestHandler::load_content_normal() {
+	if (_request_data.content_length == 0) {
+		_log->log(LOG_INFO, RH_NAME,
+		          "No Content-Length to read from FD.");
+		return ;
+	}
+
+	char buffer[BUFFER_REQUEST];
+	int         read_byte;
+	size_t      size = 0;
+	size_t      to_read = _request_data.content_length - _request.length();
+
+	try {
+		while (to_read > 0) {
+			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
+			if (read_byte < 0) {
+				continue ;
+			}
+			size += read_byte;
+			to_read -= read_byte;
+			if (size > _max_request) {
+				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+				                "Body Content too Large.");
+				return ;
+			}
+			_request.append(buffer, read_byte);
+			if (!_client_data->chronos_request()) {
+				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+				                "Request Timeout.");
+				return ;
+			}
+		}
+		if (read_byte < 0 && size == 0) {
+			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			                "Error Reading From Socket. ");
+			return ;
+		}
+		if (size == 0) {
+			_client_data->deactivate();
+			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+			                "Client Close Request");
+			return ;
+		}
+		_client_data->chronos_reset();
+		_request_data.body = _request;
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Request read.");
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Error reading request: " << e.what();
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						detail.str());
+	}
+}
+
+
+void HttpRequestHandler::validate_request() {
+	if (!_request_data.body.empty()) {
+		if (_request_data.method == METHOD_GET
+			|| _request_data.method == METHOD_HEAD
+			|| _request_data.method == METHOD_OPTIONS) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Body received with GET, HEAD or OPTION method.");
+			return ;
+		}
+	} else {
+		if (_request_data.method == METHOD_POST
+			|| _request_data.method == METHOD_PUT
+			|| _request_data.method == METHOD_PATCH) {
+			turn_off_sanity(HTTP_BAD_REQUEST,
+			                "Body empty with POST, PUT or PATCH method.");
+		}
+	}
+}
+
+
 void HttpRequestHandler::handle_request() {
-	s_request request_wrapper = s_request(_body, _method, _path,
-	                                      _normalized_path, _access, _sanity,
-	                                      _status, _content_leght, _content_type,
-										  _boundary, _path_type, _query_encoded);
-	HttpResponseHandler response(_location, _log, _client_data, request_wrapper, _fd);
-	response.handle_request();
+	if (!_client_data->is_active()) {
+		return;
+	}
+	try {
+		if (_factory == 0) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			response.handle_request();
+			return ;
+		}
+		if (_request_data.cgi) {
+			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			_client_data->deactivate();
+			return ;
+		} else if (!_request_data.range.empty()){
+			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		} else if (!_request_data.boundary.empty()){
+			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log(LOG_ERROR, RH_NAME,
+				  detail.str());
+		_client_data->deactivate();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+			   << "Server Sanity could be compromise.";
+		_log->log(LOG_ERROR, RH_NAME,
+		          detail.str());
+		_client_data->deactivate();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log(LOG_ERROR, RH_NAME,
+		          detail.str());
+		_client_data->deactivate();
+	}
 }
 
-/**
- * @brief Disables the request sanity check and sets an HTTP status.
- *
- * This method logs an error detail, turns off the request processing sanity check by setting
- * `_sanity` to false, and updates the HTTP status of the request.
- *
- * @details
- * - The method logs the provided detail as an error.
- * - It sets the `_sanity` flag to false, indicating that the request should no longer be considered "sane."
- * - The HTTP status is updated to the provided value.
- *
- * @param status The HTTP status to be set (e.g., `HTTP_BAD_REQUEST`).
- * @param detail A string detailing the reason for turning off sanity.
- * @return None
- */
 void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
 	_log->log(LOG_ERROR, RH_NAME, detail);
-	_sanity = false;
-	_status = status;
+	_request_data.sanity = false;
+	_request_data.status = status;
 }

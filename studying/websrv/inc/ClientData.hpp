@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientData.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/19 19:39:57 by mac               #+#    #+#             */
-/*   Updated: 2024/10/19 19:40:00 by mac              ###   ########.fr       */
+/*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/09 00:28:54 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,40 @@
 #include <ctime>
 
 # define CD_MODULE "ClientData"
-# define TIMEOUT_LIMIT 10
+# define TIMEOUT_REQUEST 10
+# define TIMEOUT_CLIENT 10
 
-//TODO READ ABOUT vsnprintf
+/**
+ * @class ClientData
+ * @brief Manages individual client connections in the web server, tracking their state and activity.
+ *
+ * The `ClientData` class encapsulates client connection data and provides
+ * methods to monitor and control the client's connection state, such as
+ * handling timeouts, deactivation, and status checks. Each instance is
+ * associated with a specific client connection, providing an interface
+ * for managing socket file descriptors, connection timestamps, and logging.
+ */
 class ClientData {
 	private:
 		const SocketHandler*    _server;
 		const Logger*           _log;
 	    bool                    _active;
+		bool                    _alive;
 		struct pollfd           _client_fd;
 	    std::time_t             _timestamp;
 
 	public:
 		ClientData(const SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
-	    ClientData& operator=(const ClientData& orig);
-	    const SocketHandler* get_server();
-	    struct pollfd get_fd();
-	    void deactivate();
 		void close_fd();
-	    int chronos();
-	    void chronos_reset();
+	const SocketHandler* get_server();
+	struct pollfd get_fd();
+	bool chronos_request();
+	void chronos_reset();
+	bool chronos_connection();
+	void deactivate();
+	bool is_active() const;
+	void keep_active();
 };
 
 #endif

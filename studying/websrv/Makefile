@@ -11,6 +11,11 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
+					WebserverCache.cpp \
+					WebServerResponseHandler.cpp \
+					HttpCGIHandler.cpp \
+					HttpRangeHandler.cpp \
+					HttpMultipartHandler.cpp \
 					http_codes_helper.cpp \
 					main.cpp \
 					Logger.cpp \
@@ -26,12 +31,18 @@ SRCS_FILES		=	webserver.cpp \
 					parse/split.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					WebserverCache.hpp \
+					WebServerResponseHandler.hpp \
+					HttpCGIHandler.hpp \
+					HttpRangeHandler.hpp \
+					HttpMultipartHandler.hpp \
 					http_enum_codes.hpp \
 					Logger.hpp \
 					SocketHandler.hpp \
 					ClientData.hpp \
 					HttpRequestHandler.hpp \
 					HttpResponseHandler.hpp \
+					WebserverException.hpp \
 					ServerManager.hpp
 SRCS_DIR		=	srcs
 OBJS_DIR		=	obj
@@ -57,7 +68,6 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(HEADERS)
 
 $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
-
 
 run: re
 	@./webserver configs/test1.conf

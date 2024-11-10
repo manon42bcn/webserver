@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Logger.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mac <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 21:36:54 by mac               #+#    #+#             */
-/*   Updated: 2024/10/24 08:14:53 by mporras-         ###   ########.fr       */
+/*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/07 17:16:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 #ifndef __LOGGER_HPP__
 # define __LOGGER_HPP__
 
@@ -50,12 +52,11 @@ private:
 public:
 	Logger(int level, bool log_to_file);
 	~Logger();
-	void to_out(const char c) const;
 	template<typename T>
 	void new_log(int level, const std::string& module, T message) const;
 	void log(int level, const std::string& module, const std::string& message) const;
 	void fatal_log(const std::string& module, const std::string& message) const;
-
+	void status(const std::string& module, const std::string& message) const;
 
 	class NoLoggerPointer : public std::exception {
 		public:

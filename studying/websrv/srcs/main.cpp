@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/29 11:01:43 by mporras-         ###   ########.fr       */
+/*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/10 03:31:37 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 //#include "SocketHandler.hpp"
 #include <cstdlib>
 #include <signal.h>
+#include "WebserverCache.hpp"
 
 void print_server_config(const ServerConfig& config, std::string location) {
 	std::cout << "FROM: " << location << std::endl;
@@ -113,7 +114,8 @@ void signal_handler(int sig){
 
 int main() {
 	std::string base_path = getenv("WEBSERVER_PATH");
-	//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = "/Users/mac/Documents/Cursus/webserver/studying/websrv";
+//	std::string base_path = "/Users/cx03019/Documents/Cursus/webserver/studying/websrv";
 	std::vector<ServerConfig> configs;
 	//	std::vector<LocationConfig> locations;
 	std::map<std::string, LocationConfig> locations;
@@ -155,15 +157,16 @@ int main() {
 	server2.ws_root = base_path + "/data";
 	server2.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server2);
-	Logger logger(LOG_DEBUG, true);
+	Logger logger(LOG_ERROR, true);
+	WebServerCache cache(200);
 	try {
-		ServerManager server_manager(configs, &logger);
+		ServerManager server_manager(configs, &logger, &cache);
 		signal(SIGINT, signal_handler);
 		running_server = &server_manager;
 		server_manager.run();
 	} catch (Logger::NoLoggerPointer& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
-	} catch (ServerManager::ServerBuildError& e) {
+	} catch (WebServerException& e){
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	} catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;

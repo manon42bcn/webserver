@@ -11,6 +11,9 @@
 # **************************************************************************** #
 
 SERVER_DIR		=	websrv/
+WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))websrv
+
+export WEBSERVER_PATH
 
 .PHONY: all
 all:

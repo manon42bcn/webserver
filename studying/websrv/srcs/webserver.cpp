@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 12:39:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/06 14:21:26 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,3 +142,32 @@ bool is_cgi(const std::string& filename){
 	}
 	return (false);
 }
+
+size_t end_of_header_system(std::string& header)
+{
+	size_t  pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos) {
+		pos = header.find("\n\n");
+	}
+	return (pos);
+}
+
+//std::map<std::string, std::string> parse_headers_map(const std::string& headers) {
+//	std::map<std::string, std::string> header_map;
+//	std::istringstream header_stream(headers);
+//	std::string line;
+//
+//	while (std::getline(header_stream, line)) {
+//		if (!line.empty() && line.back() == '\r') {
+//			line.pop_back();
+//		}
+//		size_t separator = line.find(": ");
+//		if (separator != std::string::npos) {
+//			std::string header_name = line.substr(0, separator);
+//			std::string header_value = line.substr(separator + 2);
+//			header_map.insert(std::make_pair(header_name, header_value));
+//		}
+//	}
+//
+//	return header_map;
+//}

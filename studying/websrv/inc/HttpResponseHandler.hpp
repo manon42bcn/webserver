@@ -6,82 +6,39 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/10/28 14:50:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/09 22:15:33 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPRESPONSEHANDLER_HPP
-#define HTTPRESPONSEHANDLER_HPP
+#ifndef _HTTP_RESPONSEHANDLER_HPP_
+#define _HTTP_RESPONSEHANDLER_HPP_
 
-#include "webserver.hpp"
-#include "http_enum_codes.hpp"
-#include "Logger.hpp"
-#include "ClientData.hpp"
-#include <string>
-#include <unistd.h>
-#include <string>
-#include <iostream>
-#include <sys/socket.h>
+#include "WebServerResponseHandler.hpp"
+#include "WebserverCache.hpp"
 
-#define RSP_NAME "HttpResponseHandler"
-
-enum e_content_type {
-	CT_UNKNOWN = 0,
-	CT_FILE = 1,
-	CT_JSON = 2
-};
-
-struct s_multi_part {
-	std::string 	disposition;
-	std::string 	name;
-	std::string 	filename;
-	std::string 	type;
-	std::string 	data;
-	e_content_type	data_type;
-	e_http_sts      status;
-	s_multi_part(std::string di, std::string n,
-				 std::string fn, std::string t,
-				 std::string d): disposition(di), name(n),
-				 filename(fn), type(t), data(d), data_type(CT_FILE),
-                 status(HTTP_CREATED) {};
-};
+#define RHB_NAME "HttpResponseHandler"
 
 /**
- * @brief Handle HTTP responses
+ * @class HttpResponseHandler
+ * @brief Manages HTTP responses, with support for caching static file content.
  *
- * Encapsulate methods to handle HTTP responses.
- * Handle state codes, content and Headers for HTTP responses.
+ * The `HttpResponseHandler` class extends `WsResponseHandler` to handle HTTP responses,
+ * utilizing a caching mechanism to optimize retrieval of static files.
+ * It checks for content in the cache before loading from disk, reducing redundant
+ * I/O operations and improving response times for frequently requested resources.
  */
-class HttpResponseHandler {
-private:
-	int                     	_fd;
-	const LocationConfig*   	_location;
-	const Logger*           	_log;
-	ClientData*             	_client_data;
-	std::vector<s_multi_part>	_multi_content;
-	std::string            		_content;
-	s_request&              	_request;
-
-public:
-	HttpResponseHandler(const LocationConfig *location,
-	                    const Logger *log,
-						ClientData* client_data,
-	                    s_request& request,
-	                    int fd);
-	bool handle_get();
-	bool handle_post();
-	bool handle_delete();
-	std::string header(int code, size_t content_size, std::string mime);
-	std::string default_plain_error();
-	s_content get_file_content(std::string& path);
-	void get_post_content();
-	void parse_multipart_data();
-	void validate_payload();
-	bool send_error_response();
-	bool sender(const std::string& body, const std::string& path);
-	bool handle_request();
-	void turn_off_sanity(e_http_sts status, std::string detail);
-	std::vector<char *> cgi_environment ();
+class HttpResponseHandler : public WsResponseHandler {
+	private:
+		WebServerCache* _cache;
+	public:
+		HttpResponseHandler(const LocationConfig *location,
+							const Logger *log,
+							ClientData* client_data,
+							s_request& request,
+							int fd,
+							WebServerCache* cache);
+	void get_file_content(std::string& path);
+	void get_file_content(int pid, int (&fd)[2]);
 };
 
 #endif
