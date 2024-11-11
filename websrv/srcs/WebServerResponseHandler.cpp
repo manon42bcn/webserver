@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 00:46:50 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 01:43:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,16 @@ WsResponseHandler::~WsResponseHandler(){}
  *	handle_delete()
  */
 
+/**
+ * @brief Handles the incoming HTTP request based on the request method.
+ *
+ * This method processes the request based on the HTTP method specified in the request,
+ * and delegates the actual processing to the appropriate method (`handle_get`, `handle_post`,
+ * or `handle_delete`). If the request method is not recognized, it returns a `405 Method Not Allowed`
+ * error. Additionally, if the request's sanity check fails, it will trigger an error response.
+ *
+ * @returns `true` if the request is successfully handled, otherwise `false` if an error occurs.
+ */
 bool WsResponseHandler::handle_request() {
 
 	switch (_request.method) {
@@ -87,14 +97,15 @@ bool WsResponseHandler::handle_request() {
 }
 
 /**
- * @brief Handles the incoming HTTP request based on the request method.
+ * @brief Handles HTTP GET requests, validating access, resource data, and sending a response.
  *
- * This method processes the request based on the HTTP method specified in the request,
- * and delegates the actual processing to the appropriate method (`handle_get`, `handle_post`,
- * or `handle_delete`). If the request method is not recognized, it returns a `405 Method Not Allowed`
- * error. Additionally, if the request's sanity check fails, it will trigger an error response.
+ * This method processes GET requests by checking if the client has read access to the location.
+ * If access is allowed, it get file content
+ * Upon successful validation, _response_data.content is sent to the client.
+ * If any step fails, an error response is sent to the client.
  *
- * @returns `true` if the request is successfully handled, otherwise `false` if an error occurs.
+ * @returns `true` if the GET request is successfully handled and the data is properly read;
+ *          otherwise, `false` if an error occurs or access is denied.
  */
 bool WsResponseHandler::handle_get() {
 	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
@@ -364,7 +375,6 @@ std::string WsResponseHandler::header(int code, size_t content_size, std::string
 		   << connection.str()
 		   << ranged.str()
 		   << "\r\n";
-	_log->log(LOG_DEBUG, RSP_NAME, header.str());
 	return (header.str());
 }
 
@@ -415,7 +425,8 @@ bool WsResponseHandler::sender(const std::string& body) {
 			}
 			total_sent += sent_bytes;
 		}
-		_log->log(LOG_DEBUG, RSP_NAME, "Response was sent.\n" + response);
+		_log->log(LOG_DEBUG, RSP_NAME,
+				  "Response was sent.");
 		return (true);
 	} catch(const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME, e.what());

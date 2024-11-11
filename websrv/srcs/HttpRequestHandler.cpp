@@ -347,7 +347,6 @@ void HttpRequestHandler::parse_path_type() {
  * @see turn_off_sanity
  */
 void HttpRequestHandler::load_header_data() {
-	_log->log(LOG_DEBUG, RH_NAME, _request_data.header);
 	std::string content_length = get_header_value(_request_data.header,
 												  "content-length:", "\r\n");
 	_request_data.content_type = get_header_value(_request_data.header,
