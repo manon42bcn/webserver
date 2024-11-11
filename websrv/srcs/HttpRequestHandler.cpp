@@ -6,13 +6,29 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 01:17:31 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 00:56:23 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpRequestHandler.hpp"
 
-
+/**
+ * @brief Constructs an HttpRequestHandler instance to process and manage HTTP requests.
+ *
+ * This constructor initializes the handler with essential pointers and settings for processing HTTP requests.
+ * It retrieves configuration details from the associated client data, initializes logging and caching resources,
+ * and verifies the validity of the essential components.
+ *
+ * @param log Pointer to a Logger instance for logging request handling activities.
+ * @param client_data Pointer to ClientData associated with the current client connection.
+ * @param cache Pointer to a WebServerCache instance to manage cached HTTP responses.
+ *
+ * @throw Logger::NoLoggerPointer if the provided logger pointer is null.
+ * @throw WebServerException if any of the provided pointers (client_data or cache) are null.
+ *
+ * @warning Throws exceptions if essential components (logger, client_data, or cache) are not available,
+ * which compromises server functionality.
+ */
 HttpRequestHandler::HttpRequestHandler(const Logger* log,
 									   ClientData* client_data,
 									   WebServerCache* cache):
@@ -29,18 +45,45 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	if (!client_data || !cache) {
 		throw WebServerException("Some pointers are not valid. Server health is compromised.");
 	}
-	_request_data.sanity = true;
-	_request_data.chunks = false;
-	_request_data.cgi = false;
-	_request_data.access = ACCESS_BAD_REQUEST;
 	_factory = 0;
 }
 
+/**
+ * @brief Destructor for HttpRequestHandler.
+ *
+ * @note This destructor does not perform specific memory deallocation
+ * as most resources are managed externally, but it indicates a cleanup phase in logs.
+ */
 HttpRequestHandler::~HttpRequestHandler() {
 	_log->log(LOG_DEBUG, RH_NAME,
 	          "HttpRequestHandler resources clean up.");
 }
 
+/**
+ * @brief Executes the workflow for processing and validating an HTTP request.
+ *
+ * This method performs a sequential series of validation and parsing steps
+ * to handle the incoming HTTP request. Each step is represented as a function pointer
+ * in the `steps` array, allowing dynamic invocation of the individual request processing functions.
+ * If a step fails and the request's sanity is set to `false`, the workflow halts.
+ *
+ * Steps included in the workflow:
+ * - Reading the request header
+ * - Parsing the header, HTTP method, and path
+ * - Determining path type (e.g., regular, query)
+ * - Loading header and body content data
+ * - Validating request specifics and configurations
+ *
+ * @note After parsing and validating, this method delegates the response handling
+ * to the `handle_request` method, which completes the request-response cycle.
+ *
+ * @warning If any step invalidates the request (sets sanity to false),
+ * further processing is halted, and the request goes to handle request to
+ * send the proper error message.
+ *
+ * @see validate_step
+ * @see handle_request
+ */
 void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
 	                         &HttpRequestHandler::parse_header,
@@ -71,6 +114,34 @@ void HttpRequestHandler::request_workflow() {
 	          "Response Process end.");
 }
 
+/**
+ * @brief Reads the HTTP request header from the client socket.
+ *
+ * This method reads data from the client socket, accumulating it into
+ * `_request` until the complete HTTP header is received. The header is considered
+ * complete when the "\r\n\r\n" delimiter is detected.
+ *
+ * Key behaviors and checks:
+ * - If the accumulated data exceeds `_max_request`, the request is terminated
+ *   with an error status indicating that the header fields are too large.
+ * - If the client's `chronos_request` timeout is exceeded during reading,
+ *   the request is terminated with a timeout error.
+ * - If an error occurs during socket reading, such as no data is available
+ *   (`read_byte < 0 && size == 0`), or the client closes the connection
+ *   (`size == 0`), the request is marked as closed.
+ *
+ * Upon successful completion, the client's `chronos_reset` is called to refresh
+ * the timestamp, indicating the request's active state.
+ *
+ * @exception std::exception If an unexpected exception occurs during reading,
+ * it logs the exception message and disables request sanity.
+ *
+ * @note This function sets the request's sanity to `false` if any issues are
+ * encountered (e.g., timeout, client disconnection, header size too large).
+ *
+ * @see turn_off_sanity
+ * @see ClientData::chronos_request
+ */
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
 	int         read_byte;
@@ -116,7 +187,28 @@ void HttpRequestHandler::read_request_header() {
 	}
 }
 
-
+/**
+ * @brief Parses the HTTP request header from the `_request` data.
+ *
+ * This method extracts the HTTP header section from `_request` by locating
+ * the header-body delimiter ("\r\n\r\n"). If the delimiter is found,
+ * the header data is stored in `_request_data.header` and the remaining
+ * data is retained in `_request` as the body. If no delimiter is found,
+ * the request is marked as having a bad request error.
+ *
+ * Key behaviors:
+ * - If the header is empty after extraction, the request is marked as invalid
+ *   with an HTTP status of `HTTP_BAD_REQUEST`.
+ * - If parsing is successful, logs a debug message indicating successful
+ *   header parsing.
+ * - The body data is preserved for further processing, while `_request`
+ *   is cleared to avoid duplication.
+ *
+ * @note This function sets the request's sanity to `false` if no header-body
+ * delimiter is found or if the extracted header is empty.
+ *
+ * @see turn_off_sanity
+ */
 void HttpRequestHandler::parse_header() {
 	size_t header_end = _request.find("\r\n\r\n");
 
@@ -180,7 +272,34 @@ void HttpRequestHandler::parse_method_and_path() {
 	}
 }
 
-
+/**
+ * @brief Extracts and validates the HTTP method and path from the request header.
+ *
+ * This method processes the `_request_data.header` to identify and extract
+ * the HTTP method and the request path. If either the method or path is
+ * malformed or missing, the request is marked as invalid with an appropriate
+ * HTTP status code and error message.
+ *
+ * Process overview:
+ * - The method is extracted by locating the first space in the header.
+ * - The path is identified by locating the next space after the method.
+ *
+ * Key behaviors:
+ * - Sets the HTTP method by converting the extracted string to its
+ *   corresponding enum type. If the conversion fails, the request
+ *   is marked as having a bad request status.
+ * - Checks that the extracted path does not exceed `URI_MAX` characters.
+ * - Logs the status of parsing and validation, with detailed error
+ *   messages if parsing fails.
+ *
+ * Error handling:
+ * - If the method is missing or invalid, the request is marked with
+ *   `HTTP_BAD_REQUEST` status.
+ * - If the path is missing or exceeds the allowed length, the request
+ *   is marked with `HTTP_URI_TOO_LONG` or `HTTP_BAD_REQUEST`.
+ *
+ * @see turn_off_sanity
+ */
 void HttpRequestHandler::parse_path_type() {
 	_log->log(LOG_DEBUG, RH_NAME,
 			  "Parsing Path type.");
@@ -198,7 +317,35 @@ void HttpRequestHandler::parse_path_type() {
 			  "Query found and parse from path.");
 }
 
-
+/**
+ * @brief Parses and loads essential data from the HTTP request header.
+ *
+ * This method extracts critical HTTP header fields such as `Content-Length`,
+ * `Content-Type`, `Transfer-Encoding`, `Range`, and `Connection` from the
+ * `_request_data.header` string. This information is stored in `_request_data`
+ * for further processing.
+ *
+ * Detailed parsing flow:
+ * - **Content-Length**: Ensures the header is a valid size, converting to `size_t`
+ *   and storing it in `_request_data.content_length`.
+ * - **Content-Type**: Determines the type of content (e.g., multipart) and checks
+ *   for a boundary parameter if multipart. It adjusts `_request_data.boundary`
+ *   as needed.
+ * - **Transfer-Encoding**: Checks for chunked transfer encoding, enabling
+ *   `_request_data.chunks` if detected.
+ * - **Range**: Loads range data into `_request_data.range` and updates `_factory`
+ *   for specific response handling if required.
+ * - **Connection**: Sets connection status to keep-alive if specified; otherwise,
+ *   marks the connection to be closed.
+ * - **Cookie**: Retrieves any cookie data from the header.
+ *
+ * Error Handling:
+ * - If `Content-Length` or `boundary` values are malformed, `sanity` is set to false
+ *   with appropriate HTTP error statuses, preventing further request processing.
+ *
+ * @see get_header_value
+ * @see turn_off_sanity
+ */
 void HttpRequestHandler::load_header_data() {
 	_log->log(LOG_DEBUG, RH_NAME, _request_data.header);
 	std::string content_length = get_header_value(_request_data.header,
@@ -256,7 +403,30 @@ void HttpRequestHandler::load_header_data() {
 											"cookie", "\r\n");
 }
 
-
+/**
+ * @brief Retrieves and sets the location configuration based on the request path.
+ *
+ * This method searches for the most specific matching location within `_config.locations`
+ * based on the `_request_data.path`. The `LocationConfig` object associated with the longest
+ * matching key is selected, allowing for precise path matching. Once found, `_location` and
+ * `_request_data.access` are updated to reflect this configuration.
+ *
+ * Detailed Workflow:
+ * - Iterates through `_config.locations` to find entries whose paths match the beginning of
+ *   `_request_data.path`.
+ * - The longest matching key is selected, ensuring the most specific location configuration
+ *   is applied.
+ * - If a match is found, `_location` is set to the corresponding `LocationConfig` pointer,
+ *   and `_request_data.access` is updated.
+ * - If no match is found, the method sets `sanity` to false with an HTTP 400 (Bad Request)
+ *   status, as the requested path does not correspond to any configured location.
+ *
+ * Error Handling:
+ * - If no matching location is found, `turn_off_sanity` is invoked with `HTTP_BAD_REQUEST`
+ *   and a relevant error message, marking the request as invalid.
+ *
+ * @see turn_off_sanity
+ */
 void HttpRequestHandler::get_location_config() {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
@@ -284,7 +454,32 @@ void HttpRequestHandler::get_location_config() {
 	}
 }
 
-
+/**
+ * @brief Normalizes the request path for CGI execution if applicable.
+ *
+ * This method determines if the request path should be handled as a CGI script. It first checks
+ * if there are CGI locations specified in the configuration. If CGI is enabled, the method verifies
+ * if the requested path corresponds to a CGI script or if it matches any predefined CGI location mappings.
+ *
+ * Detailed Workflow:
+ * - If `_location->cgi_file` is not set, CGI handling is not enabled, and the function exits early.
+ * - Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - Checks if `eval_path` is a directory or a non-CGI file. If so, it is not treated as a CGI path.
+ * - If `eval_path` points to a CGI file directly, it is marked for CGI handling:
+ *   - Sets `_request_data.script` to the filename part of the path.
+ *   - Sets `_request_data.normalized_path` to the directory containing the CGI file.
+ *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ * - If no direct CGI file is found, checks if the path matches any mapped CGI locations in `_location->cgi_locations`:
+ *   - Iterates over `cgi_locations` to find the longest matching prefix.
+ *   - If a match is found, sets `_request_data.normalized_path`, `_request_data.script`, and `_request_data.path_info`.
+ *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ *
+ * Error Handling:
+ * - This method assumes that if a CGI configuration is specified but not found in the request path, it will not
+ *   affect the request’s validity. Instead, CGI handling is simply skipped.
+ *
+ * @see is_file, is_dir, starts_with, _request_data
+ */
 void HttpRequestHandler::cgi_normalize_path() {
 	if (!_location->cgi_file) {
 		_log->log(LOG_DEBUG, RH_NAME,
@@ -292,11 +487,12 @@ void HttpRequestHandler::cgi_normalize_path() {
 		return ;
 	}
 	std::string eval_path = _config.server_root + _request_data.path;
-	if (is_dir(eval_path)) {
+	if (is_dir(eval_path) || (is_file(eval_path) && !is_cgi(eval_path))) {
 		_log->log(LOG_DEBUG, RH_NAME,
-		          "CGI test - Directory exist.");
+		          "CGI test - Directory or resource exist.");
 		return ;
 	}
+
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
 		_log->log(LOG_DEBUG, RH_NAME,
 		          "The user is over a real CGI file. It should be handle as script.");
@@ -334,7 +530,35 @@ void HttpRequestHandler::cgi_normalize_path() {
 	}
 }
 
-
+/**
+ * @brief Normalizes the request path for file serving and resource validation.
+ *
+ * This method determines the appropriate file or directory to serve based on `_request_data.path`.
+ * It also verifies if the path meets specific requirements for various HTTP methods.
+ *
+ * Workflow:
+ * - **CGI Context**: If `_request_data.cgi` is true, the path is already normalized for CGI, and the function exits early.
+ * - **Build and Validate Path**: Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - **POST Request**:
+ *   - If the HTTP method is POST, ensures `eval_path` is a directory and allows resource creation within it.
+ *   - Updates `_request_data.normalized_path` with `eval_path` if it passes validation.
+ * - **File Handling**:
+ *   - Checks if `eval_path` points to an existing file. If found, it is set as `_request_data.normalized_path`, and CGI handling is verified.
+ * - **DELETE Request**:
+ *   - If the HTTP method is DELETE, validates that the path is a file and not a directory.
+ * - **Directory Handling**:
+ *   - For other request types, verifies if `eval_path` points to a directory.
+ *   - If a directory is found, attempts to locate a default file within it based on `_location->loc_default_pages`.
+ *   - If a valid file is found, updates `_request_data.normalized_path` and confirms the HTTP status.
+ *
+ * Error Handling:
+ * - Sets `sanity` to false if the path does not meet required conditions, such as:
+ *   - **POST Method**: The directory does not exist or is invalid.
+ *   - **DELETE Method**: The requested resource does not exist or is a directory.
+ *   - **File/Directory Not Found**: The requested path or a default file within a directory is not found.
+ *
+ * @see is_file, is_dir, _request_data, turn_off_sanity
+ */
 void HttpRequestHandler::normalize_request_path() {
 	if (_request_data.cgi) {
 		_log->log(LOG_DEBUG, RH_NAME,
@@ -396,7 +620,21 @@ void HttpRequestHandler::normalize_request_path() {
 	                "Requested path not found " + _request_data.path);
 }
 
-
+/**
+ * @brief Loads the request body content based on the transfer encoding.
+ *
+ * This method handles both chunked and regular content loading based on `_request_data.chunks`.
+ *
+ * Workflow:
+ * - **Chunked Content**: If `_request_data.chunks` is set to `true`, it loads the content using `load_content_chunks()`.
+ *   - This approach is typically used when the `Transfer-Encoding` header specifies `chunked`.
+ * - **Regular Content**: If `_request_data.chunks` is `false`, it loads the content as a continuous body with `load_content_normal()`.
+ *
+ * Logging:
+ * - Logs the content loading method (chunked or normal) based on the transfer encoding.
+ *
+ * @see load_content_chunks, load_content_normal
+ */
 void HttpRequestHandler::load_content() {
 	if (_request_data.chunks) {
 		_log->log(LOG_DEBUG, RH_NAME,
@@ -409,6 +647,26 @@ void HttpRequestHandler::load_content() {
 	}
 }
 
+/**
+ * @brief Reads and loads the body content when the request is chunked.
+ *
+ * This method handles HTTP chunked transfer encoding. It reads each chunk of the content
+ * from the socket, appends it to `_request`, and checks for size and timeout limits.
+ *
+ * Workflow:
+ * - **Timeout Check**: Verifies if the request is still within its allowed timeframe using `chronos_request()`.
+ * - **Chunk Parsing**: Utilizes `parse_chunks` to interpret chunk size and content.
+ * - **Content Limit**: Monitors total body size and triggers an error if it exceeds `_max_request`.
+ *
+ * Exceptions:
+ * - If an error occurs during socket read or chunk parsing, an exception is logged and processed.
+ *
+ * Sanity Control:
+ * - If a timeout, size overflow, or socket error is encountered, `turn_off_sanity` is invoked with
+ *   appropriate HTTP error codes.
+ *
+ * @see parse_chunks, chronos_request, turn_off_sanity
+ */
 void HttpRequestHandler::load_content_chunks() {
 	char buffer[BUFFER_REQUEST];
 	int read_byte;
@@ -466,7 +724,30 @@ void HttpRequestHandler::load_content_chunks() {
 	}
 }
 
-
+/**
+ * @brief Parses the chunked data according to HTTP/1.1 chunked transfer encoding.
+ *
+ * This function reads the chunk size and content in the chunked transfer-encoded data,
+ * handling each chunk iteratively. It appends valid chunks to `_request` and checks
+ * for valid boundaries and chunk sizes.
+ *
+ * Workflow:
+ * - **Chunk Size Extraction**: Reads the chunk size (in hexadecimal) from `chunk_data`.
+ * - **Size Validation**: Checks that the chunk size is valid and within specified limits.
+ * - **Content Appending**: Appends chunk content to `_request` if within the max size.
+ * - **Chunk End Check**: Verifies chunk termination using `\r\n` characters.
+ *
+ * Sanity Control:
+ * - **Invalid Chunk Size**: Calls `turn_off_sanity` with `HTTP_BAD_REQUEST` if the chunk size
+ *   format is invalid.
+ * - **Excessive Content**: Calls `turn_off_sanity` with `HTTP_CONTENT_TOO_LARGE` if the
+ *   cumulative content size exceeds `_max_request`.
+ * - **Invalid End of Chunk**: Calls `turn_off_sanity` if the chunk ending is malformed.
+ *
+ * @param chunk_data The incoming chunked data from the HTTP request body.
+ * @param chunk_size A reference to store the size of the current chunk.
+ * @return `true` if parsing completes successfully, `false` otherwise.
+ */
 bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size) {
 	size_t pos = 0;
 
@@ -517,7 +798,34 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 	return (true);
 }
 
-
+/**
+ * @brief Reads the HTTP request body based on the `Content-Length` specified.
+ *
+ * This function reads the request body from the file descriptor `_fd` until the total
+ * number of bytes read matches the `Content-Length`. It updates the `_request` string
+ * with the body content and checks for size limits and timeouts.
+ *
+ * Workflow:
+ * - **Initialize Read Parameters**: Sets up the buffer and variables for tracking
+ *   bytes read and bytes remaining.
+ * - **Loop to Read Data**: Reads data in chunks until `Content-Length` is reached or
+ *   a timeout/error occurs.
+ * - **Sanity Checks**:
+ *   - **Content Too Large**: Terminates and logs an error if the read size exceeds
+ *     `_max_request`.
+ *   - **Timeout Handling**: Calls `turn_off_sanity` if the client’s request times out.
+ *   - **End of File/Socket Error**: Handles errors and unexpected closures from the client.
+ *
+ * Sanity Control:
+ * - **Content-Length Exceeded**: Calls `turn_off_sanity` with `HTTP_CONTENT_TOO_LARGE`.
+ * - **Timeout Error**: Calls `turn_off_sanity` with `HTTP_REQUEST_TIMEOUT` if reading
+ *   times out.
+ * - **Socket Closure/Read Error**: Calls `turn_off_sanity` if there is an error reading
+ *   from the socket or if the client closes the connection.
+ *
+ * @exception std::exception Catches general exceptions during the reading process
+ * and deactivates sanity if an exception is encountered.
+ */
 void HttpRequestHandler::load_content_normal() {
 	if (_request_data.content_length == 0) {
 		_log->log(LOG_INFO, RH_NAME,
@@ -573,7 +881,31 @@ void HttpRequestHandler::load_content_normal() {
 	}
 }
 
-
+/**
+ * @brief Validates the HTTP request based on the request method and body presence.
+ *
+ * This function checks for logical consistency between the HTTP request method
+ * and the presence of a request body. Certain methods (e.g., GET, HEAD, OPTIONS)
+ * should not include a body, while others (e.g., POST, PUT, PATCH) require one.
+ *
+ * - **Methods with Body Restriction**: For methods like GET, HEAD, or OPTIONS,
+ *   the presence of a body results in a `HTTP_BAD_REQUEST` status.
+ * - **Methods Requiring a Body**: For methods like POST, PUT, or PATCH, the absence
+ *   of a body also results in a `HTTP_BAD_REQUEST` status.
+ *
+ * @details
+ * - Calls `turn_off_sanity` to deactivate the request if there is a method-body
+ *   inconsistency.
+ * - **Sanity Deactivation**: Sets `sanity` to false if a request-method inconsistency
+ *   is found, logging a descriptive error message.
+ *
+ * Workflow:
+ * 1. **Check for Inconsistent Body Presence**:
+ *   - For **GET, HEAD, OPTIONS**: Ensures no body is included.
+ *   - For **POST, PUT, PATCH**: Ensures a body is present.
+ * 2. **Sanity Check**: Calls `turn_off_sanity` with `HTTP_BAD_REQUEST` and an
+ *    error message if validation fails.
+ */
 void HttpRequestHandler::validate_request() {
 	if (!_request_data.body.empty()) {
 		if (_request_data.method == METHOD_GET
@@ -593,12 +925,43 @@ void HttpRequestHandler::validate_request() {
 	}
 }
 
-
+/**
+ * @brief Processes the HTTP request and initiates the appropriate response handler.
+ *
+ * Based on the request's state and attributes, this function initializes and
+ * dispatches a suitable response handler:
+ * - `HttpResponseHandler`: Handles standard HTTP requests.
+ * - `HttpCGIHandler`: Handles CGI requests.
+ * - `HttpRangeHandler`: Manages ranged requests.
+ * - `HttpMultipartHandler`: Handles multipart data uploads.
+ *
+ * Workflow:
+ * 1. **Sanity Check**: If `_request_data.sanity` is false, a generic error response
+ *    is sent via `HttpResponseHandler`.
+ * 2. **Request Type Decision**:
+ *   - If `_factory` is 0, uses `HttpResponseHandler`.
+ *   - If `_request_data.cgi` is true, uses `HttpCGIHandler`.
+ *   - If `_request_data.range` is non-empty, uses `HttpRangeHandler`.
+ *   - If `_request_data.boundary` is non-empty, uses `HttpMultipartHandler`.
+ *
+ * **Exception Handling**:
+ * - Catches `WebServerException`, `Logger::NoLoggerPointer`, and `std::exception`
+ *   to log errors and deactivate the client connection.
+ *
+ * @exception WebServerException Catches errors from WebServer-specific issues.
+ * @exception Logger::NoLoggerPointer Catches logging pointer errors.
+ * @exception std::exception Catches unexpected exceptions.
+ */
 void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_active()) {
 		return;
 	}
 	try {
+		if (!_request_data.sanity){
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			response.send_error_response();
+			return ;
+		}
 		if (_factory == 0) {
 			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
 			response.handle_request();
@@ -640,6 +1003,20 @@ void HttpRequestHandler::handle_request() {
 	}
 }
 
+/**
+ * @brief Disables the request's sanity state and sets an error status.
+ *
+ * This method is called when an error is encountered that invalidates the
+ * current request, effectively marking it as unsound and readying it for an
+ * error response. It logs the provided error detail and updates the request's
+ * status and sanity state accordingly.
+ *
+ * @param status The HTTP status code indicating the error type.
+ * @param detail A description of the error encountered, which will be logged.
+ *
+ * @note Once called, the request will be considered invalid (`sanity` is set to false)
+ *       and should be handled by an error response in the workflow.
+ */
 void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
 	_log->log(LOG_ERROR, RH_NAME, detail);
 	_request_data.sanity = false;

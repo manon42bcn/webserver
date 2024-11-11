@@ -6,13 +6,12 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 01:10:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 00:57:28 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef _HTTPREQUESTHANDLER_HPP_
 #define _HTTPREQUESTHANDLER_HPP_
-
 // Includes
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
@@ -28,8 +27,6 @@
 #include <fcntl.h>
 #include <iostream>
 #include <sys/socket.h>
-#include <unistd.h>
-#include <fstream>
 #include <sstream>
 // Defines
 #define RH_NAME "HttpRequestHandler"
@@ -42,6 +39,39 @@ typedef struct e_chunk {
 	std::string chunk;
 } t_chunk;
 
+
+/**
+ * @brief Handles HTTP requests by parsing, validating, and dispatching them to appropriate response handlers.
+ *
+ * The `HttpRequestHandler` class is responsible for managing the complete lifecycle of an HTTP request,
+ * including:
+ * - Parsing request headers, method, path, and any additional data such as query parameters and multipart boundaries.
+ * - Validating the request's structure and content.
+ * - Determining the appropriate handler based on request type (e.g., standard, CGI, ranged, or multipart).
+ * - Generating an error response if the request is invalid or malformed.
+ *
+ * The class utilizes a series of private validation and parsing steps, executed in sequence through
+ * `request_workflow`. If any step detects an invalid state, it halts the process and sends an error response.
+ *
+ * ## Attributes
+ * - `_config`: Reference to the server configuration.
+ * - `_log`: Pointer to the logging utility for logging events and errors.
+ * - `_client_data`: Manages client-specific information, including connection state and timing.
+ * - `_cache`: Pointer to the server cache to leverage cached responses.
+ * - `_location`: Configuration for the specific URL location being requested.
+ * - `_fd`: File descriptor associated with the client request.
+ * - `_max_request`: Maximum allowed size for request data.
+ * - `_request`: Raw request data.
+ * - `_factory`: Determines the handler type (standard, CGI, range, etc.).
+ * - `_request_data`: Stores parsed request details, including headers, method, path, and body.
+ *
+ * The class supports CGI requests, ranged requests, multipart uploads, and standard HTTP methods,
+ * using helper classes (`HttpResponseHandler`, `HttpCGIHandler`, `HttpRangeHandler`, and `HttpMultipartHandler`)
+ * to handle each type.
+ *
+ * @exception WebServerException Thrown for issues with cache, logging, or invalid configurations.
+ * @see HttpResponseHandler, HttpCGIHandler, HttpRangeHandler, HttpMultipartHandler
+ */
 class HttpRequestHandler {
 	private:
 	    typedef void (HttpRequestHandler::*validate_step)( );
@@ -80,6 +110,4 @@ class HttpRequestHandler {
 		void request_workflow();
 };
 
-
 #endif
-

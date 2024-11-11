@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 22:23:50 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 00:46:50 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,6 @@ WsResponseHandler::~WsResponseHandler(){}
 
 bool WsResponseHandler::handle_request() {
 
-	if (!_request.sanity) {
-		send_error_response();
-		return (false);
-	}
 	switch (_request.method) {
 		case METHOD_GET:
 			_log->log(LOG_DEBUG, RSP_NAME,
@@ -464,14 +460,15 @@ std::string WsResponseHandler::default_plain_error() {
  * a default error page is generated and sent. The response header is constructed according to
  * the status code, content length, and MIME type.
  *
+ * If a location was not provided, a plain default text will be sent.
+ *
  * @returns `true` if the error response is successfully sent; `false` if an error occurs.
  */
 bool WsResponseHandler::send_error_response() {
 	std::string error_file;
 	std::string file_path = ".html";
 
-	if (_location)
-	{
+	if (_location) {
 		std::map<int, std::string>::const_iterator it;
 		const std::map<int, std::string>* error_pages = &_location->loc_error_pages;
 		if (_location->loc_error_mode == TEMPLATE) {
@@ -500,7 +497,12 @@ bool WsResponseHandler::send_error_response() {
 		} else {
 			_log->log(LOG_DEBUG, RSP_NAME,
 					  "Custom error page was not found. Error: " + int_to_string(_request.status));
+			_response_data.content = default_plain_error();
 		}
+	} else {
+		_log->log(LOG_DEBUG, RSP_NAME,
+		          "Location was not provided. Plain text error will be sent.");
+		_response_data.content = default_plain_error();
 	}
 	_headers = header(_request.status,
 					  _response_data.content.length(),
