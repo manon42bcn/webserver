@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 01:50:53 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 13:55:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
-	if (!location || !client_data) {
-		throw WebServerException("Ws Response Handler missing pointers.");
+	if (!client_data) {
+		throw WebServerException("Ws Response Handler missing client pointer.");
 	}
 }
 
