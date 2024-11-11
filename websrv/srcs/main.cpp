@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 01:55:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:20:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 
 	(void)argc;
 	(void)argv;
-	Logger logger(LOG_DEBUG, true);
+	Logger logger(LOG_ERROR, true);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;

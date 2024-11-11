@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:09:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:24:58 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 	if (configs.empty()) {
 		throw WebServerException("No configs available to create servers.");
 	}
-	_poll_fds.reserve(1000);
+	_poll_fds.reserve(2000);
 	_log->log(LOG_DEBUG, SM_NAME,
 			  "Server Manager Instance init.");
 	std::ostringstream detail;
@@ -206,6 +206,9 @@ void ServerManager::cleanup_invalid_fds() {
  * if so, `remove_client_from_poll` is called to handle the cleanup.
  */
 void ServerManager::timeout_clients() {
+	if (_clients.empty()) {
+		return;
+	}
 	for (size_t i = 0; i < _poll_fds.size(); i++) {
 		t_client_it it = _clients.find(_poll_fds[i].fd);
 		if (it != _clients.end() && !it->second->chronos_connection()) {
