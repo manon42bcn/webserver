@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:21:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 14:20:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #include <sys/stat.h>
 
 # define SH_NAME "SocketHandler"
-# define SOCKET_BACKLOG_QUEUE 2048
+# define SOCKET_BACKLOG_QUEUE 3096
 
 class SocketHandler {
 private:
