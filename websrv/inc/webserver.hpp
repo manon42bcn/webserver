@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 03:40:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 19:42:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@
 #define MID_GRAY		"\033[38;5;245m"
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
+#define WS_MAX_RETRIES 5
+#define WS_RETRY_DELAY_MICROSECONDS 100000
 // TODO: define a path max for WS only, path max is defined at limits.h
 # ifndef PATH_MAX
 #define PATH_MAX 4096

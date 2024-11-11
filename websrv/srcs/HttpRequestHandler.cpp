@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:12:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 19:29:26 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,14 +121,14 @@ void HttpRequestHandler::request_workflow() {
  * `_request` until the complete HTTP header is received. The header is considered
  * complete when the "\r\n\r\n" delimiter is detected.
  *
- * Key behaviors and checks:
- * - If the accumulated data exceeds `_max_request`, the request is terminated
- *   with an error status indicating that the header fields are too large.
- * - If the client's `chronos_request` timeout is exceeded during reading,
- *   the request is terminated with a timeout error.
- * - If an error occurs during socket reading, such as no data is available
- *   (`read_byte < 0 && size == 0`), or the client closes the connection
- *   (`size == 0`), the request is marked as closed.
+ * Function Workflow:
+ * 1. Attempt to read data from the socket using `recv()`.
+ * 2. If data is read successfully, append it to the request buffer.
+ * 3. Check if the headers are fully received by looking for the end sequence (`\r\n\r\n`).
+ * 4. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 5. If the client closes the connection (`recv()` returns `0`) or an error occurs after maximum retries,
+ * 	  mark the connection as inactive.
+ * 6. If the request headers are successfully read, proceed to the next step in handling the request.
  *
  * Upon successful completion, the client's `chronos_reset` is called to refresh
  * the timestamp, indicating the request's active state.
@@ -144,43 +144,53 @@ void HttpRequestHandler::request_workflow() {
  */
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
-	int         read_byte;
-	size_t      size = 0;
+	int read_byte;
+	size_t size = 0;
+	int retry_count = 0;
 
 	try {
-		_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-		while ((read_byte = recv(_fd, buffer, sizeof(buffer), 0)) > 0) {
-			size += read_byte;
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
-				                "Request Header too large.");
-				return ;
-			}
-			_request.append(buffer, read_byte);
-			if (_request.find("\r\n\r\n") != std::string::npos) {
-				break ;
-			}
-			if (!_client_data->chronos_request()) {
-				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
+		_log->log(LOG_DEBUG, RH_NAME,
+				  "Reading HTTP request");
+		while (true) {
+			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
+			if (read_byte > 0) {
+				size += read_byte;
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
+									"Request Header too large.");
+					return;
+				}
+				_request.append(buffer, read_byte);
+				if (_request.find("\r\n\r\n") != std::string::npos) {
+					break;
+				}
+				retry_count = 0;
+				if (!_client_data->chronos_request()) {
+					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+									"Request Timeout.");
+					return;
+				}
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
 		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket. " + int_to_string(read_byte));
-			return ;
-		}
-		if (size == 0) {
-//			_client_data->deactivate();
-			_client_data->kill_client();
-			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
-		}
+
 		_client_data->chronos_reset();
 		_log->log(LOG_DEBUG, RH_NAME,
-		          "Request read.");
+				  "Request read.");
+
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error Getting Header Data Request: " << e.what();
@@ -648,22 +658,20 @@ void HttpRequestHandler::load_content() {
 }
 
 /**
- * @brief Reads and loads the body content when the request is chunked.
+ * @brief Loads the HTTP request body content in chunked transfer mode.
  *
- * This method handles HTTP chunked transfer encoding. It reads each chunk of the content
- * from the socket, appends it to `_request`, and checks for size and timeout limits.
+ * This function reads the request body content from the client socket when the transfer encoding is chunked.
+ * It processes the incoming chunks until the entire request body is received.
+ * The function handles errors, request timeouts, and ensures that the body content does not exceed the allowed size.
  *
- * Workflow:
- * - **Timeout Check**: Verifies if the request is still within its allowed timeframe using `chronos_request()`.
- * - **Chunk Parsing**: Utilizes `parse_chunks` to interpret chunk size and content.
- * - **Content Limit**: Monitors total body size and triggers an error if it exceeds `_max_request`.
- *
- * Exceptions:
- * - If an error occurs during socket read or chunk parsing, an exception is logged and processed.
- *
- * Sanity Control:
- * - If a timeout, size overflow, or socket error is encountered, `turn_off_sanity` is invoked with
- *   appropriate HTTP error codes.
+ * The flow of the function is as follows:
+ * 1. Begin by attempting to parse any existing chunk data.
+ * 2. Continue reading from the socket using `recv()` to gather more chunk data as needed.
+ * 3. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 4. If `recv()` returns `0`, it indicates that the client has closed the connection, and the connection is marked inactive.
+ * 5. Accumulate the chunk data and parse it to extract individual chunks, appending them to the request body.
+ * 6. If the chunk size reaches `0`, it indicates the end of the chunked transfer, and the function completes.
+ * 7. If the body is successfully read, reset the request timeout and store the final body content.
  *
  * @see parse_chunks, chronos_request, turn_off_sanity
  */
@@ -674,49 +682,62 @@ void HttpRequestHandler::load_content_chunks() {
 	std::string chunk_data = _request;
 	_request.clear();
 	long chunk_size = 1;
+	int retry_count = 0;
 
 	try {
 		while (true) {
 			if (!_client_data->chronos_request()) {
 				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
+								"Request Timeout.");
+				return;
 			}
 			parse_chunks(chunk_data, chunk_size);
 			if (chunk_size == 0) {
 				size = _request.length();
-				break ;
+				break;
 			}
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
-			if (read_byte <= 0) {
-				continue ;
-			} else {
+
+			if (read_byte > 0) {
 				size += read_byte;
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+									"Body Content too Large.");
+					return;
+				}
+				chunk_data.append(buffer, read_byte);
+				retry_count = 0;
+
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-				                "Body Content too Large.");
-				return ;
-			}
-			chunk_data.append(buffer, read_byte);
 		}
 
 		if (size == 0) {
-//			_client_data->deactivate();
 			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
+							"Client Close Request");
+			return;
 		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket.");
-			return ;
-		}
+
 		_request_data.body = _request;
 		_request_data.content_length = _request_data.body.length();
 		_log->log(LOG_DEBUG, RH_NAME,
-		          "Chunked Request read.");
+				  "Chunked Request read.");
+
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error getting chunk data: " << e.what();
@@ -724,6 +745,7 @@ void HttpRequestHandler::load_content_chunks() {
 						detail.str());
 	}
 }
+
 
 /**
  * @brief Parses the chunked data according to HTTP/1.1 chunked transfer encoding.
@@ -770,7 +792,6 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 		}
 
 		pos = chunk_size_end + 2;
-		//	TODO: Check if any char is left?
 		if (chunk_size == 0) {
 			if (chunk_data.size() < pos + 2) {
 				break ;
@@ -806,16 +827,13 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
  * number of bytes read matches the `Content-Length`. It updates the `_request` string
  * with the body content and checks for size limits and timeouts.
  *
- * Workflow:
- * - **Initialize Read Parameters**: Sets up the buffer and variables for tracking
- *   bytes read and bytes remaining.
- * - **Loop to Read Data**: Reads data in chunks until `Content-Length` is reached or
- *   a timeout/error occurs.
- * - **Sanity Checks**:
- *   - **Content Too Large**: Terminates and logs an error if the read size exceeds
- *     `_max_request`.
- *   - **Timeout Handling**: Calls `turn_off_sanity` if the client’s request times out.
- *   - **End of File/Socket Error**: Handles errors and unexpected closures from the client.
+ * The flow of the function is as follows:
+ * 1. Verify that `Content-Length` is greater than `0`. If not, log the information and return.
+ * 2. Read data from the socket using `recv()` until the entire content is received.
+ * 3. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 4. If `recv()` returns `0`, it means the client closed the connection, and the connection is marked inactive.
+ * 5. Accumulate the read data in the request buffer and ensure it does not exceed the allowed maximum size.
+ * 6. If the body is successfully read, reset the request timeout and proceed with processing the request.
  *
  * Sanity Control:
  * - **Content-Length Exceeded**: Calls `turn_off_sanity` with `HTTP_CONTENT_TOO_LARGE`.
@@ -830,52 +848,62 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 void HttpRequestHandler::load_content_normal() {
 	if (_request_data.content_length == 0) {
 		_log->log(LOG_INFO, RH_NAME,
-		          "No Content-Length to read from FD.");
-		return ;
+				  "No Content-Length to read from FD.");
+		return;
 	}
-
 	char buffer[BUFFER_REQUEST];
-	int         read_byte;
-	size_t      size = 0;
-	size_t      to_read = _request_data.content_length - _request.length();
+	int read_byte;
+	size_t size = 0;
+	size_t to_read = _request_data.content_length - _request.length();
+	int retry_count = 0;
 
 	try {
 		while (to_read > 0) {
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
-			if (read_byte < 0) {
-				continue ;
+			if (read_byte > 0) {
+				size += read_byte;
+				to_read -= read_byte;
+
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+									"Body Content too Large.");
+					return;
+				}
+				_request.append(buffer, read_byte);
+				retry_count = 0;
+				if (!_client_data->chronos_request()) {
+					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+									"Request Timeout.");
+					return;
+				}
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
-			size += read_byte;
-			to_read -= read_byte;
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-				                "Body Content too Large.");
-				return ;
-			}
-			_request.append(buffer, read_byte);
-			if (!_client_data->chronos_request()) {
-				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
-			}
-		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket. ");
-			return ;
 		}
 		if (size == 0) {
-//			_client_data->deactivate();
 			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
+							"Client Close Request");
+			return;
 		}
 		_client_data->chronos_reset();
 		_request_data.body = _request;
 		_log->log(LOG_DEBUG, RH_NAME,
-				  "Request read.");
-	} catch (std::exception& e) {
+				  "Request body read.");
+	}
+	catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error reading request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,

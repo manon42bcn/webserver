@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 13:55:46 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 19:46:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,13 @@ WsResponseHandler::~WsResponseHandler(){}
  * error. Additionally, if the request's sanity check fails, it will trigger an error response.
  *
  * @returns `true` if the request is successfully handled, otherwise `false` if an error occurs.
+ * @throws WebServerException if the `_location` pointer is `NULL`, required to handle normal request.
  */
 bool WsResponseHandler::handle_request() {
 
+	if (!_location) {
+		throw WebServerException("Location pointer not present to handle normal request.");
+	}
 	switch (_request.method) {
 		case METHOD_GET:
 			_log->log(LOG_DEBUG, RSP_NAME,
@@ -267,6 +271,10 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		}
 		file.seekg(0, std::ios::end);
 		std::streampos file_size = file.tellg();
+		if (file_size == 0) {
+			_response_data.status = true;
+			return ;
+		}
 		file.seekg(0, std::ios::beg);
 		content.resize(file_size);
 
@@ -402,37 +410,52 @@ bool WsResponseHandler::send_response(const std::string &body, const std::string
 }
 
 /**
- * @brief Sends the full HTTP response, including headers and body, to the client.
+ * @brief Sends the HTTP response to the client through the socket file descriptor.
  *
- * This method attempts to send the complete HTTP response through the socket specified by `_fd`.
- * It constructs the response from `_headers` and `body`, then sends it in chunks until fully sent.
- * If any error occurs during transmission, an error log is generated and the method returns `false`.
+ * This function sends the complete response, including headers and body, to the client.
+ * It handles partial writes and ensures that all data is sent correctly by using a loop.
  *
- * @param body The body content of the HTTP response to send.
- * @returns `true` if the response is successfully sent in its entirety; `false` if an error occurs.
+ * The flow of the function is as follows:
+ * 1. Concatenate the response headers and body into a single response string.
+ * 2. Attempt to send the response data using `send()`.
+ * 3. If `send()` returns `-1`, retry sending up to a predefined maximum number of times without checking `errno`.
+ * 4. Introduce a small delay between retries to avoid a busy-wait loop.
+ * 5. Accumulate the number of bytes successfully sent and continue until the entire response is sent.
+ * 6. If the response is sent successfully, log the details and return true. If it fails after maximum retries, return false.
+ *
+ * @param body The body content of the HTTP response to be sent.
+ * @return True if the response is sent successfully, false otherwise.
  */
 bool WsResponseHandler::sender(const std::string& body) {
+	std::string response = _headers + body;
+	int total_sent = 0;
+	int to_send = static_cast<int>(response.length());
+	int retry_count = 0;
 	try {
-		std::string response = _headers + body;
-		int total_sent = 0;
-		int to_send = (int)response.length();
 		while (total_sent < to_send) {
-			int sent_bytes = (int)send(_fd, response.c_str() + total_sent, to_send - total_sent, 0);
+			int sent_bytes = static_cast<int>(send(_fd, response.c_str() + total_sent, to_send - total_sent, 0));
 			if (sent_bytes == -1) {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					_log->log(LOG_ERROR, RSP_NAME,
+							  "Max retries exceeded while sending response.");
+					return false;
+				}
 				_log->log(LOG_DEBUG, RSP_NAME,
-				          "Error sending the response.");
-				return (false);
+						  "Send failed, retrying...");
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
+			retry_count = 0;
 			total_sent += sent_bytes;
 		}
 		std::ostringstream detail;
-		detail << "Response was sent. Status : " << _request.status << " Sent: " << response.length();
-		_log->log(LOG_DEBUG, RSP_NAME,
-				  detail.str());
+		detail << "Response was sent. Status: " << _request.status << " Sent: " << response.length();
+		_log->log(LOG_DEBUG, RSP_NAME, detail.str());
 		return (true);
-	} catch(const std::exception& e) {
+	} catch (const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME, e.what());
-		return (false);
+		return false;
 	}
 }
 
