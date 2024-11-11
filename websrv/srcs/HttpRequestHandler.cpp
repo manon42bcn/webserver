@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 00:56:23 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:12:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ void HttpRequestHandler::read_request_header() {
 			return ;
 		}
 		if (size == 0) {
-			_client_data->deactivate();
+//			_client_data->deactivate();
+			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 			                "Client Close Request");
 			return ;
@@ -701,7 +702,8 @@ void HttpRequestHandler::load_content_chunks() {
 		}
 
 		if (size == 0) {
-			_client_data->deactivate();
+//			_client_data->deactivate();
+			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 			                "Client Close Request");
 			return ;
@@ -863,7 +865,8 @@ void HttpRequestHandler::load_content_normal() {
 			return ;
 		}
 		if (size == 0) {
-			_client_data->deactivate();
+//			_client_data->deactivate();
+			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 			                "Client Close Request");
 			return ;
@@ -952,7 +955,7 @@ void HttpRequestHandler::validate_request() {
  * @exception std::exception Catches unexpected exceptions.
  */
 void HttpRequestHandler::handle_request() {
-	if (!_client_data->is_active()) {
+	if (!_client_data->is_alive()) {
 		return;
 	}
 	try {

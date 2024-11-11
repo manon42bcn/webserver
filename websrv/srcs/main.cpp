@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 01:38:58 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 01:55:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv) {
 	ServerConfig server1;
 	server1.port = 8080;
 	server1.server_name = "localhost";
-	server1.server_root = base_path + "/data";
+	server1.server_root = base_path + "data";
 	server1.error_pages[404] = "/404.html";
 	server1.locations = locations;
 	server1.default_pages.push_back("index.html");
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
 	ServerConfig server2;
 	server2.port = 9090;
 	server2.server_name = "localhost";
-	server2.server_root =  base_path + "/data/9090";
+	server2.server_root =  base_path + "data/9090";
 	server2.error_pages[404] = "/404.html";
 	server2.locations = locations;
 	server2.default_pages.push_back("index.html");

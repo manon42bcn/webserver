@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 01:43:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 01:50:53 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,8 +425,10 @@ bool WsResponseHandler::sender(const std::string& body) {
 			}
 			total_sent += sent_bytes;
 		}
+		std::ostringstream detail;
+		detail << "Response was sent. Status : " << _request.status << " Sent: " << response.length();
 		_log->log(LOG_DEBUG, RSP_NAME,
-				  "Response was sent.");
+				  detail.str());
 		return (true);
 	} catch(const std::exception& e) {
 		_log->log(LOG_ERROR, RSP_NAME, e.what());

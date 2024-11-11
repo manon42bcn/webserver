@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 00:28:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:08:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ class ClientData {
 	void chronos_reset();
 	bool chronos_connection();
 	void deactivate();
+	void kill_client();
+	bool is_alive() const;
 	bool is_active() const;
 	void keep_active();
 };

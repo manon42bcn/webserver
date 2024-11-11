@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 03:00:53 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:09:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,7 +340,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		if (it != _clients.end()) {
 			HttpRequestHandler request_handler(_log, it->second, _cache);
 			request_handler.request_workflow();
-			if (!it->second->is_active()) {
+			if (!it->second->is_active() || !it->second->is_alive()) {
 				remove_client_from_poll(it, poll_index);
 			} else {
 				it->second->chronos_reset();
