@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   HttpMultipartHandler.cpp                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/10 20:43:26 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/11 00:48:33 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "HttpMultipartHandler.hpp"
 
 /**
@@ -28,20 +40,16 @@ HttpMultipartHandler::HttpMultipartHandler(const LocationConfig *location,
 /**
  * @brief Processes the HTTP request based on the method type.
  *
- * This function validates the request method and sanity status, and if the method
+ * This function validates the request method and if the method
  * is `POST`, it forwards the request to the `handle_post` method.
  *
  * @return `true` if the request was successfully processed, `false` otherwise.
  *
  * @details
- * - **Sanity Check**: Ensures that `_request.sanity` is `true`.
  * - **Supported Method**: Only `POST` method is allowed; other methods will trigger an error response.
  */
 bool HttpMultipartHandler::handle_request() {
-	if (!_request.sanity) {
-		send_error_response();
-		return (false);
-	}
+
 	switch (_request.method) {
 		case METHOD_POST:
 			_log->log(LOG_DEBUG, MP_NAME,

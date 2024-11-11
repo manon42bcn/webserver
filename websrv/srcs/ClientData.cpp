@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 01:07:19 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 02:09:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -163,6 +163,15 @@ bool ClientData::is_active() const {
 }
 
 /**
+ * @brief Checks if the client was set to kill.
+ *
+ * @return True if the client is alive, false otherwise.
+ */
+bool ClientData::is_alive() const {
+	return (_alive);
+}
+
+/**
  * @brief Sets the client connection as active.
  *
  * Updates the `_active` flag to `true`, indicating that the client connection
@@ -170,4 +179,14 @@ bool ClientData::is_active() const {
  */
 void ClientData::keep_active() {
 	_active = true;
+}
+
+/**
+ * @brief Sets the client life cycle to false.
+ *
+ * Updates the `_alive` flag to `false`, indicating that the client connection
+ * Process should end.
+ */
+void ClientData::kill_client() {
+	_alive = false;
 }
