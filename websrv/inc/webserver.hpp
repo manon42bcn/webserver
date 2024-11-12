@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 03:40:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:31:08 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ struct LocationConfig {
 	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), cgi_file(true) {};
 
 // victor
-	bool                                cgi;
+	// bool                                cgi;
 };
 
 struct ServerConfig {
@@ -267,7 +267,7 @@ void parse_root(std::vector<std::string>::iterator& it, Logger* logger, Location
 void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_limit_except(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, LocationConfig& location);
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
-
+void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 
 
 # endif

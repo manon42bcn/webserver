@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/05 21:58:34 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:24:32 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
         else if (find_exact_string(*it, "cgi"))
             parse_cgi(it, logger, location);
+        else if (find_exact_string(*it, "error_mode"))
+            parse_template_error_page(it, logger, location);
         else if (it->find("}") != std::string::npos)
         {
             // Realmente no se si llega aqui
@@ -69,8 +71,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     }
 
     // Obligatorios
-    if (location.loc_root == "")
-        logger->fatal_log("parse_location_block", "Location root is not valid.");
+    // if (location.loc_root == "")
+    //     logger->fatal_log("parse_location_block", "Location root is not valid.");
 
     return location;
 }
@@ -115,13 +117,14 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     logger->log(LOG_DEBUG, "parse_server_block", "Server block parsed");
 
     // Configuracion de variables
-    server.ws_root = get_server_root();
-    if (server.error_pages.size() > 0 && server.server_root != "")
-    {
-        logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
-        for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
-            it->second = join_paths(server.server_root, it->second);
-    }
+    // server.ws_root = server.server_root;
+    server.ws_root = "/Users/vaguilar/Desktop/webserver/websrv//data";
+    // if (server.error_pages.size() > 0 && server.server_root != "")
+    // {
+    //     logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
+    //     for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
+    //         it->second = join_paths(server.server_root, it->second);
+    // }
 
     if (check_obligatory_params(server, logger))
         logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");

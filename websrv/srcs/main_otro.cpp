@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main_otro.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 03:31:37 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:26:52 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void signal_handler(int sig){
 
 int main(int argc, char **argv) {
 
-	Logger logger(LOG_ERROR, false);
+	Logger logger(LOG_DEBUG, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
@@ -123,6 +123,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	configs = parse_file(argv[1], &logger);
 
+	logger.log(LOG_DEBUG, "main_otro", "Configs parsed");
 
 	WebServerCache cache(200);
 	try {

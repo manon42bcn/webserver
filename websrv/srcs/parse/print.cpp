@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/26 20:44:23 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:32:03 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void print_location_config(LocationConfig location) {
         }
     }
 
-    std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi) ? "true" : "false") << std::endl;
+    std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi_file) ? "true" : "false") << std::endl;
 
     // std::cout << GRAY << "      Location root: " RESET << location.loc_root << std::endl;
 }

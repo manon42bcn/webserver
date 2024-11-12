@@ -6,7 +6,7 @@
 #    By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/05 22:26:19 by mporras-          #+#    #+#              #
-#    Updated: 2024/10/28 19:10:11 by vaguilar         ###   ########.fr        #
+#    Updated: 2024/11/11 22:37:56 by vaguilar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRCS_FILES		=	webserver.cpp \
 					HttpRangeHandler.cpp \
 					HttpMultipartHandler.cpp \
 					http_codes_helper.cpp \
-					main.cpp \
+					main_otro.cpp \
 					Logger.cpp \
 					SocketHandler.cpp \
 					ClientData.cpp \

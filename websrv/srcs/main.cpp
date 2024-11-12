@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:20:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:37:11 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 
 	(void)argc;
 	(void)argv;
-	Logger logger(LOG_ERROR, true);
+	Logger logger(LOG_DEBUG, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
@@ -133,10 +133,10 @@ int main(int argc, char **argv) {
 
 	// Insertar datos en el vector
 	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
-	locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
-	locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
+	// locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
+	// locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
+	// locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
+	// locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
 
 	ServerConfig server1;
 	server1.port = 8080;
@@ -149,20 +149,23 @@ int main(int argc, char **argv) {
 	server1.ws_errors_root = base_path + "default_error_pages";
 	configs.push_back(server1);
 
-	ServerConfig server2;
-	server2.port = 9090;
-	server2.server_name = "localhost";
-	server2.server_root =  base_path + "data/9090";
-	server2.error_pages[404] = "/404.html";
-	server2.locations = locations;
-	server2.default_pages.push_back("index.html");
-	server2.default_pages.push_back("home.html");
-	server2.default_pages.push_back("index.htm");
-	server2.ws_root = base_path + "/data";
-	server2.ws_errors_root = base_path + "default_error_pages";
-	configs.push_back(server2);
+	// ServerConfig server2;
+	// server2.port = 9090;
+	// server2.server_name = "localhost";
+	// server2.server_root =  base_path + "data/9090";
+	// server2.error_pages[404] = "/404.html";
+	// server2.locations = locations;
+	// server2.default_pages.push_back("index.html");
+	// server2.default_pages.push_back("home.html");
+	// server2.default_pages.push_back("index.htm");
+	// server2.ws_root = base_path + "/data";
+	// server2.ws_errors_root = base_path + "default_error_pages";
+	// configs.push_back(server2);
 	WebServerCache cache(200);
+
 	
+	
+	print_servers(configs);
 	try {
 		ServerManager server_manager(configs, &logger, &cache);
 		running_server = &server_manager;

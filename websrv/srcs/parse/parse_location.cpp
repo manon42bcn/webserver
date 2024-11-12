@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/05 21:36:29 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:31:40 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,22 @@ void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationC
     if (check_cgi(get_value(*it, "cgi")))
     {
         if (get_value(*it, "cgi") == "on")
-            location.cgi = true;
+            location.cgi_file = true;
         else if (get_value(*it, "cgi") == "off")
-            location.cgi = false;
+            location.cgi_file = false;
     }
     else
         logger->fatal_log("parse_location_block", "CGI " + get_value(*it, "cgi") + " is not valid.");   
 }
+
+void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
+    logger->log(LOG_DEBUG, "parse_server_block", "Parsing template error page");
+
+    if (get_value(*it, "error_mode") == "template")
+        location.loc_error_mode = TEMPLATE;
+    else if (get_value(*it, "error_mode") == "literal")
+        location.loc_error_mode = LITERAL;
+    else
+        logger->fatal_log("parse_location_block", "Error mode " + get_value(*it, "error_mode") + " is not valid.");
+}
+
