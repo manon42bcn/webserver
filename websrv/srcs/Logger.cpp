@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 11:20:38 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 02:42:43 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:30:20 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,25 @@ void Logger::status(const std::string &module, const std::string &message) const
 	 return ("Logger Pointer cannot be NULL.");
  }
 
+void Logger::log_debug(const std::string& module, const std::string& message) const {
+	if (_level > LOG_DEBUG) {
+		return;
+	}
+	*(_log_out) << "[DEBUG][" << module << "]: " << message << std::endl;
+ }
+void Logger::log_info(const std::string& module, const std::string& message) const {
+	if (_level > LOG_INFO) {
+		return;
+	}
+	*(_log_out) << "[INFO][" << module << "]: " << message << std::endl;
+ }
+void Logger::log_warning(const std::string& module, const std::string& message) const {
+	if (_level > LOG_WARNING) {
+		return;
+	}
+	*(_log_out) << "[WARNING][" << module << "]: " << message << std::endl;
+ }
+void Logger::log_error(const std::string& module, const std::string& message) const {
+	*(_log_out) << "[ERROR][" << module << "]: " << message << std::endl;
+ }
 

@@ -57,6 +57,10 @@ public:
 	void log(int level, const std::string& module, const std::string& message) const;
 	void fatal_log(const std::string& module, const std::string& message) const;
 	void status(const std::string& module, const std::string& message) const;
+	void log_debug(const std::string& module, const std::string& message) const;
+	void log_info(const std::string& module, const std::string& message) const;
+	void log_warning(const std::string& module, const std::string& message) const;
+	void log_error(const std::string& module, const std::string& message) const;
 
 	class NoLoggerPointer : public std::exception {
 		public:

@@ -33,7 +33,7 @@ ClientData::ClientData(const SocketHandler* server,
 	_client_fd.fd = fd;
 	_client_fd.events = POLLIN;
 	_timestamp = std::time(NULL);
-	_log->log(LOG_DEBUG, CD_MODULE,
+	_log->log_debug( CD_MODULE,
 			  "Client Data init.");
 }
 
@@ -61,16 +61,16 @@ void ClientData::close_fd() {
 		_active = false;
 		if (_client_fd.fd) {
 			close(_client_fd.fd);
-			_log->log(LOG_WARNING, CD_MODULE,
+			_log->log_warning( CD_MODULE,
 			          "client fd closed and set to inactive.");
 		} else {
-			_log->log(LOG_WARNING, CD_MODULE,
+			_log->log_warning( CD_MODULE,
 			          "client fd is not active.");
 		}
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error Closing Client FD : " << e.what();
-		_log->log(LOG_ERROR, CD_MODULE,
+		_log->log_error( CD_MODULE,
 		          detail.str());
 	}
 }

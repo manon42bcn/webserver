@@ -55,7 +55,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
  * as most resources are managed externally, but it indicates a cleanup phase in logs.
  */
 HttpRequestHandler::~HttpRequestHandler() {
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "HttpRequestHandler resources clean up.");
 }
 
@@ -96,7 +96,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Parse and Validation Request Process. Start");
 	size_t i = 0;
 	_client_data->chronos_reset();
@@ -107,10 +107,10 @@ void HttpRequestHandler::request_workflow() {
 			break;
 		i++;
 	}
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Request Validation Process. End. Send to Response Handler.");
 	handle_request();
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Response Process end.");
 }
 
@@ -149,7 +149,7 @@ void HttpRequestHandler::read_request_header() {
 	int retry_count = 0;
 
 	try {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Reading HTTP request");
 		while (true) {
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
@@ -188,7 +188,7 @@ void HttpRequestHandler::read_request_header() {
 		}
 
 		_client_data->chronos_reset();
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Request read.");
 
 	} catch (std::exception& e) {
@@ -230,7 +230,7 @@ void HttpRequestHandler::parse_header() {
 			                "Request Header is empty.");
 			return ;
 		}
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "Header successfully parsed.");
 		header_end += 4;
 		std::string tmp = _request.substr(header_end);
@@ -247,7 +247,7 @@ void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Parsing Request to get path and method.");
 	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
@@ -266,7 +266,7 @@ void HttpRequestHandler::parse_method_and_path() {
 				                "Request path too long.");
 				return ;
 			}
-			_log->log(LOG_DEBUG, RH_NAME,
+			_log->log_debug( RH_NAME,
 			          "Request header fully parsed.");
 			_request_data.path = path;
 			return ;
@@ -312,19 +312,19 @@ void HttpRequestHandler::parse_method_and_path() {
  * @see turn_off_sanity
  */
 void HttpRequestHandler::parse_path_type() {
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Parsing Path type.");
 	size_t pos = _request_data.path.find('?');
 	if (pos == std::string::npos) {
 		_request_data.path_type = PATH_REGULAR;
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Regular Path to normalize.");
 		return;
 	}
 	_request_data.query = _request_data.path.substr(pos + 1);
 	_request_data.path = _request_data.path.substr(0, pos);
 	_request_data.path_type = PATH_QUERY;
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Query found and parse from path.");
 }
 
@@ -390,7 +390,7 @@ void HttpRequestHandler::load_header_data() {
 	}
 	std::string chunks = get_header_value(_request_data.header,
 										  "transfer-encoding:", "\r\n");
-	_log->log(LOG_DEBUG, RSP_NAME, chunks);
+	_log->log_debug( RSP_NAME, chunks);
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
@@ -441,7 +441,7 @@ void HttpRequestHandler::get_location_config() {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Searching related location.");
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
 	     it != _config.locations.end(); ++it) {
@@ -454,7 +454,7 @@ void HttpRequestHandler::get_location_config() {
 		}
 	}
 	if (result) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
 		_request_data.access = result->loc_access;
@@ -492,19 +492,19 @@ void HttpRequestHandler::get_location_config() {
  */
 void HttpRequestHandler::cgi_normalize_path() {
 	if (!_location->cgi_file) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "No CGI locations at server config.");
 		return ;
 	}
 	std::string eval_path = _config.server_root + _request_data.path;
 	if (is_dir(eval_path) || (is_file(eval_path) && !is_cgi(eval_path))) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI test - Directory or resource exist.");
 		return ;
 	}
 
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "The user is over a real CGI file. It should be handle as script.");
 		size_t dot_pos = eval_path.find_last_of('/');
 		_request_data.script = eval_path.substr(dot_pos + 1);
@@ -517,7 +517,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 	std::string saved_key;
 	const t_cgi* cgi_data = NULL;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Request will be testing against mapped CGI scripts.");
 	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
 	     it != _location->cgi_locations.end(); it++) {
@@ -530,7 +530,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		}
 	}
 	if (cgi_data) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI - Location Found: " + saved_key);
 		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
 		_request_data.script = cgi_data->script;
@@ -571,16 +571,16 @@ void HttpRequestHandler::cgi_normalize_path() {
  */
 void HttpRequestHandler::normalize_request_path() {
 	if (_request_data.cgi) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI context. path has been normalized");
 		return ;
 	}
 	std::string eval_path = _config.server_root + _request_data.path;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Normalize path to get proper file to serve." + eval_path);
 	if (_request_data.method == METHOD_POST) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Path build to a POST request");
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
@@ -594,7 +594,7 @@ void HttpRequestHandler::normalize_request_path() {
 		return ;
 	}
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
-		_log->log(LOG_INFO, RH_NAME, "File found.");
+		_log->log_info( RH_NAME, "File found.");
 		_request_data.normalized_path = eval_path;
 		_request_data.cgi = is_cgi(_request_data.normalized_path);
 		_request_data.status = HTTP_OK;
@@ -614,11 +614,11 @@ void HttpRequestHandler::normalize_request_path() {
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
-		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
+		_log->log_info( RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
 		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
-			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
+			_log->log_info( RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
-				_log->log(LOG_INFO, RH_NAME, "Default File found");
+				_log->log_info( RH_NAME, "Default File found");
 				_request_data.normalized_path = eval_path + _location->loc_default_pages[i];
 				_request_data.cgi = is_cgi(_request_data.normalized_path);
 				_request_data.status = HTTP_OK;
@@ -647,11 +647,11 @@ void HttpRequestHandler::normalize_request_path() {
  */
 void HttpRequestHandler::load_content() {
 	if (_request_data.chunks) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Chunk content. Load body request.");
 		load_content_chunks();
 	} else {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Normal content. Load body request.");
 		load_content_normal();
 	}
@@ -735,7 +735,7 @@ void HttpRequestHandler::load_content_chunks() {
 
 		_request_data.body = _request;
 		_request_data.content_length = _request_data.body.length();
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Chunked Request read.");
 
 	} catch (std::exception& e) {
@@ -847,7 +847,7 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
  */
 void HttpRequestHandler::load_content_normal() {
 	if (_request_data.content_length == 0) {
-		_log->log(LOG_INFO, RH_NAME,
+		_log->log_info( RH_NAME,
 				  "No Content-Length to read from FD.");
 		return;
 	}
@@ -900,7 +900,7 @@ void HttpRequestHandler::load_content_normal() {
 		}
 		_client_data->chronos_reset();
 		_request_data.body = _request;
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Request body read.");
 	}
 	catch (std::exception& e) {
@@ -1014,20 +1014,20 @@ void HttpRequestHandler::handle_request() {
 	} catch (WebServerException& e) {
 		std::ostringstream detail;
 		detail << "Error Handling response: " << e.what();
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 				  detail.str());
 		_client_data->deactivate();
 	} catch (Logger::NoLoggerPointer& e) {
 		std::ostringstream detail;
 		detail << "Logger Pointer Error at Response Handler. "
 			   << "Server Sanity could be compromise.";
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 		          detail.str());
 		_client_data->deactivate();
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Unknown error handling response: " << e.what();
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 		          detail.str());
 		_client_data->deactivate();
 	}
@@ -1048,7 +1048,7 @@ void HttpRequestHandler::handle_request() {
  *       and should be handled by an error response in the workflow.
  */
 void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
-	_log->log(LOG_ERROR, RH_NAME, detail);
+	_log->log_error( RH_NAME, detail);
 	_request_data.sanity = false;
 	_request_data.status = status;
 }

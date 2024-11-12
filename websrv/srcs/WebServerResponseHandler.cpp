@@ -82,15 +82,15 @@ bool WsResponseHandler::handle_request() {
 	}
 	switch (_request.method) {
 		case METHOD_GET:
-			_log->log(LOG_DEBUG, RSP_NAME,
+			_log->log_debug( RSP_NAME,
 					  "Handle GET request.");
 			return (handle_get());
 		case METHOD_POST:
-			_log->log(LOG_DEBUG, RSP_NAME,
+			_log->log_debug( RSP_NAME,
 					  "Handle POST request.");
 			return 	(handle_post());
 		case METHOD_DELETE:
-			_log->log(LOG_DEBUG, RSP_NAME,
+			_log->log_debug( RSP_NAME,
 					  "Handle DELETE request.");
 			return (handle_delete());
 		default:
@@ -118,11 +118,11 @@ bool WsResponseHandler::handle_get() {
 	}
 	get_file_content(_request.normalized_path);
 	if (_response_data.status) {
-		_log->log(LOG_DEBUG, RSP_NAME,
+		_log->log_debug( RSP_NAME,
 				  "File content will be sent.");
 		return (send_response(_response_data.content, _request.normalized_path));
 	}
-	_log->log(LOG_DEBUG, RSP_NAME,
+	_log->log_debug( RSP_NAME,
 			  "Get will send a error due to content load fails.");
 	return (send_error_response());
 }
@@ -189,7 +189,7 @@ bool WsResponseHandler::handle_delete() {
 	}
 
 	_request.status = HTTP_NO_CONTENT;
-	_log->log(LOG_DEBUG, RSP_NAME,
+	_log->log_debug( RSP_NAME,
 	          "Resource deleted successfully: " + delete_path);
 	send_response("Resource Deleted.", delete_path);
 	return (true);
@@ -299,7 +299,7 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		                detail.str());
 		return ;
 	}
-	_log->log(LOG_DEBUG, RSP_NAME,
+	_log->log_debug( RSP_NAME,
 			  "File content read OK.");
 	_response_data.content = content;
 	_response_data.status = true;
@@ -437,11 +437,11 @@ bool WsResponseHandler::sender(const std::string& body) {
 			if (sent_bytes == -1) {
 				retry_count++;
 				if (retry_count >= WS_MAX_RETRIES) {
-					_log->log(LOG_ERROR, RSP_NAME,
+					_log->log_error( RSP_NAME,
 							  "Max retries exceeded while sending response.");
 					return false;
 				}
-				_log->log(LOG_DEBUG, RSP_NAME,
+				_log->log_debug( RSP_NAME,
 						  "Send failed, retrying...");
 				usleep(WS_RETRY_DELAY_MICROSECONDS);
 				continue;
@@ -451,10 +451,10 @@ bool WsResponseHandler::sender(const std::string& body) {
 		}
 		std::ostringstream detail;
 		detail << "Response was sent. Status: " << _request.status << " Sent: " << response.length();
-		_log->log(LOG_DEBUG, RSP_NAME, detail.str());
+		_log->log_debug( RSP_NAME, detail.str());
 		return (true);
 	} catch (const std::exception& e) {
-		_log->log(LOG_ERROR, RSP_NAME, e.what());
+		_log->log_error( RSP_NAME, e.what());
 		return false;
 	}
 }
@@ -483,7 +483,7 @@ std::string WsResponseHandler::default_plain_error() {
 			<< "<h2>" << int_to_string(_request.status) << " - "
 			<< http_status_description(_request.status) << "</h2>\n"
 			<< "</body>\n</html>\n";
-	_log->log(LOG_DEBUG, RSP_NAME, "Build default error page.");
+	_log->log_debug( RSP_NAME, "Build default error page.");
 	return (content.str());
 }
 
@@ -515,11 +515,11 @@ bool WsResponseHandler::send_error_response() {
 		if (!error_pages->empty() || it != error_pages->end()) {
 			get_file_content(error_file);
 			if (!_response_data.status) {
-				_log->log(LOG_DEBUG, RSP_NAME,
+				_log->log_debug( RSP_NAME,
 						  "Custom error page cannot be load. http status: " + int_to_string(_request.status));
 				_response_data.content = default_plain_error();
 			} else {
-				_log->log(LOG_DEBUG, RSP_NAME, "Custom error page found.");
+				_log->log_debug( RSP_NAME, "Custom error page found.");
 				file_path = error_file;
 				if (_location->loc_error_mode == TEMPLATE)
 				{
@@ -527,16 +527,16 @@ bool WsResponseHandler::send_error_response() {
 															  int_to_string(_request.status));
 					_response_data.content = replace_template(_response_data.content, "{error_detail}",
 															  http_status_description(_request.status));
-					_log->log(LOG_DEBUG, RSP_NAME, "Template update to send.");
+					_log->log_debug( RSP_NAME, "Template update to send.");
 				}
 			}
 		} else {
-			_log->log(LOG_DEBUG, RSP_NAME,
+			_log->log_debug( RSP_NAME,
 					  "Custom error page was not found. Error: " + int_to_string(_request.status));
 			_response_data.content = default_plain_error();
 		}
 	} else {
-		_log->log(LOG_DEBUG, RSP_NAME,
+		_log->log_debug( RSP_NAME,
 		          "Location was not provided. Plain text error will be sent.");
 		_response_data.content = default_plain_error();
 	}
@@ -562,7 +562,7 @@ bool WsResponseHandler::send_error_response() {
  * @param detail A detailed message describing the reason for marking the request as invalid.
  */
 void WsResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
-	_log->log(LOG_ERROR, RSP_NAME, detail);
+	_log->log_error( RSP_NAME, detail);
 	_request.sanity = false;
 	_request.status = status;
 	_response_data.status = false;

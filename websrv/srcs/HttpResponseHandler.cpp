@@ -38,7 +38,7 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 														   client_data, request,
 														   fd),
 									     _cache(cache) {
-	_log->log(LOG_DEBUG, RHB_NAME,
+	_log->log_debug( RHB_NAME,
 			  "Static Response Handler Init.");
 }
 

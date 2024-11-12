@@ -45,7 +45,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 		throw WebServerException("No configs available to create servers.");
 	}
 	_poll_fds.reserve(3000);
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 			  "Server Manager Instance init.");
 	std::ostringstream detail;
 	try {
@@ -54,18 +54,18 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 		}
 	} catch (const WebServerException& e) {
 		detail << "Error Creating Servers: " << e.what();
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 				  detail.str());
 		throw WebServerException(detail.str());
 	} catch (const std::exception& e) {
 		detail << "Error Creating Servers: " << e.what();
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 		          detail.str());
 		throw WebServerException(detail.str());
 	}
 	_healthy = true;
 	_active = true;
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 			  "instance init and ready.");
 	_log->status(SM_NAME, "ServerManager Instance Ready.");
 }
@@ -84,7 +84,7 @@ ServerManager::~ServerManager() {
 	clear_clients();
 	clear_servers();
 	clear_poll();
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 	          "Server Manager Resources Clean Up.");
 	_log->status(SM_NAME, "Server Resources Clean up.");
 }
@@ -112,11 +112,11 @@ void ServerManager::add_server(int port, ServerConfig& config) {
 		throw WebServerException("New server allocation error.");
 	}
 	_servers.push_back(server);
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 	          "SocketHandler instance created and added to _servers.");
 
 	if (!add_server_to_poll(server->get_socket_fd())) {
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 				  "Failed to add server to poll list.");
 		_servers.pop_back();
 		delete (server);
@@ -141,13 +141,13 @@ void ServerManager::add_server(int port, ServerConfig& config) {
  */
 bool ServerManager::add_server_to_poll(int server_fd) {
 	if (server_fd < 0) {
-        _log->log(LOG_ERROR, SM_NAME,
+        _log->log_error( SM_NAME,
 			  "Invalid server file descriptor.");
         return (false);
     }
 	for (size_t i = 0; i < _poll_fds.size(); ++i) {
 		if (_poll_fds[i].fd == server_fd) {
-		  _log->log(LOG_WARNING, SM_NAME,
+		  _log->log_warning( SM_NAME,
 					"Server fd already in _poll_fds.");
 		  return (false);
 		}
@@ -158,7 +158,7 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	pfd.revents = 0;
 
 	_poll_fds.push_back(pfd);
-	_log->log(LOG_DEBUG, SM_NAME, "Server fd added to _poll_fds.");
+	_log->log_debug( SM_NAME, "Server fd added to _poll_fds.");
 	return (true);
 }
 
@@ -177,24 +177,24 @@ bool ServerManager::add_server_to_poll(int server_fd) {
  * This process helps maintain a clean and accurate poll list, removing any defunct or closed connections.
  */
 void ServerManager::cleanup_invalid_fds() {
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 			  "Cleaning up invalid file descriptors.");
 	for (size_t i = 0; i < _poll_fds.size(); i++) {
 		if (fcntl(_poll_fds[i].fd, F_GETFD) == -1) {
 			if (errno == EBADF) {
-				_log->log(LOG_WARNING, SM_NAME,
+				_log->log_warning( SM_NAME,
 						  "Removing invalid file descriptor and its client.");
 				t_client_it it = _clients.find(_poll_fds[i].fd);
 				remove_client_from_poll(it, i);
 			} else {
 				std::ostringstream detail;
 				detail << "Unexpected error when checking fd." << strerror(errno);
-				_log->log(LOG_ERROR, SM_NAME,
+				_log->log_error( SM_NAME,
 						  detail.str());
 			}
 		}
 	}
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 			  "Cleanup completed.");
 }
 
@@ -239,7 +239,7 @@ void ServerManager::timeout_clients() {
  * @throws WebServerException If an unrecoverable error occurs, the exception is thrown with a detailed message.
  */
 void ServerManager::run() {
-	_log->log(LOG_DEBUG, SM_NAME, "Event loop started.");
+	_log->log_debug( SM_NAME, "Event loop started.");
 	_healthy = true;
 	try {
 		while (_active) {
@@ -247,16 +247,16 @@ void ServerManager::run() {
 			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 			if (poll_count < 0 && _active) {
 				if (errno == EINTR) {
-					_log->log(LOG_WARNING, SM_NAME,
+					_log->log_warning( SM_NAME,
 					          "Poll interrupted by a signal, retrying.");
 					continue ;
 				} else if (errno == EBADF) {
-					_log->log(LOG_WARNING, SM_NAME,
+					_log->log_warning( SM_NAME,
 					          "Poll found a bad file descriptor.");
 					cleanup_invalid_fds();
 					continue ;
 				} else {
-					_log->log(LOG_ERROR, RSP_NAME,
+					_log->log_error( RSP_NAME,
 					          "Fatal error. Errno : " + int_to_string(errno));
 					_healthy = false;
 					break;
@@ -287,17 +287,17 @@ void ServerManager::run() {
 		std::ostringstream detail;
 		if (!_active) {
 			detail << "Killing by user signal: " << e.what();
-			_log->log(LOG_ERROR, SM_NAME,
+			_log->log_error( SM_NAME,
 					  detail.str());
 		} else {
 			detail << "Fatal Error: " << e.what();
-			_log->log(LOG_ERROR, SM_NAME,
+			_log->log_error( SM_NAME,
 					  detail.str());
 		}
 		throw WebServerException(detail.str());
 	}
 	if (!_healthy) {
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 				  "Unrecoverable Error. Check Log for details.");
 		throw WebServerException("Unrecoverable Error. Check Log for details.");
 	}
@@ -319,13 +319,13 @@ void ServerManager::run() {
 void    ServerManager::new_client(SocketHandler *server) {
 	int client_fd = server->accept_connection();
 	if (client_fd < 0) {
-		_log->log(LOG_ERROR, SM_NAME, "Error getting client FD.");
+		_log->log_error( SM_NAME, "Error getting client FD.");
 		return;
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
 	_clients.insert(std::make_pair(new_client->get_fd().fd, new_client));
 	_poll_fds.push_back(new_client->get_fd());
-	_log->log(LOG_DEBUG, SM_NAME,
+	_log->log_debug( SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
 }
 
@@ -359,7 +359,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 			}
 			return (true);
 		} else {
-			_log->log(LOG_WARNING, SM_NAME,
+			_log->log_warning( SM_NAME,
 			          "No client was found at _client storage.");
 			return (false);
 		}
@@ -402,10 +402,10 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t& 
 		current_client->close_fd();
 		delete current_client;
 		--poll_index;
-		_log->log(LOG_DEBUG, SM_NAME,
+		_log->log_debug( SM_NAME,
 		          "fd remove from _polls_fds vector");
 	} else {
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 		          "Client was not found at clients storage.");
 	}
 }
@@ -423,7 +423,7 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t& 
  * @return Always returns `false` to signal failure.
  */
 bool ServerManager::turn_off_sanity(const std::string &detail) {
-	_log->log(LOG_ERROR, SM_NAME, detail);
+	_log->log_error( SM_NAME, detail);
 	_healthy = false;
 	_active = false;
 	_log->status(SM_NAME, detail);
@@ -440,7 +440,7 @@ bool ServerManager::turn_off_sanity(const std::string &detail) {
  * This method is be used by signal handler.
  */
 void ServerManager::turn_off_server() {
-	_log->log(LOG_INFO, SM_NAME, "Server shutdown initiated.");
+	_log->log_info( SM_NAME, "Server shutdown initiated.");
 	_active = false;
 	_healthy = false;
 	
@@ -453,7 +453,7 @@ void ServerManager::turn_off_server() {
 	// Finalmente limpiar los poll_fds
 	clear_poll();
 	
-	_log->log(LOG_INFO, SM_NAME, "Server shutdown completed.");
+	_log->log_info( SM_NAME, "Server shutdown completed.");
 }
 
 /**
@@ -473,12 +473,12 @@ void ServerManager::clear_clients() {
 				_clients.erase(it);
 				delete data;
 			}
-			_log->log(LOG_DEBUG, SM_NAME,
+			_log->log_debug( SM_NAME,
 			          "ClientData Cleared.");
 		} catch (std::exception &e) {
 			std::ostringstream details;
 			details << "Error closing Clearing Client Data: " << e.what();
-			_log->log(LOG_ERROR, SM_NAME,
+			_log->log_error( SM_NAME,
 			          details.str());
 		}
 	}
@@ -501,9 +501,9 @@ void ServerManager::clear_servers() {
 			delete *it;
 		}
 		_servers.clear();
-		_log->log(LOG_DEBUG, SM_NAME, "Servers cleared successfully.");
+		_log->log_debug( SM_NAME, "Servers cleared successfully.");
 	} catch (std::exception& e) {
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 				  "Error clearing servers: " + std::string(e.what()));
 	}
 }
@@ -530,7 +530,7 @@ void ServerManager::clear_poll() {
 			it = _poll_fds.erase(it);
 		}
 	} catch (std::exception& e) {
-		_log->log(LOG_ERROR, SM_NAME,
+		_log->log_error( SM_NAME,
 		          "Error clearing poll.");
 	}
 }
