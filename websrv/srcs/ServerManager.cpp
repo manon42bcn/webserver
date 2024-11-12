@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 14:14:28 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:29:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,9 +285,15 @@ void ServerManager::run() {
 		}
 	} catch (std::exception& e) {
 		std::ostringstream detail;
-		detail << "Fatal Error: " << e.what();
-		_log->log(LOG_ERROR, SM_NAME,
-				  detail.str());
+		if (!_active) {
+			detail << "Killing by user signal: " << e.what();
+			_log->log(LOG_ERROR, SM_NAME,
+					  detail.str());
+		} else {
+			detail << "Fatal Error: " << e.what();
+			_log->log(LOG_ERROR, SM_NAME,
+					  detail.str());
+		}
 		throw WebServerException(detail.str());
 	}
 	if (!_healthy) {
