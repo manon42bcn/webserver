@@ -11,7 +11,6 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
-					WebserverCache.cpp \
 					WebServerResponseHandler.cpp \
 					HttpCGIHandler.cpp \
 					HttpRangeHandler.cpp \

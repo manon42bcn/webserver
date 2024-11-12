@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 19:29:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 22:33:18 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,24 @@
  */
 HttpRequestHandler::HttpRequestHandler(const Logger* log,
 									   ClientData* client_data,
-									   WebServerCache* cache):
+									   WebServerCache<CacheEntry>& cache,
+									   WebServerCache<CacheRequest>& cache_request):
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
 	_cache(cache),
+	_request_cache(cache_request),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST) {
 	if (!log) {
 		throw Logger::NoLoggerPointer();
 	}
-	if (!client_data || !cache) {
-		throw WebServerException("Some pointers are not valid. Server health is compromised.");
+	if (!client_data) {
+		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
 	_factory = 0;
+	_is_cached = false;
 }
 
 /**
@@ -430,6 +433,8 @@ void HttpRequestHandler::load_header_data() {
  *   and `_request_data.access` is updated.
  * - If no match is found, the method sets `sanity` to false with an HTTP 400 (Bad Request)
  *   status, as the requested path does not correspond to any configured location.
+ * @note: This method will use cached data if the method is GET and its content is available.
+ * 		  cached avoid extra interactions over locations.
  *
  * Error Handling:
  * - If no matching location is found, `turn_off_sanity` is invoked with `HTTP_BAD_REQUEST`
@@ -443,6 +448,15 @@ void HttpRequestHandler::get_location_config() {
 
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
+
+	_is_cached = _request_cache.get(_request_data.path, _cache_data);
+	if (_request_data.method == METHOD_GET && _is_cached) {
+		_location = _cache_data.location;
+		_request_data.access = _location->loc_access;
+		_request_data.normalized_path = _cache_data.normalized_path;
+		_request_data.status = HTTP_OK;
+		return ;
+	}
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
 	     it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
@@ -491,7 +505,7 @@ void HttpRequestHandler::get_location_config() {
  * @see is_file, is_dir, starts_with, _request_data
  */
 void HttpRequestHandler::cgi_normalize_path() {
-	if (!_location->cgi_file) {
+	if (!_location->cgi_file || _is_cached) {
 		_log->log_debug( RH_NAME,
 		          "No CGI locations at server config.");
 		return ;
@@ -575,10 +589,13 @@ void HttpRequestHandler::normalize_request_path() {
 		          "CGI context. path has been normalized");
 		return ;
 	}
+	if (_is_cached) {
+		return;
+	}
 	std::string eval_path = _config.server_root + _request_data.path;
 
 	_log->log_debug( RH_NAME,
-			  "Normalize path to get proper file to serve." + eval_path);
+			  "Normalize path to get proper file to serve.");
 	if (_request_data.method == METHOD_POST) {
 		_log->log_debug( RH_NAME,
 				  "Path build to a POST request");
@@ -614,7 +631,6 @@ void HttpRequestHandler::normalize_request_path() {
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
-		_log->log_info( RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
 		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
 			_log->log_info( RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
@@ -973,6 +989,8 @@ void HttpRequestHandler::validate_request() {
  *   - If `_request_data.cgi` is true, uses `HttpCGIHandler`.
  *   - If `_request_data.range` is non-empty, uses `HttpRangeHandler`.
  *   - If `_request_data.boundary` is non-empty, uses `HttpMultipartHandler`.
+ * @note: This method will cache request related info if it was not cached yet, if
+ * 		  everything went ok, and if method is get.
  *
  * **Exception Handling**:
  * - Catches `WebServerException`, `Logger::NoLoggerPointer`, and `std::exception`
@@ -995,7 +1013,14 @@ void HttpRequestHandler::handle_request() {
 		if (_factory == 0) {
 			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
 			response.handle_request();
-			return ;
+			if (_is_cached) {
+				return ;
+			}
+			if (_request_data.sanity && _request_data.method == METHOD_GET) {
+				_request_cache.put(_request_data.path,
+								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
+			}
+			return;
 		}
 		if (_request_data.cgi) {
 			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);

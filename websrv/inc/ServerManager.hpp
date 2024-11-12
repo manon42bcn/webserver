@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 12:04:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 19:07:48 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ class ServerManager {
 		std::vector<int>              	_servers_fds;
 	    std::map<int, ClientData*>      _clients;
 		const Logger*			        _log;
-		WebServerCache*					_cache;
+		WebServerCache<CacheEntry>&		_cache;
+		WebServerCache<CacheRequest>&   _cache_request;
 		bool                            _active;
 		bool                            _healthy;
 
@@ -68,7 +69,8 @@ class ServerManager {
 public:
 		ServerManager(std::vector<ServerConfig>& configs,
 						  const Logger* logger,
-						  WebServerCache* cache);
+						  WebServerCache<CacheEntry>& cache,
+						  WebServerCache<CacheRequest>& cache_request);
 		~ServerManager();
 		void run();
 		void turn_off_server();

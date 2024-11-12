@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 19:42:46 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 19:32:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,25 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
+};
+
+struct CacheEntry {
+	std::string url;
+	std::string content;
+
+	CacheEntry(const std::string &u, const std::string &c)
+			: url(u), content(c) {};
+	CacheEntry(): url(""), content("") {};
+};
+
+struct CacheRequest {
+	std::string             url;
+	const LocationConfig*   location;
+	std::string             normalized_path;
+
+	CacheRequest(const std::string& u, const LocationConfig* loc,
+				 const std::string& np): url(u), location(loc), normalized_path(np) {};
+	CacheRequest(): url(""), location(NULL), normalized_path("") {};
 };
 
 void print_server_config(const ServerConfig& config, std::string location);

@@ -29,14 +29,14 @@
  */
 class HttpResponseHandler : public WsResponseHandler {
 	private:
-		WebServerCache* _cache;
+		WebServerCache<CacheEntry>& _cache;
 	public:
 		HttpResponseHandler(const LocationConfig *location,
 							const Logger *log,
 							ClientData* client_data,
 							s_request& request,
 							int fd,
-							WebServerCache* cache);
+							WebServerCache<CacheEntry>& cache);
 	void get_file_content(std::string& path);
 	void get_file_content(int pid, int (&fd)[2]);
 };

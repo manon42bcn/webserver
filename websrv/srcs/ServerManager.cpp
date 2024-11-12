@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 14:29:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 22:34:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,13 @@
  */
 ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 							 const Logger* logger,
-							 WebServerCache* cache):
+							 WebServerCache<CacheEntry>& cache,
+							 WebServerCache<CacheRequest>& cache_request):
 							_log(logger),
-							_cache(cache) {
+							_cache(cache),
+							_cache_request(cache_request) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
-	}
-	if (!cache) {
-		throw WebServerException("No valid pointer to webserver cache.");
 	}
 	if (configs.empty()) {
 		throw WebServerException("No configs available to create servers.");
@@ -244,7 +243,7 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
 			if (poll_count < 0 && _active) {
 				if (errno == EINTR) {
 					_log->log_warning( SM_NAME,
@@ -350,7 +349,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		int poll_fd = _poll_fds[poll_index].fd;
 		std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
 		if (it != _clients.end()) {
-			HttpRequestHandler request_handler(_log, it->second, _cache);
+			HttpRequestHandler request_handler(_log, it->second, _cache, _cache_request);
 			request_handler.request_workflow();
 			if (!it->second->is_active() || !it->second->is_alive()) {
 				remove_client_from_poll(it, poll_index);

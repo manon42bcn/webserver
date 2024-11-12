@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 22:24:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 19:31:09 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 										 ClientData *client_data,
 										 s_request &request,
                                          int fd,
-										 WebServerCache* cache) :
+										 WebServerCache<CacheEntry>& cache) :
 										 WsResponseHandler(location, log,
 														   client_data, request,
 														   fd),
@@ -52,12 +52,16 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
  * @param path Path to the file whose content is to be retrieved.
  */
 void HttpResponseHandler::get_file_content(std::string &path) {
-	if (!_cache->get(path, _response_data.content)) {
+	CacheEntry data;
+	if (!_cache.get(path, data)) {
+		_log->log_debug(RSP_NAME, "Data no cacheada...");
 		WsResponseHandler::get_file_content(path);
 		if (_request.sanity) {
-			_cache->put(path, _response_data.content);
+			_cache.put(path, CacheEntry(path, _response_data.content));
 		}
 	} else {
+		_log->log_debug(RSP_NAME, "Data SI cacheada...");
+		_response_data.content = data.content;
 		_response_data.status = true;
 	}
 }
