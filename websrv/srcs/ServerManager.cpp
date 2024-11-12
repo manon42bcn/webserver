@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 14:20:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/12 14:14:28 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,10 @@ ServerManager::~ServerManager() {
  * Logs the creation of each `SocketHandler` and any failures in adding it to the poll list.
  */
 void ServerManager::add_server(int port, ServerConfig& config) {
-
 	SocketHandler* server = new SocketHandler(port, config, _log);
+	if (server == NULL) {
+		throw WebServerException("New server allocation error.");
+	}
 	_servers.push_back(server);
 	_log->log(LOG_DEBUG, SM_NAME,
 	          "SocketHandler instance created and added to _servers.");
@@ -119,6 +121,7 @@ void ServerManager::add_server(int port, ServerConfig& config) {
 		_servers.pop_back();
 		delete (server);
 	}
+	_servers_fds.push_back(server->get_socket_fd());
 }
 
 /**
@@ -261,19 +264,19 @@ void ServerManager::run() {
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
 				if (_poll_fds[i].revents & POLLIN) {
-					bool is_server = false;
-					SocketHandler* server = NULL;
-					// Check if the descriptor corresponds to a server socket
-					for (size_t s = 0; s < _servers.size(); ++s) {
-						if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
-							_log->log(LOG_DEBUG, SM_NAME, "fd belongs to a server.");
-							is_server = true;
-							server = _servers[s];
-							break;
+
+					std::vector<int>::iterator it = std::find(_servers_fds.begin(), _servers_fds.end(), _poll_fds[i].fd);
+					if (it != _servers_fds.end()) {
+						SocketHandler* server = NULL;
+						for (size_t s = 0; s < _servers.size(); ++s) {
+							if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
+								server = _servers[s];
+								break;
+							}
 						}
-					}
-					if (is_server) {
-						new_client(server);
+						if (server) {
+							new_client(server);
+						}
 					} else {
 						process_request(i);
 					}
