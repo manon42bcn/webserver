@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   http_codes_helper.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 10:22:22 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 17:17:06 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:13:51 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ std::string method_enum_to_string(int method)
 			return ("POST");
 		case METHOD_DELETE:
 			return ("DELETE");
+		case METHOD_PUT:
+			return ("PUT");
+		case METHOD_HEAD:
+			return ("HEAD");
 	}
 	return ("NO METHOD");
 }

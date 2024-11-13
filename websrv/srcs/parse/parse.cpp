@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/11 22:24:32 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:26:06 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,12 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
             parse_root(it, logger, location);
         else if (find_exact_string(*it, "autoindex"))
             parse_autoindex(it, logger, location);
-        else if (find_exact_string(*it, "limit_except"))
-        {
-            location.loc_allowed_methods = parse_limit_except(it, find_block_end(it, end), logger);
-            it = skip_block(it, find_block_end(it, end));
-            if (it == end)
-                break;
-        }
         else if (find_exact_string(*it, "cgi"))
             parse_cgi(it, logger, location);
         else if (find_exact_string(*it, "error_mode"))
             parse_template_error_page(it, logger, location);
+        else if (find_exact_string(*it, "accept_only"))
+            parse_accept_only(it, logger, location);
         else if (it->find("}") != std::string::npos)
         {
             // Realmente no se si llega aqui
@@ -46,34 +41,18 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
             logger->fatal_log("parse_location_block", "Error: [" + *it + "] is not valid parameter in location block");
     }
 
-    if (location.loc_allowed_methods.empty()) {
-        location.loc_access = ACCESS_FORBIDDEN; 
-    } else {
-        bool has_write = false;
-        bool has_delete = false;
-        
-        for (std::vector<t_allowed_methods>::iterator it = location.loc_allowed_methods.begin(); 
-             it != location.loc_allowed_methods.end(); ++it) {
-            if (*it == POST || *it == PUT) {
-                has_write = true;
-            } else if (*it == DELETE) {
-                has_delete = true;
-            }
-        }
-        
-        if (has_delete) {
-            location.loc_access = ACCESS_DELETE;
-        } else if (has_write) {
-            location.loc_access = ACCESS_WRITE;
-        } else {
-            location.loc_access = ACCESS_READ;
-        }
-    }
+
 
     // Obligatorios
     // if (location.loc_root == "")
-    //     logger->fatal_log("parse_location_block", "Location root is not valid.");
-
+    //    logger->fatal_log("parse_location_block", "Location root is not valid.");
+    if (location.loc_error_pages.size() != 0)
+    {
+        for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
+        {
+            it->second = join_paths(get_server_root(), it->second);
+        }
+    }
     return location;
 }
 
@@ -117,14 +96,14 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     logger->log(LOG_DEBUG, "parse_server_block", "Server block parsed");
 
     // Configuracion de variables
-    // server.ws_root = server.server_root;
-    server.ws_root = "/Users/vaguilar/Desktop/webserver/websrv//data";
-    // if (server.error_pages.size() > 0 && server.server_root != "")
-    // {
-    //     logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
-    //     for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
-    //         it->second = join_paths(server.server_root, it->second);
-    // }
+    server.ws_root = server.server_root;
+    // server.ws_root = "/Users/vaguilar/Desktop/webserver/websrv//data";
+    if (server.error_pages.size() > 0 && server.server_root != "")
+    {
+        logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
+        for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
+            it->second = join_paths(server.server_root, it->second);
+    }
 
     if (check_obligatory_params(server, logger))
         logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");

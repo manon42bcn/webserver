@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/11 22:32:03 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:35:50 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,26 +101,38 @@ void print_location_config(LocationConfig location) {
     
     std::cout << GRAY << "      Autoindex: " RESET << (static_cast<bool>(location.autoindex) ? "true" : "false") << std::endl;
 
+        
+    std::cout << GRAY << "      Allowed methods: " RESET;
+    // Contamos los bits activos
+    int method_count = 0;
+    for (int i = 0; i < 8; i++) {
+        if (location.loc_allowed_methods & (1 << i)) {
+            method_count++;
+        }
+    }
+    std::cout << method_count << std::endl;
     
-    std::cout << GRAY << "      Allowed methods: " RESET << location.loc_allowed_methods.size() << std::endl;
-    if (location.loc_allowed_methods.size() > 0)
-    {
-        for (std::vector<t_allowed_methods>::iterator it = location.loc_allowed_methods.begin(); it != location.loc_allowed_methods.end(); it++) {
-            // std::cout << GRAY << "        Allowed method: " RESET << *it << std::endl;
-            if (*it == GET)
-                std::cout << GRAY << "        Allowed method: " RESET << "GET" << std::endl;
-            if (*it == POST)
-                std::cout << GRAY << "        Allowed method: " RESET << "POST" << std::endl;
-            if (*it == DELETE)
-                std::cout << GRAY << "        Allowed method: " RESET << "DELETE" << std::endl;
-            if (*it == PUT)
-                std::cout << GRAY << "        Allowed method: " RESET << "PUT" << std::endl;
+    // No necesitamos verificar size() > 0 ya que el siguiente bucle manejará el caso
+    for (int i = 0; i < 8; i++) {
+        if (location.loc_allowed_methods & (1 << i)) {
+            std::cout << GRAY << "        Allowed method: " RESET << print_bitwise_method(1 << i) << std::endl;
         }
     }
 
     std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi_file) ? "true" : "false") << std::endl;
 
     // std::cout << GRAY << "      Location root: " RESET << location.loc_root << std::endl;
+}
+
+std::string print_bitwise_method(unsigned char method) {
+    std::string method_string = "";     
+    if (method & MASK_METHOD_GET)
+        method_string += "GET ";
+    if (method & MASK_METHOD_POST)
+        method_string += "POST ";
+    if (method & MASK_METHOD_DELETE)
+        method_string += "DELETE ";
+    return method_string;
 }
 
 void print_servers(std::vector<ServerConfig> servers)

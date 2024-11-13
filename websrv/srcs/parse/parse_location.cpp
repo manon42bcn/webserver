@@ -6,50 +6,12 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/11 22:31:40 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:40:07 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "webserver.hpp"
-
-std::vector<t_allowed_methods> parse_limit_except(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
-    std::vector<t_allowed_methods> all_methods;
-    std::vector<t_allowed_methods> methods;
-
-    std::vector<std::string>::iterator start_copy = start;
-
-    for (int i = 0; i < 4; i++)
-        all_methods.push_back(static_cast<t_allowed_methods>(i));
-
-    logger->log(LOG_DEBUG, "parse_limit_except", "Parsing limit except block");
-
-    std::string methods_line = start_copy->substr(12);
-    std::istringstream iss(methods_line);
-    std::vector<std::string> method_tokens;
-    std::string token;
-    while (iss >> token) {
-        method_tokens.push_back(token);
-    }
-    for (std::vector<std::string>::iterator it = method_tokens.begin(); it != method_tokens.end(); it++) {
-        methods.push_back(string_to_method(*it));
-    }
-    start_copy++;
-    for (std::vector<std::string>::iterator it = start_copy; it != end; it++) {
-        if (find_exact_string(*it, "deny"))
-        {
-            for (std::vector<t_allowed_methods>::iterator mit = methods.begin(); mit != methods.end(); mit++) {
-                for (std::vector<t_allowed_methods>::iterator ait = all_methods.begin(); ait != all_methods.end(); ait++) {
-                    if (*mit == *ait) {
-                        all_methods.erase(ait);
-                    }
-                }
-            }
-        }
-    }
-
-    return all_methods;
-}
 
 void parse_location_index(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_default_page(get_value(*it, "index")))
@@ -90,10 +52,6 @@ void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, Loc
         logger->fatal_log("parse_location_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
 }
 
-// No usado
-void parse_limit_except(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, LocationConfig& location) {
-    location.loc_allowed_methods = parse_limit_except(it, end, logger);
-}
 
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_cgi(get_value(*it, "cgi")))
@@ -118,3 +76,17 @@ void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* l
         logger->fatal_log("parse_location_block", "Error mode " + get_value(*it, "error_mode") + " is not valid.");
 }
 
+void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
+    logger->log(LOG_DEBUG, "parse_accept_only", "Parsing accept only block");
+
+    location.loc_allowed_methods = 0;
+
+    std::string accept_only = get_header_value(*it, "accept_only", ";");
+    std::vector<std::string> accept_only_methods = split_string(accept_only);
+    
+    for (std::vector<std::string>::iterator it = accept_only_methods.begin(); 
+         it != accept_only_methods.end(); ++it) {
+        location.loc_allowed_methods |= method_bitwise(*it);
+        std::cout << RED << "Method: " << *it << " Bitwise: " << static_cast<int>(method_bitwise(*it)) << RESET << std::endl;
+    }
+}

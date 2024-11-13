@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/10/26 20:43:05 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:45:30 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,3 +251,22 @@ std::string join_paths(std::string path1, std::string path2) {
     return path1 + "/" + path2;
 }
 
+unsigned char method_bitwise(std::string parsed) {
+    static std::map<std::string, unsigned char> methods;
+    if (methods.empty()) {
+        methods.insert(std::make_pair("GET", MASK_METHOD_GET));
+        methods.insert(std::make_pair("OPTIONS", MASK_METHOD_OPTIONS));
+        methods.insert(std::make_pair("HEAD", MASK_METHOD_HEAD));
+        methods.insert(std::make_pair("POST", MASK_METHOD_POST));
+        methods.insert(std::make_pair("PUT", MASK_METHOD_PUT));
+        methods.insert(std::make_pair("PATCH", MASK_METHOD_PATCH));
+        methods.insert(std::make_pair("TRACE", MASK_METHOD_TRACE));
+        methods.insert(std::make_pair("DELETE", MASK_METHOD_DELETE));
+    }
+    
+    std::map<std::string, unsigned char>::const_iterator it = methods.find(parsed);
+    if (it != methods.end()) {
+        return (it->second);
+    }
+    return (0);
+}

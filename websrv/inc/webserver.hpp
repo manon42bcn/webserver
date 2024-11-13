@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 22:31:08 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:37:27 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,19 @@
 #define MID_GRAY		"\033[38;5;245m"
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
+
+#define MASK_METHOD_GET     (1 << 0)
+#define MASK_METHOD_OPTIONS (1 << 1)
+#define MASK_METHOD_HEAD    (1 << 2)
+#define MASK_METHOD_POST    (1 << 3)
+#define MASK_METHOD_PUT     (1 << 4)
+#define MASK_METHOD_PATCH   (1 << 5)
+#define MASK_METHOD_TRACE   (1 << 6)
+#define MASK_METHOD_DELETE  (1 << 7)
+#define MASK_READ (MASK_METHOD_GET | MASK_METHOD_HEAD | MASK_METHOD_OPTIONS)
+#define MASK_READ_WRITE (MASK_READ | MASK_METHOD_POST)
+
+
 // TODO: define a path max for WS only, path max is defined at limits.h
 # ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -161,16 +174,14 @@ struct LocationConfig {
 	std::vector<std::string>            loc_default_pages;
 	t_mode                              loc_error_mode; // (?)
 	std::map<int, std::string>          loc_error_pages;
-	std::vector<t_allowed_methods>      loc_allowed_methods;
+	unsigned char                       loc_allowed_methods;
 	bool                                autoindex;
 	bool                                cgi_file;
 	std::map<std::string, t_cgi>		cgi_locations;
 	LocationConfig() {};
 	LocationConfig(std::string r, e_access x, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
-	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), cgi_file(true) {};
+	loc_root(r), loc_access(x), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), loc_allowed_methods(0), cgi_file(true){};
 
-// victor
-	// bool                                cgi;
 };
 
 struct ServerConfig {
@@ -193,6 +204,8 @@ struct ServerConfig {
 
 void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
+std::string print_bitwise_method(unsigned char method);
+
 bool is_file(std::string ruta);
 bool is_dir(std::string ruta);
 std::string html_codes(int code);
@@ -203,7 +216,6 @@ bool starts_with(const std::string& str, const std::string& prefix);
 std::vector<ServerConfig> parse_file(std::string file, Logger* logger);
 std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logger* logger);
 LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger);
-std::vector<t_allowed_methods> parse_limit_except(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger);
 
 // Print
 
@@ -229,6 +241,8 @@ std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iter
 std::string get_location_path(std::string line);
 t_mode string_to_error_mode(std::string error_mode);
 std::string join_paths(std::string path1, std::string path2);
+std::vector<std::string> split_string(std::string str);
+unsigned char method_bitwise(std::string parsed);
 
 // Verifications
 
@@ -265,10 +279,9 @@ void parse_location_index(std::vector<std::string>::iterator& it, Logger* logger
 void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
-void parse_limit_except(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, LocationConfig& location);
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
-
+void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 
 # endif
 

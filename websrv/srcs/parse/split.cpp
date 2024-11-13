@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/11 23:10:36 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/13 23:07:33 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,3 +107,13 @@ std::vector<std::string> split_default_pages(std::string default_pages)
 //     }
 //     return methods;
 // }
+
+
+std::vector<std::string> split_string(std::string str) {
+    std::vector<std::string> result;
+    std::istringstream iss(str);
+    std::string token;
+    while (iss >> token)
+        result.push_back(token);
+    return result;
+}
