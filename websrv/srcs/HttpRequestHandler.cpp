@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 22:33:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:12:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,15 @@
  * which compromises server functionality.
  */
 HttpRequestHandler::HttpRequestHandler(const Logger* log,
-									   ClientData* client_data,
-									   WebServerCache<CacheEntry>& cache,
-									   WebServerCache<CacheRequest>& cache_request):
+									   ClientData* client_data):
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
-	_cache(cache),
-	_request_cache(cache_request),
+	_request_cache(client_data->get_server()->get_request_cache()),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST) {
+
 	if (!log) {
 		throw Logger::NoLoggerPointer();
 	}
@@ -1006,15 +1004,19 @@ void HttpRequestHandler::handle_request() {
 	}
 	try {
 		if (!_request_data.sanity){
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.send_error_response();
 			return ;
 		}
 		if (_factory == 0) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.handle_request();
 			if (_is_cached) {
-				return ;
+				if (!_request_data.sanity) {
+					_request_cache.remove(_request_data.path);
+					return ;
+				}
+				return;
 			}
 			if (_request_data.sanity && _request_data.method == METHOD_GET) {
 				_request_cache.put(_request_data.path,

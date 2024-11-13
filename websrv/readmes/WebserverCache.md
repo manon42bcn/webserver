@@ -35,6 +35,14 @@ Inserts or updates an entry in the cache. If the entry already exists, it is upd
     - `key`: The unique identifier for the cache entry.
     - `entry`: The entry data to be cached.
 
+#### `void remove(const std::string& key)`
+
+Removes a specific entry from the cache based on the provided key. This method allows you to delete a cache entry if it is no longer needed, thus freeing up space for new entries.
+This method should be call when a cached path or content returns an error.
+
+**Parameters**:
+- `key` (`const std::string&`): The key associated with the cache entry that needs to be removed.
+
 ## Private Members
 
 ### `_capacity` (size_t)

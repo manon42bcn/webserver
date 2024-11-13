@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:08:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 00:57:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
  */
 class ClientData {
 	private:
-		const SocketHandler*    _server;
+		SocketHandler*          _server;
 		const Logger*           _log;
 	    bool                    _active;
 		bool                    _alive;
@@ -43,19 +43,19 @@ class ClientData {
 	    std::time_t             _timestamp;
 
 	public:
-		ClientData(const SocketHandler* server, const Logger* log, int fd);
+		ClientData(SocketHandler* server, const Logger* log, int fd);
 	    ~ClientData();
 		void close_fd();
-	const SocketHandler* get_server();
-	struct pollfd get_fd();
-	bool chronos_request();
-	void chronos_reset();
-	bool chronos_connection();
-	void deactivate();
-	void kill_client();
-	bool is_alive() const;
-	bool is_active() const;
-	void keep_active();
+		SocketHandler* get_server();
+		struct pollfd get_fd();
+		bool chronos_request();
+		void chronos_reset();
+		bool chronos_connection();
+		void deactivate();
+		void kill_client();
+		bool is_alive() const;
+		bool is_active() const;
+		void keep_active();
 };
 
 #endif

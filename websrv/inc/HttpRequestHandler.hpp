@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 21:03:17 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 00:59:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ class HttpRequestHandler {
 		const ServerConfig&             _config;
 		const Logger*                   _log;
 		ClientData*                     _client_data;
-		WebServerCache<CacheEntry>&	    _cache;
 		WebServerCache<CacheRequest>&   _request_cache;
 		const LocationConfig*           _location;
 		int                             _fd;
@@ -107,9 +106,7 @@ class HttpRequestHandler {
 
 	public:
 		HttpRequestHandler(const Logger* log,
-						   ClientData* client_data,
-						   WebServerCache<CacheEntry>& cache,
-						   WebServerCache<CacheRequest>& cache_request);
+						   ClientData* client_data);
 	    ~HttpRequestHandler();
 		void request_workflow();
 };

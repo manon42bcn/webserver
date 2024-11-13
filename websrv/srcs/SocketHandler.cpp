@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 03:21:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:17:02 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logger):
 		_socket_fd(-1),
         _config(config),
-        _log(logger){
+        _log(logger),
+		_cache(WebServerCache<CacheEntry>(100)),
+		_request_cache(WebServerCache<CacheRequest>(100)) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
@@ -225,61 +227,10 @@ void SocketHandler::mapping_cgi_locations(const std::string& extension) {
 	}
 }
 
-// ############################################
-//bool SocketHandler::is_default_file(const std::string &filename, const std::string& extension) {
-//	return (filename.size() >= extension.length()
-//	        && filename.compare(filename.size() - extension.length(),
-//	                            extension.length(), extension) == 0);
-//}
-//
-//void SocketHandler::det_files() {
-//	for (std::map<std::string, struct LocationConfig>::iterator it = _config.locations.begin();
-//		it != _config.locations.end(); it++) {
-//
-//	}
-//}
+WebServerCache<CacheEntry>& SocketHandler::get_cache() {
+	return (_cache);
+}
 
-//void SocketHandler::get_default_files(const std::string &directory, const std::string &loc_root, const std::string &extension,
-//                                      std::map<std::string, t_cgi> &mapped_files) {
-//	DIR* dir = opendir(directory.c_str());
-//	if (dir == NULL) {
-//		_log->log_info( SH_NAME,
-//		          "No directory was found.");
-//		return;
-//	}
-//
-//	struct dirent* entry;
-//	while ((entry = readdir(dir)) != NULL) {
-//		std::string name = entry->d_name;
-//
-//		if (name == "." || name == "..") {
-//			continue;
-//		}
-//
-//		std::string full_path = directory + "/" + name;
-//		struct stat info;
-//		if (stat(full_path.c_str(), &info) != 0) {
-//			_log->log_warning( SH_NAME,
-//			          full_path + " : is not accessible.");
-//			continue ;
-//		}
-//
-//		if (S_ISDIR(info.st_mode)) {
-//			get_cgi_files(full_path, loc_root, extension, mapped_files);
-//		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
-//			std::string clean_path = full_path.substr(_config.server_root.length());
-//			std::string real_path = clean_path.substr(0, clean_path.find(name));
-//			size_t pos = clean_path.find(extension);
-//			clean_path = clean_path.substr(0, pos);
-//			if (belongs_to_location(clean_path, loc_root)) {
-//				std::ostringstream detail;
-//				detail << "CGI found path for location root <" << loc_root << ">: ["
-//				       << clean_path << "] - filename : " << name;
-//				_log->log_debug( SH_NAME,
-//				          detail.str());
-//				mapped_files.insert(std::make_pair(clean_path, s_cgi(real_path, name)));
-//			}
-//		}
-//	}
-//	closedir(dir);
-//}
+WebServerCache<CacheRequest>& SocketHandler::get_request_cache() {
+	return (_request_cache);
+}

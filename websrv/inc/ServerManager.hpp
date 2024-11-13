@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 19:07:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:19:57 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ class ServerManager {
 		std::vector<int>              	_servers_fds;
 	    std::map<int, ClientData*>      _clients;
 		const Logger*			        _log;
-		WebServerCache<CacheEntry>&		_cache;
-		WebServerCache<CacheRequest>&   _cache_request;
 		bool                            _active;
 		bool                            _healthy;
 
@@ -68,9 +66,7 @@ class ServerManager {
 	void clear_poll();
 public:
 		ServerManager(std::vector<ServerConfig>& configs,
-						  const Logger* logger,
-						  WebServerCache<CacheEntry>& cache,
-						  WebServerCache<CacheRequest>& cache_request);
+					  const Logger* logger);
 		~ServerManager();
 		void run();
 		void turn_off_server();

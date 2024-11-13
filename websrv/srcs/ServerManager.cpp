@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 22:34:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:19:57 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,8 @@
  * Once initialized successfully, the instance is marked as healthy and active.
  */
 ServerManager::ServerManager(std::vector<ServerConfig>& configs,
-							 const Logger* logger,
-							 WebServerCache<CacheEntry>& cache,
-							 WebServerCache<CacheRequest>& cache_request):
-							_log(logger),
-							_cache(cache),
-							_cache_request(cache_request) {
+							 const Logger* logger):
+							_log(logger) {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
 	}
@@ -349,7 +345,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		int poll_fd = _poll_fds[poll_index].fd;
 		std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
 		if (it != _clients.end()) {
-			HttpRequestHandler request_handler(_log, it->second, _cache, _cache_request);
+			HttpRequestHandler request_handler(_log, it->second);
 			request_handler.request_workflow();
 			if (!it->second->is_active() || !it->second->is_alive()) {
 				remove_client_from_poll(it, poll_index);

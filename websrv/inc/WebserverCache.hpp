@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 09:53:58 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 22:39:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 00:44:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef _WEBSERVER_CACHE_HPP_
@@ -93,6 +93,23 @@ public:
 
 		_entries.push_front(entry);
 		_cache_map[key] = _entries.begin();
+	}
+	/**
+	* @brief Removes a specific entry from the cache by its key.
+	* This function searches for the entry with the specified key in the cache. If found, it removes the entry from both
+	* the list (which maintains the order of usage) and the map (which provides quick access by key).
+	*
+	* @param key The key associated with the cache entry to be removed.
+	*
+	*@note The cache is updated to remove the entry, making space for new entries if necessary.
+	*/
+	void remove(const std::string& key) {
+		typename std::map<std::string, typename std::list<T>::iterator>::iterator it = _cache_map.find(key);
+
+		if (it != _cache_map.end()) {
+			_entries.erase(it->second);
+			_cache_map.erase(it);
+		}
 	}
 };
 

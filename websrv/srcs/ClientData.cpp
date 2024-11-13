@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:09:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 00:57:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -22,7 +22,7 @@
  * @param log Pointer to the `Logger` instance for recording client activities.
  * @param fd File descriptor for the client's socket, set to monitor read events (`POLLIN`).
  */
-ClientData::ClientData(const SocketHandler* server,
+ClientData::ClientData(SocketHandler* server,
 					   const Logger* log, int fd):
 					   _server(server),
 					   _log(log),
@@ -80,7 +80,7 @@ void ClientData::close_fd() {
  *
  * @return Pointer to the `SocketHandler` instance managing the server connection for this client.
  */
-const SocketHandler* ClientData::get_server() {
+SocketHandler* ClientData::get_server() {
 	return (_server);
 }
 
