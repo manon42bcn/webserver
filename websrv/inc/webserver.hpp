@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 23:37:27 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/14 00:08:07 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,11 @@ typedef enum e_allowed_methods {
 	INVALID_METHOD=-42
 } t_allowed_methods;
 
+struct CommandPair {
+    const char* command;
+    void (*function)(std::vector<std::string>::iterator&, Logger*, LocationConfig&);
+};
+
 std::string int_to_string(int number);
 struct LocationConfig {
 	std::string                         loc_root;
@@ -243,6 +248,7 @@ t_mode string_to_error_mode(std::string error_mode);
 std::string join_paths(std::string path1, std::string path2);
 std::vector<std::string> split_string(std::string str);
 unsigned char method_bitwise(std::string parsed);
+std::string get_first_word(const std::string& str);
 
 // Verifications
 

@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/13 23:26:06 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/14 00:11:48 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,41 @@
 LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
     LocationConfig location;
 
-    start++;
-    for (std::vector<std::string>::iterator it = start; it != end; it++) {
-        if (find_exact_string(*it, "index"))
-            parse_location_index(it, logger, location);
-        else if (find_exact_string(*it, "error_page"))
-            parse_location_error_page(it, logger, location);
-        else if (find_exact_string(*it, "root"))
-            parse_root(it, logger, location);
-        else if (find_exact_string(*it, "autoindex"))
-            parse_autoindex(it, logger, location);
-        else if (find_exact_string(*it, "cgi"))
-            parse_cgi(it, logger, location);
-        else if (find_exact_string(*it, "error_mode"))
-            parse_template_error_page(it, logger, location);
-        else if (find_exact_string(*it, "accept_only"))
-            parse_accept_only(it, logger, location);
-        else if (it->find("}") != std::string::npos)
-        {
-            // Realmente no se si llega aqui
-            logger->log(LOG_DEBUG, "parse_location_block", "Saliendo porque encontre } en location block");
+    static const CommandPair commands[] = {
+        {"index", parse_location_index},
+        {"error_page", parse_location_error_page},
+        {"root", parse_root},
+        {"autoindex", parse_autoindex},
+        {"cgi", parse_cgi},
+        {"error_mode", parse_template_error_page},
+        {"accept_only", parse_accept_only},
+        {NULL, NULL}
+    };
+
+    ++start;
+    for (std::vector<std::string>::iterator it = start; it != end; ++it) {
+        std::string first_word = get_first_word(*it);
+        
+        if (first_word == "}") {
+            // Quizas innecesario, pendiente de eliminar
+            logger->log(LOG_DEBUG, "parse_location_block", "Fin del bloque de location");
             break;
         }
-        else
-            logger->fatal_log("parse_location_block", "Error: [" + *it + "] is not valid parameter in location block");
+
+        bool found = false;
+        for (const CommandPair* cmd = commands; cmd->command != NULL; ++cmd) {
+            if (first_word == cmd->command) {
+                cmd->function(it, logger, location);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            logger->fatal_log("parse_location_block", 
+                             "Error: [" + first_word + "] no es un parametro valido en el bloque location");
+        }
     }
-
-
 
     // Obligatorios
     // if (location.loc_root == "")
@@ -93,7 +101,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         else
             logger->fatal_log("parse_server_block", "Error: [" + *it + "] is not valid parameter in server block");
     }
-    logger->log(LOG_DEBUG, "parse_server_block", "Server block parsed");
+    
 
     // Configuracion de variables
     server.ws_root = server.server_root;

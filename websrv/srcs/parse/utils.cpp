@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/13 23:45:30 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/14 00:07:59 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,4 +269,9 @@ unsigned char method_bitwise(std::string parsed) {
         return (it->second);
     }
     return (0);
+}
+
+std::string get_first_word(const std::string& str) {
+    std::string::size_type pos = str.find_first_of(" \t\n");
+    return str.substr(0, pos);
 }
