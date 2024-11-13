@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 00:08:07 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/14 00:38:36 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,10 +167,7 @@ typedef enum e_allowed_methods {
 	INVALID_METHOD=-42
 } t_allowed_methods;
 
-struct CommandPair {
-    const char* command;
-    void (*function)(std::vector<std::string>::iterator&, Logger*, LocationConfig&);
-};
+
 
 std::string int_to_string(int number);
 struct LocationConfig {
@@ -206,6 +203,12 @@ struct ServerConfig {
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
 };
+
+struct CommandPair {
+    const char* command;
+    void (*function)(std::vector<std::string>::iterator&, Logger*, LocationConfig&);
+};
+
 
 void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
