@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 17:16:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 02:19:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ enum e_logger {
 };
 
 /**
- * @brief Logger class for logging messages to a file.
+ * @class Logger
+ * @brief A simple logging utility for managing log messages with different levels of severity.
  *
- * This class provides functionality to log messages at different levels
- * (INFO, ERROR, etc) to a log file o std::cout.
- *
+ * This class provides methods for logging messages with different severity levels, including DEBUG, INFO, WARNING, ERROR, and FATAL.
+ * It supports logging to the console or to a file, and allows for filtering messages based on a log level.
  */
 class Logger {
 private:

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 23:10:57 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 00:03:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:55:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,14 @@ unsigned char method_bitwise(std::string parsed) {
 	return (0);
 }
 
+#include <ostream>
+#include <string>
+#include <sstream>
+
+
+
 int main() {
 	unsigned char permissions = 0;  // Ningún método permitido inicialmente
-
 	// Otorgar permisos
 	permissions |= method_bitwise("GET");
 	permissions |= method_bitwise("POST");

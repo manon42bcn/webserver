@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #ifndef __HTTP_CODES_HELPERS_CPP__
 # define __HTTP_CODES_HELPERS_CPP__
 

@@ -146,7 +146,6 @@ typedef struct s_cgi {
 } t_cgi;
 
 
-
 typedef enum e_allowed_methods {
 	GET=0,
 	POST=1,
