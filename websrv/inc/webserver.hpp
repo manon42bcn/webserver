@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/12 19:32:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 09:25:39 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include "Logger.hpp"
 #include "http_enum_codes.hpp"
+#include "ws_structs.hpp"
 #define NO_LOCATION -1
 
 #include <string>

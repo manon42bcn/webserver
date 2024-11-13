@@ -32,6 +32,7 @@ SRCS_FILES		=	webserver.cpp \
 					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					ws_structs.hpp \
 					WebserverCache.hpp \
 					WebServerResponseHandler.hpp \
 					HttpCGIHandler.hpp \
