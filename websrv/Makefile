@@ -55,6 +55,7 @@ RM				= 	rm -rf
 CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
 WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+OS := $(shell uname)
 
 export WEBSERVER_PATH
 
