@@ -88,7 +88,6 @@ int main(int argc, char **argv) {
 
 	logger.log(LOG_DEBUG, "main_otro", "Configs parsed");
 
-//	WebServerCache cache(200);
 	try {
 		ServerManager server_manager(configs, &logger);
 		signal(SIGINT, signal_handler);
