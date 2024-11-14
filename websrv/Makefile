@@ -16,7 +16,7 @@ SRCS_FILES		=	webserver.cpp \
 					HttpRangeHandler.cpp \
 					HttpMultipartHandler.cpp \
 					http_codes_helper.cpp \
-					main_otro.cpp \
+					main.cpp \
 					Logger.cpp \
 					SocketHandler.cpp \
 					ClientData.cpp \

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main_otro.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 10:37:47 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:20:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/11 22:26:52 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,78 +107,36 @@ bool starts_with(const std::string& str, const std::string& prefix) {
 
 ServerManager* running_server = NULL;
 
-void signal_handler(int sig) {
-	if (running_server != NULL) {
-		std::cout << "\nReceived signal " << sig << ". Shutting down server..." << std::endl;
-		running_server->turn_off_server();
-	}
+void signal_handler(int sig){
+	(void)sig;
+	running_server->turn_off_server();
 }
 
 int main(int argc, char **argv) {
 
-	(void)argc;
-	(void)argv;
 	Logger logger(LOG_DEBUG, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
 
+	if (!check_args(argc, argv))
+		exit(1);
+	configs = parse_file(argv[1], &logger);
 
-	// Datos de prueba
-	std::vector<std::string> default_pages;
-	default_pages.push_back("index.html");
-	default_pages.push_back("home.html");
-	std::map<int, std::string> error_pages;
-	error_pages[404] = "404.html";
+	logger.log(LOG_DEBUG, "main_otro", "Configs parsed");
 
-	// Insertar datos en el vector
-	locations.insert(std::make_pair("/", LocationConfig("", ACCESS_READ, default_pages, TEMPLATE, error_pages)));
-	// locations.insert(std::make_pair("/home", LocationConfig("/home", ACCESS_DELETE, default_pages, TEMPLATE, error_pages)));
-	// locations.insert(std::make_pair("/home/other/path", LocationConfig("/home/other/path", ACCESS_WRITE, default_pages, TEMPLATE, error_pages)));
-	// locations.insert(std::make_pair("/admin", LocationConfig("/admin", ACCESS_FORBIDDEN, default_pages, LITERAL, error_pages)));
-	// locations.insert(std::make_pair("/public", LocationConfig("/public", ACCESS_READ, default_pages, LITERAL, error_pages)));
-
-	ServerConfig server1;
-	server1.port = 8080;
-	server1.server_name = "localhost";
-	server1.server_root = base_path + "data";
-	server1.error_pages[404] = "/404.html";
-	server1.locations = locations;
-	server1.default_pages.push_back("index.html");
-	server1.ws_root = base_path + "/data";
-	server1.ws_errors_root = base_path + "default_error_pages";
-	configs.push_back(server1);
-
-	// ServerConfig server2;
-	// server2.port = 9090;
-	// server2.server_name = "localhost";
-	// server2.server_root =  base_path + "data/9090";
-	// server2.error_pages[404] = "/404.html";
-	// server2.locations = locations;
-	// server2.default_pages.push_back("index.html");
-	// server2.default_pages.push_back("home.html");
-	// server2.default_pages.push_back("index.htm");
-	// server2.ws_root = base_path + "/data";
-	// server2.ws_errors_root = base_path + "default_error_pages";
-	// configs.push_back(server2);
-	WebServerCache cache(200);
-
-
-
-	print_servers(configs);
+//	WebServerCache cache(200);
 	try {
 		ServerManager server_manager(configs, &logger);
-		running_server = &server_manager;
 		signal(SIGINT, signal_handler);
-		signal(SIGTERM, signal_handler);
-		signal(SIGTSTP, signal_handler);
+		running_server = &server_manager;
 		server_manager.run();
-	} catch (const std::exception& e) {
+	} catch (Logger::NoLoggerPointer& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
-		if (running_server != NULL) {
-			running_server->turn_off_server();
-		}
+	} catch (WebServerException& e){
+		std::cerr << "ERROR: " << e.what() << std::endl;
+	} catch (std::exception& e) {
+		std::cerr << "ERROR: " << e.what() << std::endl;
 	}
-	
 	return 0;
 }
