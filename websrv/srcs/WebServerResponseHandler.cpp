@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 19:46:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 20:06:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ bool WsResponseHandler::handle_request() {
  *          otherwise, `false` if an error occurs or access is denied.
  */
 bool WsResponseHandler::handle_get() {
-	if (_request.status != HTTP_OK || _request.access < ACCESS_READ) {
+	if (HAS_GET(_location->loc_allowed_methods)) {
 		send_error_response();
 		return (false);
 	}
@@ -139,7 +139,7 @@ bool WsResponseHandler::handle_get() {
  *          otherwise, `false` if an error occurs or access is denied.
  */
 bool WsResponseHandler::handle_post() {
-	if (_location->loc_access < ACCESS_WRITE) {
+	if (HAS_POST(_location->loc_allowed_methods)) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "No post data available.");
 		return (send_error_response());
@@ -168,7 +168,7 @@ bool WsResponseHandler::handle_post() {
  *          or failure to delete the resource.
  */
 bool WsResponseHandler::handle_delete() {
-	if (_location->loc_access < ACCESS_DELETE) {
+	if (HAS_DELETE(_location->loc_allowed_methods)) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "Insufficient permissions to delete the resource.");
 		return (send_error_response());
@@ -273,6 +273,7 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		std::streampos file_size = file.tellg();
 		if (file_size == 0) {
 			_response_data.status = true;
+			_request.status = HTTP_OK;
 			return ;
 		}
 		file.seekg(0, std::ios::beg);
@@ -301,6 +302,7 @@ void WsResponseHandler::get_file_content(std::string& path) {
 	}
 	_log->log_debug( RSP_NAME,
 			  "File content read OK.");
+	_request.status = HTTP_OK;
 	_response_data.content = content;
 	_response_data.status = true;
 }

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 01:07:17 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:02:54 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "http_enum_codes.hpp"
 #include "Logger.hpp"
 #include "ClientData.hpp"
+#include "ws_permissions_bitwise.hpp"
 #include <string>
 #include <unistd.h>
 #include <string>

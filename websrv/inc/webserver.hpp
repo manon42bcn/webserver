@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 17:19:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 18:57:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,30 +126,29 @@ enum e_path_type {
 };
 
 struct s_request {
-	std::string header;
-	std::string body;
-	e_methods   method;
-	std::string path;
-	e_path_type path_type;
-	std::string query;
-	std::string normalized_path;
-	std::string path_info;
-	size_t      content_length;
-	std::string content_type;
-	bool        cgi;
-	std::string script;
-	std::string boundary;
-	bool        chunks;
-	std::string range;
-	std::string cookie;
-	e_access    access;
-	bool        sanity;
-	e_http_sts  status;
+	std::string     header;
+	std::string     body;
+	e_methods       method;
+	std::string     path;
+	e_path_type     path_type;
+	std::string     query;
+	std::string     normalized_path;
+	std::string     path_info;
+	size_t          content_length;
+	std::string     content_type;
+	bool            cgi;
+	std::string     script;
+	std::string     boundary;
+	bool            chunks;
+	std::string     range;
+	std::string     cookie;
+	bool            sanity;
+	e_http_sts      status;
 	s_request() : header(""), body(""), method(METHOD_TO_PARSE), path(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),
-				  range(""), cookie(""), access(ACCESS_BAD_REQUEST), sanity(true),
+				  range(""), cookie(""), sanity(true),
 				  status(HTTP_MAX_STATUS) {};
 };
 

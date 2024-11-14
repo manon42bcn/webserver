@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 01:12:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:57:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,16 +419,14 @@ void HttpRequestHandler::load_header_data() {
  *
  * This method searches for the most specific matching location within `_config.locations`
  * based on the `_request_data.path`. The `LocationConfig` object associated with the longest
- * matching key is selected, allowing for precise path matching. Once found, `_location` and
- * `_request_data.access` are updated to reflect this configuration.
+ * matching key is selected, allowing for precise path matching.
  *
  * Detailed Workflow:
  * - Iterates through `_config.locations` to find entries whose paths match the beginning of
  *   `_request_data.path`.
  * - The longest matching key is selected, ensuring the most specific location configuration
  *   is applied.
- * - If a match is found, `_location` is set to the corresponding `LocationConfig` pointer,
- *   and `_request_data.access` is updated.
+ * - If a match is found, `_location` is set to the corresponding `LocationConfig` pointer.
  * - If no match is found, the method sets `sanity` to false with an HTTP 400 (Bad Request)
  *   status, as the requested path does not correspond to any configured location.
  * @note: This method will use cached data if the method is GET and its content is available.
@@ -450,9 +448,7 @@ void HttpRequestHandler::get_location_config() {
 	_is_cached = _request_cache.get(_request_data.path, _cache_data);
 	if (_request_data.method == METHOD_GET && _is_cached) {
 		_location = _cache_data.location;
-		_request_data.access = _location->loc_access;
 		_request_data.normalized_path = _cache_data.normalized_path;
-		_request_data.status = HTTP_OK;
 		return ;
 	}
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
@@ -469,7 +465,6 @@ void HttpRequestHandler::get_location_config() {
 		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
-		_request_data.access = result->loc_access;
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 						"Location Not Found");
@@ -612,7 +607,6 @@ void HttpRequestHandler::normalize_request_path() {
 		_log->log_info( RH_NAME, "File found.");
 		_request_data.normalized_path = eval_path;
 		_request_data.cgi = is_cgi(_request_data.normalized_path);
-		_request_data.status = HTTP_OK;
 		return ;
 	}
 	if (_request_data.method == METHOD_DELETE) {
@@ -635,7 +629,6 @@ void HttpRequestHandler::normalize_request_path() {
 				_log->log_info( RH_NAME, "Default File found");
 				_request_data.normalized_path = eval_path + _location->loc_default_pages[i];
 				_request_data.cgi = is_cgi(_request_data.normalized_path);
-				_request_data.status = HTTP_OK;
 				return ;
 			}
 		}
