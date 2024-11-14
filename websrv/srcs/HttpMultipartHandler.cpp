@@ -33,7 +33,7 @@ HttpMultipartHandler::HttpMultipartHandler(const LocationConfig *location,
 										   WsResponseHandler(location, log,
 															 client_data, request,
 															 fd) {
-	_log->log(LOG_DEBUG, MP_NAME,
+	_log->log_debug( MP_NAME,
 	          "Multipart Handler init.");
 }
 
@@ -52,7 +52,7 @@ bool HttpMultipartHandler::handle_request() {
 
 	switch (_request.method) {
 		case METHOD_POST:
-			_log->log(LOG_DEBUG, MP_NAME,
+			_log->log_debug( MP_NAME,
 			          "Handle POST request.");
 			return (handle_post());
 		default:
@@ -102,7 +102,7 @@ bool HttpMultipartHandler::handle_post() {
 				}
 			} else {
 				_request.status = HTTP_CREATED;
-				_log->log(LOG_DEBUG, MP_NAME,
+				_log->log_debug( MP_NAME,
 				          "File Data Recieved and saved.");
 			}
 		}
@@ -176,7 +176,7 @@ void HttpMultipartHandler::parse_multipart_data() {
 		part_start += _request.boundary.length() + 2;
 		size_t headers_end = _request.body.find("\r\n\r\n", part_start);
 		if (headers_end != std::string::npos) {
-			_log->log(LOG_DEBUG, MP_NAME,
+			_log->log_debug( MP_NAME,
 			          "Looking for Post multi-part related data.");
 			std::string content_info = _request.body.substr(part_start, headers_end - part_start);
 			size_t file_data_start = headers_end + 4;
@@ -199,7 +199,7 @@ void HttpMultipartHandler::parse_multipart_data() {
 			_multi_content.push_back(part_data);
 			part_start = next_boundary;
 		} else {
-			_log->log(LOG_DEBUG, MP_NAME,
+			_log->log_debug( MP_NAME,
 			          "End of multi-part body request.");
 			break;
 		}

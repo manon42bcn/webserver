@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 00:41:09 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:07:17 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #define RSP_NAME "HttpResponseHandler"
 #define UNUSED(x) (void)(x)

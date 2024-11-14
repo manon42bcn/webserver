@@ -11,7 +11,6 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
-					WebserverCache.cpp \
 					WebServerResponseHandler.cpp \
 					HttpCGIHandler.cpp \
 					HttpRangeHandler.cpp \
@@ -33,6 +32,7 @@ SRCS_FILES		=	webserver.cpp \
 					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					ws_structs.hpp \
 					WebserverCache.hpp \
 					WebServerResponseHandler.hpp \
 					HttpCGIHandler.hpp \
@@ -56,6 +56,7 @@ RM				= 	rm -rf
 CFLAGS			=	-std=c++98 -pedantic -Wall -Wextra -Werror -g
 NAME			=	webserver
 WEBSERVER_PATH 	:= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+OS := $(shell uname)
 
 export WEBSERVER_PATH
 

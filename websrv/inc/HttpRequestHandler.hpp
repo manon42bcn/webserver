@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 00:57:28 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 00:59:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,18 @@ typedef struct e_chunk {
 class HttpRequestHandler {
 	private:
 	    typedef void (HttpRequestHandler::*validate_step)( );
-		const ServerConfig&     _config;
-		const Logger*           _log;
-		ClientData*             _client_data;
-		WebServerCache*			_cache;
-		const LocationConfig*   _location;
-		int                     _fd;
-		size_t 					_max_request;
-	    std::string             _request;
-		int                     _factory;
-		s_request               _request_data;
+		const ServerConfig&             _config;
+		const Logger*                   _log;
+		ClientData*                     _client_data;
+		WebServerCache<CacheRequest>&   _request_cache;
+		const LocationConfig*           _location;
+		int                             _fd;
+		size_t 					        _max_request;
+	    std::string                     _request;
+		int                             _factory;
+		s_request                       _request_data;
+		bool                            _is_cached;
+		CacheRequest                    _cache_data;
 
 		void read_request_header();
 		void parse_header();
@@ -104,8 +106,7 @@ class HttpRequestHandler {
 
 	public:
 		HttpRequestHandler(const Logger* log,
-						   ClientData* client_data,
-						   WebServerCache* cache);
+						   ClientData* client_data);
 	    ~HttpRequestHandler();
 		void request_workflow();
 };

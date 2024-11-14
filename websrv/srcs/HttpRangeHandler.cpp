@@ -35,7 +35,7 @@ HttpRangeHandler::HttpRangeHandler(const LocationConfig *location,
 		WsResponseHandler(location, log,
 		                  client_data, request,
 		                  fd) {
-	_log->log(LOG_DEBUG, RRH_NAME,
+	_log->log_debug( RRH_NAME,
 	          "Range Response Handler Init.");
 }
 
@@ -55,7 +55,7 @@ bool HttpRangeHandler::handle_request() {
 
 	switch (_request.method) {
 		case METHOD_GET:
-			_log->log(LOG_DEBUG, RRH_NAME,
+			_log->log_debug( RRH_NAME,
 			          "Handle GET request.");
 			return (handle_get());
 		default:
@@ -128,7 +128,7 @@ void HttpRangeHandler::get_file_content(std::string& path) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						"Unhandled Exception: " + std::string(e.what()));
 	}
-	_log->log(LOG_DEBUG, RRH_NAME,
+	_log->log_debug( RRH_NAME,
 			  "File content read completed.");
 }
 
@@ -151,7 +151,7 @@ void HttpRangeHandler::parse_content_range() {
 	_response_data.ranged = false;
 	_response_data.start = 0;
 	_response_data.end = static_cast<size_t>(-1);
-	_log->log(LOG_DEBUG, RRH_NAME,
+	_log->log_debug( RRH_NAME,
 	          "Parsing Range header: " + _request.range);
 
 	std::string range_value = _request.range;
@@ -162,20 +162,20 @@ void HttpRangeHandler::parse_content_range() {
 		_response_data.end = end;
 		_response_data.ranged = true;
 		_response_data.range_scenario = CR_RANGE;
-		_log->log(LOG_DEBUG, RRH_NAME,
+		_log->log_debug( RRH_NAME,
 		          "Full range found");
 	} else if (sscanf(range_value.c_str(), "bytes=%lu-", &start) == 1) {
 		_response_data.start = start;
 		_response_data.end = _response_data.start + DEFAULT_RANGE_BYTES;
 		_response_data.ranged = true;
 		_response_data.range_scenario = CR_INIT;
-		_log->log(LOG_DEBUG, RRH_NAME,
+		_log->log_debug( RRH_NAME,
 		          "Partial Range: start-");
 	} else if (sscanf(range_value.c_str(), "bytes=-%lu", &end) == 1) {
 		_response_data.end = end;
 		_response_data.ranged = true;
 		_response_data.range_scenario = CR_LAST;
-		_log->log(LOG_DEBUG, RRH_NAME,
+		_log->log_debug( RRH_NAME,
 		          "Last Range found.");
 	} else {
 		turn_off_sanity(HTTP_RANGE_NOT_SATISFIABLE,
@@ -225,7 +225,7 @@ bool HttpRangeHandler::validate_content_range(size_t file_size) {
 		_request.status = HTTP_OK;
 		_client_data->deactivate();
 	}
-	_log->log(LOG_DEBUG, RRH_NAME,
+	_log->log_debug( RRH_NAME,
 	          "Validated content range.");
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 22:24:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:11:08 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,12 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 										 const Logger *log,
 										 ClientData *client_data,
 										 s_request &request,
-                                         int fd,
-										 WebServerCache* cache) :
+                                         int fd) :
 										 WsResponseHandler(location, log,
 														   client_data, request,
 														   fd),
-									     _cache(cache) {
-	_log->log(LOG_DEBUG, RHB_NAME,
+									     _cache(client_data->get_server()->get_cache()) {
+	_log->log_debug( RHB_NAME,
 			  "Static Response Handler Init.");
 }
 
@@ -52,13 +51,22 @@ HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
  * @param path Path to the file whose content is to be retrieved.
  */
 void HttpResponseHandler::get_file_content(std::string &path) {
-	if (!_cache->get(path, _response_data.content)) {
+	CacheEntry data;
+	if (!_cache.get(path, data)) {
 		WsResponseHandler::get_file_content(path);
 		if (_request.sanity) {
-			_cache->put(path, _response_data.content);
+			_cache.put(path, CacheEntry(path, _response_data.content));
 		}
 	} else {
-		_response_data.status = true;
+		struct stat buffer;
+		if (stat(path.c_str(), &buffer) == 0) {
+			_response_data.content = data.content;
+			_response_data.status = true;
+		} else {
+			_cache.remove(path);
+			turn_off_sanity(HTTP_NOT_FOUND,
+							"File is not found.");
+		}
 	}
 }
 

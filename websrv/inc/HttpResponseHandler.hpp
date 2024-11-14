@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 22:15:33 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:00:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,13 @@
  */
 class HttpResponseHandler : public WsResponseHandler {
 	private:
-		WebServerCache* _cache;
+		WebServerCache<CacheEntry>& _cache;
 	public:
 		HttpResponseHandler(const LocationConfig *location,
 							const Logger *log,
 							ClientData* client_data,
 							s_request& request,
-							int fd,
-							WebServerCache* cache);
+							int fd);
 	void get_file_content(std::string& path);
 	void get_file_content(int pid, int (&fd)[2]);
 };

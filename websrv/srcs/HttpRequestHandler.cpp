@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 02:12:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:12:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,23 @@
  * which compromises server functionality.
  */
 HttpRequestHandler::HttpRequestHandler(const Logger* log,
-									   ClientData* client_data,
-									   WebServerCache* cache):
+									   ClientData* client_data):
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
-	_cache(cache),
+	_request_cache(client_data->get_server()->get_request_cache()),
 	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_max_request(MAX_REQUEST) {
+
 	if (!log) {
 		throw Logger::NoLoggerPointer();
 	}
-	if (!client_data || !cache) {
-		throw WebServerException("Some pointers are not valid. Server health is compromised.");
+	if (!client_data) {
+		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
 	_factory = 0;
+	_is_cached = false;
 }
 
 /**
@@ -55,7 +56,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
  * as most resources are managed externally, but it indicates a cleanup phase in logs.
  */
 HttpRequestHandler::~HttpRequestHandler() {
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "HttpRequestHandler resources clean up.");
 }
 
@@ -96,7 +97,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Parse and Validation Request Process. Start");
 	size_t i = 0;
 	_client_data->chronos_reset();
@@ -107,10 +108,10 @@ void HttpRequestHandler::request_workflow() {
 			break;
 		i++;
 	}
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Request Validation Process. End. Send to Response Handler.");
 	handle_request();
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Response Process end.");
 }
 
@@ -121,14 +122,14 @@ void HttpRequestHandler::request_workflow() {
  * `_request` until the complete HTTP header is received. The header is considered
  * complete when the "\r\n\r\n" delimiter is detected.
  *
- * Key behaviors and checks:
- * - If the accumulated data exceeds `_max_request`, the request is terminated
- *   with an error status indicating that the header fields are too large.
- * - If the client's `chronos_request` timeout is exceeded during reading,
- *   the request is terminated with a timeout error.
- * - If an error occurs during socket reading, such as no data is available
- *   (`read_byte < 0 && size == 0`), or the client closes the connection
- *   (`size == 0`), the request is marked as closed.
+ * Function Workflow:
+ * 1. Attempt to read data from the socket using `recv()`.
+ * 2. If data is read successfully, append it to the request buffer.
+ * 3. Check if the headers are fully received by looking for the end sequence (`\r\n\r\n`).
+ * 4. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 5. If the client closes the connection (`recv()` returns `0`) or an error occurs after maximum retries,
+ * 	  mark the connection as inactive.
+ * 6. If the request headers are successfully read, proceed to the next step in handling the request.
  *
  * Upon successful completion, the client's `chronos_reset` is called to refresh
  * the timestamp, indicating the request's active state.
@@ -144,43 +145,53 @@ void HttpRequestHandler::request_workflow() {
  */
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
-	int         read_byte;
-	size_t      size = 0;
+	int read_byte;
+	size_t size = 0;
+	int retry_count = 0;
 
 	try {
-		_log->log(LOG_DEBUG, RH_NAME, "Reading http request");
-		while ((read_byte = recv(_fd, buffer, sizeof(buffer), 0)) > 0) {
-			size += read_byte;
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
-				                "Request Header too large.");
-				return ;
-			}
-			_request.append(buffer, read_byte);
-			if (_request.find("\r\n\r\n") != std::string::npos) {
-				break ;
-			}
-			if (!_client_data->chronos_request()) {
-				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
+		_log->log_debug( RH_NAME,
+				  "Reading HTTP request");
+		while (true) {
+			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
+			if (read_byte > 0) {
+				size += read_byte;
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
+									"Request Header too large.");
+					return;
+				}
+				_request.append(buffer, read_byte);
+				if (_request.find("\r\n\r\n") != std::string::npos) {
+					break;
+				}
+				retry_count = 0;
+				if (!_client_data->chronos_request()) {
+					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+									"Request Timeout.");
+					return;
+				}
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
 		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket. " + int_to_string(read_byte));
-			return ;
-		}
-		if (size == 0) {
-//			_client_data->deactivate();
-			_client_data->kill_client();
-			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
-		}
+
 		_client_data->chronos_reset();
-		_log->log(LOG_DEBUG, RH_NAME,
-		          "Request read.");
+		_log->log_debug( RH_NAME,
+				  "Request read.");
+
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error Getting Header Data Request: " << e.what();
@@ -220,7 +231,7 @@ void HttpRequestHandler::parse_header() {
 			                "Request Header is empty.");
 			return ;
 		}
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "Header successfully parsed.");
 		header_end += 4;
 		std::string tmp = _request.substr(header_end);
@@ -237,7 +248,7 @@ void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Parsing Request to get path and method.");
 	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
@@ -256,7 +267,7 @@ void HttpRequestHandler::parse_method_and_path() {
 				                "Request path too long.");
 				return ;
 			}
-			_log->log(LOG_DEBUG, RH_NAME,
+			_log->log_debug( RH_NAME,
 			          "Request header fully parsed.");
 			_request_data.path = path;
 			return ;
@@ -302,19 +313,19 @@ void HttpRequestHandler::parse_method_and_path() {
  * @see turn_off_sanity
  */
 void HttpRequestHandler::parse_path_type() {
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Parsing Path type.");
 	size_t pos = _request_data.path.find('?');
 	if (pos == std::string::npos) {
 		_request_data.path_type = PATH_REGULAR;
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Regular Path to normalize.");
 		return;
 	}
 	_request_data.query = _request_data.path.substr(pos + 1);
 	_request_data.path = _request_data.path.substr(0, pos);
 	_request_data.path_type = PATH_QUERY;
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Query found and parse from path.");
 }
 
@@ -380,7 +391,7 @@ void HttpRequestHandler::load_header_data() {
 	}
 	std::string chunks = get_header_value(_request_data.header,
 										  "transfer-encoding:", "\r\n");
-	_log->log(LOG_DEBUG, RSP_NAME, chunks);
+	_log->log_debug( RSP_NAME, chunks);
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
@@ -420,6 +431,8 @@ void HttpRequestHandler::load_header_data() {
  *   and `_request_data.access` is updated.
  * - If no match is found, the method sets `sanity` to false with an HTTP 400 (Bad Request)
  *   status, as the requested path does not correspond to any configured location.
+ * @note: This method will use cached data if the method is GET and its content is available.
+ * 		  cached avoid extra interactions over locations.
  *
  * Error Handling:
  * - If no matching location is found, `turn_off_sanity` is invoked with `HTTP_BAD_REQUEST`
@@ -431,8 +444,17 @@ void HttpRequestHandler::get_location_config() {
 	std::string saved_key;
 	const LocationConfig* result = NULL;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 			  "Searching related location.");
+
+	_is_cached = _request_cache.get(_request_data.path, _cache_data);
+	if (_request_data.method == METHOD_GET && _is_cached) {
+		_location = _cache_data.location;
+		_request_data.access = _location->loc_access;
+		_request_data.normalized_path = _cache_data.normalized_path;
+		_request_data.status = HTTP_OK;
+		return ;
+	}
 	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
 	     it != _config.locations.end(); ++it) {
 		const std::string& key = it->first;
@@ -444,7 +466,7 @@ void HttpRequestHandler::get_location_config() {
 		}
 	}
 	if (result) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
 		_request_data.access = result->loc_access;
@@ -481,20 +503,20 @@ void HttpRequestHandler::get_location_config() {
  * @see is_file, is_dir, starts_with, _request_data
  */
 void HttpRequestHandler::cgi_normalize_path() {
-	if (!_location->cgi_file) {
-		_log->log(LOG_DEBUG, RH_NAME,
+	if (!_location->cgi_file || _is_cached) {
+		_log->log_debug( RH_NAME,
 		          "No CGI locations at server config.");
 		return ;
 	}
 	std::string eval_path = _config.server_root + _request_data.path;
 	if (is_dir(eval_path) || (is_file(eval_path) && !is_cgi(eval_path))) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI test - Directory or resource exist.");
 		return ;
 	}
 
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path) && is_cgi(eval_path)) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "The user is over a real CGI file. It should be handle as script.");
 		size_t dot_pos = eval_path.find_last_of('/');
 		_request_data.script = eval_path.substr(dot_pos + 1);
@@ -507,7 +529,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 	std::string saved_key;
 	const t_cgi* cgi_data = NULL;
 
-	_log->log(LOG_DEBUG, RH_NAME,
+	_log->log_debug( RH_NAME,
 	          "Request will be testing against mapped CGI scripts.");
 	for (std::map<std::string, t_cgi>::const_iterator it = _location->cgi_locations.begin();
 	     it != _location->cgi_locations.end(); it++) {
@@ -520,7 +542,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		}
 	}
 	if (cgi_data) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI - Location Found: " + saved_key);
 		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
 		_request_data.script = cgi_data->script;
@@ -561,16 +583,19 @@ void HttpRequestHandler::cgi_normalize_path() {
  */
 void HttpRequestHandler::normalize_request_path() {
 	if (_request_data.cgi) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 		          "CGI context. path has been normalized");
 		return ;
 	}
+	if (_is_cached) {
+		return;
+	}
 	std::string eval_path = _config.server_root + _request_data.path;
 
-	_log->log(LOG_DEBUG, RH_NAME,
-			  "Normalize path to get proper file to serve." + eval_path);
+	_log->log_debug( RH_NAME,
+			  "Normalize path to get proper file to serve.");
 	if (_request_data.method == METHOD_POST) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Path build to a POST request");
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
@@ -584,7 +609,7 @@ void HttpRequestHandler::normalize_request_path() {
 		return ;
 	}
 	if (eval_path[eval_path.size() - 1] != '/' && is_file(eval_path)) {
-		_log->log(LOG_INFO, RH_NAME, "File found.");
+		_log->log_info( RH_NAME, "File found.");
 		_request_data.normalized_path = eval_path;
 		_request_data.cgi = is_cgi(_request_data.normalized_path);
 		_request_data.status = HTTP_OK;
@@ -604,11 +629,10 @@ void HttpRequestHandler::normalize_request_path() {
 		if (eval_path[eval_path.size() - 1] != '/') {
 			eval_path += "/";
 		}
-		_log->log(LOG_INFO, RH_NAME, "location size: " + int_to_string(_location->loc_default_pages.size()));
 		for (size_t i = 0; i < _location->loc_default_pages.size(); i++) {
-			_log->log(LOG_INFO, RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
+			_log->log_info( RH_NAME, "here" + eval_path + _location->loc_default_pages[i]);
 			if (is_file(eval_path + _location->loc_default_pages[i])) {
-				_log->log(LOG_INFO, RH_NAME, "Default File found");
+				_log->log_info( RH_NAME, "Default File found");
 				_request_data.normalized_path = eval_path + _location->loc_default_pages[i];
 				_request_data.cgi = is_cgi(_request_data.normalized_path);
 				_request_data.status = HTTP_OK;
@@ -637,33 +661,31 @@ void HttpRequestHandler::normalize_request_path() {
  */
 void HttpRequestHandler::load_content() {
 	if (_request_data.chunks) {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Chunk content. Load body request.");
 		load_content_chunks();
 	} else {
-		_log->log(LOG_DEBUG, RH_NAME,
+		_log->log_debug( RH_NAME,
 				  "Normal content. Load body request.");
 		load_content_normal();
 	}
 }
 
 /**
- * @brief Reads and loads the body content when the request is chunked.
+ * @brief Loads the HTTP request body content in chunked transfer mode.
  *
- * This method handles HTTP chunked transfer encoding. It reads each chunk of the content
- * from the socket, appends it to `_request`, and checks for size and timeout limits.
+ * This function reads the request body content from the client socket when the transfer encoding is chunked.
+ * It processes the incoming chunks until the entire request body is received.
+ * The function handles errors, request timeouts, and ensures that the body content does not exceed the allowed size.
  *
- * Workflow:
- * - **Timeout Check**: Verifies if the request is still within its allowed timeframe using `chronos_request()`.
- * - **Chunk Parsing**: Utilizes `parse_chunks` to interpret chunk size and content.
- * - **Content Limit**: Monitors total body size and triggers an error if it exceeds `_max_request`.
- *
- * Exceptions:
- * - If an error occurs during socket read or chunk parsing, an exception is logged and processed.
- *
- * Sanity Control:
- * - If a timeout, size overflow, or socket error is encountered, `turn_off_sanity` is invoked with
- *   appropriate HTTP error codes.
+ * The flow of the function is as follows:
+ * 1. Begin by attempting to parse any existing chunk data.
+ * 2. Continue reading from the socket using `recv()` to gather more chunk data as needed.
+ * 3. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 4. If `recv()` returns `0`, it indicates that the client has closed the connection, and the connection is marked inactive.
+ * 5. Accumulate the chunk data and parse it to extract individual chunks, appending them to the request body.
+ * 6. If the chunk size reaches `0`, it indicates the end of the chunked transfer, and the function completes.
+ * 7. If the body is successfully read, reset the request timeout and store the final body content.
  *
  * @see parse_chunks, chronos_request, turn_off_sanity
  */
@@ -674,49 +696,62 @@ void HttpRequestHandler::load_content_chunks() {
 	std::string chunk_data = _request;
 	_request.clear();
 	long chunk_size = 1;
+	int retry_count = 0;
 
 	try {
 		while (true) {
 			if (!_client_data->chronos_request()) {
 				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
+								"Request Timeout.");
+				return;
 			}
 			parse_chunks(chunk_data, chunk_size);
 			if (chunk_size == 0) {
 				size = _request.length();
-				break ;
+				break;
 			}
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
-			if (read_byte <= 0) {
-				continue ;
-			} else {
+
+			if (read_byte > 0) {
 				size += read_byte;
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+									"Body Content too Large.");
+					return;
+				}
+				chunk_data.append(buffer, read_byte);
+				retry_count = 0;
+
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-				                "Body Content too Large.");
-				return ;
-			}
-			chunk_data.append(buffer, read_byte);
 		}
 
 		if (size == 0) {
-//			_client_data->deactivate();
 			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
+							"Client Close Request");
+			return;
 		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket.");
-			return ;
-		}
+
 		_request_data.body = _request;
 		_request_data.content_length = _request_data.body.length();
-		_log->log(LOG_DEBUG, RH_NAME,
-		          "Chunked Request read.");
+		_log->log_debug( RH_NAME,
+				  "Chunked Request read.");
+
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error getting chunk data: " << e.what();
@@ -724,6 +759,7 @@ void HttpRequestHandler::load_content_chunks() {
 						detail.str());
 	}
 }
+
 
 /**
  * @brief Parses the chunked data according to HTTP/1.1 chunked transfer encoding.
@@ -770,7 +806,6 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 		}
 
 		pos = chunk_size_end + 2;
-		//	TODO: Check if any char is left?
 		if (chunk_size == 0) {
 			if (chunk_data.size() < pos + 2) {
 				break ;
@@ -806,16 +841,13 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
  * number of bytes read matches the `Content-Length`. It updates the `_request` string
  * with the body content and checks for size limits and timeouts.
  *
- * Workflow:
- * - **Initialize Read Parameters**: Sets up the buffer and variables for tracking
- *   bytes read and bytes remaining.
- * - **Loop to Read Data**: Reads data in chunks until `Content-Length` is reached or
- *   a timeout/error occurs.
- * - **Sanity Checks**:
- *   - **Content Too Large**: Terminates and logs an error if the read size exceeds
- *     `_max_request`.
- *   - **Timeout Handling**: Calls `turn_off_sanity` if the client’s request times out.
- *   - **End of File/Socket Error**: Handles errors and unexpected closures from the client.
+ * The flow of the function is as follows:
+ * 1. Verify that `Content-Length` is greater than `0`. If not, log the information and return.
+ * 2. Read data from the socket using `recv()` until the entire content is received.
+ * 3. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
+ * 4. If `recv()` returns `0`, it means the client closed the connection, and the connection is marked inactive.
+ * 5. Accumulate the read data in the request buffer and ensure it does not exceed the allowed maximum size.
+ * 6. If the body is successfully read, reset the request timeout and proceed with processing the request.
  *
  * Sanity Control:
  * - **Content-Length Exceeded**: Calls `turn_off_sanity` with `HTTP_CONTENT_TOO_LARGE`.
@@ -829,53 +861,63 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
  */
 void HttpRequestHandler::load_content_normal() {
 	if (_request_data.content_length == 0) {
-		_log->log(LOG_INFO, RH_NAME,
-		          "No Content-Length to read from FD.");
-		return ;
+		_log->log_info( RH_NAME,
+				  "No Content-Length to read from FD.");
+		return;
 	}
-
 	char buffer[BUFFER_REQUEST];
-	int         read_byte;
-	size_t      size = 0;
-	size_t      to_read = _request_data.content_length - _request.length();
+	int read_byte;
+	size_t size = 0;
+	size_t to_read = _request_data.content_length - _request.length();
+	int retry_count = 0;
 
 	try {
 		while (to_read > 0) {
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
-			if (read_byte < 0) {
-				continue ;
+			if (read_byte > 0) {
+				size += read_byte;
+				to_read -= read_byte;
+
+				if (size > _max_request) {
+					turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+									"Body Content too Large.");
+					return;
+				}
+				_request.append(buffer, read_byte);
+				retry_count = 0;
+				if (!_client_data->chronos_request()) {
+					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
+									"Request Timeout.");
+					return;
+				}
+			} else if (read_byte == 0) {
+				_client_data->kill_client();
+				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
+								"Client Close Request");
+				return;
+			} else {
+				retry_count++;
+				if (retry_count >= WS_MAX_RETRIES) {
+					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+									"Max retries exceeded while reading from socket.");
+					return;
+				}
+				usleep(WS_RETRY_DELAY_MICROSECONDS);
+				continue;
 			}
-			size += read_byte;
-			to_read -= read_byte;
-			if (size > _max_request) {
-				turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-				                "Body Content too Large.");
-				return ;
-			}
-			_request.append(buffer, read_byte);
-			if (!_client_data->chronos_request()) {
-				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
-				                "Request Timeout.");
-				return ;
-			}
-		}
-		if (read_byte < 0 && size == 0) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
-			                "Error Reading From Socket. ");
-			return ;
 		}
 		if (size == 0) {
-//			_client_data->deactivate();
 			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-			                "Client Close Request");
-			return ;
+							"Client Close Request");
+			return;
 		}
 		_client_data->chronos_reset();
 		_request_data.body = _request;
-		_log->log(LOG_DEBUG, RH_NAME,
-				  "Request read.");
-	} catch (std::exception& e) {
+		_log->log_debug( RH_NAME,
+				  "Request body read.");
+	}
+	catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error reading request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
@@ -945,6 +987,8 @@ void HttpRequestHandler::validate_request() {
  *   - If `_request_data.cgi` is true, uses `HttpCGIHandler`.
  *   - If `_request_data.range` is non-empty, uses `HttpRangeHandler`.
  *   - If `_request_data.boundary` is non-empty, uses `HttpMultipartHandler`.
+ * @note: This method will cache request related info if it was not cached yet, if
+ * 		  everything went ok, and if method is get.
  *
  * **Exception Handling**:
  * - Catches `WebServerException`, `Logger::NoLoggerPointer`, and `std::exception`
@@ -960,14 +1004,25 @@ void HttpRequestHandler::handle_request() {
 	}
 	try {
 		if (!_request_data.sanity){
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.send_error_response();
 			return ;
 		}
 		if (_factory == 0) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd, _cache);
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.handle_request();
-			return ;
+			if (_is_cached) {
+				if (!_request_data.sanity) {
+					_request_cache.remove(_request_data.path);
+					return ;
+				}
+				return;
+			}
+			if (_request_data.sanity && _request_data.method == METHOD_GET) {
+				_request_cache.put(_request_data.path,
+								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
+			}
+			return;
 		}
 		if (_request_data.cgi) {
 			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
@@ -986,20 +1041,20 @@ void HttpRequestHandler::handle_request() {
 	} catch (WebServerException& e) {
 		std::ostringstream detail;
 		detail << "Error Handling response: " << e.what();
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 				  detail.str());
 		_client_data->deactivate();
 	} catch (Logger::NoLoggerPointer& e) {
 		std::ostringstream detail;
 		detail << "Logger Pointer Error at Response Handler. "
 			   << "Server Sanity could be compromise.";
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 		          detail.str());
 		_client_data->deactivate();
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Unknown error handling response: " << e.what();
-		_log->log(LOG_ERROR, RH_NAME,
+		_log->log_error( RH_NAME,
 		          detail.str());
 		_client_data->deactivate();
 	}
@@ -1020,7 +1075,7 @@ void HttpRequestHandler::handle_request() {
  *       and should be handled by an error response in the workflow.
  */
 void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) {
-	_log->log(LOG_ERROR, RH_NAME, detail);
+	_log->log_error( RH_NAME, detail);
 	_request_data.sanity = false;
 	_request_data.status = status;
 }

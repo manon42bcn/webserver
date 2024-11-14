@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/10 03:00:53 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/13 01:19:57 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
+#include <algorithm>
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
@@ -45,9 +46,9 @@ class ServerManager {
 	private:
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::vector<SocketHandler*>     _servers;
+		std::vector<int>              	_servers_fds;
 	    std::map<int, ClientData*>      _clients;
 		const Logger*			        _log;
-		WebServerCache*					_cache;
 		bool                            _active;
 		bool                            _healthy;
 
@@ -65,8 +66,7 @@ class ServerManager {
 	void clear_poll();
 public:
 		ServerManager(std::vector<ServerConfig>& configs,
-						  const Logger* logger,
-						  WebServerCache* cache);
+					  const Logger* logger);
 		~ServerManager();
 		void run();
 		void turn_off_server();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 00:38:36 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/09 03:40:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@
 #define MID_GRAY		"\033[38;5;245m"
 #define DARK_GREEN		"\033[38;2;75;179;82m"
 #define DARK_YELLOW		"\033[38;5;143m"
+#define WS_MAX_RETRIES 5
+#define WS_RETRY_DELAY_MICROSECONDS 100000
 
 #define MASK_METHOD_GET     (1 << 0)
 #define MASK_METHOD_OPTIONS (1 << 1)
@@ -202,6 +204,25 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
+};
+
+struct CacheEntry {
+	std::string url;
+	std::string content;
+
+	CacheEntry(const std::string &u, const std::string &c)
+			: url(u), content(c) {};
+	CacheEntry(): url(""), content("") {};
+};
+
+struct CacheRequest {
+	std::string             url;
+	const LocationConfig*   location;
+	std::string             normalized_path;
+
+	CacheRequest(const std::string& u, const LocationConfig* loc,
+				 const std::string& np): url(u), location(loc), normalized_path(np) {};
+	CacheRequest(): url(""), location(NULL), normalized_path("") {};
 };
 
 struct CommandPair {
