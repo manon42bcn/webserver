@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 01:50:39 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 17:19:43 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "WebserverCache.hpp"
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
+#include "general_helpers.hpp"
 #include "Logger.hpp"
 #include <string>
 #include <sys/socket.h>

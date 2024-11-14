@@ -66,44 +66,7 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 	exit(0);
 }
 
-bool is_dir(std::string ruta)
-{
-	struct stat s;
 
-	if (stat(ruta.c_str(), &s) == 0) {
-		return S_ISDIR(s.st_mode);
-	}
-	return false;
-}
-
-bool is_file(std::string ruta) {
-	struct stat s;
-
-	if (stat(ruta.c_str(), &s) == 0) {
-		return S_ISREG(s.st_mode);
-	}
-	return false;
-}
-
-/**
- * @brief Converts an integer to a string.
- *
- * @param number The integer to convert.
- * @return A string representation of the integer.
- */
-std::string int_to_string(int number) {
-	std::stringstream ss;
-	ss << number;
-	return ss.str();
-}
-
-// WIP: Starts_with to compare a given path with each locations key...
-bool starts_with(const std::string& str, const std::string& prefix) {
-	if (str.size() < prefix.size()) {
-		return (false);
-	}
-	return (str.compare(0, prefix.size(), prefix) == 0);
-}
 
 ServerManager* running_server = NULL;
 

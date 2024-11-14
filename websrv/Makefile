@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 SRCS_FILES		=	webserver.cpp \
+					general_helpers.cpp \
 					WebServerResponseHandler.cpp \
 					HttpCGIHandler.cpp \
 					HttpRangeHandler.cpp \
@@ -32,6 +33,7 @@ SRCS_FILES		=	webserver.cpp \
 					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
+					general_helpers.hpp \
 					ws_structs.hpp \
 					WebserverCache.hpp \
 					WebServerResponseHandler.hpp \

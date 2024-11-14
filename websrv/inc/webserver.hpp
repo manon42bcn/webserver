@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/09 03:40:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 17:19:18 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include "Logger.hpp"
 #include "http_enum_codes.hpp"
+
 #define NO_LOCATION -1
 
 #include <string>
@@ -235,10 +236,7 @@ void print_server_config(const ServerConfig& config, std::string location);
 void print_vector_config(const std::vector<ServerConfig> &config, std::string location);
 std::string print_bitwise_method(unsigned char method);
 
-bool is_file(std::string ruta);
-bool is_dir(std::string ruta);
 std::string html_codes(int code);
-bool starts_with(const std::string& str, const std::string& prefix);
 
 // Parse
 

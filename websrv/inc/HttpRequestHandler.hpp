@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 00:59:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 17:18:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "HttpRangeHandler.hpp"
 #include "HttpMultipartHandler.hpp"
 #include "WebserverCache.hpp"
+#include "general_helpers.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>
