@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 01:19:57 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 01:50:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 	if (configs.empty()) {
 		throw WebServerException("No configs available to create servers.");
 	}
-	_poll_fds.reserve(3000);
+	_poll_fds.reserve(2000);
 	_log->log_debug( SM_NAME,
 			  "Server Manager Instance init.");
 	std::ostringstream detail;
