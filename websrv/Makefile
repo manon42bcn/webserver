@@ -35,6 +35,7 @@ HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					general_helpers.hpp \
 					ws_structs.hpp \
+					ws_permissions_bitwise.hpp \
 					WebserverCache.hpp \
 					WebServerResponseHandler.hpp \
 					HttpCGIHandler.hpp \
