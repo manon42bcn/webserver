@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:14:15 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 18:31:21 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:52:21 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,16 @@ void print_vector_config(const std::vector<ServerConfig> &config, std::string lo
 
 ServerManager* running_server = NULL;
 
-void signal_handler(int sig){
-	(void)sig;
-	running_server->turn_off_server();
+void signal_handler(int sig) {
+	if (running_server != NULL) {
+		std::cout << "\nReceived signal " << sig << ". Shutting down server..." << std::endl;
+		running_server->turn_off_server();
+	}
 }
 
 int main(int argc, char **argv) {
 
-	Logger logger(LOG_ERROR, false);
+	Logger logger(LOG_DEBUG, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;
@@ -103,6 +105,8 @@ int main(int argc, char **argv) {
 	try {
 		ServerManager server_manager(configs, &logger);
 		signal(SIGINT, signal_handler);
+		signal(SIGTERM, signal_handler);
+		signal(SIGTSTP, signal_handler);
 		running_server = &server_manager;
 		server_manager.run();
 	} catch (Logger::NoLoggerPointer& e) {

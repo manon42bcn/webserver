@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/14 00:11:48 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:08:13 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 
     logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
     logger->log(LOG_DEBUG, "parse_servers", "Locations found: " + int_to_string(servers.size()));
-    print_servers(servers);
+    // print_servers(servers);
     if (check_duplicate_servers(servers))
         logger->fatal_log("parse_servers", "Duplicate servers found");
     return servers;

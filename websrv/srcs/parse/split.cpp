@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/13 23:07:33 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:02:22 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
         error_pages_map[*it] = adjusted_path;
     }
 
-    for (std::map<int, std::string>::iterator it = error_pages_map.begin(); it != error_pages_map.end(); ++it)
-    {
-        std::cout << RED << it->first << " " << it->second << RESET << std::endl;
-    }
+    // for (std::map<int, std::string>::iterator it = error_pages_map.begin(); it != error_pages_map.end(); ++it)
+    // {
+    //     std::cout << RED << it->first << " " << it->second << RESET << std::endl;
+    // }
     return error_pages_map;
 }
 

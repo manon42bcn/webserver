@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/13 23:40:07 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:29:41 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,5 @@ void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, L
     for (std::vector<std::string>::iterator it = accept_only_methods.begin(); 
          it != accept_only_methods.end(); ++it) {
         location.loc_allowed_methods |= method_bitwise(*it);
-        std::cout << RED << "Method: " << *it << " Bitwise: " << static_cast<int>(method_bitwise(*it)) << RESET << std::endl;
     }
 }
