@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/06 14:21:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:02:13 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,11 +108,28 @@ std::string get_header_value(std::string& haystack, std::string needle, std::str
 	return ("");
 }
 
-
+/**
+ * @brief Checks if a character should be trimmed.
+ *
+ * This function checks if the provided character exists within a set of characters designated for trimming.
+ *
+ * @param c The character to check.
+ * @param chars_to_trim A string containing the characters to be trimmed.
+ * @return `true` if the character should be trimmed, otherwise `false`.
+ */
 bool to_trim_char(char c, const std::string& chars_to_trim) {
 	return (chars_to_trim.find(c) != std::string::npos);
 }
 
+/**
+ * @brief Trims characters from both ends of a string.
+ *
+ * This function removes any characters found in `chars_to_trim` from the beginning and end of the input string.
+ *
+ * @param str The string to be trimmed.
+ * @param chars_to_trim A string containing the characters to be trimmed (default is whitespace characters).
+ * @return A new string with the specified characters trimmed from both ends.
+ */
 std::string trim(const std::string& str, const std::string& chars_to_trim = " \t\n\r\f\v") {
 	size_t start = 0;
 	while (start < str.size() && to_trim_char(str[start], chars_to_trim)) {
@@ -127,8 +144,17 @@ std::string trim(const std::string& str, const std::string& chars_to_trim = " \t
 	return str.substr(start, end - start);
 }
 
+/**
+ * @brief Checks if a file is a CGI script based on its extension.
+ *
+ * This function checks whether the given filename corresponds to a CGI script by looking at its extension.
+ * It checks for extensions such as `.py` and `.php`.
+ *
+ * @param filename The filename to be checked.
+ * @return `true` if the filename corresponds to a CGI script, otherwise `false`.
+ */
 bool is_cgi(const std::string& filename){
-	std::string cgi_files [] = {".py", ".php"};
+	std::string cgi_files [] = {".py", ".pl"};
 
 	size_t dot_pos = filename.find_last_of('.');
 	if (dot_pos == std::string::npos) {
@@ -143,6 +169,14 @@ bool is_cgi(const std::string& filename){
 	return (false);
 }
 
+/**
+ * @brief Finds the end of the HTTP header in a string.
+ *
+ * This function locates the end of the HTTP header in the given string by searching for the sequence `\\r\\n\\r\\n` or `\\n\\n`.
+ *
+ * @param header The HTTP header string to be analyzed.
+ * @return The position where the header ends. If no header end is found, returns `std::string::npos`.
+ */
 size_t end_of_header_system(std::string& header)
 {
 	size_t  pos = header.find("\r\n\r\n");
@@ -151,23 +185,3 @@ size_t end_of_header_system(std::string& header)
 	}
 	return (pos);
 }
-
-//std::map<std::string, std::string> parse_headers_map(const std::string& headers) {
-//	std::map<std::string, std::string> header_map;
-//	std::istringstream header_stream(headers);
-//	std::string line;
-//
-//	while (std::getline(header_stream, line)) {
-//		if (!line.empty() && line.back() == '\r') {
-//			line.pop_back();
-//		}
-//		size_t separator = line.find(": ");
-//		if (separator != std::string::npos) {
-//			std::string header_name = line.substr(0, separator);
-//			std::string header_value = line.substr(separator + 2);
-//			header_map.insert(std::make_pair(header_name, header_value));
-//		}
-//	}
-//
-//	return header_map;
-//}
