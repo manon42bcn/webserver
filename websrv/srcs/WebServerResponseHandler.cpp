@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 02:50:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:37:05 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ bool WsResponseHandler::handle_request() {
  */
 bool WsResponseHandler::handle_get() {
 	if (!HAS_GET(_location->loc_allowed_methods)) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"Get not allowed over resource.");
 		send_error_response();
 		return (false);
 	}
