@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 17:07:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 17:15:16 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 02:29:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,23 @@ bool is_dir(const std::string& path)
 	if (stat(path.c_str(), &s) == 0) {
 		return S_ISDIR(s.st_mode);
 	}
-	return false;
+	return (false);
 }
 
 bool is_file(const std::string& path) {
 	struct stat s;
 
 	if (stat(path.c_str(), &s) == 0) {
-		return S_ISREG(s.st_mode);
+		return (S_ISREG(s.st_mode));
 	}
-	return false;
+	return (false);
 }
 
 
 std::string int_to_string(int number) {
 	std::stringstream ss;
 	ss << number;
-	return ss.str();
+	return (ss.str());
 }
 
 bool starts_with(const std::string& str, const std::string& prefix) {

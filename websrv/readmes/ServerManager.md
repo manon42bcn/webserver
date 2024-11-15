@@ -17,12 +17,14 @@
 ### Private Members
 
 - **_poll_fds**: Vector of `pollfd` structures representing all file descriptors monitored by `poll`.
-- **_servers**: Vector of `SocketHandler` pointers, each representing a server instance.
+- **_servers**: Map of `SocketHandler` pointers, each representing a server instance with file descriptors as keys.
 - **_clients**: Map of active client connections with file descriptors as keys.
 - **_log**: Pointer to a `Logger` instance for recording server activity.
 - **_cache**: Pointer to a `WebServerCache` instance for caching responses.
 - **_active**: Boolean indicating if the server is running.
 - **_healthy**: Boolean representing the server's health status.
+- **_timeout_index**: Map of client fd, using timeout timestamp as key.
+- **_index_timeout**: Map of timeout timestamp, using client fd as key. This last two members are using to make timeout process more agile.
 
 ### Public Methods
 
@@ -44,6 +46,7 @@
 - **void clear_clients()**: Deallocates all active client resources.
 - **void clear_servers()**: Deallocates all server instances.
 - **bool turn_off_sanity(const std::string& detail)**: Logs a critical error and sets the server to inactive.
+- **time_t ServerManager::timeout_timestamp()**: Returns a timeout timestamp in microsecs. Timeout timestamp is current time + CLIENT_LIFECYCLE
 
 ## Key Methods
 

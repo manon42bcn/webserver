@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 01:19:57 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 02:17:48 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <algorithm>
+#include <sys/time.h>
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
@@ -26,9 +27,12 @@
 #include "ClientData.hpp"
 #include "webserver.hpp"
 #include "Logger.hpp"
-
+//defined in microsecs
+#define CLIENT_LIFECYCLE 10000000
 #define SM_NAME "ServerManager"
 typedef std::map<int, ClientData*>::iterator t_client_it;
+typedef std::map<int, time_t>::iterator t_fd_timestamp;
+typedef std::map<time_t, int>::iterator t_timestamp_fd;
 
 /**
  * @class ServerManager
@@ -45,9 +49,11 @@ typedef std::map<int, ClientData*>::iterator t_client_it;
 class ServerManager {
 	private:
 		std::vector<struct pollfd> 	    _poll_fds;
-		std::vector<SocketHandler*>     _servers;
-		std::vector<int>              	_servers_fds;
+		std::map<int, size_t>           _poll_index;
+		std::map<int, SocketHandler*>   _servers_map;
 	    std::map<int, ClientData*>      _clients;
+		std::map<time_t, int>           _timeout_index;
+		std::map<int, time_t>           _index_timeout;
 		const Logger*			        _log;
 		bool                            _active;
 		bool                            _healthy;
@@ -58,12 +64,12 @@ class ServerManager {
 	void timeout_clients();
 	void new_client(SocketHandler* server);
 	bool process_request(size_t& poll_fd_index);
-	void remove_client_from_poll(t_client_it client_data,
-	                             size_t& poll_index);
+	void remove_client_from_poll(t_client_it client_data);
 	bool turn_off_sanity(const std::string& detail);
 	void clear_clients();
 	void clear_servers();
 	void clear_poll();
+	static time_t timeout_timestamp();
 public:
 		ServerManager(std::vector<ServerConfig>& configs,
 					  const Logger* logger);

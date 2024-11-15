@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 20:06:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:27:16 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ bool WsResponseHandler::handle_get() {
 	}
 	get_file_content(_request.normalized_path);
 	if (_response_data.status) {
+		_request.status = HTTP_OK;
 		_log->log_debug( RSP_NAME,
 				  "File content will be sent.");
 		return (send_response(_response_data.content, _request.normalized_path));
@@ -273,7 +274,6 @@ void WsResponseHandler::get_file_content(std::string& path) {
 		std::streampos file_size = file.tellg();
 		if (file_size == 0) {
 			_response_data.status = true;
-			_request.status = HTTP_OK;
 			return ;
 		}
 		file.seekg(0, std::ios::beg);
@@ -302,7 +302,6 @@ void WsResponseHandler::get_file_content(std::string& path) {
 	}
 	_log->log_debug( RSP_NAME,
 			  "File content read OK.");
-	_request.status = HTTP_OK;
 	_response_data.content = content;
 	_response_data.status = true;
 }
@@ -407,7 +406,8 @@ bool WsResponseHandler::send_response(const std::string &body, const std::string
 	} else {
 		mime_type = _response_data.mime;
 	}
-	_headers = header(_request.status, _response_data.content.length(), mime_type);
+	_headers = header(_request.status,
+					  _response_data.content.length(), mime_type);
 	return(sender(body));
 }
 

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 01:50:56 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 02:26:27 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,17 +106,14 @@ void ServerManager::add_server(int port, ServerConfig& config) {
 	if (server == NULL) {
 		throw WebServerException("New server allocation error.");
 	}
-	_servers.push_back(server);
 	_log->log_debug( SM_NAME,
 	          "SocketHandler instance created and added to _servers.");
 
 	if (!add_server_to_poll(server->get_socket_fd())) {
-		_log->log_error( SM_NAME,
-				  "Failed to add server to poll list.");
-		_servers.pop_back();
 		delete (server);
+		throw WebServerException("Fail to add server to poll.");
 	}
-	_servers_fds.push_back(server->get_socket_fd());
+	_servers_map[server->get_socket_fd()] = server;
 }
 
 /**
@@ -174,44 +171,59 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 void ServerManager::cleanup_invalid_fds() {
 	_log->log_debug( SM_NAME,
 			  "Cleaning up invalid file descriptors.");
-	for (size_t i = 0; i < _poll_fds.size(); i++) {
-		if (fcntl(_poll_fds[i].fd, F_GETFD) == -1) {
+	for (t_client_it it = _clients.begin(); it != _clients.end();) {
+		if (fcntl(it->first, F_GETFD) == -1) {
 			if (errno == EBADF) {
 				_log->log_warning( SM_NAME,
-						  "Removing invalid file descriptor and its client.");
-				t_client_it it = _clients.find(_poll_fds[i].fd);
-				remove_client_from_poll(it, i);
+				                   "Removing invalid file descriptor and its client.");
+				t_client_it next = it++;
+				remove_client_from_poll(it);
+				it = next;
 			} else {
 				std::ostringstream detail;
 				detail << "Unexpected error when checking fd." << strerror(errno);
 				_log->log_error( SM_NAME,
-						  detail.str());
+				                 detail.str());
 			}
 		}
+		it++;
 	}
 	_log->log_debug( SM_NAME,
 			  "Cleanup completed.");
 }
 
 /**
- * @brief Removes clients that have exceeded the timeout duration.
+ * @brief Removes clients whose connections have timed out.
  *
- * This method iterates through the `_poll_fds` vector, checking each associated client’s
- * connection status. If a client’s connection has timed out, it removes the client
- * and its poll entry from `_poll_fds` to maintain a clean list of active connections.
+ * This method iterates over the `_timeout_index` map to identify clients
+ * whose timestamps are earlier than or equal to the current time.
+ * For each expired client, it removes the client’s file descriptor
+ * from both `_clients` and the polling list.
  *
- * The `chronos_connection` method is used to determine if a client has timed out, and
- * if so, `remove_client_from_poll` is called to handle the cleanup.
+ * The method retrieves the current time in microseconds for precise
+ * timeout calculations, and continues to remove timed-out clients until
+ * it encounters a timestamp that is later than the current time or
+ * exhausts the `_timeout_index`.
+ *
+ * @note This function relies on `gettimeofday` to provide time
+ *       in seconds and microseconds.
  */
 void ServerManager::timeout_clients() {
 	if (_clients.empty()) {
 		return;
 	}
-	for (size_t i = 0; i < _poll_fds.size(); i++) {
-		t_client_it it = _clients.find(_poll_fds[i].fd);
-		if (it != _clients.end() && !it->second->chronos_connection()) {
-			remove_client_from_poll(it, i);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	time_t current_time = tv.tv_sec * 1000000 + tv.tv_usec;
+	t_timestamp_fd index_to;
+	while (true) {
+		index_to = _timeout_index.begin();
+		if (index_to == _timeout_index.end() || index_to->first > current_time) {
+			break;
 		}
+		int client_fd = index_to->second;
+		t_client_it it_clients = _clients.find(client_fd);
+		remove_client_from_poll(it_clients);
 	}
 }
 
@@ -239,7 +251,7 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 50);
 			if (poll_count < 0 && _active) {
 				if (errno == EINTR) {
 					_log->log_warning( SM_NAME,
@@ -259,19 +271,9 @@ void ServerManager::run() {
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
 				if (_poll_fds[i].revents & POLLIN) {
-
-					std::vector<int>::iterator it = std::find(_servers_fds.begin(), _servers_fds.end(), _poll_fds[i].fd);
-					if (it != _servers_fds.end()) {
-						SocketHandler* server = NULL;
-						for (size_t s = 0; s < _servers.size(); ++s) {
-							if (_poll_fds[i].fd == _servers[s]->get_socket_fd()) {
-								server = _servers[s];
-								break;
-							}
-						}
-						if (server) {
-							new_client(server);
-						}
+					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
+					if (server_it != _servers_map.end()) {
+						new_client(server_it->second);
 					} else {
 						process_request(i);
 					}
@@ -314,12 +316,18 @@ void ServerManager::run() {
 void    ServerManager::new_client(SocketHandler *server) {
 	int client_fd = server->accept_connection();
 	if (client_fd < 0) {
-		_log->log_error( SM_NAME, "Error getting client FD.");
+		_log->log_error( SM_NAME,
+						 "Error getting client FD.");
 		return;
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
-	_clients.insert(std::make_pair(new_client->get_fd().fd, new_client));
+	int fd = new_client->get_fd().fd;
+	_clients[fd] = new_client;
 	_poll_fds.push_back(new_client->get_fd());
+	_poll_index[fd] = _poll_fds.size() - 1;
+	time_t timestamp = timeout_timestamp();
+	_timeout_index[timestamp] = fd;
+	_index_timeout[fd] = timestamp;
 	_log->log_debug( SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
 }
@@ -348,9 +356,16 @@ bool    ServerManager::process_request(size_t& poll_index) {
 			HttpRequestHandler request_handler(_log, it->second);
 			request_handler.request_workflow();
 			if (!it->second->is_active() || !it->second->is_alive()) {
-				remove_client_from_poll(it, poll_index);
+				remove_client_from_poll(it);
+				--poll_index;
 			} else {
-				it->second->chronos_reset();
+				int fd = it->second->get_fd().fd;
+				time_t new_cycle = timeout_timestamp();
+				t_fd_timestamp index_timeout = _index_timeout.find(fd);
+				t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
+				_timeout_index.erase(timeout_index);
+				_timeout_index[new_cycle] = fd;
+				_index_timeout[fd] = new_cycle;
 			}
 			return (true);
 		} else {
@@ -386,22 +401,25 @@ bool    ServerManager::process_request(size_t& poll_index) {
  * - Logs successful removal or an error if the client was not found.
  *
  * @param client_data Iterator pointing to the client’s data in the `_clients` map.
- * @param poll_index Index in `_poll_fds` where the client’s poll descriptor is stored.
  */
-void    ServerManager::remove_client_from_poll(t_client_it client_data, size_t& poll_index) {
-
+void    ServerManager::remove_client_from_poll(t_client_it client_data) {
 	if (client_data != _clients.end()) {
-		ClientData* current_client = client_data->second;
+		std::map<int, size_t>::iterator index_it = _poll_index.find(client_data->second->get_fd().fd);
+		size_t index = index_it->second;
+		std::map<int, time_t>::iterator index_to_it = _index_timeout.find(client_data->second->get_fd().fd);
+		std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
+
+		if (index < _poll_fds.size() - 1) {
+			std::swap(_poll_fds[index], _poll_fds.back());
+			int swapped_fd = _poll_fds[index].fd;
+			_poll_index[swapped_fd] = index;
+		}
+		_poll_fds.pop_back();
+		delete client_data->second;
 		_clients.erase(client_data);
-		_poll_fds.erase(_poll_fds.begin() + (int)poll_index);
-		current_client->close_fd();
-		delete current_client;
-		--poll_index;
-		_log->log_debug( SM_NAME,
-		          "fd remove from _polls_fds vector");
-	} else {
-		_log->log_error( SM_NAME,
-		          "Client was not found at clients storage.");
+		_poll_index.erase(index_it);
+		_timeout_index.erase(to_index_it);
+		_index_timeout.erase(index_to_it);
 	}
 }
 
@@ -491,12 +509,12 @@ void ServerManager::clear_clients() {
  */
 void ServerManager::clear_servers() {
 	try {
-		for (std::vector<SocketHandler*>::iterator it = _servers.begin();
-			 it != _servers.end(); ++it) {
-			delete *it;
+		for (std::map<int, SocketHandler*>::iterator it = _servers_map.begin();it != _servers_map.end(); it++) {
+			delete it->second;
 		}
-		_servers.clear();
-		_log->log_debug( SM_NAME, "Servers cleared successfully.");
+		_servers_map.clear();
+		_log->log_debug( SM_NAME,
+						 "Servers cleared successfully.");
 	} catch (std::exception& e) {
 		_log->log_error( SM_NAME,
 				  "Error clearing servers: " + std::string(e.what()));
@@ -522,10 +540,30 @@ void ServerManager::clear_poll() {
 			if (flags != -1 && errno != EBADF) {
 				close(it->fd);
 			}
-			it = _poll_fds.erase(it);
+			it++;
 		}
+		_poll_fds.clear();
 	} catch (std::exception& e) {
 		_log->log_error( SM_NAME,
 		          "Error clearing poll.");
 	}
+}
+
+/**
+ * @brief Calculates a timeout timestamp with microsecond precision.
+ *
+ * This method retrieves the current time in microseconds and adds
+ * a predefined client lifecycle duration to set an expiration time.
+ *
+ * @return The timeout timestamp in microseconds from the epoch,
+ *         adjusted by CLIENT_LIFECYCLE.
+ *
+ * @note This function uses `gettimeofday`, which provides time
+ *       in seconds and microseconds, making it suitable for precise
+ *       timeout calculations.
+ */
+time_t ServerManager::timeout_timestamp() {
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000000 + tv.tv_usec + CLIENT_LIFECYCLE);
 }

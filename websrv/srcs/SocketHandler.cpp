@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 01:17:02 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 02:28:58 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,14 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 SocketHandler::~SocketHandler() {
 	close_socket();
 	_log->log_debug( SH_NAME,
-	          "SockedHandler resources clean up.");
+					 "SockedHandler resources clean up.");
 }
 
 void SocketHandler::close_socket() {
 	try {
-		if (_socket_fd >= 0) {
+		int flags;
+		flags = fcntl(_socket_fd, F_GETFL);
+		if (flags != -1 && errno != EBADF) {
 			close(_socket_fd);
 		}
 	} catch (std::exception& e) {
@@ -95,15 +97,18 @@ std::string SocketHandler::get_port() const {
 }
 
 int SocketHandler::accept_connection() {
-	_log->log_debug( SH_NAME,"Accepting Connection.");
+	_log->log_debug( SH_NAME,
+					 "Accepting Connection.");
 	int client_fd = accept(_socket_fd, NULL, NULL);
 	if (client_fd < 0) {
-		_log->log_error( SH_NAME,"Error accepting connection.");
+		_log->log_warning( SH_NAME,
+						   "Error accepting connection.");
 	} else {
-		set_nonblocking(client_fd);  // Asegurarse de que el socket del cliente sea no bloqueante
-		_log->log_info( SH_NAME,"Connection Accepted.");
+		set_nonblocking(client_fd);
+		_log->log_info( SH_NAME,
+						"Connection Accepted.");
 	}
-	return client_fd;
+	return (client_fd);
 }
 
 
@@ -120,12 +125,12 @@ bool SocketHandler::set_nonblocking(int fd) {
 			  "Set connection as nonblocking.");
 	int flags = fcntl(fd, F_GETFL, 0);
 	if (flags == -1) {
-		_log->log_error( SH_NAME,
+		_log->log_warning( SH_NAME,
 				  "Error getting socket flags.");
 		return (false);
 	}
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-		_log->log_error( SH_NAME,
+		_log->log_warning( SH_NAME,
 				  "Error setting socket as nonblocking.");
 		return (false);
 	}
