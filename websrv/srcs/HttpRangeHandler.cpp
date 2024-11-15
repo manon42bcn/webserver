@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/07 09:37:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:56:24 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,34 @@ bool HttpRangeHandler::handle_request() {
 			send_error_response();
 	}
 	return (true);
+}
+
+/**
+ * @brief Processes the GET HTTP range requests.
+ *
+ * This methods overloads handle_get just to be able to handle different HTTP status
+ * depending of the range. HTTP PARTIAL CONTENT is important to render ranged contents.
+ *
+ * @return `true` if the request was processed as a GET range request; `false` otherwise.
+ *
+ * @note Full content will return 200 HTTP OK, Other ranges HTTP PARTIAL CONTENT.
+ */
+bool HttpRangeHandler::handle_get() {
+	if (!HAS_GET(_location->loc_allowed_methods)) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"Get not allowed over resource.");
+		send_error_response();
+		return (false);
+	}
+	get_file_content(_request.normalized_path);
+	if (_response_data.status) {
+		_log->log_debug( RSP_NAME,
+						 "File content will be sent.");
+		return (send_response(_response_data.content, _request.normalized_path));
+	}
+	_log->log_debug( RSP_NAME,
+					 "Get will send a error due to content load fails.");
+	return (send_error_response());
 }
 
 /**

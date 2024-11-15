@@ -51,6 +51,7 @@ class HttpRangeHandler : public WsResponseHandler {
 	                     int fd);
 		bool handle_request();
 	private:
+		bool handle_get();
 		void get_file_content(int pid, int (&fd)[2]);
 		void get_file_content(std::string& path);
 		void parse_content_range();
