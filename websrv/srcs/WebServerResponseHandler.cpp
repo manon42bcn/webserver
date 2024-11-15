@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 21:27:16 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 02:50:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ bool WsResponseHandler::handle_request() {
  *          otherwise, `false` if an error occurs or access is denied.
  */
 bool WsResponseHandler::handle_get() {
-	if (HAS_GET(_location->loc_allowed_methods)) {
+	if (!HAS_GET(_location->loc_allowed_methods)) {
 		send_error_response();
 		return (false);
 	}
@@ -140,7 +140,7 @@ bool WsResponseHandler::handle_get() {
  *          otherwise, `false` if an error occurs or access is denied.
  */
 bool WsResponseHandler::handle_post() {
-	if (HAS_POST(_location->loc_allowed_methods)) {
+	if (!HAS_POST(_location->loc_allowed_methods)) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "No post data available.");
 		return (send_error_response());
@@ -169,7 +169,7 @@ bool WsResponseHandler::handle_post() {
  *          or failure to delete the resource.
  */
 bool WsResponseHandler::handle_delete() {
-	if (HAS_DELETE(_location->loc_allowed_methods)) {
+	if (!HAS_DELETE(_location->loc_allowed_methods)) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "Insufficient permissions to delete the resource.");
 		return (send_error_response());
