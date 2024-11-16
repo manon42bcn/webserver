@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 19:57:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 00:20:05 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -898,12 +898,6 @@ void HttpRequestHandler::load_content_normal() {
 				usleep(WS_RETRY_DELAY_MICROSECONDS);
 				continue;
 			}
-		}
-		if (size == 0) {
-			_client_data->kill_client();
-			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
-							"Client Close Request");
-			return;
 		}
 		_client_data->chronos_reset();
 		_request_data.body = _request;

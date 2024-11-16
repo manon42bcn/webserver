@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 14:02:13 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/16 23:20:38 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ std::string to_lowercase(const std::string& input) {
  * @param needle The key for which the value is to be retrieved (e.g., "content-type").
  * @return std::string The value associated with the key, or an empty string if the key is not found.
  */
-std::string get_header_value(std::string& haystack, std::string needle, std::string sep) {
+std::string get_header_value(std::string& haystack, std::string needle, const std::string& sep) {
 	std::string lower_header = to_lowercase(haystack);
 	size_t key_pos = lower_header.find(needle);
 

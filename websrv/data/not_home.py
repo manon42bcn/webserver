@@ -6,8 +6,8 @@ import cgi
 path_says = os.environ.get("PATH_INFO", "")
 
 
-print("Content-Type: text/html")
-print()  # Línea en blanco para finalizar las cabeceras
+print("Content-Type: text/html\r\n\r\n", end='')
+# print("\r\n")  # Línea en blanco para finalizar las cabeceras
 
 # Imprimir información básica
 print("<html><body>")

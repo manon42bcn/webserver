@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 00:34:58 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 00:28:14 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,10 @@ HttpCGIHandler::~HttpCGIHandler () {
  * - **Error Handling**: Sends appropriate error responses if validation fails.
  */
 bool HttpCGIHandler::handle_request() {
+//	TODO: This is a workaround to fix some path issues
+	if (_request.normalized_path[_request.normalized_path.size() - 1] != '/') {
+		_request.normalized_path += "/";
+	}
 	if (!cgi_execute()) {
 		send_error_response();
 		return (false);
@@ -87,7 +91,7 @@ bool HttpCGIHandler::handle_request() {
 			return (false);
 		}
 		_response_data.mime = get_header_value(_response_data.content,
-											   "content-type:", "\n");
+											   "content-type:");
 		if (_response_data.mime.empty()){
 			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 			                "Content-Type not present at CGI response.");
@@ -117,7 +121,7 @@ bool HttpCGIHandler::handle_request() {
 			}
 		}
 		_response_data.content = _response_data.content.substr(header_pos + 1);
-		std::string keep = get_header_value(_headers, "connection:", "\n");
+		std::string keep = get_header_value(_headers, "connection:");
 		if (keep.empty()) {
 			_headers += "Connection: close\r\n";
 		}

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 10:24:29 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 14:47:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/16 23:29:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ bool black_list_extension(const std::string& path);
 bool is_valid_size_t(const std::string& value);
 size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);
-std::string get_header_value(std::string& haystack, std::string needle, std::string sep);
+std::string get_header_value(std::string& haystack, std::string needle, const std::string& sep="\r\n");
 std::string trim(const std::string& str, const std::string& chars_to_trim);
 bool is_cgi(const std::string& filename);
 size_t end_of_header_system(std::string& header);
