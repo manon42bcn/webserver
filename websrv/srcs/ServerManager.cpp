@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 02:26:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/16 01:14:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,11 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 50);
+			usleep(700);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
+			if (poll_count == 0) {
+				continue ;
+			}
 			if (poll_count < 0 && _active) {
 				if (errno == EINTR) {
 					_log->log_warning( SM_NAME,
