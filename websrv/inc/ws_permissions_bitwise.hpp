@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 02:11:15 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 02:12:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:30:48 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,8 @@
 #define HAS_PERMISSION(permissions, mask)     ((permissions) & MASK_METHOD_GET)
 #define GRANT_PERMISSIONS(permissions, mask)  ((permissions) |= (mask))
 #define REVOKE_PERMISSIONS(permissions, mask) ((permissions) &= ~(mask))
+// GROUP MASKS
+#define MASK_READ (MASK_METHOD_GET | MASK_METHOD_HEAD | MASK_METHOD_OPTIONS)
+#define MASK_READ_WRITE (MASK_READ | MASK_METHOD_POST)
 
 #endif

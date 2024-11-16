@@ -62,7 +62,7 @@ class ServerManager {
 	bool add_server_to_poll(int server_fd);
 	void cleanup_invalid_fds();
 	void timeout_clients();
-	void new_client(SocketHandler* server);
+	bool new_client(SocketHandler* server);
 	bool process_request(size_t& poll_fd_index);
 	void remove_client_from_poll(t_client_it client_data);
 	bool turn_off_sanity(const std::string& detail);

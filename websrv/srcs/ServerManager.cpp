@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 02:26:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:25:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,7 +251,11 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 50);
+			usleep(700);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
+			if (poll_count == 0) {
+				continue ;
+			}
 			if (poll_count < 0 && _active) {
 				if (errno == EINTR) {
 					_log->log_warning( SM_NAME,
@@ -273,7 +277,7 @@ void ServerManager::run() {
 				if (_poll_fds[i].revents & POLLIN) {
 					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
 					if (server_it != _servers_map.end()) {
-						new_client(server_it->second);
+						while (new_client(server_it->second)) {};
 					} else {
 						process_request(i);
 					}
@@ -313,12 +317,10 @@ void ServerManager::run() {
  *
  * @param server Pointer to the `SocketHandler` instance representing the server that accepted the new client.
  */
-void    ServerManager::new_client(SocketHandler *server) {
+bool    ServerManager::new_client(SocketHandler *server) {
 	int client_fd = server->accept_connection();
 	if (client_fd < 0) {
-		_log->log_error( SM_NAME,
-						 "Error getting client FD.");
-		return;
+		return (false);
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
 	int fd = new_client->get_fd().fd;
@@ -330,6 +332,7 @@ void    ServerManager::new_client(SocketHandler *server) {
 	_index_timeout[fd] = timestamp;
 	_log->log_debug( SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
+	return (true);
 }
 
 /**

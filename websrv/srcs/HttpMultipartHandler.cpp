@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 20:43:26 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/11 00:48:33 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/15 14:44:59 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ bool HttpMultipartHandler::handle_request() {
  * - **File Saving**: Iterates through `_multi_content` to save each file part.
  */
 bool HttpMultipartHandler::handle_post() {
-	if (_location->loc_access < ACCESS_WRITE) {
+	if (!HAS_POST(_location->loc_allowed_methods)) {
 		turn_off_sanity(HTTP_FORBIDDEN,
 		                "No post data available due permissions.");
 		return (send_error_response());
