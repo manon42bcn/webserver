@@ -35,6 +35,7 @@ SRCS_FILES		=	webserver.cpp \
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
 					general_helpers.hpp \
+					ws_general_defines.hpp \
 					ws_structs.hpp \
 					ws_permissions_bitwise.hpp \
 					WebserverCache.hpp \
