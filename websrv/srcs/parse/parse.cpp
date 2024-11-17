@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/17 01:54:27 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 14:34:19 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         GRANT_ALL(location.loc_allowed_methods);
         // logger->fatal_log("parse_location_block", "Error: Location allowed methods are not valid.");
     }
-    if (location.loc_default_pages.size() == 0)
-        logger->fatal_log("parse_location_block", "Error: Location default pages are not valid.");
+    // if (location.loc_default_pages.size() == 0)
+    //     logger->fatal_log("parse_location_block", "Error: Location default pages are not valid.");
 
     // std::cout << RED << "END LOCATION" << RESET << std::endl;
     return location;
@@ -159,9 +159,9 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 
     logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
     logger->log(LOG_DEBUG, "parse_servers", "Locations found: " + int_to_string(servers.size()));
-    print_servers(servers);
     if (check_duplicate_servers(servers))
         logger->fatal_log("parse_servers", "Duplicate servers found");
+    print_servers(servers);
     return servers;
 }
 

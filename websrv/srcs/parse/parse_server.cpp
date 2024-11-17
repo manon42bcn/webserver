@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/11 22:23:30 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 14:22:52 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void parse_location(std::vector<std::string>::iterator& it, std::vector<std::str
     std::string location_path = get_location_path(*it);
     LocationConfig location = parse_location_block(it, find_block_end(it, end), logger);
     
-    if (location_path == "/") {
-        location.loc_root = "";
-    }
+    // if (location_path == "/") {
+    //     location.loc_root = "";
+    // }
     
     server.locations[location_path] = location;
     it = skip_block(it, find_block_end(it, end));

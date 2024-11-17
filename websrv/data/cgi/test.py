@@ -1,22 +1,80 @@
 #!/usr/bin/env python3
 
 import os
+import cgi
+import sys
 
-# Imprimir headers HTTP (importante el \r\n\r\n)
+# Configurar la codificación
+sys.stdout.reconfigure(encoding='utf-8')
+
+# Obtener el método de la solicitud
+request_method = os.environ.get('REQUEST_METHOD', 'GET')
+
+# Imprimir headers HTTP
 print("Content-Type: text/html\r\n\r\n", end='')
 
-# Contenido HTML simple
+# Procesar el formulario si es POST
+form = cgi.FieldStorage()
+
 print("""<!DOCTYPE html>
 <html>
 <head>
-    <title>Simple CGI Test</title>
+    <title>Respuesta CGI</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f0f2f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .data-block { background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .success { color: #28a745; }
+        .info { color: #17a2b8; }
+    </style>
 </head>
 <body>
-    <h1>CGI Test Working</h1>
-    <p>Method: {}</p>
-    <p>Path: {}</p>
+    <div class="container">
+""")
+
+if request_method == 'POST':
+    print('<h1 class="success">¡Datos Recibidos!</h1>')
+    print('<div class="data-block">')
+    print('<h2>Datos del Formulario:</h2>')
+    
+    name = form.getvalue('name', 'No proporcionado')
+    message = form.getvalue('message', 'No proporcionado')
+    
+    print(f'<p><strong>Nombre:</strong> {name}</p>')
+    print(f'<p><strong>Mensaje:</strong> {message}</p>')
+    print('</div>')
+else:
+    print('<h1 class="info">Prueba GET Exitosa</h1>')
+
+print("""
+        <div class="data-block">
+            <h2>Información del Servidor:</h2>
+            <ul>
+                <li><strong>Método:</strong> {}</li>
+                <li><strong>Python Version:</strong> {}</li>
+                <li><strong>Tiempo del Servidor:</strong> {}</li>
+                <li><strong>Software del Servidor:</strong> {}</li>
+                <li><strong>Ruta del Script:</strong> {}</li>
+            </ul>
+        </div>
+        <div class="data-block">
+            <h2>Variables de Entorno:</h2>
+            <ul>
+                <li><strong>Query String:</strong> {}</li>
+                <li><strong>Remote Address:</strong> {}</li>
+                <li><strong>User Agent:</strong> {}</li>
+            </ul>
+        </div>
+        <p><a href="/cgi/index.html">&larr; Volver al formulario</a></p>
+    </div>
 </body>
 </html>""".format(
-    os.environ.get('REQUEST_METHOD', 'Not set'),
-    os.environ.get('PATH_INFO', 'Not set')
+    os.environ.get('REQUEST_METHOD', 'No disponible'),
+    sys.version.split()[0],
+    os.popen('date').read().strip(),
+    os.environ.get('SERVER_SOFTWARE', 'No disponible'),
+    os.environ.get('SCRIPT_NAME', 'No disponible'),
+    os.environ.get('QUERY_STRING', 'No disponible'),
+    os.environ.get('REMOTE_ADDR', 'No disponible'),
+    os.environ.get('HTTP_USER_AGENT', 'No disponible')
 )) 

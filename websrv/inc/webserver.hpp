@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 10:24:29 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 23:29:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 14:37:49 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ t_allowed_methods string_to_method(std::string method);
 bool check_error_mode(std::string error_mode);
 bool check_duplicate_servers(std::vector<ServerConfig> servers);
 bool check_cgi(std::string cgi);
-bool check_obligatory_params(ServerConfig server, Logger* logger);
+bool check_obligatory_params(ServerConfig& server, Logger* logger);
 
 // Parse Server
 void parse_location(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, ServerConfig& server);

@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/17 01:58:20 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 14:43:45 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,9 +331,43 @@ bool check_cgi(std::string cgi)
     return (cgi == "on" || cgi == "off");
 }
 
-bool check_obligatory_params(ServerConfig server, Logger* logger)
+bool check_obligatory_params(ServerConfig& server, Logger* logger)
 {
     logger->log(LOG_DEBUG, "check_obligatory_params", "Checking obligatory parameters");
+    if (server.locations.size() > 1)
+    {
+        std::map<std::string, LocationConfig>::iterator it1, it2;
+        for (it1 = server.locations.begin(); it1 != server.locations.end(); ++it1)
+        {
+            it2 = it1;
+            ++it2;
+            for (; it2 != server.locations.end(); ++it2)
+            {
+                if (it1->second.loc_root == it2->second.loc_root)
+                {
+                    logger->log(LOG_ERROR, "check_obligatory_params", 
+                        "Locations with the same root: " + it1->second.loc_root);
+                    return true;
+                }
+            }
+        }
+    }
+    // verificar si tengo un path que sea / y no tenga root, y agregarle "" de root
+    if (server.locations.find("/") != server.locations.end() && server.locations["/"].loc_root == "")
+    {
+        server.locations["/"].loc_root = "";
+    }
+    // si location no tiene default page, que se copien las del servidor
+    for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); ++it)
+    {
+        if (it->second.loc_default_pages.size() == 0)
+        {
+            it->second.loc_default_pages = server.default_pages;
+            logger->log(LOG_DEBUG, "check_obligatory_params", 
+                "Copied default pages to location " + it->first);
+        }
+    }
+
     return (server.port == -42 || server.server_root == "" || server.default_pages.size() == 0 || server.locations.size() == 0);
 }
 
