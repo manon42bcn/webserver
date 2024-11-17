@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/13 23:35:50 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:43:51 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,16 @@ std::string print_bitwise_method(unsigned char method) {
         method_string += "POST ";
     if (method & MASK_METHOD_DELETE)
         method_string += "DELETE ";
+    if (method & MASK_METHOD_PUT)
+        method_string += "PUT ";
+    if (method & MASK_METHOD_PATCH)
+        method_string += "PATCH ";
+    if (method & MASK_METHOD_TRACE)
+        method_string += "TRACE ";
+    if (method & MASK_METHOD_OPTIONS)
+        method_string += "OPTIONS ";
+    if (method & MASK_METHOD_HEAD)
+        method_string += "HEAD ";
     return method_string;
 }
 

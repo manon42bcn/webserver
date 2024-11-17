@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ws_permissions_bitwise.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 02:11:15 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 14:30:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:40:15 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,9 @@
 // GROUP MASKS
 #define MASK_READ (MASK_METHOD_GET | MASK_METHOD_HEAD | MASK_METHOD_OPTIONS)
 #define MASK_READ_WRITE (MASK_READ | MASK_METHOD_POST)
-
+#define MASK_ALL_PERMISSIONS (MASK_METHOD_GET | MASK_METHOD_OPTIONS | MASK_METHOD_HEAD | \
+                            MASK_METHOD_POST | MASK_METHOD_PUT | MASK_METHOD_PATCH | \
+                            MASK_METHOD_TRACE | MASK_METHOD_DELETE)
+// ALL PERMISSIONS
+#define GRANT_ALL(permissions) ((permissions) |= MASK_ALL_PERMISSIONS)
 #endif

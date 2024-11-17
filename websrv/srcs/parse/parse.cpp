@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/15 00:08:13 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:42:23 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         {"accept_only", parse_accept_only},
         {NULL, NULL}
     };
+
+    std::cout << ORANGE << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
+
 
     ++start;
     for (std::vector<std::string>::iterator it = start; it != end; ++it) {
@@ -54,6 +57,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     // Obligatorios
     // if (location.loc_root == "")
     //    logger->fatal_log("parse_location_block", "Location root is not valid.");
+
+    std::cout << YELLOW << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
     if (location.loc_error_pages.size() != 0)
     {
         for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
@@ -61,6 +66,13 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
             it->second = join_paths(get_server_root(), it->second);
         }
     }
+    if (location.loc_allowed_methods == 0)
+    {
+        GRANT_ALL(location.loc_allowed_methods);
+        // logger->fatal_log("parse_location_block", "Error: Location allowed methods are not valid.");
+    }
+
+    std::cout << RED << "END LOCATION" << RESET << std::endl;
     return location;
 }
 
@@ -142,7 +154,7 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
 
     logger->log(LOG_INFO, "parse_servers", "Servers found: " + int_to_string(servers.size()));
     logger->log(LOG_DEBUG, "parse_servers", "Locations found: " + int_to_string(servers.size()));
-    // print_servers(servers);
+    print_servers(servers);
     if (check_duplicate_servers(servers))
         logger->fatal_log("parse_servers", "Duplicate servers found");
     return servers;

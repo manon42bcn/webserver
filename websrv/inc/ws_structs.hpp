@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ws_structs.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:11:38 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 14:46:27 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:26:01 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ struct LocationConfig {
 	bool                                autoindex;
 	bool                                cgi_file;
 	std::map<std::string, t_cgi>		cgi_locations;
-	LocationConfig() {};
+	LocationConfig() {loc_allowed_methods = 0;};
 	LocationConfig(std::string r, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
 			loc_root(r), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), loc_allowed_methods(0), cgi_file(true){};
 
