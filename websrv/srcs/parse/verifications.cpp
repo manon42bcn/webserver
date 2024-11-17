@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/05 21:55:41 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:58:20 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,5 +334,6 @@ bool check_cgi(std::string cgi)
 bool check_obligatory_params(ServerConfig server, Logger* logger)
 {
     logger->log(LOG_DEBUG, "check_obligatory_params", "Checking obligatory parameters");
-    return (server.port == -42 || server.server_root == "");
+    return (server.port == -42 || server.server_root == "" || server.default_pages.size() == 0 || server.locations.size() == 0);
 }
+

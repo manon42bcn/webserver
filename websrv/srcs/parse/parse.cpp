@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/17 01:42:23 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/17 01:54:27 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         {NULL, NULL}
     };
 
-    std::cout << ORANGE << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
+    // std::cout << ORANGE << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
 
 
     ++start;
@@ -58,7 +58,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     // if (location.loc_root == "")
     //    logger->fatal_log("parse_location_block", "Location root is not valid.");
 
-    std::cout << YELLOW << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
+    // std::cout << YELLOW << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
     if (location.loc_error_pages.size() != 0)
     {
         for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
@@ -71,10 +71,15 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         GRANT_ALL(location.loc_allowed_methods);
         // logger->fatal_log("parse_location_block", "Error: Location allowed methods are not valid.");
     }
+    if (location.loc_default_pages.size() == 0)
+        logger->fatal_log("parse_location_block", "Error: Location default pages are not valid.");
 
-    std::cout << RED << "END LOCATION" << RESET << std::endl;
+    // std::cout << RED << "END LOCATION" << RESET << std::endl;
     return location;
 }
+
+// Server: root, puerto, default page
+// Location: default pages,
 
 ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
