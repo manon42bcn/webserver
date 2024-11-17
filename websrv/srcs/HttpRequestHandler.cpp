@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/17 00:20:05 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:58:18 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -632,6 +632,12 @@ void HttpRequestHandler::normalize_request_path() {
 				return ;
 			}
 		}
+		if (_location->autoindex && _request_data.method == METHOD_GET) {
+			_factory++;
+			_request_data.autoindex = true;
+			_request_data.normalized_path = eval_path;
+			return ;
+		}
 	}
 	turn_off_sanity(HTTP_NOT_FOUND,
 	                "Requested path not found " + _request_data.path);
@@ -1009,6 +1015,11 @@ void HttpRequestHandler::handle_request() {
 				_request_cache.put(_request_data.path,
 								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
 			}
+			return;
+		}
+		if (_request_data.autoindex) {
+			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
 			return;
 		}
 		if (_request_data.cgi) {

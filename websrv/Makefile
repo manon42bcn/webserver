@@ -16,6 +16,7 @@ SRCS_FILES		=	webserver.cpp \
 					HttpCGIHandler.cpp \
 					HttpRangeHandler.cpp \
 					HttpMultipartHandler.cpp \
+					HttpAutoIndex.cpp \
 					http_codes_helper.cpp \
 					main.cpp \
 					Logger.cpp \
@@ -41,6 +42,7 @@ HEADER			=	webserver.hpp \
 					HttpCGIHandler.hpp \
 					HttpRangeHandler.hpp \
 					HttpMultipartHandler.hpp \
+					HttpAutoIndex.hpp \
 					http_enum_codes.hpp \
 					Logger.hpp \
 					SocketHandler.hpp \
