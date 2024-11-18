@@ -10,7 +10,7 @@ The `HttpAutoIndex` class is a specialized response handler used to generate aut
 - Logs the processing steps for better monitoring and debugging.
 
 ## Constructor
-### `HttpAutoIndex(const LocationConfig* location, const Logger* log, ClientData* client_data, s_request& request, int fd)`
+### `HttpAutoIndex(const LocationConfig* location, const Logger* log, ClientData& client_data, s_request& request, int fd)`
 The constructor initializes an instance of `HttpAutoIndex` to handle directory indexing requests. It calls the base class `WsResponseHandler` constructor to initialize shared attributes.
 
 - **Parameters**:

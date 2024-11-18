@@ -29,7 +29,7 @@
  */
 HttpRangeHandler::HttpRangeHandler(const LocationConfig *location,
 								   const Logger *log,
-								   ClientData *client_data,
+								   ClientData& client_data,
 								   s_request &request,
 								   int fd) :
 		WsResponseHandler(location, log,
@@ -251,7 +251,7 @@ bool HttpRangeHandler::validate_content_range(size_t file_size) {
 	}
 	if (_response_data.end == file_size) {
 		_request.status = HTTP_OK;
-		_client_data->deactivate();
+		_client_data.deactivate();
 	}
 	_log->log_debug( RRH_NAME,
 	          "Validated content range.");

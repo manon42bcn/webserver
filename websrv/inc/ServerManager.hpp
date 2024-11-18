@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 02:17:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 13:57:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 typedef std::map<int, ClientData*>::iterator t_client_it;
 typedef std::map<int, time_t>::iterator t_fd_timestamp;
 typedef std::map<time_t, int>::iterator t_timestamp_fd;
+typedef std::map<int, SocketHandler*>::iterator t_fds_clients;
 
 /**
  * @class ServerManager
@@ -51,7 +52,8 @@ class ServerManager {
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::map<int, size_t>           _poll_index;
 		std::map<int, SocketHandler*>   _servers_map;
-	    std::map<int, ClientData*>      _clients;
+//	    std::map<int, ClientData*>      _clients;
+		std::map<int, SocketHandler*>	_fds_clients;
 		std::map<time_t, int>           _timeout_index;
 		std::map<int, time_t>           _index_timeout;
 		const Logger*			        _log;
@@ -64,7 +66,8 @@ class ServerManager {
 	void timeout_clients();
 	bool new_client(SocketHandler* server);
 	bool process_request(size_t& poll_fd_index);
-	void remove_client_from_poll(t_client_it client_data);
+//	void remove_client_from_poll(t_client_it client_data);
+	void remove_client_from_poll(t_fds_clients client_data);
 	bool turn_off_sanity(const std::string& detail);
 	void clear_clients();
 	void clear_servers();

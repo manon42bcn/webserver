@@ -19,7 +19,7 @@ Note that, in WebServer implementation, multipart form-data HTTP requests that p
 
 The `HttpMultipartHandler` follows a structured flow parse and process multipart requests.
 
-### 1. Constructor: `HttpMultipartHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)`
+### 1. Constructor: `HttpMultipartHandler(const LocationConfig *location, const Logger *log, ClientData& client_data, s_request& request, int fd)`
 
 - **Initialization**: Logs the handler's initialization.
 - **Dependency Injection**: Inherits configurations from `WsResponseHandler` to manage request handling.

@@ -30,7 +30,7 @@
  */
 HttpAutoIndex::HttpAutoIndex(const LocationConfig *location,
 							 const Logger *log,
-							 ClientData *client_data,
+							 ClientData& client_data,
 							 s_request &request,
 							 int fd):
 							 WsResponseHandler(location, log, client_data, request, fd) {

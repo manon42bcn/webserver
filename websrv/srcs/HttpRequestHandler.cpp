@@ -30,20 +30,17 @@
  * which compromises server functionality.
  */
 HttpRequestHandler::HttpRequestHandler(const Logger* log,
-									   ClientData* client_data):
-	_config(client_data->get_server()->get_config()),
+									   ClientData& client_data):
+	_config(client_data.get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
-	_request_cache(client_data->get_server()->get_request_cache()),
+	_request_cache(client_data.get_server()->get_request_cache()),
 	_location(NULL),
-	_fd(_client_data->get_fd().fd),
+	_fd(_client_data.get_fd().fd),
 	_max_request(MAX_REQUEST) {
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
-	}
-	if (!client_data) {
-		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
 	_factory = 0;
 	_is_cached = false;
@@ -100,7 +97,7 @@ void HttpRequestHandler::request_workflow() {
 	_log->log_debug( RH_NAME,
 	          "Parse and Validation Request Process. Start");
 	size_t i = 0;
-	_client_data->chronos_reset();
+	_client_data.chronos_reset();
 	while (i < (sizeof(steps) / sizeof(validate_step)))
 	{
 		(this->*steps[i])();
@@ -166,13 +163,13 @@ void HttpRequestHandler::read_request_header() {
 					break;
 				}
 				retry_count = 0;
-				if (!_client_data->chronos_request()) {
+				if (!_client_data.chronos_request()) {
 					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 									"Request Timeout.");
 					return;
 				}
 			} else if (read_byte == 0) {
-				_client_data->kill_client();
+				_client_data.kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
 				return;
@@ -188,7 +185,7 @@ void HttpRequestHandler::read_request_header() {
 			}
 		}
 
-		_client_data->chronos_reset();
+		_client_data.chronos_reset();
 		_log->log_debug( RH_NAME,
 				  "Request read.");
 
@@ -406,9 +403,9 @@ void HttpRequestHandler::load_header_data() {
 	std::string keep = get_header_value(_request_data.header,
 										"connection:", "\r\n");
 	if (keep == "keep-alive") {
-		_client_data->keep_active();
+		_client_data.keep_active();
 	} else {
-		_client_data->deactivate();
+		_client_data.deactivate();
 	}
 	_request_data.cookie = get_header_value(_request_data.header,
 											"cookie", "\r\n");
@@ -699,7 +696,7 @@ void HttpRequestHandler::load_content_chunks() {
 
 	try {
 		while (true) {
-			if (!_client_data->chronos_request()) {
+			if (!_client_data.chronos_request()) {
 				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 								"Request Timeout.");
 				return;
@@ -722,7 +719,7 @@ void HttpRequestHandler::load_content_chunks() {
 				retry_count = 0;
 
 			} else if (read_byte == 0) {
-				_client_data->kill_client();
+				_client_data.kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
 				return;
@@ -740,7 +737,7 @@ void HttpRequestHandler::load_content_chunks() {
 		}
 
 		if (size == 0) {
-			_client_data->kill_client();
+			_client_data.kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 							"Client Close Request");
 			return;
@@ -884,13 +881,13 @@ void HttpRequestHandler::load_content_normal() {
 				}
 				_request.append(buffer, read_byte);
 				retry_count = 0;
-				if (!_client_data->chronos_request()) {
+				if (!_client_data.chronos_request()) {
 					turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 									"Request Timeout.");
 					return;
 				}
 			} else if (read_byte == 0) {
-				_client_data->kill_client();
+				_client_data.kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
 				return;
@@ -905,7 +902,7 @@ void HttpRequestHandler::load_content_normal() {
 				continue;
 			}
 		}
-		_client_data->chronos_reset();
+		_client_data.chronos_reset();
 		_request_data.body = _request;
 		_log->log_debug( RH_NAME,
 				  "Request body read.");
@@ -999,7 +996,7 @@ void HttpRequestHandler::validate_request() {
  * @exception std::exception Catches unexpected exceptions.
  */
 void HttpRequestHandler::handle_request() {
-	if (!_client_data->is_alive()) {
+	if (!_client_data.is_alive()) {
 		return;
 	}
 	try {
@@ -1032,7 +1029,7 @@ void HttpRequestHandler::handle_request() {
 		if (_request_data.cgi) {
 			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.handle_request();
-			_client_data->deactivate();
+			_client_data.deactivate();
 			return ;
 		} else if (!_request_data.range.empty()){
 			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
@@ -1048,20 +1045,20 @@ void HttpRequestHandler::handle_request() {
 		detail << "Error Handling response: " << e.what();
 		_log->log_error( RH_NAME,
 				  detail.str());
-		_client_data->deactivate();
+		_client_data.deactivate();
 	} catch (Logger::NoLoggerPointer& e) {
 		std::ostringstream detail;
 		detail << "Logger Pointer Error at Response Handler. "
 			   << "Server Sanity could be compromise.";
 		_log->log_error( RH_NAME,
 		          detail.str());
-		_client_data->deactivate();
+		_client_data.deactivate();
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Unknown error handling response: " << e.what();
 		_log->log_error( RH_NAME,
 		          detail.str());
-		_client_data->deactivate();
+		_client_data.deactivate();
 	}
 }
 

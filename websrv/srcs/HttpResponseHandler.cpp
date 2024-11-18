@@ -30,13 +30,13 @@
  */
 HttpResponseHandler::HttpResponseHandler(const LocationConfig *location,
 										 const Logger *log,
-										 ClientData *client_data,
+										 ClientData& client_data,
 										 s_request &request,
                                          int fd) :
 										 WsResponseHandler(location, log,
 														   client_data, request,
 														   fd),
-									     _cache(client_data->get_server()->get_cache()) {
+									     _cache(client_data.get_server()->get_cache()) {
 	_log->log_debug( RHB_NAME,
 			  "Static Response Handler Init.");
 }

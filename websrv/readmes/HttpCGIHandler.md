@@ -17,7 +17,7 @@ The `HttpCGIHandler` class executes CGI scripts, reads their output, and formats
 
 The `HttpCGIHandler` follows a structured flow to process CGI requests. Below is a breakdown of its primary methods and their responsibilities in the handling flow.
 
-### 1. Constructor: `HttpCGIHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)`
+### 1. Constructor: `HttpCGIHandler(const LocationConfig *location, const Logger *log, ClientData& client_data, s_request& request, int fd)`
 
 The constructor initializes the CGI handler by setting up essential configurations, including logging and the client data required for handling CGI execution.
 

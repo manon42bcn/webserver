@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 01:54:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:07:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
  */
 WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 									 const Logger *log,
-									 ClientData* client_data,
+									 ClientData& client_data,
 									 s_request& request,
 									 int fd):
 									_fd(fd),
@@ -42,9 +42,6 @@ WsResponseHandler::WsResponseHandler(const LocationConfig *location,
 {
 	if (_log == NULL) {
 		throw Logger::NoLoggerPointer();
-	}
-	if (!client_data) {
-		throw WebServerException("Ws Response Handler missing client pointer.");
 	}
 }
 
@@ -148,7 +145,7 @@ bool WsResponseHandler::handle_post() {
 		return (send_error_response());
 	}
 	validate_payload();
-	_client_data->chronos_reset();
+	_client_data.chronos_reset();
 	if (!_request.sanity) {
 		return (send_error_response());
 	}
@@ -368,7 +365,7 @@ bool WsResponseHandler::save_file(const std::string &save_path, const std::strin
 std::string WsResponseHandler::header(int code, size_t content_size, std::string mime) {
 	std::ostringstream header;
 	std::ostringstream connection;
-	if (_client_data->is_active() && _request.sanity) {
+	if (_client_data.is_active() && _request.sanity) {
 		connection << "Connection: keep-alive\r\n"
 				   << "Keep-Alive: timeout=" << TIMEOUT_CLIENT << "\r\n";
 	} else {

@@ -40,7 +40,7 @@
 ### Protected Members
 - **`const LocationConfig* _location`**: Location-specific configuration for requests.
 - **`const Logger* _log`**: Logger instance for logging operations.
-- **`ClientData* _client_data`**: Data for the current client request.
+- **`ClientData& _client_data`**: Data for the current client request.
 - **`s_request& _request`**: Reference to the request data.
 - **`s_content _response_data`**: Contains attributes related to the response.
 - **`std::string _headers`**: Complete headers for the response.
@@ -48,7 +48,7 @@
 ### Methods
 
 #### Constructor & Destructor
-- **`WsResponseHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)`**: Initializes the response handler with location, logger, client data, request data, and file descriptor.
+- **`WsResponseHandler(const LocationConfig *location, const Logger *log, ClientData& client_data, s_request& request, int fd)`**: Initializes the response handler with location, logger, client data, request data, and file descriptor.
 - **`virtual ~WsResponseHandler()`**: Destructor for cleanup.
 
 #### Core Methods

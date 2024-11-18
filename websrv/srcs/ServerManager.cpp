@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 21:25:51 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:07:04 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,12 +171,13 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 void ServerManager::cleanup_invalid_fds() {
 	_log->log_debug( SM_NAME,
 			  "Cleaning up invalid file descriptors.");
-	for (t_client_it it = _clients.begin(); it != _clients.end();) {
+
+	for (t_fds_clients it = _fds_clients.begin(); it != _fds_clients.end();) {
 		if (fcntl(it->first, F_GETFD) == -1) {
 			if (errno == EBADF) {
 				_log->log_warning( SM_NAME,
 				                   "Removing invalid file descriptor and its client.");
-				t_client_it next = it++;
+				t_fds_clients next = it++;
 				remove_client_from_poll(it);
 				it = next;
 			} else {
@@ -209,7 +210,7 @@ void ServerManager::cleanup_invalid_fds() {
  *       in seconds and microseconds.
  */
 void ServerManager::timeout_clients() {
-	if (_clients.empty()) {
+	if (_fds_clients.empty()) {
 		return;
 	}
 	struct timeval tv;
@@ -222,7 +223,8 @@ void ServerManager::timeout_clients() {
 			break;
 		}
 		int client_fd = index_to->second;
-		t_client_it it_clients = _clients.find(client_fd);
+		t_fds_clients it_clients = _fds_clients.find(client_fd);
+//		t_client_it it_clients = _clients.find(client_fd);
 		remove_client_from_poll(it_clients);
 	}
 }
@@ -322,14 +324,18 @@ bool    ServerManager::new_client(SocketHandler *server) {
 	if (client_fd < 0) {
 		return (false);
 	}
-	ClientData* new_client = new ClientData(server, _log, client_fd);
-	int fd = new_client->get_fd().fd;
-	_clients[fd] = new_client;
-	_poll_fds.push_back(new_client->get_fd());
-	_poll_index[fd] = _poll_fds.size() - 1;
+//	ClientData& new_client = new ClientData(server, _log, client_fd);
+	struct pollfd pfd;
+	pfd.fd = client_fd;
+	pfd.revents = 0;
+	pfd.events = POLLIN;
+//	_clients[client_fd] = new_client;
+	_poll_fds.push_back(pfd);
+	_fds_clients[client_fd] = server;
+	_poll_index[client_fd] = _poll_fds.size() - 1;
 	time_t timestamp = timeout_timestamp();
-	_timeout_index[timestamp] = fd;
-	_index_timeout[fd] = timestamp;
+	_timeout_index[timestamp] = client_fd;
+	_index_timeout[client_fd] = timestamp;
 	_log->log_debug( SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
 	return (true);
@@ -353,16 +359,18 @@ bool    ServerManager::new_client(SocketHandler *server) {
  */
 bool    ServerManager::process_request(size_t& poll_index) {
 	try {
-		int poll_fd = _poll_fds[poll_index].fd;
-		std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
-		if (it != _clients.end()) {
-			HttpRequestHandler request_handler(_log, it->second);
+		int fd = _poll_fds[poll_index].fd;
+		std::map<int, SocketHandler*>::iterator client_fd = _fds_clients.find(fd);
+		if (client_fd != _fds_clients.end()){
+			ClientData client_data(client_fd->second, _log, fd);
+			HttpRequestHandler request_handler(_log, client_data);
 			request_handler.request_workflow();
-			if (!it->second->is_active() || !it->second->is_alive()) {
-				remove_client_from_poll(it);
+			if (!client_data.is_active() || !client_data.is_alive()) {
+//				client_data.close_fd();
+				remove_client_from_poll(client_fd);
+//				remove_client_from_poll(it);
 				--poll_index;
 			} else {
-				int fd = it->second->get_fd().fd;
 				time_t new_cycle = timeout_timestamp();
 				t_fd_timestamp index_timeout = _index_timeout.find(fd);
 				t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
@@ -373,9 +381,31 @@ bool    ServerManager::process_request(size_t& poll_index) {
 			return (true);
 		} else {
 			_log->log_warning( SM_NAME,
-			          "No client was found at _client storage.");
+							   "No client was found at _client storage.");
 			return (false);
 		}
+//		std::map<int, ClientData&>::iterator it = _clients.find(poll_fd);
+//		if (it != _clients.end()) {
+//			HttpRequestHandler request_handler(_log, it->second);
+//			request_handler.request_workflow();
+//			if (!it->second->is_active() || !it->second->is_alive()) {
+//				remove_client_from_poll(it);
+//				--poll_index;
+//			} else {
+//				int fd = it->second->get_fd().fd;
+//				time_t new_cycle = timeout_timestamp();
+//				t_fd_timestamp index_timeout = _index_timeout.find(fd);
+//				t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
+//				_timeout_index.erase(timeout_index);
+//				_timeout_index[new_cycle] = fd;
+//				_index_timeout[fd] = new_cycle;
+//			}
+//			return (true);
+//		} else {
+//			_log->log_warning( SM_NAME,
+//			          "No client was found at _client storage.");
+//			return (false);
+//		}
 	} catch (WebServerException& e) {
 		std::ostringstream detail;
 		detail << "Error Building Request. Server Health can be compromised." << e.what()
@@ -405,21 +435,42 @@ bool    ServerManager::process_request(size_t& poll_index) {
  *
  * @param client_data Iterator pointing to the client’s data in the `_clients` map.
  */
-void    ServerManager::remove_client_from_poll(t_client_it client_data) {
-	if (client_data != _clients.end()) {
-		std::map<int, size_t>::iterator index_it = _poll_index.find(client_data->second->get_fd().fd);
-		size_t index = index_it->second;
-		std::map<int, time_t>::iterator index_to_it = _index_timeout.find(client_data->second->get_fd().fd);
-		std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
+//void    ServerManager::remove_client_from_poll(t_client_it client_data) {
+//	if (client_data != _clients.end()) {
+//		std::map<int, size_t>::iterator index_it = _poll_index.find(client_data.second->get_fd().fd);
+//		size_t index = index_it->second;
+//		std::map<int, time_t>::iterator index_to_it = _index_timeout.find(client_data.second->get_fd().fd);
+//		std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
+//
+//		if (index < _poll_fds.size() - 1) {
+//			std::swap(_poll_fds[index], _poll_fds.back());
+//			int swapped_fd = _poll_fds[index].fd;
+//			_poll_index[swapped_fd] = index;
+//		}
+//		_poll_fds.pop_back();
+//		delete client_data.second;
+//		_clients.erase(client_data);
+//		_poll_index.erase(index_it);
+//		_timeout_index.erase(to_index_it);
+//		_index_timeout.erase(index_to_it);
+//	}
+//}
 
+void    ServerManager::remove_client_from_poll(t_fds_clients client_data) {
+	if (client_data != _fds_clients.end()) {
+		int fd = client_data->first;
+		std::map<int, size_t>::iterator index_it = _poll_index.find(fd);
+		size_t index = index_it->second;
+		std::map<int, time_t>::iterator index_to_it = _index_timeout.find(fd);
+		std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
+		close(fd);
 		if (index < _poll_fds.size() - 1) {
 			std::swap(_poll_fds[index], _poll_fds.back());
 			int swapped_fd = _poll_fds[index].fd;
 			_poll_index[swapped_fd] = index;
 		}
 		_poll_fds.pop_back();
-		delete client_data->second;
-		_clients.erase(client_data);
+		_fds_clients.erase(client_data);
 		_poll_index.erase(index_it);
 		_timeout_index.erase(to_index_it);
 		_index_timeout.erase(index_to_it);
@@ -482,13 +533,16 @@ void ServerManager::turn_off_server() {
  * The method logs the successful clearing of client data upon completion.
  */
 void ServerManager::clear_clients() {
-	if (!_clients.empty()) {
+	if (!_fds_clients.empty()) {
 		try {
-			for (t_client_it it = _clients.begin(); it != _clients.end(); it++) {
-				ClientData* data = it->second;
-				_clients.erase(it);
-				delete data;
+			for (t_fds_clients it = _fds_clients.begin(); it != _fds_clients.end(); it++){
+				remove_client_from_poll(it);
 			}
+//			for (t_client_it it = _clients.begin(); it != _clients.end(); it++) {
+//				ClientData& data = it->second;
+//				_clients.erase(it);
+//				delete data;
+//			}
 			_log->log_debug( SM_NAME,
 			          "ClientData Cleared.");
 		} catch (std::exception &e) {

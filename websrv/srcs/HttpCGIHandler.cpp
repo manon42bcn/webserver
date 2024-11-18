@@ -28,7 +28,7 @@
  */
 HttpCGIHandler::HttpCGIHandler(const LocationConfig *location,
 							   const Logger *log,
-							   ClientData* client_data,
+							   ClientData& client_data,
 							   s_request& request,
 							   int fd) :
 							   WsResponseHandler(location, log, client_data,
@@ -320,9 +320,9 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));
 	env_vars.push_back("PATH_INFO=" + _request.path_info);
 	env_vars.push_back("SCRIPT_NAME=" + _request.script);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
+	env_vars.push_back("SERVER_NAME=" + _client_data.get_server()->get_config().server_name);
+	env_vars.push_back("SERVER_NAME=" + _client_data.get_server()->get_config().server_name);
+	env_vars.push_back("SERVER_PORT=" + _client_data.get_server()->get_port());
 	std::vector<char*> env_ptrs;
 	try {
 		for (size_t i = 0; i < env_vars.size(); ++i) {

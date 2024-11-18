@@ -39,6 +39,6 @@ The primary function of the class is `request_workflow()`, which follows these m
 ## Dependencies
 This class works in conjunction with:
 - **Logger**: For logging all activity and errors.
-- **ClientData**: Tracks connection and timeout status.
+- **ClientData&*: Tracks connection and timeout status.
 - **WebServerCache**: (optional) Utilizes caching for improved response times.
 - **Handlers (HttpResponseHandler, HttpCGIHandler, etc.)**: Manages specific types of HTTP requests.

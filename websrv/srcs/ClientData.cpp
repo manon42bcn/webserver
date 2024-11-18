@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 02:23:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 13:21:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -45,7 +45,7 @@ ClientData::ClientData(SocketHandler* server,
  * Catches any exceptions during cleanup to ensure safe and consistent deallocation.
  */
 ClientData::~ClientData() {
-	close_fd();
+//	close_fd();
 }
 
 /**

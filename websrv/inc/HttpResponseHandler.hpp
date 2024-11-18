@@ -33,7 +33,7 @@ class HttpResponseHandler : public WsResponseHandler {
 	public:
 		HttpResponseHandler(const LocationConfig *location,
 							const Logger *log,
-							ClientData* client_data,
+							ClientData& client_data,
 							s_request& request,
 							int fd);
 	void get_file_content(std::string& path);

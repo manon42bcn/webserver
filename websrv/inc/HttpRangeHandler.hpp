@@ -30,7 +30,7 @@
  * - Relies on configuration from `LocationConfig` and logs actions via `Logger`.
  *
  * ### Public Methods
- * - `HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)`: Constructor initializing the range handler with configuration, logger, and client data.
+ * - `HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData& client_data, s_request& request, int fd)`: Constructor initializing the range handler with configuration, logger, and client data.
  * - `~HttpRangeHandler()`: Destructor to clean up resources, particularly file descriptors.
  * - `bool handle_request()`: Processes the HTTP request, validating the range and retrieving file content.
  *
@@ -46,7 +46,7 @@ class HttpRangeHandler : public WsResponseHandler {
 	public:
 		HttpRangeHandler(const LocationConfig *location,
 	                     const Logger *log,
-	                     ClientData* client_data,
+	                     ClientData& client_data,
 	                     s_request& request,
 	                     int fd);
 		bool handle_request();

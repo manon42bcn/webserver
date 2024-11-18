@@ -32,7 +32,7 @@ class HttpAutoIndex : public WsResponseHandler {
 	public:
 		HttpAutoIndex (const LocationConfig *location,
 					   const Logger *log,
-					   ClientData* client_data,
+					   ClientData& client_data,
 					   s_request& request,
 					   int fd);
 		bool handle_request();

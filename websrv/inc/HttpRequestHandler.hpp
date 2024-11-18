@@ -79,7 +79,7 @@ class HttpRequestHandler {
 	    typedef void (HttpRequestHandler::*validate_step)( );
 		const ServerConfig&             _config;
 		const Logger*                   _log;
-		ClientData*                     _client_data;
+		ClientData&                     _client_data;
 		WebServerCache<CacheRequest>&   _request_cache;
 		const LocationConfig*           _location;
 		int                             _fd;
@@ -108,7 +108,7 @@ class HttpRequestHandler {
 
 	public:
 		HttpRequestHandler(const Logger* log,
-						   ClientData* client_data);
+						   ClientData& client_data);
 	    ~HttpRequestHandler();
 		void request_workflow();
 };

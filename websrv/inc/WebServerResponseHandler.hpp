@@ -92,7 +92,7 @@ class WsResponseHandler {
 	protected:
 		const LocationConfig*   	_location;
 		const Logger*           	_log;
-		ClientData*             	_client_data;
+		ClientData&             	_client_data;
 		s_request&              	_request;
 		s_content                   _response_data;
 		std::string                 _headers;
@@ -113,7 +113,7 @@ class WsResponseHandler {
 
 		WsResponseHandler(const LocationConfig *location,
 			              const Logger *log,
-						  ClientData* client_data,
+						  ClientData& client_data,
 						  s_request& request,
 						  int fd);
 		virtual ~WsResponseHandler();

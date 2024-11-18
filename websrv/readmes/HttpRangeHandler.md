@@ -20,7 +20,7 @@ The `HttpRangeHandler` follows a structured flow to process HTTP range requests.
 ### 1. Constructor: 
 
 ```cpp
-HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData* client_data, s_request& request, int fd)
+HttpRangeHandler(const LocationConfig *location, const Logger *log, ClientData& client_data, s_request& request, int fd)
 ```
 
 The constructor initializes the range handler by setting up necessary configurations, such as location and logging. It takes a `LocationConfig`, `Logger`, `ClientData`, `s_request`, and file descriptor `fd` as parameters, which provide context for request processing.
