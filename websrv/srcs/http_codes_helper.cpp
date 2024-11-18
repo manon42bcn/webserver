@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   http_codes_helper.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/14 15:08:04 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/18 15:46:54 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   http_codes_helper.cpp                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 10:22:22 by mporras-          #+#    #+#             */
@@ -22,15 +34,15 @@
 std::string method_enum_to_string(int method)
 {
 	switch (method) {
-		case METHOD_GET:
+		case MASK_METHOD_GET:
 			return ("GET");
-		case METHOD_POST:
+		case MASK_METHOD_POST:
 			return ("POST");
-		case METHOD_DELETE:
+		case MASK_METHOD_DELETE:
 			return ("DELETE");
-		case METHOD_PUT:
+		case MASK_METHOD_PUT:
 			return ("PUT");
-		case METHOD_HEAD:
+		case MASK_METHOD_HEAD:
 			return ("HEAD");
 	}
 	return ("NO METHOD");
@@ -121,24 +133,23 @@ std::string http_status_description(e_http_sts code)
 	return (it->second);
 }
 
-e_methods method_string_to_enum(const std::string& method)
+t_methods method_string_to_enum(const std::string& method)
 {
-	static std::map<std::string, int> methods_codes;
-
+	static std::map<std::string, t_methods> methods_codes;
 	if (methods_codes.empty())
 	{
-		methods_codes["GET"] = METHOD_GET;
-		methods_codes["POST"] = METHOD_POST;
-		methods_codes["DELETE"] = METHOD_DELETE;
-		methods_codes["PUT"] = METHOD_PUT;
-		methods_codes["HEAD"] = METHOD_HEAD;
-		methods_codes["OPTIONS"] = METHOD_OPTIONS;
-		methods_codes["PATCH"] = METHOD_PATCH;
+		methods_codes["GET"] = MASK_METHOD_GET;
+		methods_codes["POST"] = MASK_METHOD_POST;
+		methods_codes["DELETE"] = MASK_METHOD_DELETE;
+		methods_codes["PUT"] = MASK_METHOD_PUT;
+		methods_codes["HEAD"] = MASK_METHOD_HEAD;
+		methods_codes["OPTIONS"] = MASK_METHOD_OPTIONS;
+		methods_codes["PATCH"] = MASK_METHOD_PATCH;
 	}
-	std::map<std::string, int>::const_iterator it = methods_codes.find(method);
+	std::map<std::string, t_methods>::const_iterator it = methods_codes.find(method);
 	if (it == methods_codes.end())
-		return (METHOD_ERR);
-	return ((e_methods)it->second);
+		return (0);
+	return (it->second);
 }
 
 /**

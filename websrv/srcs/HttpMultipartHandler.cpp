@@ -51,7 +51,7 @@ HttpMultipartHandler::HttpMultipartHandler(const LocationConfig *location,
 bool HttpMultipartHandler::handle_request() {
 
 	switch (_request.method) {
-		case METHOD_POST:
+		case MASK_METHOD_POST:
 			_log->log_debug( MP_NAME,
 			          "Handle POST request.");
 			return (handle_post());

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 12:16:02 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 16:06:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,7 +253,7 @@ void HttpRequestHandler::parse_method_and_path() {
 	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
 		method = _request_data.header.substr(0, method_end);
-		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == METHOD_ERR ) {
+		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == 0 ) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Error parsing request: Method is empty or not valid.");
 			return ;
@@ -279,7 +279,7 @@ void HttpRequestHandler::parse_method_and_path() {
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Error parsing request: method malformed.");
-		_request_data.method = METHOD_ERR;
+		_request_data.method = 0;
 		return ;
 	}
 }
@@ -446,7 +446,7 @@ void HttpRequestHandler::get_location_config() {
 			  "Searching related location.");
 
 	_is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (_request_data.method == METHOD_GET && _is_cached) {
+	if (HAS_GET(_request_data.method) && _is_cached) {
 		_location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
 		return ;
@@ -589,7 +589,7 @@ void HttpRequestHandler::normalize_request_path() {
 
 	_log->log_debug( RH_NAME,
 			  "Normalize path to get proper file to serve.");
-	if (_request_data.method == METHOD_POST) {
+	if (HAS_PERMISSION(_request_data.method, MASK_METHOD_POST)) {
 		_log->log_debug( RH_NAME,
 				  "Path build to a POST request");
 		if (eval_path[eval_path.size() - 1] != '/') {
@@ -609,13 +609,13 @@ void HttpRequestHandler::normalize_request_path() {
 		_request_data.cgi = is_cgi(_request_data.normalized_path);
 		return ;
 	}
-	if (_request_data.method == METHOD_DELETE) {
+	if (HAS_PERMISSION(_request_data.method, MASK_METHOD_DELETE)) {
 		turn_off_sanity(HTTP_NOT_FOUND,
 		                "Resource to be deleted, not found.");
 		return ;
 	}
 	if (is_dir(eval_path)) {
-		if (_request_data.method == METHOD_DELETE) {
+		if (HAS_PERMISSION(_request_data.method, MASK_METHOD_DELETE)) {
 			turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 							"Delete method over a dir is not allowed.");
 			return ;
@@ -632,7 +632,7 @@ void HttpRequestHandler::normalize_request_path() {
 				return ;
 			}
 		}
-		if (_location->autoindex && _request_data.method == METHOD_GET) {
+		if (_location->autoindex && HAS_GET(_request_data.method)) {
 			_factory++;
 			_request_data.autoindex = true;
 			_request_data.normalized_path = eval_path;
@@ -951,18 +951,18 @@ void HttpRequestHandler::validate_request() {
 						"Try to execute script without cgi active.");
 		return;
 	}
+	if (!HAS_PERMISSION(_location->loc_allowed_methods, _request_data.method)) {
+		turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
+						"Method not allowed at location.");
+	}
 	if (!_request_data.body.empty()) {
-		if (_request_data.method == METHOD_GET
-			|| _request_data.method == METHOD_HEAD
-			|| _request_data.method == METHOD_OPTIONS) {
+		if (HAS_PERMISSION(_request_data.method, MASK_METHOD_GET | MASK_METHOD_HEAD | MASK_METHOD_OPTIONS)) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body received with GET, HEAD or OPTION method.");
 			return ;
 		}
 	} else {
-		if (_request_data.method == METHOD_POST
-			|| _request_data.method == METHOD_PUT
-			|| _request_data.method == METHOD_PATCH) {
+		if (HAS_PERMISSION(_request_data.method, MASK_METHOD_POST | MASK_METHOD_PUT | MASK_METHOD_PATCH)) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Body empty with POST, PUT or PATCH method.");
 		}
@@ -1018,7 +1018,7 @@ void HttpRequestHandler::handle_request() {
 				}
 				return;
 			}
-			if (_request_data.sanity && _request_data.method == METHOD_GET) {
+			if (_request_data.sanity && HAS_GET(_request_data.method)) {
 				_request_cache.put(_request_data.path,
 								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
 			}

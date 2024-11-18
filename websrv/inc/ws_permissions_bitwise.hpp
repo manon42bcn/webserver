@@ -49,7 +49,7 @@
 #define REVOKE_TRACE(permissions)   ((permissions) &= ~MASK_METHOD_TRACE)
 #define REVOKE_DELETE(permissions)  ((permissions) &= ~MASK_METHOD_DELETE)
 // MULTI FLAGS
-#define HAS_PERMISSION(permissions, mask)     ((permissions) & MASK_METHOD_GET)
+#define HAS_PERMISSION(permissions, mask)     ((permissions) & (mask))
 #define GRANT_PERMISSIONS(permissions, mask)  ((permissions) |= (mask))
 #define REVOKE_PERMISSIONS(permissions, mask) ((permissions) &= ~(mask))
 // GROUP MASKS

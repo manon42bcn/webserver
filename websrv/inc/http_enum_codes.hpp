@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   http_enum_codes.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/12 11:43:11 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/18 16:09:12 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   http_enum_codes.hpp                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 22:20:42 by mac               #+#    #+#             */
@@ -13,17 +25,7 @@
 #ifndef __HTTP_ENUM_CODES_HPP__
 # define __HTTP_ENUM_CODES_HPP__
 
-enum e_methods {
-	METHOD_TO_PARSE = 0,
-	METHOD_ERR = 1,
-	METHOD_GET = 2,
-	METHOD_POST = 3,
-	METHOD_DELETE = 4,
-	METHOD_PUT = 5,
-	METHOD_HEAD = 6,
-	METHOD_OPTIONS = 7,
-	METHOD_PATCH = 8
-};
+typedef unsigned char t_methods;
 
 enum e_http_sts {
 	/*####### 1xx - Informational #######*/

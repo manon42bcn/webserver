@@ -81,15 +81,15 @@ bool WsResponseHandler::handle_request() {
 		throw WebServerException("Location pointer not present to handle normal request.");
 	}
 	switch (_request.method) {
-		case METHOD_GET:
+		case MASK_METHOD_GET:
 			_log->log_debug( RSP_NAME,
 					  "Handle GET request.");
 			return (handle_get());
-		case METHOD_POST:
+		case MASK_METHOD_POST:
 			_log->log_debug( RSP_NAME,
 					  "Handle POST request.");
 			return 	(handle_post());
-		case METHOD_DELETE:
+		case MASK_METHOD_DELETE:
 			_log->log_debug( RSP_NAME,
 					  "Handle DELETE request.");
 			return (handle_delete());

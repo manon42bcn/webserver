@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/17 22:49:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:47:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ enum e_path_type {
 struct s_request {
 	std::string     header;
 	std::string     body;
-	e_methods       method;
+	t_methods      	method;
 	std::string     path;
 	e_path_type     path_type;
 	std::string     query;
@@ -57,7 +57,7 @@ struct s_request {
 	bool            sanity;
 	e_http_sts      status;
 	bool            autoindex;
-	s_request() : header(""), body(""), method(METHOD_TO_PARSE), path(""),
+	s_request() : header(""), body(""), method(0), path(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),

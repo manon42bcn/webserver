@@ -54,7 +54,7 @@ HttpRangeHandler::HttpRangeHandler(const LocationConfig *location,
 bool HttpRangeHandler::handle_request() {
 
 	switch (_request.method) {
-		case METHOD_GET:
+		case MASK_METHOD_GET:
 			_log->log_debug( RRH_NAME,
 			          "Handle GET request.");
 			return (handle_get());

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 00:32:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 15:45:09 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@
 
 // Methods included at http_codes_helper.cpp
 std::string method_enum_to_string(int method);
-e_methods method_string_to_enum(const std::string& method);
+t_methods method_string_to_enum(const std::string& method);
 std::string http_status_description(e_http_sts code);
 std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
