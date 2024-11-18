@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ws_structs.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/17 22:49:48 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ws_structs.hpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 09:11:38 by mporras-          #+#    #+#             */
@@ -44,12 +56,13 @@ struct s_request {
 	std::string     cookie;
 	bool            sanity;
 	e_http_sts      status;
+	bool            autoindex;
 	s_request() : header(""), body(""), method(METHOD_TO_PARSE), path(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),
 				  range(""), cookie(""), sanity(true),
-				  status(HTTP_MAX_STATUS) {};
+				  status(HTTP_MAX_STATUS), autoindex(false) {};
 };
 
 typedef struct s_cgi {

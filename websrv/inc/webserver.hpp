@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/18 00:32:18 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   webserver.hpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 10:24:29 by mporras-          #+#    #+#             */
@@ -33,6 +45,7 @@
 #include "http_enum_codes.hpp"
 #include "ws_structs.hpp"
 #include "ws_permissions_bitwise.hpp"
+#include "ws_general_defines.hpp"
 
 #include <string>
 #include <iostream>

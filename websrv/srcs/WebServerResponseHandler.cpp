@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 10:37:05 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 01:54:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -482,11 +482,17 @@ std::string WsResponseHandler::default_plain_error() {
 	content << "<!DOCTYPE html>\n"
 			<< "<html>\n<head>\n"
 			<< "<title>Webserver - Error</title>\n"
+			<< "<style>"
+			<< BASIC_STYLE << ERROR_STYLE << FOOTER_STYLE
+			<< "</style>"
 			<< "</head>\n<body>\n"
+			<< "<div>"
 			<< "<h1>Something went wrong...</h1>\n"
 			<< "<h2>" << int_to_string(_request.status) << " - "
 			<< http_status_description(_request.status) << "</h2>\n"
-			<< "</body>\n</html>\n";
+			<< "</div>\n"
+			<< "</body>\n"
+			<< FOOTER_GENERAL << "</html>\n";
 	_log->log_debug( RSP_NAME, "Build default error page.");
 	return (content.str());
 }

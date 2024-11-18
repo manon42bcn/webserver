@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 17:18:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/17 22:51:29 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "HttpCGIHandler.hpp"
 #include "HttpRangeHandler.hpp"
 #include "HttpMultipartHandler.hpp"
+#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
 #include "general_helpers.hpp"
 // Libraries
