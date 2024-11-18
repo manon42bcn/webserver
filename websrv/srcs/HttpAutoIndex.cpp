@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 22:09:10 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 00:45:17 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:13:57 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,10 @@ void HttpAutoIndex::get_file_content(std::string& path) {
 		}
 		std::ostringstream out;
 		out << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << _request.path << "</title>\n";
-		out << "<style>" << AUTOINDEX_STYLE << FOOTER_STYLE << "</style>\n";
+		out << "<style>" << BASIC_STYLE << AUTOINDEX_STYLE << FOOTER_STYLE << "</style>\n";
 		out << "</head>\n<body>\n";
-		out << "<h1>AutoIndex of : " << _request.path << "</h1>\n";
+		out << "<div>";
+		out << "<h1 class=\"autoindex\">Index of : " << _request.path << "</h1>\n";
 		out << "<table>\n<tr><th>Name</th><th>Size</th><th>Last Modified</th></tr>\n";
 
 		struct dirent* entry;
@@ -168,7 +169,7 @@ void HttpAutoIndex::get_file_content(std::string& path) {
 			out << "</tr>\n";
 		}
 
-		out << "</table>\n" << FOOTER_GENERAL << "</body>\n</html>";
+		out << "</table>\n</div>\n" << FOOTER_GENERAL << "</body>\n</html>";
 		closedir(dir);
 		_response_data.content = out.str();
 		_response_data.status = true;

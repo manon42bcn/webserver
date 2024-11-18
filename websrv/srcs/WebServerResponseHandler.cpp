@@ -482,6 +482,9 @@ std::string WsResponseHandler::default_plain_error() {
 	content << "<!DOCTYPE html>\n"
 			<< "<html>\n<head>\n"
 			<< "<title>Webserver - Error</title>\n"
+			<< "<style>"
+			<< BASIC_STYLE << ERROR_STYLE << FOOTER_STYLE
+			<< "</style>"
 			<< "</head>\n<body>\n"
 			<< "<div>"
 			<< "<h1>Something went wrong...</h1>\n"

@@ -6,20 +6,30 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:31:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 01:41:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:09:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WS_GENERAL_DEFINES_HPP
 #define WS_GENERAL_DEFINES_HPP
 
+#define BASIC_STYLE \
+"* { margin: 0; padding: 0; box-sizing: border-box;}\n" \
+"body {height: 100vh;display: flex;justify-content: center;align-items: center;font-family: Arial, sans-serif;background-color: #f8ffff;color: #333;}\n" \
+"div {text-align: center; width: 100%;}\n"
+#define ERROR_STYLE \
+"h1 {font-size: 3em;margin-bottom: 10px;color: #e74c3c;}h2 {border-top: 1px solid #9f9f9f;font-size: 1.5em;padding: 10px;color: #555;}"
 #define AUTOINDEX_STYLE \
-"body { background-color: #fcf8ea; font-family: Arial, Helvetica, sans-serif; height: 100%; width: 100%;} table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin: 20px 0;}"\
-"th, td { text-align: left; padding: 8px;}"\
-"tbody tr {border-bottom: 1px solid #2899fa;}"\
-"tbody tr:hover {background-color: #f1f1f1;}"\
-"th {background-color: #f4f4f4;border-bottom: 2px solid #2899fa;font-weight: bold;}"
-#define FOOTER_STYLE "footer {text-align: center;background-color: #ffffff;padding: 10px 0;border-top: 5px solid #2899fa;border-bottom: 1px solid #2899fa;font-size: 14px;}"
+"h1.autoindex {font-size: 3em;margin-bottom: 10px;color: #403b3b;}\n" \
+"table {width: 90%;margin: 20px auto;border-collapse: collapse;background-color: #ffffff;box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);}\n" \
+"th, td {padding: 15px;text-align: left;border-bottom: 1px solid #9f9f9f;}\n" \
+"th {background-color: #98bafc;color: #000000;font-weight: bold;}\n" \
+"tr:hover {background-color: #f1f1f1;}\n" \
+"a {color: #3498db;text-decoration: none;}\n"
+#define FOOTER_STYLE \
+"footer {padding: 5px;border-top: solid 1px #9f9f9f;width: 100vw;min-height: 100px;text-align: center;position: absolute;bottom: 10px;}\n" \
+"footer > span {width: 100%;display: block;}\n"\
+"footer > svg {width: 100px;height: auto;justify-content: center;}"
 #define SVG_LOGO \
 "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 261.44 161.61\">" \
 "<defs><style>" \
@@ -81,6 +91,6 @@
 
 #define FOOTER_GENERAL "<footer>"\
 SVG_LOGO\
-"Powered by WebServer</footer>"
+"<span>Powered by WebServer</span></footer>"
 
 #endif
