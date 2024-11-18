@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/17 22:58:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/18 12:16:02 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -942,8 +942,15 @@ void HttpRequestHandler::load_content_normal() {
  *   - For **POST, PUT, PATCH**: Ensures a body is present.
  * 2. **Sanity Check**: Calls `turn_off_sanity` with `HTTP_BAD_REQUEST` and an
  *    error message if validation fails.
+ * 3. **Security Issues**: If a cgi script is trying to be executed, without cgi
+ * 	  active, turn off sanity to avoid server the script as plain text.
  */
 void HttpRequestHandler::validate_request() {
+	if (is_cgi(_request_data.normalized_path) && !_location->cgi_file) {
+		turn_off_sanity(HTTP_FORBIDDEN,
+						"Try to execute script without cgi active.");
+		return;
+	}
 	if (!_request_data.body.empty()) {
 		if (_request_data.method == METHOD_GET
 			|| _request_data.method == METHOD_HEAD
