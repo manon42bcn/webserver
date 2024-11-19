@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subir Archivo - CGI Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .upload-form {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .file-input {
+            margin: 15px 0;
+        }
+        input[type="submit"] {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subir Archivo</h1>
+        
+        <div class="upload-form">
+            <h2>Selecciona un archivo para subir</h2>
+            <form action="/cgi/upload.py" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
+                <div class="file-input">
+                    <label for="file">Archivo:</label><br>
+                    <input type="file" id="file" name="file" required>
+                </div>
+                <div class="file-input">
+                    <label for="description">Descripción:</label><br>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                <input type="submit" value="Subir Archivo">
+            </form>
+        </div>
+        
+        <p><a href="/cgi/index.html">&larr; Volver al inicio</a></p>
+    </div>
+</body>
+</html>

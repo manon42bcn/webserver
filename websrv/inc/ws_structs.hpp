@@ -115,6 +115,7 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
+	ServerConfig() : port(-42) {};
 };
 
 struct CacheEntry {

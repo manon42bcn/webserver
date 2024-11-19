@@ -28,6 +28,8 @@ void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* l
 }
 
 void parse_port(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
+    if (server.port != -42)
+        logger->fatal_log("parse_server_block", "Double port definition");
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing port");
     int port = check_port(get_value(*it, "port"));
     if (port != -1)
