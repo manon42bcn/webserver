@@ -303,7 +303,7 @@ bool check_duplicate_servers(std::vector<ServerConfig> servers)
 
 bool check_cgi(std::string cgi)
 {
-    return (cgi == "on" || cgi == "off" || cgi == "ON" || cgi == "OFF");
+    return (cgi == "on" || cgi == "off");
 }
 
 bool check_obligatory_params(ServerConfig& server, Logger* logger)
@@ -327,12 +327,10 @@ bool check_obligatory_params(ServerConfig& server, Logger* logger)
             }
         }
     }
-    // verificar si tengo un path que sea / y no tenga root, y agregarle "" de root
     if (server.locations.find("/") != server.locations.end() && server.locations["/"].loc_root == "")
     {
         server.locations["/"].loc_root = "";
     }
-    // si location no tiene default page, que se copien las del servidor
     for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); ++it)
     {
         if (it->second.loc_default_pages.size() == 0)

@@ -149,7 +149,7 @@ void Logger::log_warning(const std::string& module, const std::string& message) 
 	if (_level > LOG_WARNING) {
 		return;
 	}
-	*(_log_out) << "[WARNING][" << module << "]: " << message << std::endl;
+	*(_log_out) << "\033[0;93m[WARNING]\033[0;39m[" << module << "]: " << message << std::endl;
  }
 
 /**
@@ -161,7 +161,7 @@ void Logger::log_warning(const std::string& module, const std::string& message) 
 * @param message The error message to be recorded.
 */
 void Logger::log_error(const std::string& module, const std::string& message) const {
-	*(_log_out) << "[ERROR][" << module << "]: " << message << std::endl;
+	*(_log_out) << "\033[31m[ERROR]\033[0;39m[" << module << "]: " << message << std::endl;
  }
 
 /**
