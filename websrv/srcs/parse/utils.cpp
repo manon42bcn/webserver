@@ -320,3 +320,22 @@ std::map<int, std::string> split_redirections(std::vector<std::string>::iterator
     
     return new_redirections;
 }
+
+bool compare_paths(std::string path1, std::string path2) {
+    if (path1 == "/" && path2 != "/")
+        return false;
+
+    if (path1[path1.length() - 1] == '/')
+        path1.erase(path1.length() - 1);
+    if (path2[path2.length() - 1] == '/')
+        path2.erase(path2.length() - 1);
+    
+    size_t pos1 = path1.find_last_of('/');
+    size_t pos2 = path2.find_last_of('/');
+    
+    std::string last_part1 = (pos1 == std::string::npos) ? path1 : path1.substr(pos1 + 1);
+    std::string last_part2 = (pos2 == std::string::npos) ? path2 : path2.substr(pos2 + 1);
+    std::cout << GRAY << "last_part1 is " << last_part1 << " and last_part2 is " << last_part2 << RESET << std::endl;
+    return last_part1 == last_part2;
+}
+

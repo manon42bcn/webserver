@@ -165,6 +165,9 @@ std::map<int, std::string> split_redirections(std::vector<std::string>::iterator
 std::string get_redirection_url(std::string redirection, Logger* logger);
 int get_status_code(std::string status_code, Logger* logger);
 std::string get_first_word(const std::string& str);
+bool compare_paths(std::string path1, std::string path2);
+
+
 
 // Verifications
 

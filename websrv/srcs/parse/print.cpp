@@ -118,6 +118,7 @@ void print_location_config(LocationConfig location) {
             std::cout << GRAY << "        Redirection: " RESET << it->first << " -> " << it->second << std::endl;
         }
     }
+    std::cout << GRAY << "      Is root: " RESET << (location.is_root ? "true" : "false") << std::endl;
 }
 
 std::string print_bitwise_method(unsigned char method) {
@@ -147,4 +148,5 @@ void print_servers(std::vector<ServerConfig> servers)
     {
         print_server_config(*it);
     }
+    exit(0);
 }

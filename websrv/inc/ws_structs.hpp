@@ -82,7 +82,8 @@ struct LocationConfig {
 	bool                                cgi_file;
 	std::map<std::string, t_cgi>		cgi_locations;
 	std::map<int, std::string>			redirections;
-	LocationConfig(): loc_error_mode(LITERAL), autoindex(false), cgi_file(false)
+	bool								is_root;
+	LocationConfig(): loc_error_mode(LITERAL), autoindex(false), cgi_file(false), is_root(false)
 	                  {loc_allowed_methods = 0; loc_default_pages = std::vector<std::string>();};
 	LocationConfig(std::string r, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
 			loc_root(r), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), loc_allowed_methods(0), cgi_file(true){};
