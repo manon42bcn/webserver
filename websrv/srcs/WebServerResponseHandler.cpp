@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 01:54:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 22:00:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,6 +513,7 @@ std::string WsResponseHandler::default_plain_error() {
 bool WsResponseHandler::send_error_response() {
 	std::string error_file;
 	std::string file_path = ".html";
+	e_http_sts before_file = _request.status;
 
 	if (_location) {
 		std::map<int, std::string>::const_iterator it;
@@ -523,8 +524,10 @@ bool WsResponseHandler::send_error_response() {
 			it = error_pages->find(_request.status);
 		}
 		if (!error_pages->empty() || it != error_pages->end()) {
+			error_file = it->second;
 			get_file_content(error_file);
-			if (!_response_data.status) {
+			if (!_response_data.status || _request.status != before_file) {
+				_request.status = before_file;
 				_log->log_debug( RSP_NAME,
 						  "Custom error page cannot be load. http status: " + int_to_string(_request.status));
 				_response_data.content = default_plain_error();
