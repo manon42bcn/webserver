@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 16:06:21 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 23:00:19 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,6 +465,10 @@ void HttpRequestHandler::get_location_config() {
 		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
+		if (_location->is_redir) {
+			_request_data.is_redir = true;
+			_factory++;
+		}
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 						"Location Not Found");
@@ -1022,6 +1026,11 @@ void HttpRequestHandler::handle_request() {
 				_request_cache.put(_request_data.path,
 								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
 			}
+			return;
+		}
+		if (_request_data.is_redir) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.redirection();
 			return;
 		}
 		if (_request_data.autoindex) {
