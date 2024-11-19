@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 23:00:19 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 23:13:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -586,7 +586,7 @@ void HttpRequestHandler::normalize_request_path() {
 		          "CGI context. path has been normalized");
 		return ;
 	}
-	if (_is_cached) {
+	if (_is_cached || _request_data.is_redir) {
 		return;
 	}
 	std::string eval_path = _config.server_root + _request_data.path;
