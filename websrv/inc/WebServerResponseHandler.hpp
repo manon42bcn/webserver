@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 19:02:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 22:49:48 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ class WsResponseHandler {
 		virtual ~WsResponseHandler();
 		virtual bool handle_request();
 		bool send_error_response();
+		bool redirection();
 };
 
 #endif

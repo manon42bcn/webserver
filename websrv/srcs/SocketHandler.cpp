@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 10:01:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 22:45:36 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 				   "Mapping CGI whitelist.");
 	mapping_cgi_locations(".py");
 	mapping_cgi_locations(".pl");
+	mapping_redir();
 	_log->log_info( SH_NAME,
 					"Server listening. Port: " + int_to_string(port));
 	_log->log_info( SH_NAME,
@@ -352,6 +353,30 @@ void SocketHandler::mapping_cgi_locations(const std::string& extension) {
 		}
 	}
 }
+
+/**
+ * @brief Maps redirection configurations for server locations.
+ *
+ * This method iterates over all locations defined in the server configuration (`_config.locations`).
+ * If a location contains a non-empty redirection configuration, it sets the `is_redir` flag to `true` for that location.
+ *
+ * @details
+ * The method follows these steps:
+ * 1. Iterates over all location entries in the `_config.locations` map.
+ * 2. Checks if the `redirections` attribute for each location is not empty.
+ *    - If the location has redirection rules, it sets the `is_redir` flag to `true` to indicate that redirections are configured for that location.
+ *
+ * This allows the server to efficiently determine which locations have redirection logic configured during request handling.
+ */
+void SocketHandler::mapping_redir() {
+	for (std::map<std::string, struct LocationConfig>::iterator it = _config.locations.begin();
+		it != _config.locations.end(); it++) {
+		if (!it->second.redirections.empty()) {
+			it->second.is_redir = true;
+		}
+	}
+}
+
 
 /**
  * @brief Gets the general cache.
