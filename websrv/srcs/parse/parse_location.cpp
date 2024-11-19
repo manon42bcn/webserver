@@ -33,6 +33,7 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
 
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     std::string root = get_value(*it, "root");
+    location.path_root = root;
     if (check_root(root))
         location.loc_root = get_value(*it, "root");
     else

@@ -51,13 +51,6 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
 
-    // if (location.loc_error_pages.size() != 0)
-    // {
-    //     for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
-    //     {
-    //         it->second = join_paths(get_server_root(), it->second);
-    //     }
-    // }
     if (location.loc_allowed_methods == 0)
         GRANT_ALL(location.loc_allowed_methods);
     return location;

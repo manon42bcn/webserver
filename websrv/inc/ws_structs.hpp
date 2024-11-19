@@ -66,11 +66,8 @@ typedef enum e_allowed_methods {
 	POST=1,
 	DELETE=2,
 	PUT=3,
-	// Invalid method is necessary (?)
 	INVALID_METHOD=-42
 } t_allowed_methods;
-
-
 
 std::string int_to_string(int number);
 struct LocationConfig {
@@ -85,6 +82,7 @@ struct LocationConfig {
 	std::map<int, std::string>			redirections;
 	bool								is_root;
 	bool                                is_redir;
+	std::string                         path_root;
 	LocationConfig(): loc_error_mode(LITERAL), autoindex(false), cgi_file(false), is_root(false), is_redir(false)
 	                  {loc_allowed_methods = 0; loc_default_pages = std::vector<std::string>();};
 	LocationConfig(std::string r, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
