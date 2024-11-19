@@ -51,13 +51,13 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
 
-    if (location.loc_error_pages.size() != 0)
-    {
-        for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
-        {
-            it->second = join_paths(get_server_root(), it->second);
-        }
-    }
+    // if (location.loc_error_pages.size() != 0)
+    // {
+    //     for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
+    //     {
+    //         it->second = join_paths(get_server_root(), it->second);
+    //     }
+    // }
     if (location.loc_allowed_methods == 0)
         GRANT_ALL(location.loc_allowed_methods);
     return location;
@@ -107,6 +107,23 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
             it->second = join_paths(server.server_root, it->second);
     }
+    if (server.locations.size() > 0)
+    {
+        for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++)
+        {
+            if (it->second.loc_error_pages.size() > 0)
+            {
+                for (std::map<int, std::string>::iterator it2 = it->second.loc_error_pages.begin(); it2 != it->second.loc_error_pages.end(); it2++)
+                {
+                    it2->second = join_paths(it->second.loc_root, it2->second);
+                    it2->second = join_paths(server.server_root, it2->second);
+                }
+            }
+        }
+    }
+    
+
+
     for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++) {
         if (it->second.loc_root != "")
             it->second.loc_root = join_paths(server.server_root, it->second.loc_root);
