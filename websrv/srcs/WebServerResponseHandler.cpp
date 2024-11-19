@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 22:00:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 23:07:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -562,6 +562,48 @@ bool WsResponseHandler::send_error_response() {
 /**
  @section General
  */
+
+/**
+ * @brief Handles HTTP redirection for the current request.
+ *
+ * This method generates an HTTP redirection response based on the redirection information available in the current location configuration (`_location->redirections`).
+ * It constructs an HTTP response header indicating the redirection status code and the new location URL, and sends it to the client.
+ *
+ * @return `true` if the response was successfully sent, otherwise `false`.
+ *
+ * @details
+ * The method follows these steps:
+ * 1. **Redirection Configuration**:
+ *    - Retrieves the first redirection entry from `_location->redirections` by calling `begin()`.
+ *
+ * 2. **Generate Redirection Header**:
+ *    - Constructs an HTTP response header using a `std::ostringstream`.
+ *    - Includes:
+ *      - **HTTP Status Line**: Constructs the status line with the status code (`it->first`) and the corresponding reason phrase obtained from `http_status_description()`.
+ *      - **Location Header**: Specifies the new location to which the client should be redirected (`it->second`).
+ *      - **Content-Length**: Set to `0`, indicating no body content.
+ *      - **Content-Type**: Set to `text/html` for compatibility, even though there is no body content.
+ *
+ * 3. **Send Response**:
+ *    - Sets `_headers` to the constructed redirection header.
+ *    - Calls `sender()` to send the response to the client, passing an empty string as the body since there is no content.
+ *
+ * @note
+ * - This method assumes that the redirection configuration (`_location->redirections`) is not empty. It uses `begin()` to access the first redirection entry.
+ * 	 this is controlled before @see SocketHandler::mapping_redir()
+ */
+bool WsResponseHandler::redirection() {
+	std::ostringstream header;
+	const std::map<int, std::string>::const_iterator it = _location->redirections.begin();
+	header << "HTTP/1.1 " << it->first << " " << http_status_description((e_http_sts)it->first) << "\r\n"
+		   << "Location: " << it->second << "\r\n"
+		   << "Content-Length: 0\r\n"
+	       << "Content-Type: text/html\r\n"
+	       << "\r\n";
+	_headers = header.str();
+
+	return (sender(""));
+}
 
 /**
  * @brief Disables further request processing by marking the request as invalid.

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/14 17:19:43 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 22:36:55 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ private:
 	void get_cgi_files(const std::string& directory, const std::string& loc_root,
 	                   const std::string& extension, std::map<std::string, t_cgi>& mapped_files);
 	void mapping_cgi_locations(const std::string& extension);
+	void mapping_redir();
 	void close_socket();
 public:
 	SocketHandler(int port, ServerConfig& config, const Logger* logger);

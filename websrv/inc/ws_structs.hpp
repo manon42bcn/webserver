@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 15:47:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/19 22:41:28 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,13 @@ struct s_request {
 	bool            sanity;
 	e_http_sts      status;
 	bool            autoindex;
+	bool            is_redir;
 	s_request() : header(""), body(""), method(0), path(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),
 				  range(""), cookie(""), sanity(true),
-				  status(HTTP_MAX_STATUS), autoindex(false) {};
+				  status(HTTP_MAX_STATUS), autoindex(false), is_redir(false) {};
 };
 
 typedef struct s_cgi {
@@ -94,7 +95,8 @@ struct LocationConfig {
 	bool                                cgi_file;
 	std::map<std::string, t_cgi>		cgi_locations;
 	std::map<int, std::string>			redirections;
-	LocationConfig(): loc_error_mode(LITERAL), autoindex(false), cgi_file(false)
+	bool                                is_redir;
+	LocationConfig(): loc_error_mode(LITERAL), autoindex(false), cgi_file(false), is_redir(false)
 	                  {loc_allowed_methods = 0; loc_default_pages = std::vector<std::string>();};
 	LocationConfig(std::string r, std::vector<std::string>& dp, t_mode em, std::map<int, std::string>& ep) :
 			loc_root(r), loc_default_pages(dp), loc_error_mode(em), loc_error_pages(ep), loc_allowed_methods(0), cgi_file(true){};
