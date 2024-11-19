@@ -53,11 +53,9 @@ std::string get_value(std::string line, const std::string& key) {
         if (valueStart != std::string::npos) {
             std::string::size_type valueEnd = line.find_last_not_of(" \t");
             if (valueEnd != std::string::npos && valueEnd >= valueStart) {
-                // TESTEANDO: si termina en / que se lo quite
                 std::string value = line.substr(valueStart, valueEnd - valueStart + 1);
                 if (value[value.length() - 1] == '/')
                     value.erase(value.length() - 1);
-                // std::cout << RED << "RETORNARE:     " << line.substr(valueStart, valueEnd - valueStart + 1) << RESET << std::endl;
                 return value;
             }
         }

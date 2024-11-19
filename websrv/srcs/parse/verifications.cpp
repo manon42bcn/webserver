@@ -234,21 +234,6 @@ bool check_default_page(std::string default_page)
 {
     if (default_page.empty())
         return false;
-    // std::istringstream iss(default_page);
-    // std::string page;
-    // while (iss >> page) {
-    //     if (!is_valid_filename(page)) {
-    //         return false;
-    //     }
-    //     if (page.find_last_of(".") != std::string::npos) {
-    //         std::string extension = page.substr(page.find_last_of(".") + 1);
-    //         if (extension != "html" && extension != "htm") {
-    //             return false;
-    //         }
-    //     } else {
-    //         return false;
-    //     }
-    // }
     return true;
 }
 
@@ -265,18 +250,8 @@ bool is_directory(const std::string& path) {
 
 bool check_root(std::string root)
 {
-    
     if (root.empty())
         return false;
-    // si termina en / que se lo quite
-    // std::istringstream iss(root);
-    // std::string path;
-    // std::string root_path = get_server_root();
-    // while (iss >> path) {
-    //     std::string full_path = root_path + path;
-    //     if (!is_directory(full_path))
-    //         return false;
-    // }
     return true;
 }
 
@@ -328,7 +303,7 @@ bool check_duplicate_servers(std::vector<ServerConfig> servers)
 
 bool check_cgi(std::string cgi)
 {
-    return (cgi == "on" || cgi == "off");
+    return (cgi == "on" || cgi == "off" || cgi == "ON" || cgi == "OFF");
 }
 
 bool check_obligatory_params(ServerConfig& server, Logger* logger)

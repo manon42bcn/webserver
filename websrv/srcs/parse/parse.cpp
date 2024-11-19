@@ -99,7 +99,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
             logger->fatal_log("parse_server_block", "Error: [" + *it + "] is not valid parameter in server block");
     }
     
-    server.ws_root = server.server_root;
+    server.ws_root = get_server_root();
     if (server.error_pages.size() > 0 && server.server_root != "")
     {
         logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");

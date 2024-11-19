@@ -33,7 +33,7 @@ print("""<!DOCTYPE html>
 """)
 
 if request_method == 'POST':
-    print('<h1 class="success">¡Datos Recibidos!</h1>')
+    print('<h1 class="success">Datos Recibidos!</h1>')
     print('<div class="data-block">')
     print('<h2>Datos del Formulario:</h2>')
     
@@ -48,21 +48,12 @@ else:
 
 print("""
         <div class="data-block">
-            <h2>Información del Servidor:</h2>
+            <h2>Informacion del Servidor:</h2>
             <ul>
-                <li><strong>Método:</strong> {}</li>
+                <li><strong>Metodo:</strong> {}</li>
                 <li><strong>Python Version:</strong> {}</li>
                 <li><strong>Tiempo del Servidor:</strong> {}</li>
-                <li><strong>Software del Servidor:</strong> {}</li>
                 <li><strong>Ruta del Script:</strong> {}</li>
-            </ul>
-        </div>
-        <div class="data-block">
-            <h2>Variables de Entorno:</h2>
-            <ul>
-                <li><strong>Query String:</strong> {}</li>
-                <li><strong>Remote Address:</strong> {}</li>
-                <li><strong>User Agent:</strong> {}</li>
             </ul>
         </div>
         <p><a href="/cgi/index.html">&larr; Volver al formulario</a></p>
@@ -72,9 +63,5 @@ print("""
     os.environ.get('REQUEST_METHOD', 'No disponible'),
     sys.version.split()[0],
     os.popen('date').read().strip(),
-    os.environ.get('SERVER_SOFTWARE', 'No disponible'),
     os.environ.get('SCRIPT_NAME', 'No disponible'),
-    os.environ.get('QUERY_STRING', 'No disponible'),
-    os.environ.get('REMOTE_ADDR', 'No disponible'),
-    os.environ.get('HTTP_USER_AGENT', 'No disponible')
 )) 
