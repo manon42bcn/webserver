@@ -335,7 +335,6 @@ bool compare_paths(std::string path1, std::string path2) {
     
     std::string last_part1 = (pos1 == std::string::npos) ? path1 : path1.substr(pos1 + 1);
     std::string last_part2 = (pos2 == std::string::npos) ? path2 : path2.substr(pos2 + 1);
-    std::cout << GRAY << "last_part1 is " << last_part1 << " and last_part2 is " << last_part2 << RESET << std::endl;
     return last_part1 == last_part2;
 }
 

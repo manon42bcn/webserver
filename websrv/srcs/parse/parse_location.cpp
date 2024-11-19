@@ -26,7 +26,6 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
     {
         std::map<int, std::string> new_error_pages = split_error_pages(error_page);
         location.loc_error_pages.insert(new_error_pages.begin(), new_error_pages.end());
-        std::cout << YELLOW << "location.loc_error_pages is " << location.loc_error_pages.begin()->second << RESET << std::endl;
     }
     else
         logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");

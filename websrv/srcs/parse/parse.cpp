@@ -116,7 +116,6 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
 
     if (check_obligatory_params(server, logger))
         logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");
-    std::cout << YELLOW << "server.default_pages is " << server.default_pages[0] << RESET << std::endl;
     return server;
 }
 
