@@ -10,18 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ws_structs.hpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 09:11:38 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/17 01:48:39 by vaguilar         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef WS_STRUCTS_HPP
 #define WS_STRUCTS_HPP
 
@@ -117,6 +105,7 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
+	ServerConfig(): port(-42) {};
 };
 
 struct CacheEntry {
