@@ -65,7 +65,6 @@ std::string get_value(std::string line, const std::string& key) {
     return "";
 }
 
-// Realmente no busca el string exacto
 bool find_exact_string(const std::string& line, const std::string& str) {
     size_t pos = line.find(str);
         
@@ -150,7 +149,6 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
     int bracketCount = 0;
     for (std::vector<std::string>::iterator it = start; it != end; ++it)
     {
-        // std::cout << GRAY << "Skip block: " << *it << RESET << std::endl;
         if (it->find("{") != std::string::npos)
         {
             bracketCount++;
@@ -171,7 +169,6 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
 std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     int bracketCount = 0;
     for (std::vector<std::string>::iterator it = start; it != end; ++it) {
-        // std::cout << GRAY << "Find block end: " << *it << RESET << std::endl;
         if (it->find("{") != std::string::npos) {
             bracketCount++;
         }
@@ -182,8 +179,6 @@ std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iter
             }
         }
     }
-    // Si no encuentra el final, devuelve el final y da mensaje de error y retorna valor invalido
-    std::cout << RED << "No se encontro el final del bloque" << RESET << std::endl;
     return end;
 }
 

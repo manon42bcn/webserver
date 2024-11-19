@@ -26,7 +26,6 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
     std::string token;
     std::vector<int> error_codes;
     std::string path;
-    //std::string base_path = get_server_root();
 
     while (iss >> token)
     {
@@ -45,7 +44,6 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
         }
         else
         {
-            // path = delete_first_slash(token);
             path = token;
             break;
         }
@@ -62,11 +60,6 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
         }
         error_pages_map[*it] = adjusted_path;
     }
-
-    // for (std::map<int, std::string>::iterator it = error_pages_map.begin(); it != error_pages_map.end(); ++it)
-    // {
-    //     std::cout << RED << it->first << " " << it->second << RESET << std::endl;
-    // }
     return error_pages_map;
 }
 
@@ -86,28 +79,6 @@ std::vector<std::string> split_default_pages(std::string default_pages)
         default_pages_vector.push_back(page);
     return default_pages_vector;
 }
-
-
-// std::vector<t_methods> split_allowed_methods(std::string allowed_methods)
-// {
-//     std::vector<t_methods> methods;
-//     std::istringstream iss(allowed_methods);
-//     std::string method;
-//     while (iss >> method) {
-//         if (method == "GET")
-//             methods.push_back(GET);
-//         else if (method == "POST")
-//             methods.push_back(POST);
-//         else if (method == "DELETE")
-//             methods.push_back(DELETE);
-//         else if (method == "PUT")
-//             methods.push_back(PUT);
-//         else if (method == "HEAD")
-//             methods.push_back(HEAD);
-//     }
-//     return methods;
-// }
-
 
 std::vector<std::string> split_string(std::string str) {
     std::vector<std::string> result;

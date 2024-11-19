@@ -26,15 +26,11 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         {NULL, NULL}
     };
 
-    // std::cout << ORANGE << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
-
-
     ++start;
     for (std::vector<std::string>::iterator it = start; it != end; ++it) {
         std::string first_word = get_first_word(*it);
         
         if (first_word == "}") {
-            // Quizas innecesario, pendiente de eliminar
             logger->log(LOG_DEBUG, "parse_location_block", "Fin del bloque de location");
             break;
         }
@@ -54,11 +50,6 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
 
-    // Obligatorios
-    // if (location.loc_root == "")
-    //    logger->fatal_log("parse_location_block", "Location root is not valid.");
-
-    // std::cout << YELLOW << int_to_string(location.loc_allowed_methods) << RESET << std::endl;
     if (location.loc_error_pages.size() != 0)
     {
         for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
@@ -67,19 +58,9 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
     if (location.loc_allowed_methods == 0)
-    {
         GRANT_ALL(location.loc_allowed_methods);
-        // logger->fatal_log("parse_location_block", "Error: Location allowed methods are not valid.");
-    }
-    // if (location.loc_default_pages.size() == 0)
-    //     logger->fatal_log("parse_location_block", "Error: Location default pages are not valid.");
-
-    // std::cout << RED << "END LOCATION" << RESET << std::endl;
     return location;
 }
-
-// Server: root, puerto, default page
-// Location: default pages,
 
 ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
@@ -111,7 +92,6 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
             parse_error_mode(it, logger, server);
         else if (it->find("}") != std::string::npos)
         {
-            // deberia ser break o continue?, no se si llega aqui
             logger->log(LOG_DEBUG, "parse_server_block", "Saliendo porque encontre } en server block");
             break;
         }
@@ -119,15 +99,16 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
             logger->fatal_log("parse_server_block", "Error: [" + *it + "] is not valid parameter in server block");
     }
     
-
-    // Configuracion de variables
     server.ws_root = server.server_root;
-    // server.ws_root = "/Users/vaguilar/Desktop/webserver/websrv//data";
     if (server.error_pages.size() > 0 && server.server_root != "")
     {
         logger->log(LOG_DEBUG, "parse_server_block", "Joining error pages");
         for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
             it->second = join_paths(server.server_root, it->second);
+    }
+    for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++) {
+        if (it->second.loc_root != "")
+            it->second.loc_root = join_paths(server.server_root, it->second.loc_root);
     }
 
     if (check_obligatory_params(server, logger))

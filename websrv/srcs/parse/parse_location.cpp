@@ -31,11 +31,10 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
         logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");
 }
 
-
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     std::string root = get_value(*it, "root");
     if (check_root(root))
-        location.loc_root = join_paths(get_server_root(), get_value(*it, "root"));
+        location.loc_root = get_value(*it, "root");
     else
         logger->fatal_log("parse_location_block", "Root " + root + " is not valid.");
 }
@@ -51,7 +50,6 @@ void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, Loc
     else
         logger->fatal_log("parse_location_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
 }
-
 
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_cgi(get_value(*it, "cgi")))

@@ -18,20 +18,14 @@ void parse_location(std::vector<std::string>::iterator& it, std::vector<std::str
     std::string location_path = get_location_path(*it);
     LocationConfig location = parse_location_block(it, find_block_end(it, end), logger);
     
-    // if (location_path == "/") {
-    //     location.loc_root = "";
-    // }
-    
     server.locations[location_path] = location;
     it = skip_block(it, find_block_end(it, end));
 }
-
 
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing template error page");
     server.template_error_page = get_value(*it, "template_error_page");
 }
-
 
 void parse_port(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing port");
@@ -116,5 +110,3 @@ void parse_error_mode(std::vector<std::string>::iterator& it, Logger* logger, Se
     else
         logger->fatal_log("parse_server_block", "Error mode " + get_value(*it, "error_mode") + " is not valid.");
 }
-
-

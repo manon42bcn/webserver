@@ -12,8 +12,6 @@
 
 #include "webserver.hpp"
 
-// This file and the functions can be deleted in the future
-
 /**
  * @brief Prints raw lines from a vector of strings.
  *
@@ -68,8 +66,6 @@ void print_server_config(ServerConfig server)
             print_location_config(it->second);
         }
     }
-
-
 }
 
 /**
@@ -79,8 +75,6 @@ void print_server_config(ServerConfig server)
  */
 void print_location_config(LocationConfig location) {
     std::cout << GRAY << "      Location root: " << location.loc_root << RESET << std::endl;
-    // std::cout << GRAY << "          Location access: " << location.loc_access << RESET << std::endl;
-    // std::cout << GRAY << "          Location default pages: " << location.loc_default_pages << RESET << std::endl;
     std::cout << GRAY << "      Default pages: " RESET << location.loc_default_pages.size() << std::endl;
     if (location.loc_default_pages.size() > 0)
     {
@@ -89,7 +83,6 @@ void print_location_config(LocationConfig location) {
             std::cout << GRAY << "        Default page: " RESET << *it << std::endl;
         }
     }
-    // std::cout << GRAY << "          Location error pages: " << location.loc_error_pages << RESET << std::endl;
     std::cout << GRAY << "      Error pages: " RESET << location.loc_error_pages.size() << std::endl;
     if (location.loc_error_pages.size() > 0)
     {
@@ -103,7 +96,6 @@ void print_location_config(LocationConfig location) {
 
         
     std::cout << GRAY << "      Allowed methods: " RESET;
-    // Contamos los bits activos
     int method_count = 0;
     for (int i = 0; i < 8; i++) {
         if (location.loc_allowed_methods & (1 << i)) {
@@ -112,16 +104,12 @@ void print_location_config(LocationConfig location) {
     }
     std::cout << method_count << std::endl;
     
-    // No necesitamos verificar size() > 0 ya que el siguiente bucle manejará el caso
     for (int i = 0; i < 8; i++) {
         if (location.loc_allowed_methods & (1 << i)) {
             std::cout << GRAY << "        Allowed method: " RESET << print_bitwise_method(1 << i) << std::endl;
         }
     }
-
     std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi_file) ? "true" : "false") << std::endl;
-
-    // std::cout << GRAY << "      Location root: " RESET << location.loc_root << std::endl;
 }
 
 std::string print_bitwise_method(unsigned char method) {
