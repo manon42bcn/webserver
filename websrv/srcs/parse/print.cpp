@@ -148,5 +148,5 @@ void print_servers(std::vector<ServerConfig> servers)
     {
         print_server_config(*it);
     }
-    exit(0);
+    // exit(0);
 }
