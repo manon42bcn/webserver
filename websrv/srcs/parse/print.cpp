@@ -110,6 +110,14 @@ void print_location_config(LocationConfig location) {
         }
     }
     std::cout << GRAY << "      CGI: " RESET << (static_cast<bool>(location.cgi_file) ? "true" : "false") << std::endl;
+    std::cout << GRAY << "      Redirections: " RESET << location.redirections.size() << std::endl;
+    if (location.redirections.size() > 0)
+    {
+        for (std::map<int, std::string>::iterator it = location.redirections.begin(); it != location.redirections.end(); it++)
+        {
+            std::cout << GRAY << "        Redirection: " RESET << it->first << " -> " << it->second << std::endl;
+        }
+    }
 }
 
 std::string print_bitwise_method(unsigned char method) {

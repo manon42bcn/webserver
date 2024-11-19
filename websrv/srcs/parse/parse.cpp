@@ -23,6 +23,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         {"cgi", parse_cgi},
         {"error_mode", parse_template_error_page},
         {"accept_only", parse_accept_only},
+        {"redirection", parse_redirection},
         {NULL, NULL}
     };
 
@@ -113,7 +114,7 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
 
     if (check_obligatory_params(server, logger))
         logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");
-    
+    std::cout << YELLOW << "server.default_pages is " << server.default_pages[0] << RESET << std::endl;
     return server;
 }
 

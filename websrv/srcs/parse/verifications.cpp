@@ -317,8 +317,8 @@ bool check_obligatory_params(ServerConfig& server, Logger* logger)
             it2 = it1;
             ++it2;
             for (; it2 != server.locations.end(); ++it2)
-            {
-                if (it1->second.loc_root == it2->second.loc_root)
+            {   // Verifica nuevamente este caso NO OLVIDAR por el .size
+                if (it1->second.loc_root == it2->second.loc_root && it1->second.redirections.size() == 0 && it2->second.redirections.size() == 0)
                 {
                     logger->log(LOG_ERROR, "check_obligatory_params", 
                         "Locations with the same root: " + it1->second.loc_root);
@@ -328,9 +328,7 @@ bool check_obligatory_params(ServerConfig& server, Logger* logger)
         }
     }
     if (server.locations.find("/") != server.locations.end() && server.locations["/"].loc_root == "")
-    {
         server.locations["/"].loc_root = "";
-    }
     for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); ++it)
     {
         if (it->second.loc_default_pages.size() == 0)

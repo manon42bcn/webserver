@@ -26,6 +26,7 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
     {
         std::map<int, std::string> new_error_pages = split_error_pages(error_page);
         location.loc_error_pages.insert(new_error_pages.begin(), new_error_pages.end());
+        std::cout << YELLOW << "location.loc_error_pages is " << location.loc_error_pages.begin()->second << RESET << std::endl;
     }
     else
         logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");
@@ -87,3 +88,13 @@ void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, L
         location.loc_allowed_methods |= method_bitwise(*it);
     }
 }
+
+
+void parse_redirection(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
+    logger->log(LOG_DEBUG, "parse_redirection", "Parsing redirection block");
+    logger->log(LOG_DEBUG, "parse_redirection", "Splitting redirections, it value is " + *it);
+    std::map<int, std::string> new_redirections = split_redirections(it, logger);
+    location.redirections.insert(new_redirections.begin(), new_redirections.end());
+}
+
+

@@ -58,10 +58,14 @@ void parse_root(std::vector<std::string>::iterator& it, Logger* logger, ServerCo
 
 void parse_index(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing default pages");
+    if (it->find("error_page") != std::string::npos)
+        return;
     if (check_default_page(get_value(*it, "index")))
         server.default_pages = split_default_pages(get_value(*it, "index"));
     else
         logger->fatal_log("parse_server_block", "Default page " + get_value(*it, "index") + " is not valid.");
+
+    std::cout << RED << "server.default_pages is " << server.default_pages[0] << RESET << std::endl;
 }
 
 void parse_client_max_body_size(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {

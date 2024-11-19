@@ -268,3 +268,55 @@ std::string get_first_word(const std::string& str) {
     std::string::size_type pos = str.find_first_of(" \t\n");
     return str.substr(0, pos);
 }
+
+int get_status_code(std::string status_code, Logger* logger) {
+    logger->log(LOG_DEBUG, "get_status_code", "Getting status code");
+    if (status_code.find_first_not_of("0123456789") != std::string::npos || status_code.empty() || std::atoi(status_code.c_str()) < 0 || std::atoi(status_code.c_str()) > 599)
+        logger->fatal_log("parse_location_block", "Status code " + status_code + " is not valid.");
+    return std::atoi(status_code.c_str());
+}
+
+std::string get_redirection_url(std::string redirection, Logger* logger) {
+    std::string url = get_value(redirection, "redirection");
+    logger->log(LOG_DEBUG, "get_redirection_url", "Redirection URL " + url + ".");
+
+    // if (url.find("http://") != std::string::npos || url.find("https://") != std::string::npos || url.find("www.") != std::string::npos)
+    // {
+    //     logger->log(LOG_DEBUG, "get_redirection_url", "Redirection URL " + url + " is valid.");
+    //     return url;
+    // }
+    // else
+    // {
+    //     logger->log(LOG_DEBUG, "get_redirection_url", "Redirection URL " + url + " is not valid. Joining with server root.");
+    //     return join_paths(get_server_root(), url);
+    // }
+    return url;
+}
+
+std::map<int, std::string> split_redirections(std::vector<std::string>::iterator& it, Logger* logger) {
+    std::map<int, std::string> new_redirections;
+    std::string redirection_str = get_value(*it, "redirection");
+    logger->log(LOG_DEBUG, "split_redirections", "Splitting redirections");
+    
+    // Extraer el código de estado y la URL
+    size_t space_pos = redirection_str.find(" ");
+    if (space_pos != std::string::npos) {
+        std::string status_code_str = redirection_str.substr(0, space_pos);
+        std::string url = redirection_str.substr(space_pos + 1);
+        
+        int status_code = get_status_code(status_code_str, logger);
+        std::string redirect_url = url;
+        
+        if (url.find("http://") != std::string::npos || 
+            url.find("https://") != std::string::npos || 
+            url.find("www.") != std::string::npos) {
+            redirect_url = url;
+        } else {
+            redirect_url = join_paths(get_server_root(), url);
+        }
+        
+        new_redirections[status_code] = redirect_url;
+    }
+    
+    return new_redirections;
+}

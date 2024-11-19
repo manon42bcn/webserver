@@ -161,6 +161,10 @@ std::string join_paths(std::string path1, std::string path2);
 std::vector<std::string> split_string(std::string str);
 unsigned char method_bitwise(std::string parsed);
 std::string get_first_word(const std::string& str);
+std::map<int, std::string> split_redirections(std::vector<std::string>::iterator& it, Logger* logger);
+std::string get_redirection_url(std::string redirection, Logger* logger);
+int get_status_code(std::string status_code, Logger* logger);
+std::string get_first_word(const std::string& str);
 
 // Verifications
 
@@ -200,6 +204,7 @@ void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, Loc
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+void parse_redirection(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 
 # endif
 

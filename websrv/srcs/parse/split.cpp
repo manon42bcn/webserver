@@ -50,16 +50,7 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
     }
 
     for (std::vector<int>::iterator it = error_codes.begin(); it != error_codes.end(); ++it)
-    {
-        std::string adjusted_path = path;
-        size_t x_pos = adjusted_path.find('x');
-        if (x_pos != std::string::npos) {
-            std::stringstream ss;
-            ss << (*it % 10);
-            adjusted_path.replace(x_pos, 1, ss.str());
-        }
-        error_pages_map[*it] = adjusted_path;
-    }
+        error_pages_map[*it] = path;
     return error_pages_map;
 }
 
@@ -79,6 +70,9 @@ std::vector<std::string> split_default_pages(std::string default_pages)
         default_pages_vector.push_back(page);
     return default_pages_vector;
 }
+
+
+
 
 std::vector<std::string> split_string(std::string str) {
     std::vector<std::string> result;
