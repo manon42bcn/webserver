@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 22:41:28 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/20 01:03:29 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ typedef enum e_mode {
 enum e_path_type {
 	PATH_REGULAR = 0,
 	PATH_QUERY = 1,
-	PATH_ENCODED = 2
+	PATH_ENCODED = 2,
+	PATH_RELATIVE = 3
 };
 
 struct s_request {
@@ -30,6 +31,7 @@ struct s_request {
 	std::string     body;
 	t_methods      	method;
 	std::string     path;
+	std::string     path_request;
 	e_path_type     path_type;
 	std::string     query;
 	std::string     normalized_path;
@@ -46,12 +48,13 @@ struct s_request {
 	e_http_sts      status;
 	bool            autoindex;
 	bool            is_redir;
-	s_request() : header(""), body(""), method(0), path(""),
+	std::string     referer;
+	s_request() : header(""), body(""), method(0), path(""), path_request(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),
 				  range(""), cookie(""), sanity(true),
-				  status(HTTP_MAX_STATUS), autoindex(false), is_redir(false) {};
+				  status(HTTP_MAX_STATUS), autoindex(false), is_redir(false), referer("") {};
 };
 
 typedef struct s_cgi {

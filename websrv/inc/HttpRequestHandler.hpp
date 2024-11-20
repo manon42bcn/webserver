@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/17 22:51:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/20 01:02:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ class HttpRequestHandler {
 		void parse_method_and_path();
 		void parse_path_type();
 		void load_header_data();
+		void resolve_relative_path();
 		void get_location_config();
 		void cgi_normalize_path();
 		void normalize_request_path();

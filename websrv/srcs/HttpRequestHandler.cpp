@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 23:13:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/20 01:30:43 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
+							 &HttpRequestHandler::resolve_relative_path,
 	                         &HttpRequestHandler::get_location_config,
 	                         &HttpRequestHandler::cgi_normalize_path,
 	                         &HttpRequestHandler::normalize_request_path,
@@ -270,6 +271,7 @@ void HttpRequestHandler::parse_method_and_path() {
 			_log->log_debug( RH_NAME,
 			          "Request header fully parsed.");
 			_request_data.path = path;
+			_request_data.path_request = path;
 			return ;
 		} else {
 			turn_off_sanity(HTTP_BAD_REQUEST,
@@ -412,6 +414,87 @@ void HttpRequestHandler::load_header_data() {
 	}
 	_request_data.cookie = get_header_value(_request_data.header,
 											"cookie", "\r\n");
+	_request_data.referer = get_header_value(_request_data.header, "referer:");
+}
+
+/**
+ * @brief Resolves the relative path of the requested resource based on the `Referer` header.
+ *
+ * This method processes the `_request_data.referer` field to determine the appropriate base path for resolving the requested resource.
+ * It handles different relative path formats (`/`, `./`, `../`) to ensure that the complete path to the resource is correctly constructed.
+ *
+ * @details
+ * The method performs the following steps:
+ * 1. **Empty Referer Check**:
+ *    - If the `Referer` field is empty, the method returns immediately as there is no context to resolve the path.
+ *
+ * 2. **Extracting Base Path from Referer**:
+ *    - Looks for `"//"` in the `Referer` to identify the beginning of the base path after the protocol (e.g., `http://`).
+ *    - If `"//"` is not found, it sets the request as `HTTP_BAD_REQUEST` because the `Referer` field is malformed.
+ *    - Extracts the base path starting after the `"//"` to handle the host and URI path.
+ *
+ * 3. **Handling Root Path (`/`)**:
+ *    - Extracts the part of the `Referer` after the first `/` to obtain the base path relative to the server.
+ *    - If the requested path starts with `/`, concatenates the base path with the requested path.
+ *
+ * 4. **Handling Relative Path (`./`)**:
+ *    - If the requested path starts with `"./"`, strips the `./` and concatenates the remaining part with the base path.
+ *
+ * 5. **Handling Parent Directory Path (`../`)**:
+ *    - If the requested path contains `"../"`, the method iteratively moves up one level in the base path for each occurrence of `"../"`.
+ *    - If the base path cannot move up further (`/` not found), it sets the request status as `HTTP_NOT_FOUND` because the relative path is impossible to reach.
+ *    - Finally, appends the remaining part of the path to the updated base path.
+ *
+ * @note
+ * - This method updates `_request_data.path` to contain the fully resolved path based on the relative path specified.
+ * - The method assumes that `_request_data.referer` is a valid URL and performs sanity checks to prevent malformed paths.
+ *
+ * @exception The method uses `turn_off_sanity()` to handle malformed `Referer` or impossible paths, setting appropriate HTTP response codes
+ */
+void HttpRequestHandler::resolve_relative_path() {
+	if (_request_data.referer.empty()) {
+		return;
+	}
+	size_t http_slash = _request_data.referer.find("//");
+	if (http_slash == std::string::npos) {
+		turn_off_sanity(HTTP_BAD_REQUEST,
+						"Referer field malformed.");
+		return;
+	}
+	std::string base = _request_data.referer.substr(http_slash + 2);
+	http_slash = base.find('/');
+	if (http_slash == std::string::npos) {
+		return ;
+	}
+	base = base.substr(http_slash);
+	_request_data.referer = base;
+	if (starts_with(_request_data.path, "/"))
+	{
+		_request_data.path = base + _request_data.path;
+		return ;
+	}
+	if (starts_with(_request_data.path, "./")) {
+		_request_data.path = base + _request_data.path.substr(2);
+		return ;
+	}
+	size_t up = _request_data.path.find("../");
+	if (up != std::string::npos) {
+		std::string moving = _request_data.path;
+		size_t level;
+		while (up != std::string::npos) {
+			level = base.find_last_of('/');
+			if (level == std::string::npos) {
+				turn_off_sanity(HTTP_NOT_FOUND,
+								"Relative path impossible to reach.");
+				return;
+			}
+			base = base.substr(0, level);
+			moving = moving.substr(level + 3);
+			up = moving.find("../");
+		}
+		_request_data.path = base + moving;
+		return ;
+	}
 }
 
 /**
@@ -444,6 +527,7 @@ void HttpRequestHandler::get_location_config() {
 
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
+	_log->log_error(RH_NAME, _request_data.header);
 
 	_is_cached = _request_cache.get(_request_data.path, _cache_data);
 	if (HAS_GET(_request_data.method) && _is_cached) {
@@ -468,6 +552,9 @@ void HttpRequestHandler::get_location_config() {
 		if (_location->is_redir) {
 			_request_data.is_redir = true;
 			_factory++;
+		}
+		if (!_location->is_root) {
+			_request_data.path.replace(0, saved_key.length(), _location->path_root);
 		}
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
