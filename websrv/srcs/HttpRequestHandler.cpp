@@ -393,7 +393,6 @@ void HttpRequestHandler::load_header_data() {
 	}
 	std::string chunks = get_header_value(_request_data.header,
 										  "transfer-encoding:", "\r\n");
-	_log->log_debug( RSP_NAME, chunks);
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
