@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 22:09:10 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 11:13:57 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/20 22:59:02 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,9 @@ void HttpAutoIndex::get_file_content(std::string& path) {
 			return ;
 		}
 		std::string path_to_file = _request.path;
+		if (!_location->is_root && !_request.path_request.empty()) {
+			path_to_file = _request.path_request;
+		}
 		if (path_to_file[path_to_file.size() - 1] != '/') {
 			path_to_file += "/";
 		}
