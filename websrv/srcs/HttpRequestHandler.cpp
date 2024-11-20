@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/20 01:30:43 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/21 00:21:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -466,6 +466,13 @@ void HttpRequestHandler::resolve_relative_path() {
 		return ;
 	}
 	base = base.substr(http_slash);
+	size_t base_test = base.find_last_of('/');
+	if (base_test != std::string::npos) {
+		std::string base_folder = base.substr(0, base_test + 1);
+		if (starts_with(_request_data.path, base_folder)) {
+			return;
+		}
+	}
 	_request_data.referer = base;
 	if (starts_with(_request_data.path, "/"))
 	{
@@ -1036,11 +1043,14 @@ void HttpRequestHandler::load_content_normal() {
  * 	  active, turn off sanity to avoid server the script as plain text.
  */
 void HttpRequestHandler::validate_request() {
-	if (is_cgi(_request_data.normalized_path) && !_location->cgi_file) {
-		turn_off_sanity(HTTP_FORBIDDEN,
-						"Try to execute script without cgi active.");
-		return;
+	if (is_cgi(_request_data.normalized_path)) {
+		if (!_location->cgi_file) {
+			turn_off_sanity(HTTP_FORBIDDEN,
+			                "Try to execute script without cgi active.");
+			return;
+		}
 	}
+
 	if (!HAS_PERMISSION(_location->loc_allowed_methods, _request_data.method)) {
 		turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 						"Method not allowed at location.");
