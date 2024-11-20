@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 00:31:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 11:09:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/20 02:03:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 "a {color: #3498db;text-decoration: none;}\n"
 #define FOOTER_STYLE \
 "footer {padding: 5px;border-top: solid 1px #9f9f9f;width: 100vw;min-height: 100px;text-align: center;position: absolute;bottom: 10px;}\n" \
-"footer > span {width: 100%;display: block;}\n"\
+"footer > span {width: 100%;display: block;}\n" \
 "footer > svg {width: 100px;height: auto;justify-content: center;}"
 #define SVG_LOGO \
 "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 261.44 161.61\">" \
@@ -89,8 +89,8 @@
 "<path class=\"cls-6\" d=\"M250.63,131.92A11.18,11.18,0,0,1,260.94,138a3.47,3.47,0,0,1,0,3.6,3.28,3.28,0,0,1-3.1,1.49A3.18,3.18,0,0,1,255.1,141a3.68,3.68,0,0,0-2.23-2.11,9.09,9.09,0,0,0-2.24-.25q-3.23,0-4.35,1.74a5.49,5.49,0,0,1-.37.62,8.57,8.57,0,0,0-.74,2.86v14.28a3.23,3.23,0,0,1-1.49,2.86,3.1,3.1,0,0,1-3.36,0,3.15,3.15,0,0,1-1.61-2.86V143.85q.61-8.58,7.57-11.06A10.76,10.76,0,0,1,250.63,131.92Z\"/>"\
 "</g></g></svg>"
 
-#define FOOTER_GENERAL "<footer>"\
-SVG_LOGO\
+#define FOOTER_GENERAL "<footer>" \
+SVG_LOGO \
 "<span>Powered by WebServer</span></footer>"
 
 #endif
