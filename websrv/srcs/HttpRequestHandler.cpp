@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 09:45:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/21 20:32:11 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,17 +169,15 @@ void HttpRequestHandler::request_workflow() {
 void HttpRequestHandler::read_request_header() {
 	char buffer[BUFFER_REQUEST];
 	int read_byte;
-	size_t size = 0;
-	int retry_count = 0;
 
 	try {
 		_log->log_debug( RH_NAME,
 				  "Reading HTTP request");
+
+		int retry_count = 0;
 		while (true) {
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
 			if (read_byte > 0) {
-				size += read_byte;
-
 				_request.append(buffer, read_byte);
 				if (_request.find("\r\n\r\n") != std::string::npos) {
 					break;
