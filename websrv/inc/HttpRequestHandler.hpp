@@ -33,7 +33,6 @@
 // Defines
 #define RH_NAME "HttpRequestHandler"
 #define BUFFER_REQUEST  2048
-#define MAX_REQUEST     52428800
 #define URI_MAX         2048
 
 typedef struct e_chunk {
