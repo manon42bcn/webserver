@@ -128,8 +128,8 @@ int check_port(std::string port)
             return -1;
     }
     port_int = atoi(port.c_str());
-    if (port_int <= 1024 || port_int > 65535)
-        return -1;
+    // if (port_int <= 1024 || port_int > 65535)
+    //     return -1;
     return port_int;
 }
 

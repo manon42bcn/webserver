@@ -220,6 +220,7 @@ void HttpRequestHandler::read_request_header() {
 		detail << "Error Getting Header Data Request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, detail.str());
 	}
+	std::cout << RED << _request << RESET << std::endl;
 }
 
 /**
