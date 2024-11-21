@@ -36,8 +36,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_client_data(client_data),
 	_request_cache(client_data->get_server()->get_request_cache()),
 	_location(NULL),
-	_fd(_client_data->get_fd().fd),
-	_max_request(MAX_REQUEST) {
+	_fd(_client_data->get_fd().fd) {
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
@@ -47,6 +46,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	}
 	_factory = 0;
 	_is_cached = false;
+	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
 
 /**
@@ -179,11 +179,7 @@ void HttpRequestHandler::read_request_header() {
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
 			if (read_byte > 0) {
 				size += read_byte;
-				if (size > _max_request) {
-					turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
-									"Request Header too large.");
-					return;
-				}
+
 				_request.append(buffer, read_byte);
 				if (_request.find("\r\n\r\n") != std::string::npos) {
 					break;
@@ -254,16 +250,20 @@ void HttpRequestHandler::parse_header() {
 			                "Request Header is empty.");
 			return ;
 		}
+
 		_log->log_debug( RH_NAME,
 		          "Header successfully parsed.");
 		header_end += 4;
 		std::string tmp = _request.substr(header_end);
 		_request.clear();
 		_request = tmp;
+		if (_request_data.header.length() > _max_request) {
+			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
+							"Request Header too large.");
+		}
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
 		                "Request parsing error: No header-body delimiter found.");
-		return;
 	}
 }
 
@@ -1087,7 +1087,12 @@ void HttpRequestHandler::load_content_normal() {
 	}
 	char buffer[BUFFER_REQUEST];
 	int read_byte;
-	size_t size = 0;
+	size_t size = _request.length();
+	if (size > _max_request) {
+		turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+						"Body Content too Large.");
+		return;
+	}
 	size_t to_read = _request_data.content_length - _request.length();
 	int retry_count = 0;
 
