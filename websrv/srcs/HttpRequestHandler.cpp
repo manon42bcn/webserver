@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 02:28:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/21 03:47:49 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -680,7 +680,11 @@ void HttpRequestHandler::get_location_config() {
 			_factory++;
 		}
 		if (!_location->is_root && !_location->path_root.empty()) {
-			_request_data.path.replace(0, saved_key.length(), _location->path_root);
+			if (saved_key == "/") {
+				_request_data.path = _location->path_root + _request_data.path;
+			} else {
+				_request_data.path.replace(0, saved_key.length(), _location->path_root);
+			}
 		}
 	} else {
 		turn_off_sanity(HTTP_BAD_REQUEST,
