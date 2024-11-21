@@ -142,7 +142,7 @@ std::string get_redirection_url(std::string redirection, Logger* logger);
 int get_status_code(std::string status_code, Logger* logger);
 std::string get_first_word(const std::string& str);
 bool compare_paths(std::string path1, std::string path2);
-
+size_t string_to_bytes(std::string client_max_body_size);
 
 
 // Verifications

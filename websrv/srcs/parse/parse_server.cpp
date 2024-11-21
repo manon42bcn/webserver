@@ -73,7 +73,7 @@ void parse_client_max_body_size(std::vector<std::string>::iterator& it, Logger* 
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing client max body size");
     std::string client_max_body_size = get_value(*it, "client_max_body_size");
     if (check_client_max_body_size(client_max_body_size))
-        server.client_max_body_size = client_max_body_size;
+        server.client_max_body_size = string_to_bytes(client_max_body_size);
     else
         logger->fatal_log("parse_server_block", "Client max body size " + client_max_body_size + " is not valid.");
 }

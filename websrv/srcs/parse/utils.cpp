@@ -64,13 +64,16 @@ std::string get_value(std::string line, const std::string& key) {
 }
 
 bool find_exact_string(const std::string& line, const std::string& str) {
-    size_t pos = line.find(str);
-        
+    std::string::size_type end_of_first_word = line.find_first_of(" \t");
+    std::string first_word = line.substr(0, end_of_first_word);
+    
+    size_t pos = first_word.find(str);
+    
     if (pos != std::string::npos) {
-        if (pos > 0 && std::isalnum(line[pos - 1])) {
+        if (pos > 0 && std::isalnum(first_word[pos - 1])) {
             return false;
         }
-        if (pos + str.length() < line.length() && std::isalnum(line[pos + str.length()])) {
+        if (pos + str.length() < first_word.length() && std::isalnum(first_word[pos + str.length()])) {
             return false;
         }
         return true;
@@ -338,3 +341,15 @@ bool compare_paths(std::string path1, std::string path2) {
     return last_part1 == last_part2;
 }
 
+size_t string_to_bytes(std::string client_max_body_size)
+{
+    size_t bytes = atoi(client_max_body_size.c_str());
+    char unit = client_max_body_size[client_max_body_size.size() - 1];
+    if (unit == 'm' || unit == 'M')
+        bytes *= 1024 * 1024;
+    else if (unit == 'k' || unit == 'K')
+        bytes *= 1024;
+    else if (unit == 'g' || unit == 'G')
+        bytes *= 1024 * 1024 * 1024;
+    return bytes;
+}

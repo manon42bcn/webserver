@@ -101,7 +101,7 @@ struct ServerConfig {
 	std::map<int, std::string>                    error_pages;
 	std::map<std::string, struct LocationConfig>  locations;
 	std::vector<std::string>                      default_pages;
-	std::string                                   client_max_body_size;
+	size_t                                        client_max_body_size;
 	bool                                          autoindex;
 	std::string                                   template_error_page;
 	bool										  cgi_locations;  // set after mappig, to avoid config vs files errors
