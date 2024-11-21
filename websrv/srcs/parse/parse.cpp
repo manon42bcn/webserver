@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/17 14:34:19 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/21 03:37:06 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
 
+    if (location.path_root.back() == '/')
+        location.path_root.pop_back();
     if (location.loc_allowed_methods == 0)
         GRANT_ALL(location.loc_allowed_methods);
     return location;
@@ -115,7 +117,6 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         }
     }
     
-
 
     for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++) {
         if (it->second.loc_root != "")
