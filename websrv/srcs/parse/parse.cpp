@@ -123,6 +123,8 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
             it->second.loc_root = join_paths(server.server_root, it->second.loc_root);
         if (compare_paths(it->first, it->second.loc_root))
             it->second.is_root = true;
+        if (it->second.loc_error_pages.size() == 0)
+            it->second.loc_error_pages =  server.error_pages;
     }
 
     if (check_obligatory_params(server, logger))
