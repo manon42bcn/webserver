@@ -6,26 +6,21 @@ import cgi
 import cgitb
 import io
 
-# Activar el debug de CGI
 cgitb.enable(display=0, logdir="/tmp")
 
-# Directorio donde se guardarán los archivos
+DEBUG = False 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), 'upload')
 
 def save_file(post_data):
     try:
-        # Extraer el boundary de los datos
         first_line = post_data.split(b'\r\n')[0]
         boundary = first_line.decode()
 
-        # Crear un archivo temporal con los datos
         temp_file = io.BytesIO(post_data)
 
-        # Configurar el environment para el FieldStorage
         environ = os.environ.copy()
         environ['CONTENT_TYPE'] = f'multipart/form-data; boundary={boundary[2:]}'
 
-        # Procesar el formulario
         form = cgi.FieldStorage(
             fp=temp_file,
             environ=environ,
@@ -39,11 +34,9 @@ def save_file(post_data):
         if not fileitem.filename:
             return False, "No se seleccionó ningún archivo"
 
-        # Obtener el nombre del archivo de forma segura
         filename = os.path.basename(fileitem.filename)
         filepath = os.path.join(UPLOAD_DIR, filename)
 
-        # Guardar el archivo
         with open(filepath, 'wb') as f:
             if hasattr(fileitem.file, 'read'):
                 while True:
@@ -54,77 +47,139 @@ def save_file(post_data):
             else:
                 f.write(fileitem.value)
 
-        description = form.getvalue("description", "")
-        return True, (filename, description)
+        return True, (filename)
     except Exception as e:
-        return False, f"Error al procesar el archivo: {str(e)}"
+        return False, f"Error processing file: {str(e)}"
 
 try:
-    # Asegurar que el directorio de uploads existe
     if not os.path.exists(UPLOAD_DIR):
         os.makedirs(UPLOAD_DIR, mode=0o755)
 
-    # Verificar el método HTTP
     if os.environ.get('REQUEST_METHOD') != 'POST':
-        raise Exception("Método no permitido. Use POST para subir archivos.")
+        raise Exception("Method not allowed. Use POST to upload files.")
 
-    # Leer los datos directamente del stdin
     content_length = int(os.environ.get('CONTENT_LENGTH', 0))
     post_data = sys.stdin.buffer.read(content_length)
 
-    # Guardar los datos crudos para debug
-    debug_file = os.path.join(os.path.dirname(__file__), 'raw_post_data.txt')
-    with open(debug_file, 'wb') as f:
-        f.write(post_data)
+    # debug_file = os.path.join(os.path.dirname(__file__), 'raw_post_data.txt')
+    # with open(debug_file, 'wb') as f:
+    #     f.write(post_data)
 
-    # Imprimir headers HTTP
     sys.stdout.write("Content-Type: text/html\n\n")
 
-    # Intentar guardar el archivo
     success, result = save_file(post_data)
 
     print(f"""<!DOCTYPE html>
     <html>
     <head>
-        <title>Resultado de la Subida</title>
+        <title>Upload Result</title>
+        <meta http-equiv="refresh" content="2;url=/cgi/file_management.html">
         <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; }}
-            pre {{ background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }}
-            .success {{ color: #28a745; }}
-            .error {{ color: #dc3545; }}
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }}
+            .container {{
+                background-color: #f9f9f9;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }}
+            h2 {{
+                color: #333;
+                border-bottom: 2px solid #4CAF50;
+                padding-bottom: 10px;
+            }}
+            pre {{
+                background: white;
+                padding: 10px;
+                border-radius: 4px;
+                overflow-x: auto;
+                border: 1px solid #ddd;
+            }}
+            .success {{
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border-left: 4px solid #4CAF50;
+            }}
+            .error {{
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border-left: 4px solid #ff4444;
+            }}
+            .back-link {{
+                color: #4CAF50;
+                text-decoration: none;
+                display: inline-block;
+                margin-top: 1rem;
+            }}
+            .back-link:hover {{
+                color: #45a049;
+            }}
+            .message {{
+                text-align: center;
+                margin-top: 1rem;
+                color: #666;
+                font-style: italic;
+            }}
+            .logo {{
+                width: 150px;
+                height: auto;
+                margin: 10px auto;
+                display: block;
+            }}
         </style>
     </head>
     <body>
+        <div class="logo">
+            <img src="/cgi/logo.png" alt="Logo" class="logo">
+        </div>
+        <div class="container">""")
+
+    if DEBUG:
+        print(f"""
         <h2>Debug Information:</h2>
         <pre>
 Content-Length: {content_length}
-Bytes leídos: {len(post_data)}
+Bytes read: {len(post_data)}
 
-Primeros 1024 bytes:
+First 1024 bytes:
 {post_data[:1024]}
         </pre>
+        """)
 
-        <h2>Resultado:</h2>""")
+
+
+    print("<h2>Upload Result</h2>")
 
     if success:
-        filename, description = result
+        filename = result
         print(f"""
         <div class="success">
-            <h3>¡Archivo Subido Exitosamente!</h3>
-            <p>Archivo: {filename}</p>
-            <p>Descripción: {description}</p>
+            <h3>File Uploaded Successfully!</h3>
+            <p><strong>File:</strong> {filename}</p>
         </div>
+        <p class="message">Redirecting to home page in 2 seconds...</p>
         """)
     else:
         print(f"""
         <div class="error">
-            <h3>Error al subir el archivo</h3>
+            <h3>Upload Failed</h3>
             <p>{result}</p>
         </div>
+        <p class="message">Redirecting to home page in 2 seconds...</p>
         """)
 
     print("""
-        <p><a href="/cgi/update.html">&larr; Volver al formulario</a></p>
+        </div>
     </body>
     </html>""")
 
@@ -134,15 +189,59 @@ except Exception as e:
     <html>
     <head>
         <title>Error</title>
+        <meta http-equiv="refresh" content="2;url=/cgi/file_management.html">
         <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; }}
-            .error {{ color: #dc3545; }}
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }}
+            .container {{
+                background-color: #f9f9f9;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }}
+            .error {{
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                border-left: 4px solid #ff4444;
+            }}
+            h1 {{
+                color: #333;
+                border-bottom: 2px solid #4CAF50;
+                padding-bottom: 10px;
+            }}
+            .message {{
+                text-align: center;
+                margin-top: 1rem;
+                color: #666;
+                font-style: italic;
+            }}
+            .logo {{
+                width: 150px;
+                height: auto;
+                margin: 10px auto;
+                display: block;
+            }}
         </style>
     </head>
     <body>
-        <h1 class="error">Error del Servidor</h1>
-        <p>{str(e)}</p>
-        <p><a href="/cgi/update.html">&larr; Volver al formulario</a></p>
+        <div class="logo">
+            <img src="/cgi/logo.png" alt="Logo" class="logo">
+        </div>
+        <div class="container">
+            <h1>Server Error</h1>
+            <div class="error">
+                <p>{str(e)}</p>
+            </div>
+            <p class="message">Redirecting to home page in 2 seconds...</p>
+        </div>
     </body>
     </html>
     """)

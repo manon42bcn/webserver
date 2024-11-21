@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Management</title>
+    <style>
+        /* Mantenemos el estilo base similar */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .cookie-status {
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            margin: 5px;
+        }
+        .save-btn {
+            background-color: #4CAF50;
+        }
+        .save-btn:hover {
+            background-color: #45a049;
+        }
+        .delete-btn {
+            background-color: #ff4444;
+        }
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="/cgi/logo.png" alt="Logo" class="logo">
+    </div>
+    <div class="container">
+        <h2>Cookie Management</h2>
+        
+        <div id="cookieForm">
+            <label for="userName">Enter your name:</label>
+            <input type="text" id="userName" placeholder="Your name">
+            <button onclick="saveCookie()" class="btn save-btn">Save Name</button>
+            <button onclick="deleteCookie()" class="btn delete-btn">Delete Cookie</button>
+        </div>
+
+        <div id="cookieStatus" class="cookie-status">
+            <!-- El estado de la cookie se mostrará aquí -->
+        </div>
+    </div>
+
+    <script>
+        // Función para guardar la cookie
+        function saveCookie() {
+            const userName = document.getElementById('userName').value;
+            if (userName) {
+                // Guardar cookie por 30 días
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30);
+                document.cookie = `userName=${userName}; expires=${expiryDate.toUTCString()}; path=/`;
+                updateCookieStatus();
+                document.getElementById('userName').value = '';
+            } else {
+                alert('Please enter your name');
+            }
+        }
+
+        // Función para eliminar la cookie
+        function deleteCookie() {
+            document.cookie = "userName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            updateCookieStatus();
+        }
+
+        // Función para obtener el valor de la cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Función para actualizar el estado mostrado
+        function updateCookieStatus() {
+            const cookieValue = getCookie('userName');
+            const statusDiv = document.getElementById('cookieStatus');
+            
+            if (cookieValue) {
+                statusDiv.innerHTML = `<p>Welcome, ${cookieValue}! Your name is stored in a cookie.</p>`;
+            } else {
+                statusDiv.innerHTML = '<p>No cookie stored. Please enter your name.</p>';
+            }
+        }
+
+        // Verificar el estado de la cookie al cargar la página
+        window.onload = updateCookieStatus;
+    </script>
+</body>
+</html>

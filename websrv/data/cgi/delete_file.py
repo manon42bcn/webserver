@@ -9,7 +9,6 @@ print("Content-Type: text/html")
 print()
 
 try:
-    # Obtener la ruta absoluta del directorio donde está el script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     upload_dir = os.path.join(script_dir, "upload")
 
@@ -22,21 +21,103 @@ try:
         if os.path.exists(file_path) and os.path.dirname(os.path.abspath(file_path)).endswith("upload"):
             os.remove(file_path)
             print("""
-            <html>
+            <!DOCTYPE html>
+            <html lang="en">
             <head>
                 <meta charset="UTF-8">
-                <meta http-equiv="refresh" content="2;url=list_files.py">
+                <meta http-equiv="refresh" content="2;url=/cgi/file_management.html">
+                <title>File Deleted</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 40px;
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+                    .container {
+                        background-color: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+                    h2 {
+                        color: #333;
+                        border-bottom: 2px solid #4CAF50;
+                        padding-bottom: 10px;
+                    }
+                    p {
+                        color: #666;
+                        font-style: italic;
+                        padding: 10px;
+                    }
+                    .logo {
+                        width: 150px;
+                        height: auto;
+                        margin: 10px auto;
+                    }
+                </style>
             </head>
             <body>
-                <h2>Archivo eliminado correctamente</h2>
-                <p>Redirigiendo...</p>
+                <div class="logo">
+                    <img src="/cgi/logo.png" alt="Logo" class="logo">
+                </div>
+                <div class="container">
+                    <h2>File successfully deleted</h2>
+                    <p>Redirecting...</p>
+                </div>
             </body>
             </html>
             """)
         else:
-            print("<h2>Error: El archivo no existe o no está permitido eliminarlo</h2>")
+            print("""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Error</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 40px;
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+                    .container {
+                        background-color: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+                    h2 {
+                        color: #ff4444;
+                        border-bottom: 2px solid #ff4444;
+                        padding-bottom: 10px;
+                    }
+                    .logo {
+                        width: 150px;
+                        height: auto;
+                        margin: 10px auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="logo">
+                    <img src="/cgi/logo.png" alt="Logo" class="logo">
+                </div>
+                <div class="container">
+                    <h2>Error: File does not exist or deletion is not allowed</h2>
+                </div>
+            </body>
+            </html>
+            """)
     else:
-        print("<h2>Error: No se especificó ningún archivo</h2>")
+        print("<h2>Error: No file specified</h2>")
 
 except Exception as e:
     print(f"<h2>Error: {str(e)}</h2>") 

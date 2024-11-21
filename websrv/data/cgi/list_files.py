@@ -8,7 +8,6 @@ cgitb.enable()
 print("Content-Type: text/html")
 print()
 
-# Obtener la ruta absoluta del directorio donde está el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 upload_dir = os.path.join(script_dir, "upload")
 
@@ -64,7 +63,7 @@ print("""<!DOCTYPE html>
     <div class="file-list">""")
 
 try:
-    print(f'<p>Buscando archivos en: {upload_dir}</p>')  # Debug info
+    print(f'<p>Searching files in: {upload_dir}</p>')  # Debug info
     if os.path.exists(upload_dir):
         files = os.listdir(upload_dir)
         if files:
@@ -74,20 +73,20 @@ try:
                     print(f"""
                         <div class="file-item">
                             <span>{file}</span>
-                            <form method="post" action="delete_file.py" style="display: inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar este archivo?');">
+                            <form method="post" action="/cgi/delete_file.py" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this file?');">
                                 <input type="hidden" name="filename" value="{file}">
-                                <button type="submit" class="delete-btn">Eliminar</button>
+                                <button type="submit" class="delete-btn">Delete</button>
                             </form>
                         </div>""")
         else:
-            print('<p class="no-files">No hay archivos en la carpeta upload</p>')
+            print('<p class="no-files">No files in folder</p>')
     else:
-        print(f'<p class="no-files">La carpeta upload no existe en la ruta: {upload_dir}</p>')
+        print(f'<p class="no-files">The folder upload does not exist in the path: {upload_dir}</p>')
 except Exception as e:
-    print(f'<p class="error">Error al listar archivos: {str(e)}</p>')
+    print(f'<p class="error">Error listing files: {str(e)}</p>')
 
 print("""
     </div>
-    <a href="/cgi/index.html" class="back-link">&larr; Volver al inicio</a>
+    <a href="/cgi/" class="back-link">&larr; Back to main page of CGI</a>
 </body>
 </html>""") 

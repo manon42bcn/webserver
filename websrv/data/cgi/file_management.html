@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .file-list {
+            margin: 20px 0;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: white;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+        .upload-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .no-files {
+            color: #666;
+            font-style: italic;
+            padding: 10px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="logo">
+        <img src="/cgi/logo.png" alt="Logo" class="logo">
+    </div>
+
+    <div class="container">
+        <h2>Existing Files</h2>
+        <div id="file-list" class="file-list">
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Upload New File</h2>
+        <div class="upload-form">
+            <form action="/cgi/upload.py" method="post" enctype="multipart/form-data">
+                <div>
+                    <label for="file">Select file:</label>
+                    <input type="file" name="file" id="file" required>
+                </div>
+                <button type="submit" class="submit-btn">Upload File</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script>
+        function loadFiles() {
+            fetch('/cgi/list_files.py')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const fileList = doc.querySelector('.file-list');
+                    if (fileList) {
+                        document.getElementById('file-list').innerHTML = fileList.innerHTML;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading files:', error);
+                    document.getElementById('file-list').innerHTML = '<p class="no-files">Error loading files</p>';
+                });
+        }
+
+        loadFiles();
+
+        setInterval(loadFiles, 5000);
+    </script>
+</body>
+</html>

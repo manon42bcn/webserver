@@ -6,49 +6,87 @@
         body {
             font-family: Arial, sans-serif;
             margin: 40px;
-            line-height: 1.6;
-        }
-        .container {
             max-width: 800px;
             margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
         .test-form {
-            background: #f5f5f5;
+            background: white;
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
         }
         input[type="text"], textarea {
             width: 100%;
-            padding: 8px;
-            margin: 8px 0;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
-        input[type="submit"] {
-            background: #4CAF50;
+        .submit-btn, input[type="submit"] {
+            background-color: #4CAF50;
             color: white;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
+        .submit-btn:hover, input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            margin: 10px auto;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .action-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .action-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+    <div class="logo">
+        <img src="/cgi/logo.png" alt="Logo" class="logo">
+    </div>
+
     <div class="container">
         <h1>CGI Test Page</h1>
         
-        <div class="test-form">
-            <h2>Test GET Request</h2>
-            <p>Click to test simple CGI script:</p>
-            <a href="/cgi/test.py">Run test.py</a>
-            <a href="/cgi/while.py">Run while.py</a>
-            <a href="/cgi/update.html">Subir Archivos</a>
-            <a href="/cgi/delete.html">Eliminar Archivos</a>
+        <div class="action-buttons">
+            <a href="/cgi/form.py" class="action-button">Run form.py</a>
+            <a href="/cgi/while.py" class="action-button">Run while.py</a>
+            <a href="/cgi/file_management.html" class="action-button">File Management</a>
         </div>
 
         <div class="test-form">
             <h2>Test POST Request</h2>
-            <form action="/cgi/test.py" method="POST">
+            <form action="/cgi/form.py" method="POST">
                 <p>
                     <label for="name">Name:</label><br>
                     <input type="text" id="name" name="name" required>
@@ -57,7 +95,7 @@
                     <label for="message">Message:</label><br>
                     <textarea id="message" name="message" rows="4" required></textarea>
                 </p>
-                <input type="submit" value="Send POST Request">
+                <input type="submit" value="Send POST Request" class="submit-btn">
             </form>
         </div>
     </div>
