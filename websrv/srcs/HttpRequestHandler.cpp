@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 00:21:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/21 02:28:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,29 +61,54 @@ HttpRequestHandler::~HttpRequestHandler() {
 }
 
 /**
- * @brief Executes the workflow for processing and validating an HTTP request.
+ * @brief Executes the main workflow for handling an HTTP request.
  *
- * This method performs a sequential series of validation and parsing steps
- * to handle the incoming HTTP request. Each step is represented as a function pointer
- * in the `steps` array, allowing dynamic invocation of the individual request processing functions.
- * If a step fails and the request's sanity is set to `false`, the workflow halts.
+ * This method defines and executes a series of validation and parsing steps to fully handle an HTTP request.
+ * It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler.
  *
- * Steps included in the workflow:
- * - Reading the request header
- * - Parsing the header, HTTP method, and path
- * - Determining path type (e.g., regular, query)
- * - Loading header and body content data
- * - Validating request specifics and configurations
+ * @details
+ * The method performs the following actions:
  *
- * @note After parsing and validating, this method delegates the response handling
- * to the `handle_request` method, which completes the request-response cycle.
+ * 1. **Define Validation Steps**:
+ *    - Defines an array of function pointers (`steps`) representing each step of the request processing workflow:
+ *      - `read_request_header()`: Reads the incoming request header.
+ *      - `parse_header()`: Parses the request headers.
+ *      - `parse_method_and_path()`: Parses the HTTP method and the requested path.
+ *      - `parse_path_type()`: Determines the type of path being requested.
+ *      - `load_header_data()`: Loads additional header data needed for processing.
+ *      - `solver_resource()`: Resolves the requested resource path and validates its location.
+ *      - `load_content()`: Loads the content associated with the request (if applicable).
+ *      - `validate_request()`: Validates the overall request to ensure it meets server requirements.
  *
- * @warning If any step invalidates the request (sets sanity to false),
- * further processing is halted, and the request goes to handle request to
- * send the proper error message.
+ * 2. **Start Request Workflow**:
+ *    - Logs the beginning of the request parsing and validation process.
+ *    - Calls `_client_data->chronos_reset()` to reset any timers related to the client (e.g., request start time).
  *
- * @see validate_step
- * @see handle_request
+ * 3. **Execute Validation Steps**:
+ *    - Iterates through the array of validation steps (`steps`) and executes each one in order using function pointers (`(this->*steps[i])()`).
+ *    - After executing each step, checks the `_request_data.sanity` flag:
+ *      - If the flag is `false`, it indicates an error during processing, and the workflow is terminated.
+ *
+ * 4. **Handle the Request**:
+ *    - After completing the validation and parsing steps, logs the end of the request validation process.
+ *    - Calls `handle_request()` to proceed with responding to the client based on the validated request.
+ *
+ * 5. **Log Response Completion**:
+ *    - Logs the end of the response handling process.
+ *
+ * @note
+ * - The `_request_data.sanity` flag is used throughout the workflow to indicate whether each step was successful. If an error occurs, the flag is set to `false` and the workflow is halted.
+ * - The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly.
+ *
+ * **Validation Steps**:
+ * - `read_request_header()`: Reads the raw HTTP headers from the incoming request.
+ * - `parse_header()`: Parses and processes each header to extract key-value pairs.
+ * - `parse_method_and_path()`: Identifies the HTTP method (e.g., GET, POST) and the requested path.
+ * - `parse_path_type()`: Determines the type of path (e.g., static file, dynamic request).
+ * - `load_header_data()`: Loads additional data from headers required for further processing.
+ * - `solver_resource()`: Resolves the requested resource path, potentially handling relative paths.
+ * - `load_content()`: Loads request body content if applicable (e.g., for POST requests).
+ * - `validate_request()`: Final validation to ensure that the request conforms to server policies and rules.
  */
 void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
@@ -91,10 +116,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
-							 &HttpRequestHandler::resolve_relative_path,
-	                         &HttpRequestHandler::get_location_config,
-	                         &HttpRequestHandler::cgi_normalize_path,
-	                         &HttpRequestHandler::normalize_request_path,
+							 &HttpRequestHandler::solver_resource,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
@@ -245,6 +267,34 @@ void HttpRequestHandler::parse_header() {
 	}
 }
 
+/**
+ * @brief Extracts and validates the HTTP method and path from the request header.
+ *
+ * This method processes the `_request_data.header` to identify and extract
+ * the HTTP method and the request path. If either the method or path is
+ * malformed or missing, the request is marked as invalid with an appropriate
+ * HTTP status code and error message.
+ *
+ * Process overview:
+ * - The method is extracted by locating the first space in the header.
+ * - The path is identified by locating the next space after the method.
+ *
+ * Key behaviors:
+ * - Sets the HTTP method by converting the extracted string to its
+ *   corresponding enum type. If the conversion fails, the request
+ *   is marked as having a bad request status.
+ * - Checks that the extracted path does not exceed `URI_MAX` characters.
+ * - Logs the status of parsing and validation, with detailed error
+ *   messages if parsing fails.
+ *
+ * Error handling:
+ * - If the method is missing or invalid, the request is marked with
+ *   `HTTP_BAD_REQUEST` status.
+ * - If the path is missing or exceeds the allowed length, the request
+ *   is marked with `HTTP_URI_TOO_LONG` or `HTTP_BAD_REQUEST`.
+ *
+ * @see turn_off_sanity
+ */
 void HttpRequestHandler::parse_method_and_path() {
 	std::string method;
 	std::string path;
@@ -287,32 +337,36 @@ void HttpRequestHandler::parse_method_and_path() {
 }
 
 /**
- * @brief Extracts and validates the HTTP method and path from the request header.
+ * @brief Parses the type of the request path to determine if it contains a query string.
  *
- * This method processes the `_request_data.header` to identify and extract
- * the HTTP method and the request path. If either the method or path is
- * malformed or missing, the request is marked as invalid with an appropriate
- * HTTP status code and error message.
+ * This method analyzes the `_request_data.path` to determine whether the path includes a query component.
+ * If a query string is found, it is extracted and the path is updated accordingly.
  *
- * Process overview:
- * - The method is extracted by locating the first space in the header.
- * - The path is identified by locating the next space after the method.
+ * @details
+ * The method performs the following steps:
+ * 1. **Log Start of Parsing**:
+ *    - Logs a debug message indicating the start of the path type parsing process.
  *
- * Key behaviors:
- * - Sets the HTTP method by converting the extracted string to its
- *   corresponding enum type. If the conversion fails, the request
- *   is marked as having a bad request status.
- * - Checks that the extracted path does not exceed `URI_MAX` characters.
- * - Logs the status of parsing and validation, with detailed error
- *   messages if parsing fails.
+ * 2. **Find Query Delimiter**:
+ *    - Searches for the character `'?'` in `_request_data.path` to determine if there is a query string.
+ *    - If `'?'` is not found (`find()` returns `std::string::npos`):
+ *      - Sets `_request_data.path_type` to `PATH_REGULAR`, indicating that the path is a regular path without any query.
+ *      - Logs a debug message stating that it is a regular path.
  *
- * Error handling:
- * - If the method is missing or invalid, the request is marked with
- *   `HTTP_BAD_REQUEST` status.
- * - If the path is missing or exceeds the allowed length, the request
- *   is marked with `HTTP_URI_TOO_LONG` or `HTTP_BAD_REQUEST`.
+ * 3. **Extract Query String**:
+ *    - If `'?'` is found, extracts the query string by taking the part of the path after the `'?'`.
+ *    - Updates `_request_data.query` with the extracted query string.
+ *    - Updates `_request_data.path` to only contain the part before the `'?'`.
+ *    - Sets `_request_data.path_type` to `PATH_QUERY`, indicating that the path includes a query.
+ *    - Logs a debug message indicating that a query has been found and parsed.
  *
- * @see turn_off_sanity
+ * @note
+ * - The method modifies `_request_data.path` and `_request_data.query` to separate the base path from the query string.
+ * - The `_request_data.path_type` is updated based on whether the path contains a query string or not.
+ *
+ * **Path Types**:
+ * - `PATH_REGULAR`: Indicates a standard path with no query string.
+ * - `PATH_QUERY`: Indicates a path that contains a query string.
  */
 void HttpRequestHandler::parse_path_type() {
 	_log->log_debug( RH_NAME,
@@ -332,33 +386,49 @@ void HttpRequestHandler::parse_path_type() {
 }
 
 /**
- * @brief Parses and loads essential data from the HTTP request header.
+ * @brief Loads and processes the header data from the HTTP request.
  *
- * This method extracts critical HTTP header fields such as `Content-Length`,
- * `Content-Type`, `Transfer-Encoding`, `Range`, and `Connection` from the
- * `_request_data.header` string. This information is stored in `_request_data`
- * for further processing.
+ * This method extracts key information from the request headers and stores them in `_request_data`.
+ * It handles headers such as `Content-Length`, `Content-Type`, `Transfer-Encoding`, `Range`, `Connection`, `Cookie`, and `Referer`, and performs necessary checks to ensure the validity of the data.
  *
- * Detailed parsing flow:
- * - **Content-Length**: Ensures the header is a valid size, converting to `size_t`
- *   and storing it in `_request_data.content_length`.
- * - **Content-Type**: Determines the type of content (e.g., multipart) and checks
- *   for a boundary parameter if multipart. It adjusts `_request_data.boundary`
- *   as needed.
- * - **Transfer-Encoding**: Checks for chunked transfer encoding, enabling
- *   `_request_data.chunks` if detected.
- * - **Range**: Loads range data into `_request_data.range` and updates `_factory`
- *   for specific response handling if required.
- * - **Connection**: Sets connection status to keep-alive if specified; otherwise,
- *   marks the connection to be closed.
- * - **Cookie**: Retrieves any cookie data from the header.
+ * @details
+ * The method performs the following actions:
  *
- * Error Handling:
- * - If `Content-Length` or `boundary` values are malformed, `sanity` is set to false
- *   with appropriate HTTP error statuses, preventing further request processing.
+ * 1. **Content-Length Header**:
+ *    - Retrieves the `Content-Length` header value using `get_header_value()`.
+ *    - If `Content-Length` is present and valid (`is_valid_size_t()` returns `true`), converts it to a `size_t` using `str_to_size_t()` and stores it in `_request_data.content_length`.
+ *    - If the `Content-Length` is invalid, sets the request status to `HTTP_BAD_REQUEST`.
+ *    - If the `Content-Length` header is not present, sets `_request_data.content_length` to `0`.
  *
- * @see get_header_value
- * @see turn_off_sanity
+ * 2. **Content-Type Header**:
+ *    - Retrieves the `Content-Type` header value.
+ *    - If the `Content-Type` indicates `multipart`, extracts the `boundary` value.
+ *    - If the `boundary` is not found or malformed, sets the request status to `HTTP_BAD_REQUEST`.
+ *    - Updates `_request_data.content_type` to only include the primary MIME type, removing any additional parameters.
+ *
+ * 3. **Transfer-Encoding Header**:
+ *    - Retrieves the `Transfer-Encoding` header value.
+ *    - Checks if the encoding is `"chunked"` and sets `_request_data.chunks` to `true` if it is.
+ *
+ * 4. **Range Header**:
+ *    - Retrieves the `Range` header value.
+ *    - If the `Range` header is present, increments `_factory` to indicate that this data will be used later.
+ *
+ * 5. **Connection Header**:
+ *    - Retrieves the `Connection` header value.
+ *    - If the value is `"keep-alive"`, calls `_client_data->keep_active()` to maintain the connection.
+ *    - Otherwise, calls `_client_data->deactivate()` to close the connection after handling the request.
+ *
+ * 6. **Cookie Header**:
+ *    - Retrieves the `Cookie` header value and stores it in `_request_data.cookie`.
+ *
+ * 7. **Referer Header**:
+ *    - Retrieves the `Referer` header value and stores it in `_request_data.referer`.
+ *
+ * @note
+ * - The method uses `get_header_value()` to extract specific header values from `_request_data.header`.
+ * - The `_factory` variable is incremented whenever additional processing for multipart content or range is required.
+ * - The method ensures that malformed headers, such as an invalid `Content-Length` or missing `boundary`, are caught and the request is marked as invalid.
  */
 void HttpRequestHandler::load_header_data() {
 	std::string content_length = get_header_value(_request_data.header,
@@ -417,6 +487,74 @@ void HttpRequestHandler::load_header_data() {
 }
 
 /**
+ * @brief Resolves the requested resource by following a series of validation steps.
+ *
+ * This method is responsible for validating and normalizing the request path and CGI configurations to determine the correct location for the requested resource.
+ * It executes a sequence of validation steps and, if necessary, attempts to resolve relative paths before repeating the validation.
+ *
+ * @details
+ * The method performs the following steps:
+ * 1. **Initialize Validation Steps**:
+ *    - Defines an array of function pointers (`steps`) representing the validation steps to be executed in sequence:
+ *      - `get_location_config()`: Retrieves the configuration for the requested location.
+ *      - `cgi_normalize_path()`: Normalizes the path for CGI requests.
+ *      - `normalize_request_path()`: Normalizes the request path.
+ *
+ * 2. **Execute Initial Validation Steps**:
+ *    - Iterates over the `steps` array and executes each function pointer (`(this->*steps[i])()`).
+ *    - If any of the steps fail (i.e., `_request_data.sanity` is set to `false`), the loop is terminated.
+ *    - Tracks the number of successful steps using `_solver_count`.
+ *
+ * 3. **Check for Successful Validation**:
+ *    - If all three validation steps are successful (`_solver_count == 3`) or if the `Referer` is empty, the method returns.
+ *
+ * 4. **Reset and Resolve Relative Path**:
+ *    - If the validation was not fully successful, resets the `_location` to `NULL` and reinitializes `_request_data` fields:
+ *      - `_request_data.sanity` is set to `true`.
+ *      - `_request_data.status` is reset to `HTTP_MAX_STATUS`.
+ *      - `_request_data.path` is reset to the original request path (`_request_data.path_request`).
+ *    - Calls `resolve_relative_path()` to resolve any relative paths in the request.
+ *
+ * 5. **Execute Validation Steps Again**:
+ *    - Repeats the validation steps to ensure that the request path and configurations are now valid after resolving the relative path.
+ *    - If any step fails (`_request_data.sanity == false`), the loop is terminated.
+ *
+ * **Validation Steps**:
+ * - `get_location_config()`: Retrieves location-specific settings.
+ * - `cgi_normalize_path()`: Ensures the CGI path is properly normalized.
+ * - `normalize_request_path()`: Normalizes the request path to ensure consistency.
+ */
+void HttpRequestHandler::solver_resource() {
+	validate_step steps[] = {&HttpRequestHandler::get_location_config,
+	                         &HttpRequestHandler::cgi_normalize_path,
+	                         &HttpRequestHandler::normalize_request_path};
+	size_t i = 0;
+	while (i < (sizeof(steps) / sizeof(validate_step)))
+	{
+		(this->*steps[i])();
+		if (!_request_data.sanity)
+			break;
+		i++;
+	}
+	if (i == 3 || _request_data.referer.empty()) {
+		return ;
+	}
+	_location = NULL;
+	_request_data.sanity = true;
+	_request_data.status = HTTP_MAX_STATUS;
+	_request_data.path = _request_data.path_request;
+	resolve_relative_path();
+	i = 0;
+	while (i < (sizeof(steps) / sizeof(validate_step)))
+	{
+		(this->*steps[i])();
+		if (!_request_data.sanity)
+			break;
+		i++;
+	}
+}
+
+/**
  * @brief Resolves the relative path of the requested resource based on the `Referer` header.
  *
  * This method processes the `_request_data.referer` field to determine the appropriate base path for resolving the requested resource.
@@ -466,40 +604,22 @@ void HttpRequestHandler::resolve_relative_path() {
 		return ;
 	}
 	base = base.substr(http_slash);
-	size_t base_test = base.find_last_of('/');
-	if (base_test != std::string::npos) {
-		std::string base_folder = base.substr(0, base_test + 1);
-		if (starts_with(_request_data.path, base_folder)) {
-			return;
+
+	if (valid_mime_type(base)) {
+		size_t base_test = base.find_last_of('/');
+		if (base_test != std::string::npos) {
+			base = base.substr(0, base_test);
 		}
 	}
-	_request_data.referer = base;
-	if (starts_with(_request_data.path, "/"))
-	{
+	std::string tmp_base;
+	if (base[base.size() - 1] != '/') {
+		tmp_base = base + "/";
+	}
+	if (base == "/" || starts_with(_request_data.path, base)) {
+		return;
+	}
+	if (starts_with(_request_data.path, "/")) {
 		_request_data.path = base + _request_data.path;
-		return ;
-	}
-	if (starts_with(_request_data.path, "./")) {
-		_request_data.path = base + _request_data.path.substr(2);
-		return ;
-	}
-	size_t up = _request_data.path.find("../");
-	if (up != std::string::npos) {
-		std::string moving = _request_data.path;
-		size_t level;
-		while (up != std::string::npos) {
-			level = base.find_last_of('/');
-			if (level == std::string::npos) {
-				turn_off_sanity(HTTP_NOT_FOUND,
-								"Relative path impossible to reach.");
-				return;
-			}
-			base = base.substr(0, level);
-			moving = moving.substr(level + 3);
-			up = moving.find("../");
-		}
-		_request_data.path = base + moving;
-		return ;
 	}
 }
 
@@ -559,7 +679,7 @@ void HttpRequestHandler::get_location_config() {
 			_request_data.is_redir = true;
 			_factory++;
 		}
-		if (!_location->is_root) {
+		if (!_location->is_root && !_location->path_root.empty()) {
 			_request_data.path.replace(0, saved_key.length(), _location->path_root);
 		}
 	} else {
