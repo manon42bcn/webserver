@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 03:47:49 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/21 09:45:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -679,7 +679,7 @@ void HttpRequestHandler::get_location_config() {
 			_request_data.is_redir = true;
 			_factory++;
 		}
-		if (!_location->is_root && !_location->path_root.empty()) {
+		if (!_location->is_root) {
 			if (saved_key == "/") {
 				_request_data.path = _location->path_root + _request_data.path;
 			} else {
