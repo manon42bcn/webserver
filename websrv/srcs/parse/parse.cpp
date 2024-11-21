@@ -51,8 +51,8 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
         }
     }
 
-    if (location.path_root.back() == '/')
-        location.path_root.pop_back();
+    if (!location.path_root.empty() && location.path_root[location.path_root.size() - 1] == '/')
+        location.path_root.erase(location.path_root.size() - 1);
     if (location.loc_allowed_methods == 0)
         GRANT_ALL(location.loc_allowed_methods);
     return location;
