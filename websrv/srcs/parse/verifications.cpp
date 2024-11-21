@@ -261,7 +261,7 @@ bool check_client_max_body_size(std::string client_max_body_size)
         return false;
 
     char unit = client_max_body_size[client_max_body_size.size() - 1];
-    if (unit != 'M' && unit != 'k')
+    if (unit != 'm' && unit != 'k' && unit != 'g' && unit != 'M' && unit != 'K' && unit != 'G')
         return false;
 
     std::string number_part = client_max_body_size.substr(0, client_max_body_size.size() - 1);

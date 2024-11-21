@@ -49,6 +49,8 @@ void parse_server_name(std::vector<std::string>::iterator& it, Logger* logger, S
 
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server root");
+    if (server.server_root != "")
+        logger->fatal_log("parse_server_block", "Double root definition");
     std::string root = get_value(*it, "root");
     if (check_root(root))
         server.server_root = join_paths(get_server_root(), get_value(*it, "root"));
