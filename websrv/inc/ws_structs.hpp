@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 21:56:00 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 00:09:15 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,12 +139,13 @@ struct CacheEntry {
 
 struct CacheRequest {
 	std::string             url;
+	const ServerConfig*     host;
 	const LocationConfig*   location;
 	std::string             normalized_path;
 
-	CacheRequest(const std::string& u, const LocationConfig* loc,
-				 const std::string& np): url(u), location(loc), normalized_path(np) {};
-	CacheRequest(): url(""), location(NULL), normalized_path("") {};
+	CacheRequest(const std::string& u, const ServerConfig* h, const LocationConfig* loc,
+				 const std::string& np): url(u), host(h), location(loc), normalized_path(np) {};
+	CacheRequest(): url(""), host(NULL), location(NULL), normalized_path("") {};
 };
 
 #endif

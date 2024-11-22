@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 23:24:36 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 00:09:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -602,13 +602,11 @@ void HttpRequestHandler::resolve_relative_path() {
 	if (_request_data.referer.empty()) {
 		return;
 	}
-	size_t http_slash = _request_data.referer.find("//");
-	if (http_slash == std::string::npos) {
-		turn_off_sanity(HTTP_BAD_REQUEST,
-						"Referer field malformed.");
-		return;
+	std::string base = normalize_host(_request_data.referer);
+	size_t http_slash = base.find("//");
+	if (http_slash != std::string::npos) {
+		base = base.substr(http_slash + 2);
 	}
-	std::string base = _request_data.referer.substr(http_slash + 2);
 	http_slash = base.find('/');
 	if (http_slash == std::string::npos) {
 		return ;
@@ -620,10 +618,6 @@ void HttpRequestHandler::resolve_relative_path() {
 		if (base_test != std::string::npos) {
 			base = base.substr(0, base_test);
 		}
-	}
-	std::string tmp_base;
-	if (base[base.size() - 1] != '/') {
-		tmp_base = base + "/";
 	}
 	if (base == "/" || starts_with(_request_data.path, base)) {
 		return;
@@ -666,7 +660,7 @@ void HttpRequestHandler::get_location_config() {
 	_log->log_error(RH_NAME, _request_data.header);
 
 	_is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (HAS_GET(_request_data.method) && _is_cached) {
+	if (HAS_GET(_request_data.method) && _is_cached && _cache_data.host->server_name == _host_config->server_name) {
 		_location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
 		return ;
@@ -1259,7 +1253,8 @@ void HttpRequestHandler::handle_request() {
 			}
 			if (_request_data.sanity && HAS_GET(_request_data.method)) {
 				_request_cache.put(_request_data.path,
-								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
+								   CacheRequest(_request_data.path, _host_config,
+													 _location, _request_data.normalized_path));
 			}
 			return;
 		}
