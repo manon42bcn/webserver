@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 21:25:51 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 19:59:23 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 			  "Server Manager Instance init.");
 	std::ostringstream detail;
 	try {
-		for (size_t i = 0; i < configs.size(); ++i) {
-			add_server(configs[i].port, configs[i]);
-		}
+		build_servers(configs);
 	} catch (const WebServerException& e) {
 		detail << "Error Creating Servers: " << e.what();
 		_log->log_error( SM_NAME,
@@ -87,6 +85,19 @@ ServerManager::~ServerManager() {
 /**
  @section Functions to Build Server.
  */
+
+void ServerManager::build_servers(std::vector<ServerConfig> &configs) {
+	_log->status(SM_NAME,
+				 "Creating Server and hosts.");
+	for (std::vector<ServerConfig>::iterator config_it = configs.begin(); config_it != configs.end(); config_it++) {
+		std::map<int, SocketHandler*>::iterator it = _servers_map.find(config_it->port);
+		if (it == _servers_map.end()) {
+			add_server(config_it->port, *config_it);
+		} else {
+			it->second->add_host(*config_it);
+		}
+	}
+}
 
 /**
 * @brief Adds a new server instance to the manager and its poll list.

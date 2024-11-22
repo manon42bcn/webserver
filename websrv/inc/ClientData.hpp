@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 00:57:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 21:05:57 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 class ClientData {
 	private:
 		SocketHandler*          _server;
+		const ServerConfig*     _host;
 		const Logger*           _log;
 	    bool                    _active;
 		bool                    _alive;
@@ -56,6 +57,8 @@ class ClientData {
 		bool is_alive() const;
 		bool is_active() const;
 		void keep_active();
+		void update_host(const ServerConfig* host);
+		const ServerConfig* get_host();
 };
 
 #endif

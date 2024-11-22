@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 15:29:53 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 21:14:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,7 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
  * - **Null-Termination**: Ensures the environment array is null-terminated as required by `execve`.
  */
 std::vector<char*> HttpCGIHandler::cgi_environment() {
+	const ServerConfig* host = _client_data->get_host();
 	std::vector<std::string> env_vars;
 
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
@@ -320,9 +321,9 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));
 	env_vars.push_back("PATH_INFO=" + _request.path_info);
 	env_vars.push_back("SCRIPT_NAME=" + _request.script);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
+	env_vars.push_back("SERVER_NAME=" + host->server_name);
+	env_vars.push_back("SERVER_NAME=" + host->server_name);
+	env_vars.push_back("SERVER_PORT=" + host->server_name);
 	std::vector<char*> env_ptrs;
 	try {
 		for (size_t i = 0; i < env_vars.size(); ++i) {

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/20 01:03:29 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 21:56:00 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ enum e_path_type {
 struct s_request {
 	std::string     header;
 	std::string     body;
+	std::string     host;
 	t_methods      	method;
 	std::string     path;
 	std::string     path_request;
@@ -49,7 +50,7 @@ struct s_request {
 	bool            autoindex;
 	bool            is_redir;
 	std::string     referer;
-	s_request() : header(""), body(""), method(0), path(""), path_request(""),
+	s_request() : header(""), body(""), host(""), method(0), path(""), path_request(""),
 				  path_type(PATH_REGULAR), query(""), normalized_path(""),
 				  path_info(""), content_length(0), content_type(""),
 				  cgi(false), script(""), boundary(""), chunks(false),
@@ -109,7 +110,22 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root; // Es un root de defecto para las paginas de error (?)
 	t_mode      ws_error_mode; // (?)
-	ServerConfig(): port(-42), server_root("") {};
+	ServerConfig()
+			: port(-42),
+			  server_name(""),
+			  server_root(""),
+			  error_mode(),                   // Inicialización por defecto (si t_mode tiene un constructor por defecto)
+			  error_pages(),                  // std::map se inicializa correctamente al ser default-constructed
+			  locations(),                    // std::map se inicializa automáticamente
+			  default_pages(),                // std::vector se inicializa automáticamente
+			  client_max_body_size(0),        // Inicializamos con un tamaño por defecto
+			  autoindex(false),               // Booleanos inicializados explícitamente
+			  template_error_page(""),        // String inicializado por defecto
+			  cgi_locations(false),           // Booleano inicializado explícitamente
+			  ws_root(""),
+			  ws_errors_root(""),
+			  ws_error_mode()                 // Inicialización por defecto para t_mode
+	{}
 };
 
 struct CacheEntry {

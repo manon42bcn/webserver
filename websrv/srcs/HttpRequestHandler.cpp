@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 20:32:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 20:58:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
+							 &HttpRequestHandler::load_host_config,
 							 &HttpRequestHandler::solver_resource,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
@@ -430,10 +431,8 @@ void HttpRequestHandler::parse_path_type() {
  * - The method ensures that malformed headers, such as an invalid `Content-Length` or missing `boundary`, are caught and the request is marked as invalid.
  */
 void HttpRequestHandler::load_header_data() {
-	std::string content_length = get_header_value(_request_data.header,
-												  "content-length:", "\r\n");
-	_request_data.content_type = get_header_value(_request_data.header,
-												  "content-type:", "\r\n");
+	std::string content_length = get_header_value(_request_data.header, "content-length:");
+	_request_data.content_type = get_header_value(_request_data.header, "content-type:");
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
@@ -447,8 +446,7 @@ void HttpRequestHandler::load_header_data() {
 	}
 	if (!_request_data.content_type.empty()) {
 		if (starts_with(_request_data.content_type, "multipart")) {
-			_request_data.boundary = get_header_value(_request_data.content_type,
-													  "boundary", "\r\n");
+			_request_data.boundary = get_header_value(_request_data.content_type, "boundary");
 			if (_request_data.boundary.empty()) {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
@@ -460,29 +458,36 @@ void HttpRequestHandler::load_header_data() {
 			}
 		}
 	}
-	std::string chunks = get_header_value(_request_data.header,
-										  "transfer-encoding:", "\r\n");
+	_request_data.host = get_header_value(_request_data.header, "host:");
+	std::string chunks = get_header_value(_request_data.header, "transfer-encoding:");
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
 			_request_data.chunks = true;
 		}
 	}
-	_request_data.range = get_header_value(_request_data.header,
-										   "range:", "\r\n");
+	_request_data.range = get_header_value(_request_data.header, "range:");
 	if (!_request_data.range.empty()) {
 		_factory++;
 	}
-	std::string keep = get_header_value(_request_data.header,
-										"connection:", "\r\n");
+	std::string keep = get_header_value(_request_data.header, "connection:");
 	if (keep == "keep-alive") {
 		_client_data->keep_active();
 	} else {
 		_client_data->deactivate();
 	}
-	_request_data.cookie = get_header_value(_request_data.header,
-											"cookie", "\r\n");
+	_request_data.cookie = get_header_value(_request_data.header, "cookie");
 	_request_data.referer = get_header_value(_request_data.header, "referer:");
+}
+
+void HttpRequestHandler::load_host_config() {
+	std::string host = clean_host(_request_data.host);
+	_host_config = _client_data->get_server()->get_config(host);
+	if (_host_config == NULL) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						"Host Config Pointer NULL.");
+	}
+	_client_data->update_host(_host_config);
 }
 
 /**
@@ -625,12 +630,12 @@ void HttpRequestHandler::resolve_relative_path() {
 /**
  * @brief Retrieves and sets the location configuration based on the request path.
  *
- * This method searches for the most specific matching location within `_config.locations`
+ * This method searches for the most specific matching location within `_host_config->locations`
  * based on the `_request_data.path`. The `LocationConfig` object associated with the longest
  * matching key is selected, allowing for precise path matching.
  *
  * Detailed Workflow:
- * - Iterates through `_config.locations` to find entries whose paths match the beginning of
+ * - Iterates through `_host_config->locations` to find entries whose paths match the beginning of
  *   `_request_data.path`.
  * - The longest matching key is selected, ensuring the most specific location configuration
  *   is applied.
@@ -660,8 +665,8 @@ void HttpRequestHandler::get_location_config() {
 		_request_data.normalized_path = _cache_data.normalized_path;
 		return ;
 	}
-	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
-	     it != _config.locations.end(); ++it) {
+	for (std::map<std::string, LocationConfig>::const_iterator it = _host_config->locations.begin();
+	     it != _host_config->locations.end(); ++it) {
 		const std::string& key = it->first;
 		if (starts_with(_request_data.path, key)) {
 			if (key.length() > saved_key.length()) {
@@ -700,7 +705,7 @@ void HttpRequestHandler::get_location_config() {
  *
  * Detailed Workflow:
  * - If `_location->cgi_file` is not set, CGI handling is not enabled, and the function exits early.
- * - Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - Constructs `eval_path` by combining `_host_config->server_root` and `_request_data.path`.
  * - Checks if `eval_path` is a directory or a non-CGI file. If so, it is not treated as a CGI path.
  * - If `eval_path` points to a CGI file directly, it is marked for CGI handling:
  *   - Sets `_request_data.script` to the filename part of the path.
@@ -723,7 +728,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		          "No CGI locations at server config.");
 		return ;
 	}
-	std::string eval_path = _config.server_root + _request_data.path;
+	std::string eval_path = _host_config->server_root + _request_data.path;
 	if (is_dir(eval_path) || (is_file(eval_path) && !is_cgi(eval_path))) {
 		_log->log_debug( RH_NAME,
 		          "CGI test - Directory or resource exist.");
@@ -759,7 +764,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 	if (cgi_data) {
 		_log->log_debug( RH_NAME,
 		          "CGI - Location Found: " + saved_key);
-		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
+		_request_data.normalized_path = _host_config->server_root + cgi_data->cgi_path;
 		_request_data.script = cgi_data->script;
 		_request_data.path_info = _request_data.path.substr(saved_key.length());
 		_request_data.cgi = true;
@@ -775,7 +780,7 @@ void HttpRequestHandler::cgi_normalize_path() {
  *
  * Workflow:
  * - **CGI Context**: If `_request_data.cgi` is true, the path is already normalized for CGI, and the function exits early.
- * - **Build and Validate Path**: Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - **Build and Validate Path**: Constructs `eval_path` by combining `_host_config->server_root` and `_request_data.path`.
  * - **POST Request**:
  *   - If the HTTP method is POST, ensures `eval_path` is a directory and allows resource creation within it.
  *   - Updates `_request_data.normalized_path` with `eval_path` if it passes validation.
@@ -805,7 +810,7 @@ void HttpRequestHandler::normalize_request_path() {
 	if (_is_cached || _request_data.is_redir) {
 		return;
 	}
-	std::string eval_path = _config.server_root + _request_data.path;
+	std::string eval_path = _host_config->server_root + _request_data.path;
 
 	_log->log_debug( RH_NAME,
 			  "Normalize path to get proper file to serve.");

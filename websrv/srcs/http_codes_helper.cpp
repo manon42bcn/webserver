@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 15:08:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 15:46:54 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 20:32:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,24 @@ std::string replace_template(std::string content, const std::string& key, const 
 		pos += value.length();
 	}
 	return (content);
+}
+
+std::string clean_host(std::string& host_to_clean) {
+	std::string host = host_to_clean;
+	size_t to_clean = host.find("//");
+	if (to_clean != std::string::npos && host.size() > 2) {
+		host = host.substr(to_clean + 2);
+	}
+	to_clean = host.find_last_of(':');
+	if (to_clean != std::string::npos && host.size() > 1) {
+		host = host.substr(to_clean);
+	}
+	to_clean = host.find('/');
+	while (to_clean != std::string::npos && host.size() > 1) {
+		host = host.substr(to_clean);
+		to_clean = host.find('/');
+	}
+	return (host);
 }
 
 #endif

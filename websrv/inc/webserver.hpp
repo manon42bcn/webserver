@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 15:45:09 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 20:32:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ std::string get_mime_type(const std::string& path);
 bool valid_mime_type(const std::string& path);
 std::string replace_template(std::string content, const std::string& key, const std::string& value);
 bool black_list_extension(const std::string& path);
+std::string clean_host(std::string& host_to_clean);
 bool is_valid_size_t(const std::string& value);
 size_t str_to_size_t(const std::string& value);
 std::string to_lowercase(const std::string& input);

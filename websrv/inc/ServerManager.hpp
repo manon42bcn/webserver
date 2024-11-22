@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 02:17:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 19:25:16 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class ServerManager {
 		bool                            _healthy;
 
 	void add_server(int port, ServerConfig& config);
+	void build_servers(std::vector<ServerConfig>& configs);
 	bool add_server_to_poll(int server_fd);
 	void cleanup_invalid_fds();
 	void timeout_clients();

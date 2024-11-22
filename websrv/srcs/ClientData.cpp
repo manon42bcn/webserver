@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 02:23:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 21:12:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -25,6 +25,7 @@
 ClientData::ClientData(SocketHandler* server,
 					   const Logger* log, int fd):
 					   _server(server),
+					   _host(NULL),
 					   _log(log),
 					   _active(false),
 					   _alive(true),
@@ -190,4 +191,12 @@ void ClientData::keep_active() {
  */
 void ClientData::kill_client() {
 	_alive = false;
+}
+
+void ClientData::update_host(const ServerConfig* host) {
+	_host = host;
+}
+
+const ServerConfig* ClientData::get_host() {
+	return (_host);
 }
