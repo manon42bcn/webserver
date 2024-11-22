@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 23:10:18 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 23:25:45 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,6 +381,7 @@ std::string WsResponseHandler::header(int code, size_t content_size, std::string
 				<< "Accept-Ranges: bytes\r\n";
 	}
 	header << "HTTP/1.1 " << code << " " << http_status_description((e_http_sts)code) << "\r\n"
+	       << "Host: " << _request.host << "\r\n"
 		   << "Content-Length: " << content_size << "\r\n"
 		   << "Content-Type: " <<  mime << "\r\n"
 		   << connection.str()

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 20:58:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/22 23:24:36 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ HttpRequestHandler::~HttpRequestHandler() {
  * - `parse_method_and_path()`: Identifies the HTTP method (e.g., GET, POST) and the requested path.
  * - `parse_path_type()`: Determines the type of path (e.g., static file, dynamic request).
  * - `load_header_data()`: Loads additional data from headers required for further processing.
+ * - `load_host_config()`: Loads host from request, to set its configuration, and update host at ClientData*
  * - `solver_resource()`: Resolves the requested resource path, potentially handling relative paths.
  * - `load_content()`: Loads request body content if applicable (e.g., for POST requests).
  * - `validate_request()`: Final validation to ensure that the request conforms to server policies and rules.
@@ -425,6 +426,9 @@ void HttpRequestHandler::parse_path_type() {
  * 7. **Referer Header**:
  *    - Retrieves the `Referer` header value and stores it in `_request_data.referer`.
  *
+ * 8. **Host**:
+ * 	  - Retrieves `Host` header value, and stores it in `_request_data.host` to be parsed.
+ *
  * @note
  * - The method uses `get_header_value()` to extract specific header values from `_request_data.header`.
  * - The `_factory` variable is incremented whenever additional processing for multipart content or range is required.
@@ -487,6 +491,8 @@ void HttpRequestHandler::load_host_config() {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						"Host Config Pointer NULL.");
 	}
+	_log->status(RH_NAME, host);
+	_request_data.host = clean_host_response(_request_data.host);
 	_client_data->update_host(_host_config);
 }
 
