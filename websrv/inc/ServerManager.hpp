@@ -64,7 +64,7 @@ class ServerManager {
 		bool                            _active;
 		bool                            _healthy;
 
-	void add_server(int port, ServerConfig& config);
+	bool add_server(int port, ServerConfig& config);
 	void build_servers(std::vector<ServerConfig>& configs);
 	bool add_server_to_poll(int server_fd);
 	void cleanup_invalid_fds();

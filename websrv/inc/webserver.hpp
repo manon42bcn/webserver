@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 00:01:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 00:03:24 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,8 @@
 #define PATH_MAX 4096
 # endif
 
-// Methods included at http_codes_helper.cpp
-std::string method_enum_to_string(int method);
-t_methods method_string_to_enum(const std::string& method);
+// Methods included at general_helper.cpp
+t_methods parse_method(const std::string& method);
 std::string http_status_description(e_http_sts code);
 std::map<std::string, std::string> create_mime_types();
 std::string get_mime_type(const std::string& path);
@@ -85,13 +84,19 @@ std::string replace_template(std::string content, const std::string& key, const 
 bool black_list_extension(const std::string& path);
 std::string clean_host(std::string& host_to_clean);
 std::string normalize_host(const std::string& host);
-bool is_valid_size_t(const std::string& value);
-size_t str_to_size_t(const std::string& value);
-std::string to_lowercase(const std::string& input);
 std::string get_header_value(std::string& haystack, std::string needle, const std::string& sep="\r\n");
-std::string trim(const std::string& str, const std::string& chars_to_trim);
 bool is_cgi(const std::string& filename);
 size_t end_of_header_system(std::string& header);
+std::string int_to_string(int number);
+bool is_dir(const std::string& path);
+bool is_file(const std::string& path);
+bool starts_with(const std::string& str, const std::string& prefix);
+bool to_trim_char(char c, const std::string& chars_to_trim);
+std::string trim(const std::string& str, const std::string& chars_to_trim);
+std::string to_lowercase(const std::string& input);
+bool is_valid_size_t(const std::string& value);
+size_t str_to_size_t(const std::string& value);
+
 
 
 struct CommandPair {
@@ -186,6 +191,7 @@ void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationC
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
 void parse_redirection(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location);
+
 
 # endif
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ws_structs.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 18:25:58 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/23 23:53:00 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ typedef enum e_allowed_methods {
 	INVALID_METHOD=-42
 } t_allowed_methods;
 
-std::string int_to_string(int number);
 struct LocationConfig {
 	std::string                         loc_root;
 	std::vector<std::string>            loc_default_pages;
@@ -88,7 +87,7 @@ struct ServerConfig {
 			  error_pages(),                  // std::map se inicializa correctamente al ser default-constructed
 			  locations(),                    // std::map se inicializa automáticamente
 			  default_pages(),                // std::vector se inicializa automáticamente
-			  client_max_body_size(52428800),        // Inicializamos con un tamaño por defecto
+			  client_max_body_size(0),        // Inicializamos con un tamaño por defecto
 			  autoindex(false),               // Booleanos inicializados explícitamente
 			  template_error_page(""),        // String inicializado por defecto
 			  cgi_locations(false),           // Booleano inicializado explícitamente
@@ -125,6 +124,8 @@ struct s_request {
 	const ServerConfig*   host_config;
 	const LocationConfig* location;
 	int                     factory;
+	bool                    is_cached;
+	std::string             method_str;
 
 	s_request() : header(""), body(""), host(""), method(0), path(""),
 	path_request(""),
@@ -133,7 +134,7 @@ struct s_request {
 	cgi(false), script(""), boundary(""), chunks(false),
 	range(""), cookie(""), sanity(true),
 	status(HTTP_MAX_STATUS), autoindex(false), is_redir(false), referer(""),
-	host_config(NULL), location(NULL), factory(0) {};
+	host_config(NULL), location(NULL), factory(0), is_cached(false), method_str("") {};
 };
 
 

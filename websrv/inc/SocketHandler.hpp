@@ -16,7 +16,6 @@
 #include "WebserverCache.hpp"
 #include "webserver.hpp"
 #include "http_enum_codes.hpp"
-#include "general_helpers.hpp"
 #include "Logger.hpp"
 #include <string>
 #include <sys/socket.h>

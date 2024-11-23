@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:45:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 22:06:22 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,7 +315,7 @@ std::vector<char*> HttpCGIHandler::cgi_environment() {
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vars.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	env_vars.push_back("HTTP_COOKIE=" + _request.cookie);
-	env_vars.push_back("REQUEST_METHOD=" + method_enum_to_string(_request.method));
+	env_vars.push_back("REQUEST_METHOD=" + _request.method_str);
 	env_vars.push_back("QUERY_STRING=" + _request.query);
 	env_vars.push_back("CONTENT_TYPE=" + _request.content_type);
 	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));

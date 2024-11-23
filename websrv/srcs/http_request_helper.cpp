@@ -1,52 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   http_codes_helper.cpp                              :+:      :+:    :+:   */
+/*   http_request_helper.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 15:08:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 00:02:25 by mporras-         ###   ########.fr       */
+/*   Created: 2024/11/23 22:49:58 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/23 23:39:14 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   http_codes_helper.cpp                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/29 10:22:22 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 23:13:51 by vaguilar         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef __HTTP_CODES_HELPERS_CPP__
-# define __HTTP_CODES_HELPERS_CPP__
 
 #include "http_enum_codes.hpp"
-#include "HttpRequestHandler.hpp"
 #include <map>
 #include <iostream>
 #include <set>
-// Método temporal, para facilitar el debug únicamente
-std::string method_enum_to_string(int method)
-{
-	switch (method) {
-		case MASK_METHOD_GET:
-			return ("GET");
-		case MASK_METHOD_POST:
-			return ("POST");
-		case MASK_METHOD_DELETE:
-			return ("DELETE");
-		case MASK_METHOD_PUT:
-			return ("PUT");
-		case MASK_METHOD_HEAD:
-			return ("HEAD");
-	}
-	return ("NO METHOD");
-}
 
 /**
  * @brief Get a standard message for a http code
@@ -133,7 +100,28 @@ std::string http_status_description(e_http_sts code)
 	return (it->second);
 }
 
-t_methods method_string_to_enum(const std::string& method)
+/**
+ * @brief Parses an HTTP method string and returns the corresponding method mask.
+ *
+ * This function maps a given HTTP method string (e.g., "GET", "POST") to its corresponding
+ * predefined method mask (`t_methods`). If the method is not recognized, it returns 0.
+ *
+ * @param method A string representing the HTTP method to parse (e.g., "GET", "POST").
+ * @return The corresponding `t_methods` mask if the method is recognized; otherwise, returns 0.
+ *
+ * @details
+ * - The method uses a static map to store the mapping between HTTP method strings
+ *   and their corresponding bitmask constants (e.g., `MASK_METHOD_GET` for "GET").
+ * - The map is initialized only once, ensuring efficiency for subsequent calls.
+ * - If the provided method string is not found in the map, the function returns 0,
+ *   indicating an unrecognized or unsupported method.
+ *
+ * @note
+ * - Supported methods include: "GET", "POST", "DELETE", "PUT", "HEAD", "OPTIONS", and "PATCH".
+ * - This function is case-sensitive. Ensure that the input method string matches the
+ *   expected format (e.g., "GET" must be uppercase).
+ */
+t_methods parse_method(const std::string& method)
 {
 	static std::map<std::string, t_methods> methods_codes;
 	if (methods_codes.empty())
@@ -259,6 +247,24 @@ bool valid_mime_type(const std::string& path) {
 	return (false);
 }
 
+/**
+ * @brief Checks if a given file path has a disallowed extension.
+ *
+ * This function determines whether the file extension of the provided path
+ * is part of a predefined blacklist of disallowed extensions. If the extension
+ * is blacklisted, the function returns `true`; otherwise, it returns `false`.
+ *
+ * @param path A string representing the file path to check.
+ * @return `true` if the file's extension is blacklisted; otherwise, `false`.
+ *
+ * @details
+ * - The function uses a static set of disallowed extensions, which is initialized
+ *   on the first call. The blacklist includes extensions such as `.exe`, `.bat`, `.sh`, `.php`, `.pl`, and `.py`.
+ * - The function extracts the file extension by locating the last `.` character
+ *   in the file path and comparing the substring to the blacklist.
+ * - If no `.` character is found in the path, or if the extension is not in the
+ *   blacklist, the function returns `false`.
+ */
 bool black_list_extension(const std::string& path) {
 	static std::set<std::string> disallowed_extensions;
 
@@ -310,6 +316,28 @@ std::string replace_template(std::string content, const std::string& key, const 
 	return (content);
 }
 
+/**
+ * @brief Cleans up a host string by removing protocol prefixes, port numbers, and path segments.
+ *
+ * This function processes a host string to extract the clean hostname by:
+ * 1. Removing any leading protocol prefixes (e.g., "http://").
+ * 2. Stripping port numbers appended with a colon (e.g., ":8080").
+ * 3. Removing any path segments following the hostname (e.g., "/path/to/resource").
+ *
+ * @param host_to_clean A reference to the original host string to be cleaned.
+ * @return A cleaned host string containing only the hostname without prefixes, ports, or paths.
+ *
+ * @details
+ * - The function works step by step:
+ *   1. Finds and removes the `//` sequence, which typically appears in protocol prefixes like "http://".
+ *   2. Removes anything after the last `:` to discard port numbers.
+ *   3. Iteratively removes any leading `/` characters and paths.
+ * - If the input string does not contain these patterns, it is returned as-is.
+ *
+ * @note
+ * - This function assumes the input string follows a valid URL-like format.
+ * - The function performs string operations such as `find` and `substr`, which are safe in C++98.
+ */
 std::string clean_host(std::string& host_to_clean) {
 	std::string host = host_to_clean;
 	size_t to_clean = host.find("//");
@@ -328,6 +356,28 @@ std::string clean_host(std::string& host_to_clean) {
 	return (host);
 }
 
+/**
+ * @brief Normalizes a host string by collapsing consecutive slashes into a single slash.
+ *
+ * This function processes a host string and ensures that sequences of consecutive slashes
+ * (`/`) are reduced to a single slash. The resulting string maintains the original order
+ * of characters but removes unnecessary redundancy caused by multiple slashes.
+ *
+ * @param host A string representing the host to normalize.
+ * @return A normalized string where consecutive slashes are collapsed into a single slash.
+ *
+ * @details
+ * - The function iterates through each character in the input string, appending characters
+ *   to the result while collapsing sequences of `/` into a single instance.
+ * - The logic uses a `was_slash` flag to track whether the last character processed was a slash,
+ *   ensuring that additional slashes are ignored.
+ * - If the input string does not contain redundant slashes, it is returned unchanged.
+ *
+ * @example
+ * std::string raw_host = "example.com////path//to//resource";
+ * std::string normalized_host = normalize_host(raw_host);
+ * // normalized_host will be "example.com/path/to/resource"
+ */
 std::string normalize_host(const std::string& host) {
 	std::string result;
 	bool was_slash = false;
@@ -343,8 +393,79 @@ std::string normalize_host(const std::string& host) {
 			was_slash = false;
 		}
 	}
-
 	return (result);
 }
 
-#endif
+/**
+ * @brief Extracts the value of a specific HTTP header field.
+ *
+ * This method searches the provided header string for a specific key and returns the associated
+ * value. The search is case-insensitive, and it assumes the format `key: value`.
+ *
+ * @details
+ * - The method first converts the key and the header string to lowercase for a case-insensitive search.
+ * - The value is extracted by searching for the next occurrence of `\r\n`, which signifies the end of the value.
+ * - If the key is not found, the method returns an empty string.
+ *
+ * @param haystack The HTTP Header format string to be searched over it.
+ * @param needle The key for which the value is to be retrieved (e.g., "content-type").
+ * @return std::string The value associated with the key, or an empty string if the key is not found.
+ */
+std::string get_header_value(std::string& haystack, std::string needle, const std::string& sep) {
+	std::string lower_header = to_lowercase(haystack);
+	size_t key_pos = lower_header.find(needle);
+
+	if (key_pos != std::string::npos) {
+		key_pos += needle.length() + 1;
+		size_t end_key = lower_header.find(sep, key_pos);
+		if (end_key == std::string::npos) {
+			return (haystack.substr(key_pos));
+		} else {
+			return (haystack.substr(key_pos, end_key - key_pos));
+		}
+	}
+	return ("");
+}
+
+/**
+ * @brief Checks if a file is a CGI script based on its extension.
+ *
+ * This function checks whether the given filename corresponds to a CGI script by looking at its extension.
+ * It checks for extensions such as `.py` and `.php`.
+ *
+ * @param filename The filename to be checked.
+ * @return `true` if the filename corresponds to a CGI script, otherwise `false`.
+ */
+bool is_cgi(const std::string& filename){
+	std::string cgi_files [] = {".py", ".pl"};
+
+	size_t dot_pos = filename.find_last_of('.');
+	if (dot_pos == std::string::npos) {
+		return (false);
+	}
+	std::string extension = filename.substr(dot_pos);
+	for (size_t i = 0; i < cgi_files[i].size() ; i++) {
+		if (extension == cgi_files[i]) {
+			return (true);
+		}
+	}
+	return (false);
+}
+
+/**
+ * @brief Finds the end of the HTTP header in a string.
+ *
+ * This function locates the end of the HTTP header in the given string by searching for the sequence `\\r\\n\\r\\n` or `\\n\\n`.
+ *
+ * @param header The HTTP header string to be analyzed.
+ * @return The position where the header ends. If no header end is found, returns `std::string::npos`.
+ */
+size_t end_of_header_system(std::string& header)
+{
+	size_t  pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos) {
+		pos = header.find("\n\n");
+	}
+	return (pos);
+}
+

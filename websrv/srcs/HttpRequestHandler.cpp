@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 15:50:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 22:06:01 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	if (!client_data) {
 		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
-	_request_data.factory = 0;
-	_is_cached = false;
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
 
@@ -298,15 +296,15 @@ void HttpRequestHandler::parse_header() {
  * @see turn_off_sanity
  */
 void HttpRequestHandler::parse_method_and_path() {
-	std::string method;
 	std::string path;
 
 	_log->log_debug( RH_NAME,
 			  "Parsing Request to get path and method.");
 	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
-		method = _request_data.header.substr(0, method_end);
-		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == 0 ) {
+		_request_data.method_str = _request_data.header.substr(0, method_end);
+		if (_request_data.method_str.empty()
+			|| (_request_data.method = parse_method(_request_data.method_str)) == 0 ) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Error parsing request: Method is empty or not valid.");
 			return ;
@@ -663,8 +661,8 @@ void HttpRequestHandler::get_location_config() {
 			  "Searching related location.");
 	_log->log_error(RH_NAME, _request_data.header);
 
-	_is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (HAS_GET(_request_data.method) && _is_cached && _cache_data.host->server_name == _host_config->server_name) {
+	_request_data.is_cached = _request_cache.get(_request_data.path, _cache_data);
+	if (HAS_GET(_request_data.method) && _request_data.is_cached && _cache_data.host->server_name == _host_config->server_name) {
 		_location = _cache_data.location;
 		_request_data.location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
@@ -729,7 +727,7 @@ void HttpRequestHandler::get_location_config() {
  * @see is_file, is_dir, starts_with, _request_data
  */
 void HttpRequestHandler::cgi_normalize_path() {
-	if (!_location->cgi_file || _is_cached) {
+	if (!_location->cgi_file || _request_data.is_cached) {
 		_log->log_debug( RH_NAME,
 		          "No CGI locations at server config.");
 		return ;
@@ -813,7 +811,7 @@ void HttpRequestHandler::normalize_request_path() {
 		          "CGI context. path has been normalized");
 		return ;
 	}
-	if (_is_cached || _request_data.is_redir) {
+	if (_request_data.is_cached || _request_data.is_redir) {
 		return;
 	}
 	std::string eval_path = _host_config->server_root + _request_data.path;
@@ -1250,7 +1248,7 @@ void HttpRequestHandler::handle_request() {
 //		if (_factory == 0) {
 //			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 //			response.handle_request();
-//			if (_is_cached) {
+//			if (_request_data.is_cached) {
 //				if (!_request_data.sanity) {
 //					_request_cache.remove(_request_data.path);
 //					return ;

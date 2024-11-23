@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 15:50:32 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 00:04:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,7 @@
 #include "http_enum_codes.hpp"
 #include "ClientData.hpp"
 #include "Logger.hpp"
-#include "HttpResponseHandler.hpp"
-#include "HttpCGIHandler.hpp"
-#include "HttpRangeHandler.hpp"
-#include "HttpMultipartHandler.hpp"
-#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
-#include "general_helpers.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>
@@ -87,7 +81,6 @@ class HttpRequestHandler {
 		size_t 					        _max_request;
 	    std::string                     _request;
 		s_request&                      _request_data;
-		bool                            _is_cached;
 		CacheRequest                    _cache_data;
 
 		void read_request_header();
