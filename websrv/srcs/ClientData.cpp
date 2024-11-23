@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 21:12:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:01:17 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -32,7 +32,7 @@ ClientData::ClientData(SocketHandler* server,
 					   _client_fd()
 {
 	_client_fd.fd = fd;
-	_client_fd.events = POLLIN;
+	_client_fd.events = POLLIN | POLLOUT;
 	_client_fd.revents = 0;
 	_timestamp = std::time(NULL);
 	_log->log_debug( CD_MODULE,
