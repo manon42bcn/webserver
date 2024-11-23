@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 19:59:23 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 01:58:12 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	}
 	struct pollfd pfd;
 	pfd.fd = server_fd;
-	pfd.events = POLLIN;
+	pfd.events = POLLIN | POLLOUT;
 	pfd.revents = 0;
 
 	_poll_fds.push_back(pfd);
