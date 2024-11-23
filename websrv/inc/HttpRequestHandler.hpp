@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 03:02:51 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 15:50:32 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 #define RH_NAME "HttpRequestHandler"
 #define BUFFER_REQUEST  2048
 #define URI_MAX         2048
+#define MAX_HEADER      16384
 
 typedef struct e_chunk {
 	size_t      size;

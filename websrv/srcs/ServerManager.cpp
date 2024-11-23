@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 04:09:33 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 16:10:33 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,12 @@ void ServerManager::build_servers(std::vector<ServerConfig> &configs) {
 	_log->status(SM_NAME,
 				 "Creating Server and hosts.");
 	for (std::vector<ServerConfig>::iterator config_it = configs.begin(); config_it != configs.end(); config_it++) {
-		std::map<int, SocketHandler*>::iterator it = _servers_map.find(config_it->port);
-		if (it == _servers_map.end()) {
+		std::map<int, int>::iterator listen_on = _active_ports.find(config_it->port);
+		if (listen_on == _active_ports.end()) {
 			add_server(config_it->port, *config_it);
 		} else {
-			it->second->add_host(*config_it);
+			SocketHandler* server = _servers_map[listen_on->second];
+			server->add_host(*config_it);
 		}
 	}
 }
@@ -125,6 +126,7 @@ void ServerManager::add_server(int port, ServerConfig& config) {
 		throw WebServerException("Fail to add server to poll.");
 	}
 	_servers_map[server->get_socket_fd()] = server;
+	_active_ports[config.port] = server->get_socket_fd();
 }
 
 /**
@@ -625,6 +627,7 @@ void ServerManager::clear_servers() {
 			delete it->second;
 		}
 		_servers_map.clear();
+		_active_ports.clear();
 		_log->log_debug( SM_NAME,
 						 "Servers cleared successfully.");
 	} catch (std::exception& e) {

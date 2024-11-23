@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:50:56 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 16:00:37 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class ServerManager {
 		std::vector<struct pollfd> 	    _poll_fds;
 		std::map<int, size_t>           _poll_index;
 		std::map<int, SocketHandler*>   _servers_map;
+		std::map<int, int>              _active_ports;
 	    std::map<int, ClientData*>      _clients;
 		std::map<time_t, int>           _timeout_index;
 		std::map<int, time_t>           _index_timeout;
