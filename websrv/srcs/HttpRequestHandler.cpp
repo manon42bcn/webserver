@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:43:31 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 03:02:47 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	if (!client_data) {
 		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
-	_factory = 0;
+	_request_data.factory = 0;
 	_is_cached = false;
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
@@ -414,7 +414,7 @@ void HttpRequestHandler::parse_path_type() {
  *
  * 4. **Range Header**:
  *    - Retrieves the `Range` header value.
- *    - If the `Range` header is present, increments `_factory` to indicate that this data will be used later.
+ *    - If the `Range` header is present, increments `_request_data.factory` to indicate that this data will be used later.
  *
  * 5. **Connection Header**:
  *    - Retrieves the `Connection` header value.
@@ -432,7 +432,7 @@ void HttpRequestHandler::parse_path_type() {
  *
  * @note
  * - The method uses `get_header_value()` to extract specific header values from `_request_data.header`.
- * - The `_factory` variable is incremented whenever additional processing for multipart content or range is required.
+ * - The `_request_data.factory` variable is incremented whenever additional processing for multipart content or range is required.
  * - The method ensures that malformed headers, such as an invalid `Content-Length` or missing `boundary`, are caught and the request is marked as invalid.
  */
 void HttpRequestHandler::load_header_data() {
@@ -456,7 +456,7 @@ void HttpRequestHandler::load_header_data() {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
 			}
-			_factory++;
+			_request_data.factory++;
 			size_t end_type = _request_data.content_type.find(';');
 			if (end_type != std::string::npos) {
 				_request_data.content_type = _request_data.content_type.substr(0, end_type);
@@ -473,7 +473,7 @@ void HttpRequestHandler::load_header_data() {
 	}
 	_request_data.range = get_header_value(_request_data.header, "range:");
 	if (!_request_data.range.empty()) {
-		_factory++;
+		_request_data.factory++;
 	}
 	std::string keep = get_header_value(_request_data.header, "connection:");
 	if (keep == "keep-alive") {
@@ -687,7 +687,7 @@ void HttpRequestHandler::get_location_config() {
 		_request_data.location = result;
 		if (_location->is_redir) {
 			_request_data.is_redir = true;
-			_factory++;
+			_request_data.factory++;
 		}
 		if (!_location->is_root) {
 			if (saved_key == "/") {
@@ -716,11 +716,11 @@ void HttpRequestHandler::get_location_config() {
  * - If `eval_path` points to a CGI file directly, it is marked for CGI handling:
  *   - Sets `_request_data.script` to the filename part of the path.
  *   - Sets `_request_data.normalized_path` to the directory containing the CGI file.
- *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ *   - Marks `_request_data.cgi` as `true` and increments `_request_data.factory`.
  * - If no direct CGI file is found, checks if the path matches any mapped CGI locations in `_location->cgi_locations`:
  *   - Iterates over `cgi_locations` to find the longest matching prefix.
  *   - If a match is found, sets `_request_data.normalized_path`, `_request_data.script`, and `_request_data.path_info`.
- *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ *   - Marks `_request_data.cgi` as `true` and increments `_request_data.factory`.
  *
  * Error Handling:
  * - This method assumes that if a CGI configuration is specified but not found in the request path, it will not
@@ -748,7 +748,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_request_data.script = eval_path.substr(dot_pos + 1);
 		_request_data.normalized_path = eval_path.substr(0, dot_pos);
 		_request_data.cgi = true;
-		_factory++;
+		_request_data.factory++;
 		return ;
 	}
 
@@ -774,7 +774,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_request_data.script = cgi_data->script;
 		_request_data.path_info = _request_data.path.substr(saved_key.length());
 		_request_data.cgi = true;
-		_factory++;
+		_request_data.factory++;
 	}
 }
 
@@ -864,7 +864,7 @@ void HttpRequestHandler::normalize_request_path() {
 			}
 		}
 		if (_location->autoindex && HAS_GET(_request_data.method)) {
-			_factory++;
+			_request_data.factory++;
 			_request_data.autoindex = true;
 			_request_data.normalized_path = eval_path;
 			return ;
@@ -1222,7 +1222,7 @@ void HttpRequestHandler::validate_request() {
  * 1. **Sanity Check**: If `_request_data.sanity` is false, a generic error response
  *    is sent via `HttpResponseHandler`.
  * 2. **Request Type Decision**:
- *   - If `_factory` is 0, uses `HttpResponseHandler`.
+ *   - If `_request_data.factory` is 0, uses `HttpResponseHandler`.
  *   - If `_request_data.cgi` is true, uses `HttpCGIHandler`.
  *   - If `_request_data.range` is non-empty, uses `HttpRangeHandler`.
  *   - If `_request_data.boundary` is non-empty, uses `HttpMultipartHandler`.
@@ -1241,73 +1241,73 @@ void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_alive()) {
 		return;
 	}
-	try {
-		if (!_request_data.sanity){
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.send_error_response();
-			return ;
-		}
-		if (_factory == 0) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			if (_is_cached) {
-				if (!_request_data.sanity) {
-					_request_cache.remove(_request_data.path);
-					return ;
-				}
-				return;
-			}
-			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-				_request_cache.put(_request_data.path,
-								   CacheRequest(_request_data.path, _host_config,
-													 _location, _request_data.normalized_path));
-			}
-			return;
-		}
-		if (_request_data.is_redir) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.redirection();
-			return;
-		}
-		if (_request_data.autoindex) {
-			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return;
-		}
-		if (_request_data.cgi) {
-			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			_client_data->deactivate();
-			return ;
-		} else if (!_request_data.range.empty()){
-			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return ;
-		} else if (!_request_data.boundary.empty()){
-			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return ;
-		}
-	} catch (WebServerException& e) {
-		std::ostringstream detail;
-		detail << "Error Handling response: " << e.what();
-		_log->log_error( RH_NAME,
-				  detail.str());
-		_client_data->deactivate();
-	} catch (Logger::NoLoggerPointer& e) {
-		std::ostringstream detail;
-		detail << "Logger Pointer Error at Response Handler. "
-			   << "Server Sanity could be compromise.";
-		_log->log_error( RH_NAME,
-		          detail.str());
-		_client_data->deactivate();
-	} catch (std::exception& e) {
-		std::ostringstream detail;
-		detail << "Unknown error handling response: " << e.what();
-		_log->log_error( RH_NAME,
-		          detail.str());
-		_client_data->deactivate();
-	}
+//	try {
+//		if (!_request_data.sanity){
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.send_error_response();
+//			return ;
+//		}
+//		if (_factory == 0) {
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			if (_is_cached) {
+//				if (!_request_data.sanity) {
+//					_request_cache.remove(_request_data.path);
+//					return ;
+//				}
+//				return;
+//			}
+//			if (_request_data.sanity && HAS_GET(_request_data.method)) {
+//				_request_cache.put(_request_data.path,
+//								   CacheRequest(_request_data.path, _host_config,
+//													 _location, _request_data.normalized_path));
+//			}
+//			return;
+//		}
+//		if (_request_data.is_redir) {
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.redirection();
+//			return;
+//		}
+//		if (_request_data.autoindex) {
+//			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return;
+//		}
+//		if (_request_data.cgi) {
+//			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			_client_data->deactivate();
+//			return ;
+//		} else if (!_request_data.range.empty()){
+//			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return ;
+//		} else if (!_request_data.boundary.empty()){
+//			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return ;
+//		}
+//	} catch (WebServerException& e) {
+//		std::ostringstream detail;
+//		detail << "Error Handling response: " << e.what();
+//		_log->log_error( RH_NAME,
+//				  detail.str());
+//		_client_data->deactivate();
+//	} catch (Logger::NoLoggerPointer& e) {
+//		std::ostringstream detail;
+//		detail << "Logger Pointer Error at Response Handler. "
+//			   << "Server Sanity could be compromise.";
+//		_log->log_error( RH_NAME,
+//		          detail.str());
+//		_client_data->deactivate();
+//	} catch (std::exception& e) {
+//		std::ostringstream detail;
+//		detail << "Unknown error handling response: " << e.what();
+//		_log->log_error( RH_NAME,
+//		          detail.str());
+//		_client_data->deactivate();
+//	}
 }
 
 /**

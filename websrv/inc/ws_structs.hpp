@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:33:31 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 03:00:52 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ struct s_request {
 	std::string     referer;
 	const ServerConfig*   host_config;
 	const LocationConfig* location;
+	int                     factory;
 
 	s_request() : header(""), body(""), host(""), method(0), path(""),
 	path_request(""),
@@ -132,7 +133,7 @@ struct s_request {
 	cgi(false), script(""), boundary(""), chunks(false),
 	range(""), cookie(""), sanity(true),
 	status(HTTP_MAX_STATUS), autoindex(false), is_redir(false), referer(""),
-	host_config(NULL), location(NULL) {};
+	host_config(NULL), location(NULL), factory(0) {};
 };
 
 

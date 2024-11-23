@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 22:13:13 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 04:29:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,11 @@ bool SocketHandler::set_nonblocking(int fd) {
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
 		_log->log_warning( SH_NAME,
 				  "Error setting socket as nonblocking.");
+		return (false);
+	}
+	if (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1) {
+		_log->log_warning( SH_NAME,
+		                   "Error setting FD_CLOEXEC.");
 		return (false);
 	}
 	_log->log_info( SH_NAME,

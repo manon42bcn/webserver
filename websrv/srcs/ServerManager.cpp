@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 01:58:12 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 04:09:33 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,8 +262,8 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			usleep(700);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
+			usleep(300);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -285,12 +285,26 @@ void ServerManager::run() {
 				}
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
-				if (_poll_fds[i].revents & POLLIN) {
+				if (poll_count == 0) {
+					break;
+				}
+				if (_poll_fds[i].revents & POLLOUT) {
+					std::map<int, ClientData *>::iterator client_it = _clients.find(_poll_fds[i].fd);
+					if (client_it != _clients.end()) {
+						process_response(i);
+						poll_count--;
+						continue;
+					}
+				} else if (_poll_fds[i].revents & POLLIN) {
 					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
 					if (server_it != _servers_map.end()) {
-						while (new_client(server_it->second)) {};
+						while (new_client(server_it->second)) {
+							poll_count--;
+						};
 					} else {
 						process_request(i);
+						poll_count--;
+						continue;
 					}
 				}
 			}
@@ -369,10 +383,11 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		if (it != _clients.end()) {
 			HttpRequestHandler request_handler(_log, it->second);
 			request_handler.request_workflow();
-			if (!it->second->is_active() || !it->second->is_alive()) {
+			if (!it->second->is_alive()) {
 				remove_client_from_poll(it);
 				--poll_index;
 			} else {
+				_poll_fds[poll_index].events = POLLOUT;
 				int fd = it->second->get_fd().fd;
 				time_t new_cycle = timeout_timestamp();
 				t_fd_timestamp index_timeout = _index_timeout.find(fd);
@@ -437,6 +452,89 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data) {
 	}
 }
 
+bool ServerManager::process_response(size_t& poll_index) {
+	int poll_fd = _poll_fds[poll_index].fd;
+	std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
+	if (it == _clients.end()) {
+		return (false);
+	}
+	ClientData* client = it->second;
+	s_request& request = client->client_request();
+	try {
+		if (!request.sanity){
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.send_error_response();
+		}
+		else if (request.factory == 0) {
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+//			if (_is_cached) {
+//				if (!request.sanity) {
+//					_request_cache.remove(request.path);
+//					return ;
+//				}
+//				return;
+//			}
+//			if (request.sanity && HAS_GET(request.method)) {
+//				_request_cache.put(request.path,
+//				                   CacheRequest(request.path, request.host_config,
+//				                                request.location, request.normalized_path));
+//			}
+		}
+		else if (request.is_redir) {
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.redirection();
+		}
+		else if (request.autoindex) {
+			HttpAutoIndex response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		}
+		else if (request.cgi) {
+			HttpCGIHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+			client->deactivate();
+		} else if (!request.range.empty()){
+			HttpRangeHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		} else if (!request.boundary.empty()){
+			HttpMultipartHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		}
+		if (client->is_active() && client->is_alive()) {
+			_poll_fds[poll_index].events = POLLIN;
+			time_t new_cycle = timeout_timestamp();
+			t_fd_timestamp index_timeout = _index_timeout.find(poll_fd);
+			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
+			_timeout_index.erase(timeout_index);
+			_timeout_index[new_cycle] = poll_fd;
+			_index_timeout[poll_fd] = new_cycle;
+			return (true);
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+		       << "Server Sanity could be compromise.";
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	}
+	remove_client_from_poll(it);
+	--poll_index;
+	return (false);
+}
+
 /**
  * @brief Deactivates the server and logs a critical error, indicating an unrecoverable issue.
  *
@@ -477,7 +575,7 @@ void ServerManager::turn_off_server() {
 	// Luego cerrar todos los servidores
 	clear_servers();
 	
-	// Finalmente limpiar los poll_fds
+	// Finalmente limpiar los pollpoll_fds
 	clear_poll();
 	
 	_log->log_info( SM_NAME, "Server shutdown completed.");

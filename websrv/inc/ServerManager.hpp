@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 19:25:16 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:50:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@
 #include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
+#include "HttpResponseHandler.hpp"
+#include "HttpCGIHandler.hpp"
+#include "HttpRangeHandler.hpp"
+#include "HttpMultipartHandler.hpp"
+#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
 #include "ClientData.hpp"
 #include "webserver.hpp"
@@ -65,6 +70,7 @@ class ServerManager {
 	void timeout_clients();
 	bool new_client(SocketHandler* server);
 	bool process_request(size_t& poll_fd_index);
+	bool process_response(size_t& poll_fd_index);
 	void remove_client_from_poll(t_client_it client_data);
 	bool turn_off_sanity(const std::string& detail);
 	void clear_clients();
