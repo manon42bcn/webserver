@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 21:14:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:45:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,7 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
  * - **Null-Termination**: Ensures the environment array is null-terminated as required by `execve`.
  */
 std::vector<char*> HttpCGIHandler::cgi_environment() {
-	const ServerConfig* host = _client_data->get_host();
+	const ServerConfig* host = _request.host_config;
 	std::vector<std::string> env_vars;
 
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");

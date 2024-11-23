@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:32:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:43:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,7 +496,6 @@ void HttpRequestHandler::load_host_config() {
 	}
 	_log->status(RH_NAME, host);
 	_request_data.host = normalize_host(_request_data.host);
-	_client_data->update_host(_host_config);
 }
 
 /**

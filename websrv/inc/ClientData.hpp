@@ -36,7 +36,6 @@
 class ClientData {
 	private:
 		SocketHandler*          _server;
-		const ServerConfig*     _host;
 		const Logger*           _log;
 	    bool                    _active;
 		bool                    _alive;
@@ -58,8 +57,6 @@ class ClientData {
 		bool is_alive() const;
 		bool is_active() const;
 		void keep_active();
-		void update_host(const ServerConfig* host);
-		const ServerConfig* get_host();
 		s_request& client_request();
 };
 
