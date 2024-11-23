@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 00:09:15 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:33:31 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,37 +26,7 @@ enum e_path_type {
 	PATH_RELATIVE = 3
 };
 
-struct s_request {
-	std::string     header;
-	std::string     body;
-	std::string     host;
-	t_methods      	method;
-	std::string     path;
-	std::string     path_request;
-	e_path_type     path_type;
-	std::string     query;
-	std::string     normalized_path;
-	std::string     path_info;
-	size_t          content_length;
-	std::string     content_type;
-	bool            cgi;
-	std::string     script;
-	std::string     boundary;
-	bool            chunks;
-	std::string     range;
-	std::string     cookie;
-	bool            sanity;
-	e_http_sts      status;
-	bool            autoindex;
-	bool            is_redir;
-	std::string     referer;
-	s_request() : header(""), body(""), host(""), method(0), path(""), path_request(""),
-				  path_type(PATH_REGULAR), query(""), normalized_path(""),
-				  path_info(""), content_length(0), content_type(""),
-				  cgi(false), script(""), boundary(""), chunks(false),
-				  range(""), cookie(""), sanity(true),
-				  status(HTTP_MAX_STATUS), autoindex(false), is_redir(false), referer("") {};
-};
+
 
 typedef struct s_cgi {
 	std::string	cgi_path;
@@ -127,6 +97,44 @@ struct ServerConfig {
 			  ws_error_mode()                 // Inicialización por defecto para t_mode
 	{}
 };
+
+struct s_request {
+	std::string     header;
+	std::string     body;
+	std::string     host;
+	t_methods      	method;
+	std::string     path;
+	std::string     path_request;
+	e_path_type     path_type;
+	std::string     query;
+	std::string     normalized_path;
+	std::string     path_info;
+	size_t          content_length;
+	std::string     content_type;
+	bool            cgi;
+	std::string     script;
+	std::string     boundary;
+	bool            chunks;
+	std::string     range;
+	std::string     cookie;
+	bool            sanity;
+	e_http_sts      status;
+	bool            autoindex;
+	bool            is_redir;
+	std::string     referer;
+	const ServerConfig*   host_config;
+	const LocationConfig* location;
+
+	s_request() : header(""), body(""), host(""), method(0), path(""),
+	path_request(""),
+	path_type(PATH_REGULAR), query(""), normalized_path(""),
+	path_info(""), content_length(0), content_type(""),
+	cgi(false), script(""), boundary(""), chunks(false),
+	range(""), cookie(""), sanity(true),
+	status(HTTP_MAX_STATUS), autoindex(false), is_redir(false), referer(""),
+	host_config(NULL), location(NULL) {};
+};
+
 
 struct CacheEntry {
 	std::string url;

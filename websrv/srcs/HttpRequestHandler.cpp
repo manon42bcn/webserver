@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 02:14:58 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:32:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -488,9 +488,11 @@ void HttpRequestHandler::load_header_data() {
 void HttpRequestHandler::load_host_config() {
 	std::string host = clean_host(_request_data.host);
 	_host_config = _client_data->get_server()->get_config(host);
+	_request_data.host_config = _host_config;
 	if (_host_config == NULL) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						"Host Config Pointer NULL.");
+		return ;
 	}
 	_log->status(RH_NAME, host);
 	_request_data.host = normalize_host(_request_data.host);
@@ -551,6 +553,7 @@ void HttpRequestHandler::solver_resource() {
 		return ;
 	}
 	_location = NULL;
+	_request_data.location = NULL;
 	_request_data.sanity = true;
 	_request_data.status = HTTP_MAX_STATUS;
 	_request_data.path = _request_data.path_request;
@@ -664,6 +667,7 @@ void HttpRequestHandler::get_location_config() {
 	_is_cached = _request_cache.get(_request_data.path, _cache_data);
 	if (HAS_GET(_request_data.method) && _is_cached && _cache_data.host->server_name == _host_config->server_name) {
 		_location = _cache_data.location;
+		_request_data.location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
 		return ;
 	}
@@ -681,6 +685,7 @@ void HttpRequestHandler::get_location_config() {
 		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
+		_request_data.location = result;
 		if (_location->is_redir) {
 			_request_data.is_redir = true;
 			_factory++;
