@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/17 14:43:45 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/23 18:28:12 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,8 @@ int check_port(std::string port)
             return -1;
     }
     port_int = atoi(port.c_str());
-    // if (port_int <= 1024 || port_int > 65535)
-    //     return -1;
+    if (port_int <= 0 || port_int > 65535)
+        return -1;
     return port_int;
 }
 

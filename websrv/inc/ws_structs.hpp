@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ws_structs.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 03:00:52 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 18:25:58 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ struct ServerConfig {
 			  error_pages(),                  // std::map se inicializa correctamente al ser default-constructed
 			  locations(),                    // std::map se inicializa automáticamente
 			  default_pages(),                // std::vector se inicializa automáticamente
-			  client_max_body_size(0),        // Inicializamos con un tamaño por defecto
+			  client_max_body_size(52428800),        // Inicializamos con un tamaño por defecto
 			  autoindex(false),               // Booleanos inicializados explícitamente
 			  template_error_page(""),        // String inicializado por defecto
 			  cgi_locations(false),           // Booleano inicializado explícitamente
