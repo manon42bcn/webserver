@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 21:05:57 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:06:02 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class ClientData {
 		bool                    _alive;
 		struct pollfd           _client_fd;
 	    std::time_t             _timestamp;
+		s_request               _request;
 
 	public:
 		ClientData(SocketHandler* server, const Logger* log, int fd);
@@ -59,6 +60,7 @@ class ClientData {
 		void keep_active();
 		void update_host(const ServerConfig* host);
 		const ServerConfig* get_host();
+		s_request& client_request();
 };
 
 #endif

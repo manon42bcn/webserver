@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/22 20:39:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:07:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ class HttpRequestHandler {
 		size_t 					        _max_request;
 	    std::string                     _request;
 		int                             _factory;
-		s_request                       _request_data;
+		s_request&                      _request_data;
 		bool                            _is_cached;
 		CacheRequest                    _cache_data;
 

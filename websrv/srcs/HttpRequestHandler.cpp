@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 01:59:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 02:14:58 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_client_data(client_data),
 	_request_cache(client_data->get_server()->get_request_cache()),
 	_location(NULL),
-	_fd(_client_data->get_fd().fd) {
+	_fd(_client_data->get_fd().fd),
+	_request_data(client_data->client_request()){
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
@@ -602,11 +603,12 @@ void HttpRequestHandler::resolve_relative_path() {
 	if (_request_data.referer.empty()) {
 		return;
 	}
-	std::string base = normalize_host(_request_data.referer);
+	std::string base = _request_data.referer;
 	size_t http_slash = base.find("//");
 	if (http_slash != std::string::npos) {
 		base = base.substr(http_slash + 2);
 	}
+	base = normalize_host(base);
 	http_slash = base.find('/');
 	if (http_slash == std::string::npos) {
 		return ;
