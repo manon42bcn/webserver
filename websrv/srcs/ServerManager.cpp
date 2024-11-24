@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 02:33:07 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 22:38:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@ void ServerManager::run() {
 		while (_active) {
 			timeout_clients();
 			usleep(700);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -319,12 +319,13 @@ void ServerManager::run() {
 				}
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
-				if (poll_count == 0) {
+				if (poll_count <= 0) {
 					break;
 				}
 				if (_poll_fds[i].revents & POLLOUT) {
-					if (i > _servers_map.size() - 1) {
-						process_response(i);
+					std::map<int, ClientData*>::iterator client_data = _clients.find(_poll_fds[i].fd);
+					if (client_data != _clients.end()) {
+						process_response(i, client_data);
 						poll_count--;
 						continue;
 					}
@@ -382,6 +383,7 @@ bool    ServerManager::new_client(SocketHandler *server) {
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
 	int fd = new_client->get_fd().fd;
+	_log->status(RH_NAME, "TEST.. client..." + int_to_string(fd) + " - " + int_to_string(new_client->get_fd().revents));
 	_clients[fd] = new_client;
 	_poll_fds.push_back(new_client->get_fd());
 	_poll_index[fd] = _poll_fds.size() - 1;
@@ -486,16 +488,12 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data) {
 	}
 }
 
-bool ServerManager::process_response(size_t& poll_index) {
+bool ServerManager::process_response(size_t& poll_index, t_client_it client_it) {
 	int poll_fd = _poll_fds[poll_index].fd;
-	std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
-	if (it == _clients.end()) {
-		return (false);
-	}
-	ClientData* client = it->second;
+	ClientData* client = client_it->second;
 	try {
 		s_request& request = client->client_request();
-//		SocketHandler* server = client->get_server();
+		SocketHandler* server = client->get_server();
 		if (!request.sanity){
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
 			response.send_error_response();
@@ -503,17 +501,17 @@ bool ServerManager::process_response(size_t& poll_index) {
 		else if (request.factory == 0) {
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
 			response.handle_request();
-//			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
-//			if (request.is_cached) {
-//				if (!request.sanity) {
-//					request_cache.remove(request.path);
-//				}
-//			}
-//			if (request.sanity && HAS_GET(request.method)) {
-//				request_cache.put(request.path,
-//				                   CacheRequest(request.path, request.host_config,
-//				                                request.location, request.normalized_path));
-//			}
+			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
+			if (request.is_cached) {
+				if (!request.sanity) {
+					request_cache.remove(request.path);
+				}
+			}
+			if (request.sanity && HAS_GET(request.method)) {
+				request_cache.put(request.path,
+				                   CacheRequest(request.path, request.host_config,
+				                                request.location, request.normalized_path));
+			}
 		}
 		else if (request.is_redir) {
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
@@ -536,6 +534,7 @@ bool ServerManager::process_response(size_t& poll_index) {
 		}
 		if (client->is_active() && client->is_alive()) {
 			_poll_fds[poll_index].events = POLLIN;
+			_poll_fds[poll_index].revents = 0;
 			time_t new_cycle = timeout_timestamp();
 			t_fd_timestamp index_timeout = _index_timeout.find(poll_fd);
 			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
@@ -564,7 +563,7 @@ bool ServerManager::process_response(size_t& poll_index) {
 		                 detail.str());
 		client->deactivate();
 	}
-	remove_client_from_poll(it);
+	remove_client_from_poll(client_it);
 	--poll_index;
 	return (false);
 }

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 16:00:37 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 22:36:49 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ class ServerManager {
 	void timeout_clients();
 	bool new_client(SocketHandler* server);
 	bool process_request(size_t& poll_fd_index);
-	bool process_response(size_t& poll_fd_index);
+	bool process_response(size_t& poll_fd_index, t_client_it client);
 	void remove_client_from_poll(t_client_it client_data);
 	bool turn_off_sanity(const std::string& detail);
 	void clear_clients();
