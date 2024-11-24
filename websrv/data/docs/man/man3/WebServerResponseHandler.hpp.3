@@ -1,0 +1,112 @@
+.TH "websrv/inc/WebServerResponseHandler.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/WebServerResponseHandler.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+\fR#include 'ClientData\&.hpp'\fP
+.br
+\fR#include 'ws_permissions_bitwise\&.hpp'\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <sys/wait\&.h>\fP
+.br
+\fR#include <sys/stat\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBs_content\fP"
+.br
+.RI "Holds data associated with HTTP response content\&. "
+.ti -1c
+.RI "class \fBWsResponseHandler\fP"
+.br
+.RI "Base class for handling HTTP responses in a web server\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRSP_NAME\fP   'HttpResponseHandler'"
+.br
+.ti -1c
+.RI "#define \fBUNUSED\fP(x)"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_RANGE_BYTES\fP   65536"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBe_content_type\fP { \fBCT_UNKNOWN\fP = 0, \fBCT_FILE\fP = 1, \fBCT_JSON\fP = 2 }"
+.br
+.RI "Defines types of content handled in HTTP responses\&. "
+.ti -1c
+.RI "enum \fBe_range_scenario\fP { \fBCR_INIT\fP = 0, \fBCR_RANGE\fP = 1, \fBCR_LAST\fP = 2 }"
+.br
+.RI "Describes different scenarios for handling byte range requests\&. "
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define DEFAULT_RANGE_BYTES   65536"
+
+.SS "#define RSP_NAME   'HttpResponseHandler'"
+
+.SS "#define UNUSED( x)"
+\fBValue:\fP
+.nf
+(void)(x)
+.PP
+.fi
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBe_content_type\fP"
+
+.PP
+Defines types of content handled in HTTP responses\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BICT_UNKNOWN \fP
+.TP
+\f(BICT_FILE \fP
+.TP
+\f(BICT_JSON \fP
+.SS "enum \fBe_range_scenario\fP"
+
+.PP
+Describes different scenarios for handling byte range requests\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BICR_INIT \fP
+.TP
+\f(BICR_RANGE \fP
+.TP
+\f(BICR_LAST \fP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

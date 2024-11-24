@@ -1,0 +1,247 @@
+\doxysection{websrv/srcs/parse/verifications.cpp File Reference}
+\hypertarget{verifications_8cpp}{}\label{verifications_8cpp}\index{websrv/srcs/parse/verifications.cpp@{websrv/srcs/parse/verifications.cpp}}
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include $<$filesystem$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a8c6e27347968a5abd6f00cf2daddd256}{check\+\_\+brackets}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end)
+\begin{DoxyCompactList}\small\item\em Checks if the brackets in the given range are balanced. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_ac5f31e0f124383de5dee301b265e3746}{can\+\_\+open\+\_\+file}} (const char \texorpdfstring{$\ast$}{*}filename)
+\begin{DoxyCompactList}\small\item\em Checks if a file can be opened. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_a16ef7295adb65127597e839131e68d71}{check\+\_\+args}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em Validates the command line arguments. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{verifications_8cpp_a199339df1bcf67055ef966d29311ca28}{check\+\_\+port}} (std\+::string port)
+\begin{DoxyCompactList}\small\item\em Validates a port number. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_afa15dacf86ca47f97c4658dcd3644c25}{check\+\_\+server\+\_\+name}} (std\+::string server\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Validates a server name. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_ac5e8e87d4ce819823e666cbfe15c9789}{is\+\_\+valid\+\_\+error\+\_\+code}} (int code)
+\begin{DoxyCompactList}\small\item\em Checks if an error code is valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_a22e220b703b591eda65a1c76252aa7f0}{check\+\_\+error\+\_\+page}} (std\+::string error\+\_\+page)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a797cc2797d7fa06ec25f5b511a8332dd}{is\+\_\+valid\+\_\+filename}} (const std\+::string \&filename)
+\begin{DoxyCompactList}\small\item\em Checks if a filename is valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_aed46555e3b91d2beb71b52a794f0ad3b}{check\+\_\+default\+\_\+page}} (std\+::string default\+\_\+page)
+\begin{DoxyCompactList}\small\item\em Checks if the default page is valid. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{verifications_8cpp_ab58803882a0a1f0cbff6f148b037cd94}{is\+\_\+directory}} (const std\+::string \&path)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_ac0fcf41e20a21ca97cc017506e32b915}{check\+\_\+root}} (std\+::string root)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a173dff4c5931ba8f5c116f9d5af87f70}{check\+\_\+client\+\_\+max\+\_\+body\+\_\+size}} (std\+::string client\+\_\+max\+\_\+body\+\_\+size)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_ad155d7ddafc833c87f99ac6d63fe9d3f}{check\+\_\+autoindex}} (std\+::string autoindex)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a292d7a6eeaea4b64f204723ed321bc79}{check\+\_\+error\+\_\+mode}} (std\+::string error\+\_\+mode)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a03289097f527586246ebad563d792a17}{check\+\_\+duplicate\+\_\+servers}} (std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ servers)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_a3a0cd860c746b94903a9dce7b7051034}{check\+\_\+cgi}} (std\+::string cgi)
+\item 
+bool \mbox{\hyperlink{verifications_8cpp_aeae26e77b15520945d5b9a6da6c867d7}{check\+\_\+obligatory\+\_\+params}} (\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{verifications_8cpp_ac5f31e0f124383de5dee301b265e3746}\index{verifications.cpp@{verifications.cpp}!can\_open\_file@{can\_open\_file}}
+\index{can\_open\_file@{can\_open\_file}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{can\_open\_file()}{can\_open\_file()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_ac5f31e0f124383de5dee301b265e3746} 
+bool can\+\_\+open\+\_\+file (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{filename}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a file can be opened. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & The name of the file to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the file can be opened, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_a16ef7295adb65127597e839131e68d71}\index{verifications.cpp@{verifications.cpp}!check\_args@{check\_args}}
+\index{check\_args@{check\_args}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_args()}{check\_args()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a16ef7295adb65127597e839131e68d71} 
+bool check\+\_\+args (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+
+
+Validates the command line arguments. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & Argument count. \\
+\hline
+{\em argv} & Argument vector. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if arguments are valid, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_ad155d7ddafc833c87f99ac6d63fe9d3f}\index{verifications.cpp@{verifications.cpp}!check\_autoindex@{check\_autoindex}}
+\index{check\_autoindex@{check\_autoindex}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_autoindex()}{check\_autoindex()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_ad155d7ddafc833c87f99ac6d63fe9d3f} 
+bool check\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::string}]{autoindex}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_a8c6e27347968a5abd6f00cf2daddd256}\index{verifications.cpp@{verifications.cpp}!check\_brackets@{check\_brackets}}
+\index{check\_brackets@{check\_brackets}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_brackets()}{check\_brackets()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a8c6e27347968a5abd6f00cf2daddd256} 
+bool check\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+
+
+
+Checks if the brackets in the given range are balanced. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the range. \\
+\hline
+{\em end} & Iterator to the end of the range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if brackets are balanced, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_a3a0cd860c746b94903a9dce7b7051034}\index{verifications.cpp@{verifications.cpp}!check\_cgi@{check\_cgi}}
+\index{check\_cgi@{check\_cgi}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_cgi()}{check\_cgi()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a3a0cd860c746b94903a9dce7b7051034} 
+bool check\+\_\+cgi (\begin{DoxyParamCaption}\item[{std\+::string}]{cgi}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_a173dff4c5931ba8f5c116f9d5af87f70}\index{verifications.cpp@{verifications.cpp}!check\_client\_max\_body\_size@{check\_client\_max\_body\_size}}
+\index{check\_client\_max\_body\_size@{check\_client\_max\_body\_size}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_client\_max\_body\_size()}{check\_client\_max\_body\_size()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a173dff4c5931ba8f5c116f9d5af87f70} 
+bool check\+\_\+client\+\_\+max\+\_\+body\+\_\+size (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_aed46555e3b91d2beb71b52a794f0ad3b}\index{verifications.cpp@{verifications.cpp}!check\_default\_page@{check\_default\_page}}
+\index{check\_default\_page@{check\_default\_page}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_default\_page()}{check\_default\_page()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_aed46555e3b91d2beb71b52a794f0ad3b} 
+bool check\+\_\+default\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+page}{}\end{DoxyParamCaption})}
+
+
+
+Checks if the default page is valid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em default\+\_\+page} & The default page to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the default page is valid, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_a03289097f527586246ebad563d792a17}\index{verifications.cpp@{verifications.cpp}!check\_duplicate\_servers@{check\_duplicate\_servers}}
+\index{check\_duplicate\_servers@{check\_duplicate\_servers}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_duplicate\_servers()}{check\_duplicate\_servers()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a03289097f527586246ebad563d792a17} 
+bool check\+\_\+duplicate\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$}]{servers}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_a292d7a6eeaea4b64f204723ed321bc79}\index{verifications.cpp@{verifications.cpp}!check\_error\_mode@{check\_error\_mode}}
+\index{check\_error\_mode@{check\_error\_mode}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_error\_mode()}{check\_error\_mode()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a292d7a6eeaea4b64f204723ed321bc79} 
+bool check\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_a22e220b703b591eda65a1c76252aa7f0}\index{verifications.cpp@{verifications.cpp}!check\_error\_page@{check\_error\_page}}
+\index{check\_error\_page@{check\_error\_page}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_error\_page()}{check\_error\_page()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a22e220b703b591eda65a1c76252aa7f0} 
+bool check\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+page}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_aeae26e77b15520945d5b9a6da6c867d7}\index{verifications.cpp@{verifications.cpp}!check\_obligatory\_params@{check\_obligatory\_params}}
+\index{check\_obligatory\_params@{check\_obligatory\_params}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_obligatory\_params()}{check\_obligatory\_params()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_aeae26e77b15520945d5b9a6da6c867d7} 
+bool check\+\_\+obligatory\+\_\+params (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_a199339df1bcf67055ef966d29311ca28}\index{verifications.cpp@{verifications.cpp}!check\_port@{check\_port}}
+\index{check\_port@{check\_port}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_port()}{check\_port()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a199339df1bcf67055ef966d29311ca28} 
+int check\+\_\+port (\begin{DoxyParamCaption}\item[{std\+::string}]{port}{}\end{DoxyParamCaption})}
+
+
+
+Validates a port number. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em port} & The port number as a string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The port number as an integer if valid, -\/1 otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_ac0fcf41e20a21ca97cc017506e32b915}\index{verifications.cpp@{verifications.cpp}!check\_root@{check\_root}}
+\index{check\_root@{check\_root}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_root()}{check\_root()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_ac0fcf41e20a21ca97cc017506e32b915} 
+bool check\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::string}]{root}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_afa15dacf86ca47f97c4658dcd3644c25}\index{verifications.cpp@{verifications.cpp}!check\_server\_name@{check\_server\_name}}
+\index{check\_server\_name@{check\_server\_name}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{check\_server\_name()}{check\_server\_name()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_afa15dacf86ca47f97c4658dcd3644c25} 
+bool check\+\_\+server\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::string}]{server\+\_\+name}{}\end{DoxyParamCaption})}
+
+
+
+Validates a server name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em server\+\_\+name} & The server name to validate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the server name is valid, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_ab58803882a0a1f0cbff6f148b037cd94}\index{verifications.cpp@{verifications.cpp}!is\_directory@{is\_directory}}
+\index{is\_directory@{is\_directory}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_directory()}{is\_directory()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_ab58803882a0a1f0cbff6f148b037cd94} 
+bool is\+\_\+directory (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+\Hypertarget{verifications_8cpp_ac5e8e87d4ce819823e666cbfe15c9789}\index{verifications.cpp@{verifications.cpp}!is\_valid\_error\_code@{is\_valid\_error\_code}}
+\index{is\_valid\_error\_code@{is\_valid\_error\_code}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_valid\_error\_code()}{is\_valid\_error\_code()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_ac5e8e87d4ce819823e666cbfe15c9789} 
+bool is\+\_\+valid\+\_\+error\+\_\+code (\begin{DoxyParamCaption}\item[{int}]{code}{}\end{DoxyParamCaption})}
+
+
+
+Checks if an error code is valid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em code} & The error code to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the error code is valid, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{verifications_8cpp_a797cc2797d7fa06ec25f5b511a8332dd}\index{verifications.cpp@{verifications.cpp}!is\_valid\_filename@{is\_valid\_filename}}
+\index{is\_valid\_filename@{is\_valid\_filename}!verifications.cpp@{verifications.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_valid\_filename()}{is\_valid\_filename()}}
+{\footnotesize\ttfamily \label{verifications_8cpp_a797cc2797d7fa06ec25f5b511a8332dd} 
+bool is\+\_\+valid\+\_\+filename (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a filename is valid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & The filename to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the filename 
+\end{DoxyReturn}

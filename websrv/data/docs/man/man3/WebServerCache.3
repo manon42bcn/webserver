@@ -1,0 +1,115 @@
+.TH "WebServerCache< T >" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+WebServerCache< T > \- A simple, in-memory Least Recently Used (LRU) cache\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <WebserverCache\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBWebServerCache\fP (size_t capacity)"
+.br
+.RI "Constructs a cache with a specified maximum capacity\&. "
+.ti -1c
+.RI "bool \fBget\fP (const std::string &key, T &entry)"
+.br
+.RI "Retrieves an entry from the cache\&. "
+.ti -1c
+.RI "void \fBput\fP (const std::string &key, const T &entry)"
+.br
+.RI "Adds or updates an entry in the cache\&. "
+.ti -1c
+.RI "void \fBremove\fP (const std::string &key)"
+.br
+.RI "Removes a specific entry from the cache by its key\&. This function searches for the entry with the specified key in the cache\&. If found, it removes the entry from both the list (which maintains the order of usage) and the map (which provides quick access by key)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+
+.SS "template<typename T>
+.br
+class WebServerCache< T >"A simple, in-memory Least Recently Used (LRU) cache\&. 
+
+The \fR\fBWebServerCache\fP\fP class is designed to manage a fixed-size cache for storing frequently accessed items in a web server context\&. It utilizes a Least Recently Used (LRU) eviction policy, where the least recently accessed entry is removed when the cache reaches its maximum capacity\&.
+
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP The data type of the entries stored in the cache\&. The data type \fRT\fP should have a \fRstd::string\fP member named \fRurl\fP or a similar identifier that can be used to uniquely identify cache entries\&. 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "template<typename T > \fBWebServerCache\fP< T >\fB::WebServerCache\fP (size_t capacity)\fR [inline]\fP, \fR [explicit]\fP"
+
+.PP
+Constructs a cache with a specified maximum capacity\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcapacity\fP The maximum number of entries the cache can hold\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "template<typename T > bool \fBWebServerCache\fP< T >::get (const std::string & key, T & entry)\fR [inline]\fP"
+
+.PP
+Retrieves an entry from the cache\&. This method searches the cache for an entry with the specified key\&. If the entry is found, it is moved to the front of the LRU list\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP The unique key identifying the cache entry\&. 
+.br
+\fIentry\fP Reference to an object where the retrieved entry will be stored\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the entry was found and \fRentry\fP was updated; otherwise, \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "template<typename T > void \fBWebServerCache\fP< T >::put (const std::string & key, const T & entry)\fR [inline]\fP"
+
+.PP
+Adds or updates an entry in the cache\&. If an entry with the specified key already exists, it is updated and moved to the front of the LRU list\&. If the cache is at capacity, the least recently used entry is removed to make space for the new entry\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP The unique key identifying the cache entry\&. 
+.br
+\fIentry\fP The entry to be added or updated in the cache\&. 
+.RE
+.PP
+
+.SS "template<typename T > void \fBWebServerCache\fP< T >::remove (const std::string & key)\fR [inline]\fP"
+
+.PP
+Removes a specific entry from the cache by its key\&. This function searches for the entry with the specified key in the cache\&. If found, it removes the entry from both the list (which maintains the order of usage) and the map (which provides quick access by key)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIkey\fP The key associated with the cache entry to be removed\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+The cache is updated to remove the entry, making space for new entries if necessary\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

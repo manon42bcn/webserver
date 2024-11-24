@@ -1,0 +1,52 @@
+.TH "CacheEntry" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CacheEntry \- Represents an entry in the server's cache\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ws_structs\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCacheEntry\fP (const std::string &u, const std::string &c)"
+.br
+.ti -1c
+.RI "\fBCacheEntry\fP ()"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBurl\fP"
+.br
+.ti -1c
+.RI "std::string \fBcontent\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents an entry in the server's cache\&. 
+
+This structure stores a URL and its corresponding content, allowing the server to quickly respond to requests for cached resources\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CacheEntry::CacheEntry (const std::string & u, const std::string & c)\fR [inline]\fP"
+
+.SS "CacheEntry::CacheEntry ()\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "std::string CacheEntry::content"
+
+.SS "std::string CacheEntry::url"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

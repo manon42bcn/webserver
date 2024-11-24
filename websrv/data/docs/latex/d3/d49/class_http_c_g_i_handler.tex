@@ -1,0 +1,181 @@
+\doxysection{Http\+CGIHandler Class Reference}
+\hypertarget{class_http_c_g_i_handler}{}\label{class_http_c_g_i_handler}\index{HttpCGIHandler@{HttpCGIHandler}}
+
+
+Handles HTTP requests that require CGI script execution.  
+
+
+
+
+{\ttfamily \#include $<$Http\+CGIHandler.\+hpp$>$}
+
+Inheritance diagram for Http\+CGIHandler\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{d3/d49/class_http_c_g_i_handler}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_http_c_g_i_handler_a1259ba77c179cee71ca294bcd269ca65}{Http\+CGIHandler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs an {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}} for processing CGI requests. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_http_c_g_i_handler_ae864a41568f2402a6bd1286f2e7889f9}{\texorpdfstring{$\sim$}{\string~}\+Http\+CGIHandler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}}, responsible for cleaning up resources. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_http_c_g_i_handler_ae0dbcacc259b7c0d4a3560661e1b3a59}{handle\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Handles the CGI request by executing the CGI script and sending the response. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_ws_response_handler_a3cd12128a8690f0dfa0d4e5c8619b995}{Ws\+Response\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to manage web server responses. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_ws_response_handler_a8baab27d8124fd3ec88dc9727b280ac7}{\texorpdfstring{$\sim$}{\string~}\+Ws\+Response\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} class. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_abeedbeb84a4e00fcbf33c1864d7c6a15}{send\+\_\+error\+\_\+response}} ()
+\begin{DoxyCompactList}\small\item\em Sends an HTTP error response to the client, using a custom error page if available. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_ac8c8694f89236b819db3906a1e2f1872}{redirection}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP redirection for the current request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aca126bfa03d064a8d94de7ab480b3733}{handle\+\_\+get}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP GET requests, validating access, resource data, and sending a response. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_a644b3ca7a7cec3dc191f182fb47cc68f}{handle\+\_\+post}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP POST requests, validating access, saving data, and sending a response. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a1e1d6f36fa589140b0feb50013295720}{handle\+\_\+delete}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP DELETE requests by checking permissions and deleting the specified resource. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aaa165d0cdad3ce51a5e1bd755b501277}{validate\+\_\+payload}} ()
+\begin{DoxyCompactList}\small\item\em Validates the payload of an HTTP request to ensure it meets requirements. \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{class_ws_response_handler_aa5f538a7d770aecb593e27cbae11bebb}{get\+\_\+file\+\_\+content}} (std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Retrieves the content of a file specified by the path. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a567d0413981e44eae8146cba69ae8a7a}{save\+\_\+file}} (const std\+::string \&save\+\_\+path, const std\+::string \&content)
+\begin{DoxyCompactList}\small\item\em Saves the provided content to a specified file path. \end{DoxyCompactList}\item 
+virtual std\+::string \mbox{\hyperlink{class_ws_response_handler_a1f6fa4b16b1bb217c5c76f84de70cd0b}{header}} (int code, size\+\_\+t content\+\_\+size, std\+::string mime)
+\begin{DoxyCompactList}\small\item\em Constructs an HTTP response header based on provided parameters. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a01217e2efc87284c0642d2a4341fc26b}{sender}} (const std\+::string \&body)
+\begin{DoxyCompactList}\small\item\em Sends the HTTP response to the client through the socket file descriptor. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_a1b93f248882a4eda90403c83321071a4}{default\+\_\+plain\+\_\+error}} ()
+\begin{DoxyCompactList}\small\item\em Generates a default HTML error page for the HTTP response. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_ws_response_handler_ad11ac0e6036e8a641cfe74569c47314f}{turn\+\_\+off\+\_\+sanity}} (\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} status, std\+::string detail)
+\begin{DoxyCompactList}\small\item\em Disables further request processing by marking the request as invalid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_a85c6c1dda9c16243a5cb1cbe7d7981e8}{\+\_\+location}}
+\item 
+const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ad16c39c951b521fbb836260bfdd620b2}{\+\_\+log}}
+\item 
+\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ab10cfb3b580bd147399038a7a2431e9b}{\+\_\+client\+\_\+data}}
+\item 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& \mbox{\hyperlink{class_ws_response_handler_a394876bb9233128373d9aa1c2a6fb392}{\+\_\+request}}
+\item 
+\mbox{\hyperlink{structs__content}{s\+\_\+content}} \mbox{\hyperlink{class_ws_response_handler_a67ccf1b36d737f643651b8df1d207870}{\+\_\+response\+\_\+data}}
+\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_ad89c7d5cc6459655f69f0f4db824757f}{\+\_\+headers}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Handles HTTP requests that require CGI script execution. 
+
+The {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}} class is responsible for executing CGI scripts in response to HTTP requests, capturing their output, and sending the appropriate HTTP responses back to the client. It manages environment setup, process execution, inter-\/process communication via pipes, and error handling throughout the CGI execution lifecycle.
+
+
+\begin{DoxyItemize}
+\item {\bfseries{CGI Execution}}\+: Executes external scripts or programs as per the CGI specification.
+\item {\bfseries{Environment Management}}\+: Sets up and cleans up environment variables required by the CGI script.
+\item {\bfseries{Process Handling}}\+: Manages child processes, including fork and exec operations.
+\item {\bfseries{Response Parsing}}\+: Parses the output from the CGI script to construct valid HTTP responses.
+\item {\bfseries{Error Handling}}\+: Provides robust error detection and handling mechanisms to ensure server stability.
+\end{DoxyItemize}\hypertarget{class_http_c_g_i_handler_autotoc_md0}{}\doxysubsubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{class_http_c_g_i_handler_autotoc_md0}
+
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler(...)}}\+: Constructor that initializes the handler with necessary configurations.
+\item {\ttfamily \doxylink{class_http_c_g_i_handler_ae864a41568f2402a6bd1286f2e7889f9}{\texorpdfstring{$\sim$}{\string~}\+Http\+CGIHandler()}}\+: Destructor that cleans up resources.
+\item {\ttfamily bool \doxylink{class_http_c_g_i_handler_ae0dbcacc259b7c0d4a3560661e1b3a59}{handle\+\_\+request()}}\+: Main method to process the CGI request.
+\end{DoxyItemize}\hypertarget{class_http_c_g_i_handler_autotoc_md1}{}\doxysubsubsubsection{\texorpdfstring{Private Methods}{Private Methods}}\label{class_http_c_g_i_handler_autotoc_md1}
+
+\begin{DoxyItemize}
+\item {\ttfamily bool cgi\+\_\+execute()}\+: Executes the CGI script and manages pipes and processes.
+\item {\ttfamily void get\+\_\+file\+\_\+content(int pid, int (\&fd)\mbox{[}2\mbox{]})}\+: Reads the CGI output from the pipe.
+\item {\ttfamily std\+::vector\texorpdfstring{$<$}{<}char\texorpdfstring{$\ast$}{*}\texorpdfstring{$>$}{>} cgi\+\_\+environment()}\+: Sets up the CGI environment variables.
+\item {\ttfamily void free\+\_\+cgi\+\_\+env()}\+: Frees the allocated environment variables.
+\item {\ttfamily bool send\+\_\+response(const std\+::string \&body, const std\+::string \&path)}\+: Sends the response to the client.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+This class is implemented as part of Web\+Server Project. Some errors controls are part of previous process. 
+\end{DoxyNote}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_http_c_g_i_handler_a1259ba77c179cee71ca294bcd269ca65}\index{HttpCGIHandler@{HttpCGIHandler}!HttpCGIHandler@{HttpCGIHandler}}
+\index{HttpCGIHandler@{HttpCGIHandler}!HttpCGIHandler@{HttpCGIHandler}}
+\doxysubsubsection{\texorpdfstring{HttpCGIHandler()}{HttpCGIHandler()}}
+{\footnotesize\ttfamily \label{class_http_c_g_i_handler_a1259ba77c179cee71ca294bcd269ca65} 
+Http\+CGIHandler\+::\+Http\+CGIHandler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{, }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Constructs an {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}} for processing CGI requests. 
+
+Initializes the CGI handler with the given location configuration, logger, client data, request details, and file descriptor. It logs the initialization process and ensures that critical pointers are valid.
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & Pointer to the {\ttfamily \doxylink{struct_location_config}{Location\+Config}} containing server configuration. \\
+\hline
+{\em log} & Pointer to the {\ttfamily \doxylink{class_logger}{Logger}} instance for logging activities. \\
+\hline
+{\em client\+\_\+data} & Pointer to {\ttfamily \doxylink{class_client_data}{Client\+Data}} containing client connection details. \\
+\hline
+{\em request} & Reference to the {\ttfamily \doxylink{structs__request}{s\+\_\+request}} structure with the request information. \\
+\hline
+{\em fd} & File descriptor associated with the client connection. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_http_c_g_i_handler_ae864a41568f2402a6bd1286f2e7889f9}\index{HttpCGIHandler@{HttpCGIHandler}!````~HttpCGIHandler@{\texorpdfstring{$\sim$}{\string~}HttpCGIHandler}}
+\index{````~HttpCGIHandler@{\texorpdfstring{$\sim$}{\string~}HttpCGIHandler}!HttpCGIHandler@{HttpCGIHandler}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}HttpCGIHandler()}{\string~HttpCGIHandler()}}
+{\footnotesize\ttfamily \label{class_http_c_g_i_handler_ae864a41568f2402a6bd1286f2e7889f9} 
+Http\+CGIHandler\+::\texorpdfstring{$\sim$}{\string~}\+Http\+CGIHandler (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destructor for {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}}, responsible for cleaning up resources. 
+
+This destructor frees the allocated CGI environment variables and logs the cleanup process. It ensures that no exceptions escape the destructor to maintain exception safety. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_http_c_g_i_handler_ae0dbcacc259b7c0d4a3560661e1b3a59}\index{HttpCGIHandler@{HttpCGIHandler}!handle\_request@{handle\_request}}
+\index{handle\_request@{handle\_request}!HttpCGIHandler@{HttpCGIHandler}}
+\doxysubsubsection{\texorpdfstring{handle\_request()}{handle\_request()}}
+{\footnotesize\ttfamily \label{class_http_c_g_i_handler_ae0dbcacc259b7c0d4a3560661e1b3a59} 
+bool Http\+CGIHandler\+::handle\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Handles the CGI request by executing the CGI script and sending the response. 
+
+This method executes the CGI script, processes its output, and constructs an HTTP response to be sent back to the client. It performs validation on the CGI output, ensuring that necessary headers like {\ttfamily Content-\/\+Type} are present.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the response is successfully sent; {\ttfamily false} if an error occurs.
+\end{DoxyReturn}
+
+\begin{DoxyItemize}
+\item {\bfseries{CGI Execution}}\+: Calls {\ttfamily cgi\+\_\+execute()} to run the CGI script.
+\item {\bfseries{Response Validation}}\+: Checks if the CGI script produced any output.
+\item {\bfseries{Header Parsing}}\+: Extracts headers and status code from the CGI response.
+\item {\bfseries{Error Handling}}\+: Sends appropriate error responses if validation fails. 
+\end{DoxyItemize}
+
+Reimplemented from \mbox{\hyperlink{class_ws_response_handler_ac424b9087f15dc526de36c473dd0b99b}{Ws\+Response\+Handler}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_http_c_g_i_handler_8hpp}{Http\+CGIHandler.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_http_c_g_i_handler_8cpp}{Http\+CGIHandler.\+cpp}}\end{DoxyCompactItemize}

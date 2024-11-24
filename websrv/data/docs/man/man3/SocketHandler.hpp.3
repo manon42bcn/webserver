@@ -1,0 +1,64 @@
+.TH "websrv/inc/SocketHandler.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/SocketHandler.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'WebserverException\&.hpp'\fP
+.br
+\fR#include 'WebserverCache\&.hpp'\fP
+.br
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <sys/types\&.h>\fP
+.br
+\fR#include <dirent\&.h>\fP
+.br
+\fR#include <sys/stat\&.h>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBSocketHandler\fP"
+.br
+.RI "Manages socket operations and configurations for a server\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSH_NAME\fP   'SocketHandler'"
+.br
+.ti -1c
+.RI "#define \fBSOCKET_BACKLOG_QUEUE\fP   2048"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define SH_NAME   'SocketHandler'"
+
+.SS "#define SOCKET_BACKLOG_QUEUE   2048"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

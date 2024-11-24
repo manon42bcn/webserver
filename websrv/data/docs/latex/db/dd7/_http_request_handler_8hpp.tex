@@ -1,0 +1,71 @@
+\doxysection{websrv/inc/\+Http\+Request\+Handler.hpp File Reference}
+\hypertarget{_http_request_handler_8hpp}{}\label{_http_request_handler_8hpp}\index{websrv/inc/HttpRequestHandler.hpp@{websrv/inc/HttpRequestHandler.hpp}}
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include "{}http\+\_\+enum\+\_\+codes.\+hpp"{}}\newline
+{\ttfamily \#include "{}Client\+Data.\+hpp"{}}\newline
+{\ttfamily \#include "{}Logger.\+hpp"{}}\newline
+{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structe__chunk}{e\+\_\+chunk}}
+\item 
+class \mbox{\hyperlink{class_http_request_handler}{Http\+Request\+Handler}}
+\begin{DoxyCompactList}\small\item\em Handles HTTP requests by parsing, validating, and dispatching them to appropriate response handlers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_http_request_handler_8hpp_aa354e1c239a04ecdbb5951a198f26d5e}{RH\+\_\+\+NAME}}~"{}Http\+Request\+Handler"{}
+\item 
+\#define \mbox{\hyperlink{_http_request_handler_8hpp_adc4fda43783b856c4f81ec7aa1b28723}{BUFFER\+\_\+\+REQUEST}}~2048
+\item 
+\#define \mbox{\hyperlink{_http_request_handler_8hpp_a979f94138dd60d9a284b815812824248}{URI\+\_\+\+MAX}}~2048
+\item 
+\#define \mbox{\hyperlink{_http_request_handler_8hpp_ab400cc7c8787796a32ff06fb899a9ac2}{MAX\+\_\+\+HEADER}}~16384
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structe__chunk}{e\+\_\+chunk}} \mbox{\hyperlink{_http_request_handler_8hpp_a4799e7041919155e42f9e7b7a4852921}{t\+\_\+chunk}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{_http_request_handler_8hpp_adc4fda43783b856c4f81ec7aa1b28723}\index{HttpRequestHandler.hpp@{HttpRequestHandler.hpp}!BUFFER\_REQUEST@{BUFFER\_REQUEST}}
+\index{BUFFER\_REQUEST@{BUFFER\_REQUEST}!HttpRequestHandler.hpp@{HttpRequestHandler.hpp}}
+\doxysubsubsection{\texorpdfstring{BUFFER\_REQUEST}{BUFFER\_REQUEST}}
+{\footnotesize\ttfamily \label{_http_request_handler_8hpp_adc4fda43783b856c4f81ec7aa1b28723} 
+\#define BUFFER\+\_\+\+REQUEST~2048}
+
+\Hypertarget{_http_request_handler_8hpp_ab400cc7c8787796a32ff06fb899a9ac2}\index{HttpRequestHandler.hpp@{HttpRequestHandler.hpp}!MAX\_HEADER@{MAX\_HEADER}}
+\index{MAX\_HEADER@{MAX\_HEADER}!HttpRequestHandler.hpp@{HttpRequestHandler.hpp}}
+\doxysubsubsection{\texorpdfstring{MAX\_HEADER}{MAX\_HEADER}}
+{\footnotesize\ttfamily \label{_http_request_handler_8hpp_ab400cc7c8787796a32ff06fb899a9ac2} 
+\#define MAX\+\_\+\+HEADER~16384}
+
+\Hypertarget{_http_request_handler_8hpp_aa354e1c239a04ecdbb5951a198f26d5e}\index{HttpRequestHandler.hpp@{HttpRequestHandler.hpp}!RH\_NAME@{RH\_NAME}}
+\index{RH\_NAME@{RH\_NAME}!HttpRequestHandler.hpp@{HttpRequestHandler.hpp}}
+\doxysubsubsection{\texorpdfstring{RH\_NAME}{RH\_NAME}}
+{\footnotesize\ttfamily \label{_http_request_handler_8hpp_aa354e1c239a04ecdbb5951a198f26d5e} 
+\#define RH\+\_\+\+NAME~"{}Http\+Request\+Handler"{}}
+
+\Hypertarget{_http_request_handler_8hpp_a979f94138dd60d9a284b815812824248}\index{HttpRequestHandler.hpp@{HttpRequestHandler.hpp}!URI\_MAX@{URI\_MAX}}
+\index{URI\_MAX@{URI\_MAX}!HttpRequestHandler.hpp@{HttpRequestHandler.hpp}}
+\doxysubsubsection{\texorpdfstring{URI\_MAX}{URI\_MAX}}
+{\footnotesize\ttfamily \label{_http_request_handler_8hpp_a979f94138dd60d9a284b815812824248} 
+\#define URI\+\_\+\+MAX~2048}
+
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{_http_request_handler_8hpp_a4799e7041919155e42f9e7b7a4852921}\index{HttpRequestHandler.hpp@{HttpRequestHandler.hpp}!t\_chunk@{t\_chunk}}
+\index{t\_chunk@{t\_chunk}!HttpRequestHandler.hpp@{HttpRequestHandler.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_chunk}{t\_chunk}}
+{\footnotesize\ttfamily \label{_http_request_handler_8hpp_a4799e7041919155e42f9e7b7a4852921} 
+typedef struct \mbox{\hyperlink{structe__chunk}{e\+\_\+chunk}} \mbox{\hyperlink{_http_request_handler_8hpp_a4799e7041919155e42f9e7b7a4852921}{t\+\_\+chunk}}}
+

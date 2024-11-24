@@ -1,0 +1,178 @@
+.TH "HttpMultipartHandler" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HttpMultipartHandler \- Manages HTTP requests with multipart form data for processing and validation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <HttpMultipartHandler\&.hpp>\fP
+.PP
+Inherits \fBWsResponseHandler\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHttpMultipartHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs an \fR\fBHttpMultipartHandler\fP\fP for handling multipart HTTP requests\&. "
+.ti -1c
+.RI "bool \fBhandle_request\fP ()"
+.br
+.RI "Processes the HTTP request based on the method type\&. "
+.in -1c
+
+Public Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "\fBWsResponseHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs a \fR\fBWsResponseHandler\fP\fP to manage web server responses\&. "
+.ti -1c
+.RI "virtual \fB~WsResponseHandler\fP ()"
+.br
+.RI "Destructor for the \fR\fBWsResponseHandler\fP\fP class\&. "
+.ti -1c
+.RI "bool \fBsend_error_response\fP ()"
+.br
+.RI "Sends an HTTP error response to the client, using a custom error page if available\&. "
+.ti -1c
+.RI "bool \fBredirection\fP ()"
+.br
+.RI "Handles HTTP redirection for the current request\&. "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "virtual bool \fBhandle_get\fP ()"
+.br
+.RI "Handles HTTP GET requests, validating access, resource data, and sending a response\&. "
+.ti -1c
+.RI "bool \fBhandle_delete\fP ()"
+.br
+.RI "Handles HTTP DELETE requests by checking permissions and deleting the specified resource\&. "
+.ti -1c
+.RI "virtual void \fBget_file_content\fP (std::string &path)"
+.br
+.RI "Retrieves the content of a file specified by the path\&. "
+.ti -1c
+.RI "bool \fBsave_file\fP (const std::string &save_path, const std::string &content)"
+.br
+.RI "Saves the provided content to a specified file path\&. "
+.ti -1c
+.RI "virtual std::string \fBheader\fP (int code, size_t content_size, std::string mime)"
+.br
+.RI "Constructs an HTTP response header based on provided parameters\&. "
+.ti -1c
+.RI "virtual bool \fBsend_response\fP (const std::string &body, const std::string &path)"
+.br
+.RI "Sends an HTTP response with the specified body content and inferred MIME type\&. "
+.ti -1c
+.RI "bool \fBsender\fP (const std::string &body)"
+.br
+.RI "Sends the HTTP response to the client through the socket file descriptor\&. "
+.ti -1c
+.RI "std::string \fBdefault_plain_error\fP ()"
+.br
+.RI "Generates a default HTML error page for the HTTP response\&. "
+.ti -1c
+.RI "void \fBturn_off_sanity\fP (\fBe_http_sts\fP status, std::string detail)"
+.br
+.RI "Disables further request processing by marking the request as invalid\&. "
+.in -1c
+
+Protected Attributes inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fB_location\fP"
+.br
+.ti -1c
+.RI "const \fBLogger\fP * \fB_log\fP"
+.br
+.ti -1c
+.RI "\fBClientData\fP * \fB_client_data\fP"
+.br
+.ti -1c
+.RI "\fBs_request\fP & \fB_request\fP"
+.br
+.ti -1c
+.RI "\fBs_content\fP \fB_response_data\fP"
+.br
+.ti -1c
+.RI "std::string \fB_headers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages HTTP requests with multipart form data for processing and validation\&. 
+
+\fR\fBHttpMultipartHandler\fP\fP extends \fR\fBWsResponseHandler\fP\fP to handle and process HTTP POST requests containing multipart form data\&. It validates the payload, manages file storage, and handles permission checks, making it suitable for handling complex form submissions and file uploads\&.
+.SS "Primary Responsibilities"
+.IP "\(bu" 2
+Parses and validates multipart form-data payloads\&.
+.IP "\(bu" 2
+Ensures secure handling of file uploads by checking permissions\&.
+.IP "\(bu" 2
+Saves valid files to the designated server directory\&.
+.PP
+.SS "Workflow"
+.IP "\(bu" 2
+\fR\fBhandle_request()\fP\fP: Entrypoint method
+.IP "\(bu" 2
+\fRhandle_post()\fP: Processes POST requests specifically for multipart form data\&.
+.IP "\(bu" 2
+\fRvalidate_payload()\fP: Confirms that the request meets content-length, content-type, and payload requirements\&.
+.IP "\(bu" 2
+\fRparse_multipart_data()\fP: Splits and processes each multipart section, extracting headers and content\&. 
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HttpMultipartHandler::HttpMultipartHandler (const \fBLocationConfig\fP * location, const \fBLogger\fP * log, \fBClientData\fP * client_data, \fBs_request\fP & request, int fd)"
+
+.PP
+Constructs an \fR\fBHttpMultipartHandler\fP\fP for handling multipart HTTP requests\&. Initializes the handler with the specified location configuration, logger, client data, and file descriptor\&. Logs the initialization process\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP Pointer to the \fR\fBLocationConfig\fP\fP object containing server configuration details\&. 
+.br
+\fIlog\fP Pointer to the \fR\fBLogger\fP\fP instance for logging\&. 
+.br
+\fIclient_data\fP Pointer to \fR\fBClientData\fP\fP with details of the client connection\&. 
+.br
+\fIrequest\fP Reference to \fR\fBs_request\fP\fP with the incoming request information\&. 
+.br
+\fIfd\fP File descriptor associated with the client connection\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HttpMultipartHandler::handle_request ()\fR [virtual]\fP"
+
+.PP
+Processes the HTTP request based on the method type\&. This function validates the request method and if the method is \fRPOST\fP, it forwards the request to the \fRhandle_post\fP method\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the request was successfully processed, \fRfalse\fP otherwise\&.
+.RE
+.PP
+.IP "\(bu" 2
+\fBSupported Method\fP: Only \fRPOST\fP method is allowed; other methods will trigger an error response\&. 
+.PP
+
+.PP
+Reimplemented from \fBWsResponseHandler\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

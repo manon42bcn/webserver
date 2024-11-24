@@ -1,0 +1,62 @@
+.TH "CacheRequest" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CacheRequest \- Represents a request to retrieve a cached resource\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ws_structs\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCacheRequest\fP (const std::string &u, const \fBServerConfig\fP *h, const \fBLocationConfig\fP *loc, const std::string &np)"
+.br
+.ti -1c
+.RI "\fBCacheRequest\fP ()"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBurl\fP"
+.br
+.ti -1c
+.RI "const \fBServerConfig\fP * \fBhost\fP"
+.br
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fBlocation\fP"
+.br
+.ti -1c
+.RI "std::string \fBnormalized_path\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a request to retrieve a cached resource\&. 
+
+This structure stores metadata about a cache request, including the URL, server configuration, location configuration, and normalized path\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "CacheRequest::CacheRequest (const std::string & u, const \fBServerConfig\fP * h, const \fBLocationConfig\fP * loc, const std::string & np)\fR [inline]\fP"
+
+.SS "CacheRequest::CacheRequest ()\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "const \fBServerConfig\fP* CacheRequest::host"
+
+.SS "const \fBLocationConfig\fP* CacheRequest::location"
+
+.SS "std::string CacheRequest::normalized_path"
+
+.SS "std::string CacheRequest::url"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

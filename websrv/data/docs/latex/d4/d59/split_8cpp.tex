@@ -1,0 +1,57 @@
+\doxysection{websrv/srcs/parse/split.cpp File Reference}
+\hypertarget{split_8cpp}{}\label{split_8cpp}\index{websrv/srcs/parse/split.cpp@{websrv/srcs/parse/split.cpp}}
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{split_8cpp_aeec630ecf7a3effb4f99320e5beaacb9}{split\+\_\+error\+\_\+pages}} (std\+::string error\+\_\+pages)
+\begin{DoxyCompactList}\small\item\em Splits a string of error pages into a map associating error codes with file paths, replacing \textquotesingle{}x\textquotesingle{} in the path with the last digit of the error code. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{split_8cpp_a4fb6b94b805be4fb4c654edf65cf208a}{split\+\_\+default\+\_\+pages}} (std\+::string default\+\_\+pages)
+\begin{DoxyCompactList}\small\item\em Splits a string of default pages into a vector of strings, separated by spaces. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{split_8cpp_a39f3b9b84dcf2428b60f3c14438ba3fc}{split\+\_\+string}} (std\+::string str)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{split_8cpp_a4fb6b94b805be4fb4c654edf65cf208a}\index{split.cpp@{split.cpp}!split\_default\_pages@{split\_default\_pages}}
+\index{split\_default\_pages@{split\_default\_pages}!split.cpp@{split.cpp}}
+\doxysubsubsection{\texorpdfstring{split\_default\_pages()}{split\_default\_pages()}}
+{\footnotesize\ttfamily \label{split_8cpp_a4fb6b94b805be4fb4c654edf65cf208a} 
+std\+::vector$<$ std\+::string $>$ split\+\_\+default\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+pages}{}\end{DoxyParamCaption})}
+
+
+
+Splits a string of default pages into a vector of strings, separated by spaces. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em default\+\_\+pages} & The string containing default pages. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A vector of default page strings. 
+\end{DoxyReturn}
+\Hypertarget{split_8cpp_aeec630ecf7a3effb4f99320e5beaacb9}\index{split.cpp@{split.cpp}!split\_error\_pages@{split\_error\_pages}}
+\index{split\_error\_pages@{split\_error\_pages}!split.cpp@{split.cpp}}
+\doxysubsubsection{\texorpdfstring{split\_error\_pages()}{split\_error\_pages()}}
+{\footnotesize\ttfamily \label{split_8cpp_aeec630ecf7a3effb4f99320e5beaacb9} 
+std\+::map$<$ int, std\+::string $>$ split\+\_\+error\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+pages}{}\end{DoxyParamCaption})}
+
+
+
+Splits a string of error pages into a map associating error codes with file paths, replacing \textquotesingle{}x\textquotesingle{} in the path with the last digit of the error code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error\+\_\+pages} & The string containing error pages. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A map of error codes to file paths. 
+\end{DoxyReturn}
+\Hypertarget{split_8cpp_a39f3b9b84dcf2428b60f3c14438ba3fc}\index{split.cpp@{split.cpp}!split\_string@{split\_string}}
+\index{split\_string@{split\_string}!split.cpp@{split.cpp}}
+\doxysubsubsection{\texorpdfstring{split\_string()}{split\_string()}}
+{\footnotesize\ttfamily \label{split_8cpp_a39f3b9b84dcf2428b60f3c14438ba3fc} 
+std\+::vector$<$ std\+::string $>$ split\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str}{}\end{DoxyParamCaption})}
+

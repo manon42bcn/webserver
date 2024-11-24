@@ -1,0 +1,101 @@
+.TH "ServerConfig" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ServerConfig
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ws_structs\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBServerConfig\fP ()"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "int \fBport\fP"
+.br
+.ti -1c
+.RI "std::string \fBserver_name\fP"
+.br
+.ti -1c
+.RI "std::string \fBserver_root\fP"
+.br
+.ti -1c
+.RI "\fBt_mode\fP \fBerror_mode\fP"
+.br
+.ti -1c
+.RI "std::map< int, std::string > \fBerror_pages\fP"
+.br
+.ti -1c
+.RI "std::map< std::string, struct \fBLocationConfig\fP > \fBlocations\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBdefault_pages\fP"
+.br
+.ti -1c
+.RI "size_t \fBclient_max_body_size\fP"
+.br
+.ti -1c
+.RI "bool \fBautoindex\fP"
+.br
+.ti -1c
+.RI "std::string \fBtemplate_error_page\fP"
+.br
+.ti -1c
+.RI "bool \fBcgi_locations\fP"
+.br
+.ti -1c
+.RI "std::string \fBws_root\fP"
+.br
+.ti -1c
+.RI "std::string \fBws_errors_root\fP"
+.br
+.ti -1c
+.RI "\fBt_mode\fP \fBws_error_mode\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServerConfig::ServerConfig ()\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "bool ServerConfig::autoindex"
+
+.SS "bool ServerConfig::cgi_locations"
+
+.SS "size_t ServerConfig::client_max_body_size"
+
+.SS "std::vector<std::string> ServerConfig::default_pages"
+
+.SS "\fBt_mode\fP ServerConfig::error_mode"
+
+.SS "std::map<int, std::string> ServerConfig::error_pages"
+
+.SS "std::map<std::string, struct \fBLocationConfig\fP> ServerConfig::locations"
+
+.SS "int ServerConfig::port"
+
+.SS "std::string ServerConfig::server_name"
+
+.SS "std::string ServerConfig::server_root"
+
+.SS "std::string ServerConfig::template_error_page"
+
+.SS "\fBt_mode\fP ServerConfig::ws_error_mode"
+
+.SS "std::string ServerConfig::ws_errors_root"
+
+.SS "std::string ServerConfig::ws_root"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

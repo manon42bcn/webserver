@@ -1,0 +1,41 @@
+\doxysection{websrv/srcs/parse/parse.cpp File Reference}
+\hypertarget{parse_8cpp}{}\label{parse_8cpp}\index{websrv/srcs/parse/parse.cpp@{websrv/srcs/parse/parse.cpp}}
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_location_config}{Location\+Config}} \mbox{\hyperlink{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0}{parse\+\_\+location\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+\mbox{\hyperlink{struct_server_config}{Server\+Config}} \mbox{\hyperlink{parse_8cpp_acf955813bbc6c90fa65069a1230db05c}{parse\+\_\+server\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd}{parse\+\_\+servers}} (std\+::vector$<$ std\+::string $>$ raw\+Lines, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798}{parse\+\_\+file}} (std\+::string path, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798}\index{parse.cpp@{parse.cpp}!parse\_file@{parse\_file}}
+\index{parse\_file@{parse\_file}!parse.cpp@{parse.cpp}}
+\doxysubsubsection{\texorpdfstring{parse\_file()}{parse\_file()}}
+{\footnotesize\ttfamily \label{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798} 
+std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0}\index{parse.cpp@{parse.cpp}!parse\_location\_block@{parse\_location\_block}}
+\index{parse\_location\_block@{parse\_location\_block}!parse.cpp@{parse.cpp}}
+\doxysubsubsection{\texorpdfstring{parse\_location\_block()}{parse\_location\_block()}}
+{\footnotesize\ttfamily \label{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0} 
+\mbox{\hyperlink{struct_location_config}{Location\+Config}} parse\+\_\+location\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{parse_8cpp_acf955813bbc6c90fa65069a1230db05c}\index{parse.cpp@{parse.cpp}!parse\_server\_block@{parse\_server\_block}}
+\index{parse\_server\_block@{parse\_server\_block}!parse.cpp@{parse.cpp}}
+\doxysubsubsection{\texorpdfstring{parse\_server\_block()}{parse\_server\_block()}}
+{\footnotesize\ttfamily \label{parse_8cpp_acf955813bbc6c90fa65069a1230db05c} 
+\mbox{\hyperlink{struct_server_config}{Server\+Config}} parse\+\_\+server\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd}\index{parse.cpp@{parse.cpp}!parse\_servers@{parse\_servers}}
+\index{parse\_servers@{parse\_servers}!parse.cpp@{parse.cpp}}
+\doxysubsubsection{\texorpdfstring{parse\_servers()}{parse\_servers()}}
+{\footnotesize\ttfamily \label{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd} 
+std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+

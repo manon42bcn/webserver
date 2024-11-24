@@ -1,0 +1,48 @@
+\doxysection{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/inc/\+Webserver\+Exception.\+hpp}
+\hypertarget{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}{}\label{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{throw}\ \mbox{\hyperlink{class_web_server_exception}{WebServerException}}(\textcolor{stringliteral}{"{}An\ unexpected\ error\ occurred."{}});}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCodeInclude}{0}
+\DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ WebserverException.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Created:\ 2024/11/06\ 08:43:27\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Updated:\ 2024/11/10\ 02:44:10\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#\ ifndef\ \_WEBSERVER\_EXCEPTION\_HPP\_}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ \_WEBSERVER\_EXCEPTION\_HPP\_}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <exception>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{class\ }\mbox{\hyperlink{class_web_server_exception}{WebServerException}}\ :\ \textcolor{keyword}{public}\ std::exception\ \{}
+\DoxyCodeLine{\textcolor{keyword}{private}:}
+\DoxyCodeLine{\ \ \ \ std::string\ \_message;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}:}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}{WebServerException}}(\textcolor{keyword}{const}\ std::string\&\ message)\ :\ \_message(message)\ \{\};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}{WebServerException}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ message)\ :\ \_message(message)\ \{\};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}{WebServerException}}()\ :\ \_message(\textcolor{stringliteral}{"{}WebServer\ Error."{}})\ \{\};}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}{WebServerException}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{class_web_server_exception}{WebServerException}}\&\ other)\ :\ \_message(other.\_message)\ \{\}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_web_server_exception_a4cbdb573ca4d41b725fcee91f43bd446}{\string~WebServerException}}()\ \textcolor{keywordflow}{throw}()\ \{\};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f}{what}}()\ \textcolor{keyword}{const}\ \textcolor{keywordflow}{throw}()\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\_message.c\_str());}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCodeInclude}
+ 

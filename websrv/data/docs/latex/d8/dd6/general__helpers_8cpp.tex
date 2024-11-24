@@ -1,0 +1,627 @@
+\doxysection{websrv/srcs/general\+\_\+helpers.cpp File Reference}
+\hypertarget{general__helpers_8cpp}{}\label{general__helpers_8cpp}\index{websrv/srcs/general\_helpers.cpp@{websrv/srcs/general\_helpers.cpp}}
+{\ttfamily \#include "{}http\+\_\+enum\+\_\+codes.\+hpp"{}}\newline
+{\ttfamily \#include "{}ws\+\_\+permissions\+\_\+bitwise.\+hpp"{}}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_ad3165bd822066c8f5e48045057f94913}{int\+\_\+to\+\_\+string}} (int number)
+\begin{DoxyCompactList}\small\item\em Converts an integer to a string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_ad5849662d9826d4f6ac56a07c6088432}{is\+\_\+dir}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Checks if a given path is a directory. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_a30a27fc5392e67f42f348e3ac4e38add}{is\+\_\+file}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Checks if a given path is a regular file. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc}{starts\+\_\+with}} (const std\+::string \&str, const std\+::string \&prefix)
+\begin{DoxyCompactList}\small\item\em Converts an integer to a string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\+\_\+trim\+\_\+char}} (char c, const std\+::string \&chars\+\_\+to\+\_\+trim)
+\begin{DoxyCompactList}\small\item\em Checks if a character should be trimmed. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_afb6cea8bf286eae7a246422b3ac5751d}{trim}} (const std\+::string \&str, const std\+::string \&chars\+\_\+to\+\_\+trim="{} \textbackslash{}t\textbackslash{}n\textbackslash{}r\textbackslash{}f\textbackslash{}v"{})
+\begin{DoxyCompactList}\small\item\em Trims characters from both ends of a string. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_ab0e7abb140f3aefb2efa0a59374bf97d}{to\+\_\+lowercase}} (const std\+::string \&input)
+\begin{DoxyCompactList}\small\item\em Converts a string to lowercase. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_ab63ae0dbb73446b4a9d635d45dab4658}{is\+\_\+valid\+\_\+size\+\_\+t}} (const std\+::string \&value)
+\begin{DoxyCompactList}\small\item\em Validates if a string represents a valid {\ttfamily size\+\_\+t} value. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{general__helpers_8cpp_af31c1ae26a81eba0c56016b665ce7a7b}{str\+\_\+to\+\_\+size\+\_\+t}} (const std\+::string \&value)
+\begin{DoxyCompactList}\small\item\em Converts a valid numeric string to {\ttfamily size\+\_\+t}. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a411f70b0adb50fb351494b96143fb0ce}{http\+\_\+status\+\_\+description}} (\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} code)
+\begin{DoxyCompactList}\small\item\em Get a standard message for a http code. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} \mbox{\hyperlink{general__helpers_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}{parse\+\_\+method}} (const std\+::string \&method)
+\begin{DoxyCompactList}\small\item\em Parses an HTTP method string and returns the corresponding method mask. \end{DoxyCompactList}\item 
+std\+::map$<$ std\+::string, std\+::string $>$ \mbox{\hyperlink{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60}{create\+\_\+mime\+\_\+types}} ()
+\begin{DoxyCompactList}\small\item\em Creates and returns a map of file extensions to MIME types. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a83e2cc49561a109eab7a3c41845ef0c7}{get\+\_\+mime\+\_\+type}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Retrieves the MIME type based on the file extension. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae}{valid\+\_\+mime\+\_\+type}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Validate the MIME type based on the file extension. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_a775a50523b2792565271f85e8d63d72b}{black\+\_\+list\+\_\+extension}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Checks if a given file path has a disallowed extension. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a5671fb0d0191f86588463c6e29911fa6}{replace\+\_\+template}} (std\+::string content, const std\+::string \&key, const std\+::string \&value)
+\begin{DoxyCompactList}\small\item\em Replaces all occurrences of a key in the content with a given value. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a7d8d6608f966337610cf3eaf4b305d7e}{clean\+\_\+host}} (std\+::string \&host\+\_\+to\+\_\+clean)
+\begin{DoxyCompactList}\small\item\em Cleans up a host string by removing protocol prefixes, port numbers, and path segments. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78}{normalize\+\_\+host}} (const std\+::string \&host)
+\item 
+std\+::string \mbox{\hyperlink{general__helpers_8cpp_a1405af62ae4c7c679726a051ba7bc3a0}{get\+\_\+header\+\_\+value}} (std\+::string \&haystack, std\+::string needle, const std\+::string \&sep)
+\begin{DoxyCompactList}\small\item\em Extracts the value of a specific HTTP header field. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{general__helpers_8cpp_ab93fb754820f510dc2d17f64ee15a773}{is\+\_\+cgi}} (const std\+::string \&filename)
+\begin{DoxyCompactList}\small\item\em Checks if a file is a CGI script based on its extension. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{general__helpers_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a}{end\+\_\+of\+\_\+header\+\_\+system}} (std\+::string \&header)
+\begin{DoxyCompactList}\small\item\em Finds the end of the HTTP header in a string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{general__helpers_8cpp_a775a50523b2792565271f85e8d63d72b}\index{general\_helpers.cpp@{general\_helpers.cpp}!black\_list\_extension@{black\_list\_extension}}
+\index{black\_list\_extension@{black\_list\_extension}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{black\_list\_extension()}{black\_list\_extension()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a775a50523b2792565271f85e8d63d72b} 
+bool black\+\_\+list\+\_\+extension (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a given file path has a disallowed extension. 
+
+This function determines whether the file extension of the provided path is part of a predefined blacklist of disallowed extensions. If the extension is blacklisted, the function returns {\ttfamily true}; otherwise, it returns {\ttfamily false}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & A string representing the file path to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the file\textquotesingle{}s extension is blacklisted; otherwise, {\ttfamily false}.
+\end{DoxyReturn}
+
+\begin{DoxyItemize}
+\item The function uses a static set of disallowed extensions, which is initialized on the first call. The blacklist includes extensions such as {\ttfamily .exe}, {\ttfamily .bat}, {\ttfamily .sh}, {\ttfamily .php}, {\ttfamily .pl}, and {\ttfamily .py}.
+\item The function extracts the file extension by locating the last {\ttfamily .} character in the file path and comparing the substring to the blacklist.
+\item If no {\ttfamily .} character is found in the path, or if the extension is not in the blacklist, the function returns {\ttfamily false}. 
+\end{DoxyItemize}\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a7d8d6608f966337610cf3eaf4b305d7e}\index{general\_helpers.cpp@{general\_helpers.cpp}!clean\_host@{clean\_host}}
+\index{clean\_host@{clean\_host}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{clean\_host()}{clean\_host()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a7d8d6608f966337610cf3eaf4b305d7e} 
+std\+::string clean\+\_\+host (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host\+\_\+to\+\_\+clean}{}\end{DoxyParamCaption})}
+
+
+
+Cleans up a host string by removing protocol prefixes, port numbers, and path segments. 
+
+This function processes a host string to extract the clean hostname by\+:
+\begin{DoxyEnumerate}
+\item Removing any leading protocol prefixes (e.\+g., "{}http\+://"{}).
+\item Stripping port numbers appended with a colon (e.\+g., "{}\+:8080"{}).
+\item Removing any path segments following the hostname (e.\+g., "{}/path/to/resource"{}).
+\end{DoxyEnumerate}
+
+
+\begin{DoxyParams}{Parameters}
+{\em host\+\_\+to\+\_\+clean} & A reference to the original host string to be cleaned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A cleaned host string containing only the hostname without prefixes, ports, or paths.
+\end{DoxyReturn}
+
+\begin{DoxyItemize}
+\item The function works step by step\+:
+\begin{DoxyEnumerate}
+\item Finds and removes the {\ttfamily //} sequence, which typically appears in protocol prefixes like "{}http\+://"{}.
+\item Removes anything after the last {\ttfamily \+:} to discard port numbers.
+\item Iteratively removes any leading {\ttfamily /} characters and paths.
+\end{DoxyEnumerate}
+\item If the input string does not contain these patterns, it is returned as-\/is.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+
+\begin{DoxyItemize}
+\item This function assumes the input string follows a valid URL-\/like format.
+\item The function performs string operations such as {\ttfamily find} and {\ttfamily substr}, which are safe in C++98. 
+\end{DoxyItemize}
+\end{DoxyNote}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60}\index{general\_helpers.cpp@{general\_helpers.cpp}!create\_mime\_types@{create\_mime\_types}}
+\index{create\_mime\_types@{create\_mime\_types}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{create\_mime\_types()}{create\_mime\_types()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60} 
+std\+::map$<$ std\+::string, std\+::string $>$ create\+\_\+mime\+\_\+types (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Creates and returns a map of file extensions to MIME types. 
+
+This method generates a map that associates common file extensions (e.\+g., "{}.\+html"{}, "{}.\+jpg"{}) with their corresponding MIME types (e.\+g., "{}text/html"{}, "{}image/jpeg"{}). The map is used to determine the {\ttfamily Content-\/\+Type} header when serving files.
+
+
+\begin{DoxyItemize}
+\item The method ensures that the map is initialized only once, using a static map to avoid recreating the map on each call. If additional MIME types are required, they can be added to the map.
+\item Common MIME types such as {\ttfamily text/html}, {\ttfamily application/javascript}, and {\ttfamily image/jpeg} are included.
+\end{DoxyItemize}
+
+\begin{DoxyReturn}{Returns}
+std\+::map$<$std\+::string, std\+::string$>$ A map that associates file extensions with their MIME types. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a}\index{general\_helpers.cpp@{general\_helpers.cpp}!end\_of\_header\_system@{end\_of\_header\_system}}
+\index{end\_of\_header\_system@{end\_of\_header\_system}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{end\_of\_header\_system()}{end\_of\_header\_system()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a} 
+size\+\_\+t end\+\_\+of\+\_\+header\+\_\+system (\begin{DoxyParamCaption}\item[{std\+::string \&}]{header}{}\end{DoxyParamCaption})}
+
+
+
+Finds the end of the HTTP header in a string. 
+
+This function locates the end of the HTTP header in the given string by searching for the sequence {\ttfamily \textbackslash{}\textbackslash{}r\textbackslash{}\textbackslash{}n\textbackslash{}\textbackslash{}r\textbackslash{}\textbackslash{}n} or {\ttfamily \textbackslash{}\textbackslash{}n\textbackslash{}\textbackslash{}n}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em header} & The HTTP header string to be analyzed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The position where the header ends. If no header end is found, returns {\ttfamily std\+::string\+::npos}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a1405af62ae4c7c679726a051ba7bc3a0}\index{general\_helpers.cpp@{general\_helpers.cpp}!get\_header\_value@{get\_header\_value}}
+\index{get\_header\_value@{get\_header\_value}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_header\_value()}{get\_header\_value()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a1405af62ae4c7c679726a051ba7bc3a0} 
+std\+::string get\+\_\+header\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string \&}]{haystack}{, }\item[{std\+::string}]{needle}{, }\item[{const std\+::string \&}]{sep}{}\end{DoxyParamCaption})}
+
+
+
+Extracts the value of a specific HTTP header field. 
+
+This method searches the provided header string for a specific key and returns the associated value. The search is case-\/insensitive, and it assumes the format {\ttfamily key\+: value}.
+
+
+\begin{DoxyItemize}
+\item The method first converts the key and the header string to lowercase for a case-\/insensitive search.
+\item The value is extracted by searching for the next occurrence of {\ttfamily \textbackslash{}r\textbackslash{}n}, which signifies the end of the value.
+\item If the key is not found, the method returns an empty string.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em haystack} & The HTTP Header format string to be searched over it. \\
+\hline
+{\em needle} & The key for which the value is to be retrieved (e.\+g., "{}content-\/type"{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string The value associated with the key, or an empty string if the key is not found. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a83e2cc49561a109eab7a3c41845ef0c7}\index{general\_helpers.cpp@{general\_helpers.cpp}!get\_mime\_type@{get\_mime\_type}}
+\index{get\_mime\_type@{get\_mime\_type}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_mime\_type()}{get\_mime\_type()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a83e2cc49561a109eab7a3c41845ef0c7} 
+std\+::string get\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Retrieves the MIME type based on the file extension. 
+
+This method looks up the MIME type corresponding to the file extension in the provided path. If the file extension is recognized, the associated MIME type is returned. If the extension is not recognized, it defaults to {\ttfamily text/plain}.
+
+
+\begin{DoxyItemize}
+\item The method extracts the file extension by searching for the last \textquotesingle{}.\textquotesingle{} character in the path.
+\item If the extension is found in the {\ttfamily mime\+\_\+types} map, the corresponding MIME type is returned.
+\item If no recognized extension is found, the default MIME type {\ttfamily text/plain} is returned.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The file system path to the file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string The MIME type corresponding to the file extension, or {\ttfamily text/plain} if not found. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a411f70b0adb50fb351494b96143fb0ce}\index{general\_helpers.cpp@{general\_helpers.cpp}!http\_status\_description@{http\_status\_description}}
+\index{http\_status\_description@{http\_status\_description}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{http\_status\_description()}{http\_status\_description()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a411f70b0adb50fb351494b96143fb0ce} 
+std\+::string http\+\_\+status\+\_\+description (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}]{code}{}\end{DoxyParamCaption})}
+
+
+
+Get a standard message for a http code. 
+
+\hypertarget{general__helpers_8cpp_Request}{}\doxysubsection{\texorpdfstring{Helpers}{Helpers}}\label{general__helpers_8cpp_Request}
+
+\begin{DoxyParams}{Parameters}
+{\em code} & http code. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+short standard message associated with the http code. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ad3165bd822066c8f5e48045057f94913}\index{general\_helpers.cpp@{general\_helpers.cpp}!int\_to\_string@{int\_to\_string}}
+\index{int\_to\_string@{int\_to\_string}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{int\_to\_string()}{int\_to\_string()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ad3165bd822066c8f5e48045057f94913} 
+std\+::string int\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{int}]{number}{}\end{DoxyParamCaption})}
+
+
+
+Converts an integer to a string. 
+
+This function converts an integer to its string representation using a stringstream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em number} & The integer to be converted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the provided integer. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ab93fb754820f510dc2d17f64ee15a773}\index{general\_helpers.cpp@{general\_helpers.cpp}!is\_cgi@{is\_cgi}}
+\index{is\_cgi@{is\_cgi}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_cgi()}{is\_cgi()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ab93fb754820f510dc2d17f64ee15a773} 
+bool is\+\_\+cgi (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a file is a CGI script based on its extension. 
+
+This function checks whether the given filename corresponds to a CGI script by looking at its extension. It checks for extensions such as {\ttfamily .py} and {\ttfamily .php}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & The filename to be checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the filename corresponds to a CGI script, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ad5849662d9826d4f6ac56a07c6088432}\index{general\_helpers.cpp@{general\_helpers.cpp}!is\_dir@{is\_dir}}
+\index{is\_dir@{is\_dir}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_dir()}{is\_dir()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ad5849662d9826d4f6ac56a07c6088432} 
+bool is\+\_\+dir (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a given path is a directory. 
+
+This function checks if the provided path corresponds to a directory by using the {\ttfamily stat()} system call.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The path to be checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the path is a directory, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a30a27fc5392e67f42f348e3ac4e38add}\index{general\_helpers.cpp@{general\_helpers.cpp}!is\_file@{is\_file}}
+\index{is\_file@{is\_file}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_file()}{is\_file()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a30a27fc5392e67f42f348e3ac4e38add} 
+bool is\+\_\+file (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a given path is a regular file. 
+
+This function checks if the provided path corresponds to a regular file by using the {\ttfamily stat()} system call.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The path to be checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the path is a regular file, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ab63ae0dbb73446b4a9d635d45dab4658}\index{general\_helpers.cpp@{general\_helpers.cpp}!is\_valid\_size\_t@{is\_valid\_size\_t}}
+\index{is\_valid\_size\_t@{is\_valid\_size\_t}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_valid\_size\_t()}{is\_valid\_size\_t()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ab63ae0dbb73446b4a9d635d45dab4658} 
+bool is\+\_\+valid\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+
+
+
+Validates if a string represents a valid {\ttfamily size\+\_\+t} value. 
+
+This function checks whether the provided string contains only numeric characters (digits), which would make it a valid positive integer for conversion to {\ttfamily size\+\_\+t}.
+
+
+\begin{DoxyItemize}
+\item The function first checks if the string is empty. An empty string is not considered valid.
+\item It then iterates through each character of the string, verifying that all characters are digits.
+\item If all characters are digits and the string is not empty, the function returns {\ttfamily true}.
+\item Otherwise, it returns {\ttfamily false}.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & The string to validate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool True if the string contains only digits, false otherwise. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78}\index{general\_helpers.cpp@{general\_helpers.cpp}!normalize\_host@{normalize\_host}}
+\index{normalize\_host@{normalize\_host}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{normalize\_host()}{normalize\_host()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78} 
+std\+::string normalize\+\_\+host (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host}{}\end{DoxyParamCaption})}
+
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}\index{general\_helpers.cpp@{general\_helpers.cpp}!parse\_method@{parse\_method}}
+\index{parse\_method@{parse\_method}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{parse\_method()}{parse\_method()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995} 
+\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} parse\+\_\+method (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{method}{}\end{DoxyParamCaption})}
+
+
+
+Parses an HTTP method string and returns the corresponding method mask. 
+
+This function maps a given HTTP method string (e.\+g., "{}\+GET"{}, "{}\+POST"{}) to its corresponding predefined method mask ({\ttfamily t\+\_\+methods}). If the method is not recognized, it returns 0.
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & A string representing the HTTP method to parse (e.\+g., "{}\+GET"{}, "{}\+POST"{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The corresponding {\ttfamily t\+\_\+methods} mask if the method is recognized; otherwise, returns 0.
+\end{DoxyReturn}
+
+\begin{DoxyItemize}
+\item The method uses a static map to store the mapping between HTTP method strings and their corresponding bitmask constants (e.\+g., {\ttfamily MASK\+\_\+\+METHOD\+\_\+\+GET} for "{}\+GET"{}).
+\item The map is initialized only once, ensuring efficiency for subsequent calls.
+\item If the provided method string is not found in the map, the function returns 0, indicating an unrecognized or unsupported method.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+
+\begin{DoxyItemize}
+\item Supported methods include\+: "{}\+GET"{}, "{}\+POST"{}, "{}\+DELETE"{}, "{}\+PUT"{}, "{}\+HEAD"{}, "{}\+OPTIONS"{}, and "{}\+PATCH"{}.
+\item This function is case-\/sensitive. Ensure that the input method string matches the expected format (e.\+g., "{}\+GET"{} must be uppercase). 
+\end{DoxyItemize}
+\end{DoxyNote}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a5671fb0d0191f86588463c6e29911fa6}\index{general\_helpers.cpp@{general\_helpers.cpp}!replace\_template@{replace\_template}}
+\index{replace\_template@{replace\_template}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{replace\_template()}{replace\_template()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a5671fb0d0191f86588463c6e29911fa6} 
+std\+::string replace\+\_\+template (\begin{DoxyParamCaption}\item[{std\+::string}]{content}{, }\item[{const std\+::string \&}]{key}{, }\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+
+
+
+Replaces all occurrences of a key in the content with a given value. 
+
+This method searches the provided content for all occurrences of the key and replaces each one with the specified value. It returns the modified content with all replacements made.
+
+
+\begin{DoxyItemize}
+\item The method iterates through the content, finding each occurrence of the key using {\ttfamily std\+::string\+::find()}.
+\item For each occurrence, it replaces the key with the value using {\ttfamily std\+::string\+::replace()}.
+\item If the value contains the key (which could cause an infinite loop), the method does not perform any replacements.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em content} & The content in which to perform the replacements (e.\+g., HTML file content). \\
+\hline
+{\em key} & The key to search for in the content (e.\+g., "{}\{error\+\_\+code\}"{}). \\
+\hline
+{\em value} & The value to replace the key with (e.\+g., "{}404"{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string The content with all occurrences of the key replaced by the value. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc}\index{general\_helpers.cpp@{general\_helpers.cpp}!starts\_with@{starts\_with}}
+\index{starts\_with@{starts\_with}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{starts\_with()}{starts\_with()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc} 
+bool starts\+\_\+with (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{, }\item[{const std\+::string \&}]{prefix}{}\end{DoxyParamCaption})}
+
+
+
+Converts an integer to a string. 
+
+This function converts an integer to its string representation using a stringstream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em number} & The integer to be converted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the provided integer.
+\end{DoxyReturn}
+Checks if a string starts with a given prefix.
+
+This function checks whether the provided string begins with the specified prefix.
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & The string to be checked. \\
+\hline
+{\em prefix} & The prefix to check for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the string starts with the prefix, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_af31c1ae26a81eba0c56016b665ce7a7b}\index{general\_helpers.cpp@{general\_helpers.cpp}!str\_to\_size\_t@{str\_to\_size\_t}}
+\index{str\_to\_size\_t@{str\_to\_size\_t}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{str\_to\_size\_t()}{str\_to\_size\_t()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_af31c1ae26a81eba0c56016b665ce7a7b} 
+size\+\_\+t str\+\_\+to\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+
+
+
+Converts a valid numeric string to {\ttfamily size\+\_\+t}. 
+
+This function converts a valid numeric string (verified externally) to a {\ttfamily size\+\_\+t} value. It assumes that the input string contains only digits, as it should be validated by {\ttfamily \doxylink{general__helpers_8cpp_ab63ae0dbb73446b4a9d635d45dab4658}{is\+\_\+valid\+\_\+size\+\_\+t()}}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & The numeric string to convert to {\ttfamily size\+\_\+t}. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+size\+\_\+t The converted {\ttfamily size\+\_\+t} value. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_ab0e7abb140f3aefb2efa0a59374bf97d}\index{general\_helpers.cpp@{general\_helpers.cpp}!to\_lowercase@{to\_lowercase}}
+\index{to\_lowercase@{to\_lowercase}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{to\_lowercase()}{to\_lowercase()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_ab0e7abb140f3aefb2efa0a59374bf97d} 
+std\+::string to\+\_\+lowercase (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{input}{}\end{DoxyParamCaption})}
+
+
+
+Converts a string to lowercase. 
+
+This function iterates through each character in the input string and converts it to lowercase using {\ttfamily std\+::tolower()}. It handles characters safely by casting them to {\ttfamily unsigned char}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & The input string to be converted to lowercase. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string A new string where all characters are lowercase. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}\index{general\_helpers.cpp@{general\_helpers.cpp}!to\_trim\_char@{to\_trim\_char}}
+\index{to\_trim\_char@{to\_trim\_char}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{to\_trim\_char()}{to\_trim\_char()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd} 
+bool to\+\_\+trim\+\_\+char (\begin{DoxyParamCaption}\item[{char}]{c}{, }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim}{}\end{DoxyParamCaption})}
+
+
+
+Checks if a character should be trimmed. 
+
+This function checks if the provided character exists within a set of characters designated for trimming.
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The character to check. \\
+\hline
+{\em chars\+\_\+to\+\_\+trim} & A string containing the characters to be trimmed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the character should be trimmed, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_afb6cea8bf286eae7a246422b3ac5751d}\index{general\_helpers.cpp@{general\_helpers.cpp}!trim@{trim}}
+\index{trim@{trim}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{trim()}{trim()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_afb6cea8bf286eae7a246422b3ac5751d} 
+std\+::string trim (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{, }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim}{ = {\ttfamily "{}~\textbackslash{}t\textbackslash{}n\textbackslash{}r\textbackslash{}f\textbackslash{}v"{}}}\end{DoxyParamCaption})}
+
+
+
+Trims characters from both ends of a string. 
+
+This function removes any characters found in {\ttfamily chars\+\_\+to\+\_\+trim} from the beginning and end of the input string.
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & The string to be trimmed. \\
+\hline
+{\em chars\+\_\+to\+\_\+trim} & A string containing the characters to be trimmed (default is whitespace characters). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new string with the specified characters trimmed from both ends. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}.\end{Desc}
+\Hypertarget{general__helpers_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae}\index{general\_helpers.cpp@{general\_helpers.cpp}!valid\_mime\_type@{valid\_mime\_type}}
+\index{valid\_mime\_type@{valid\_mime\_type}!general\_helpers.cpp@{general\_helpers.cpp}}
+\doxysubsubsection{\texorpdfstring{valid\_mime\_type()}{valid\_mime\_type()}}
+{\footnotesize\ttfamily \label{general__helpers_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae} 
+bool valid\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Validate the MIME type based on the file extension. 
+
+This method looks up the MIME type corresponding to the file extension in the provided path. If the file extension is recognized, true is returned. If the extension is not recognized, false
+
+
+\begin{DoxyItemize}
+\item The method extracts the file extension by searching for the last \textquotesingle{}.\textquotesingle{} character in the path.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The file system path to the file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool true if a MIME type is recognized, false otherwise. 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}}, and \mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}}.\end{Desc}

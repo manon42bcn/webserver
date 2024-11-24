@@ -1,0 +1,69 @@
+\doxysection{ws\+\_\+permissions\+\_\+bitwise.\+hpp}
+\hypertarget{ws__permissions__bitwise_8hpp_source}{}\label{ws__permissions__bitwise_8hpp_source}\index{websrv/inc/ws\_permissions\_bitwise.hpp@{websrv/inc/ws\_permissions\_bitwise.hpp}}
+\mbox{\hyperlink{ws__permissions__bitwise_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ ws\_permissions\_bitwise.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ vaguilar\ <vaguilar@student.42barcelona.\ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/14\ 02:11:15\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/17\ 01:40:15\ by\ vaguilar\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ WS\_PERMISSIONS\_BITWISE\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ WS\_PERMISSIONS\_BITWISE\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_GET\ \ \ \ \ (1\ <<\ 0)}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_OPTIONS\ (1\ <<\ 1)}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_HEAD\ \ \ \ (1\ <<\ 2)}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_POST\ \ \ \ (1\ <<\ 3)}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_PUT\ \ \ \ \ (1\ <<\ 4)}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_PATCH\ \ \ (1\ <<\ 5)}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_TRACE\ \ \ (1\ <<\ 6)}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ MASK\_METHOD\_DELETE\ \ (1\ <<\ 7)}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ CHECK\ PRIVILEGES}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ HAS\_GET(permissions)\ \ \ \ \ ((permissions)\ \&\ MASK\_METHOD\_GET)}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#define\ HAS\_OPTIONS(permissions)\ ((permissions)\ \&\ MASK\_METHOD\_OPTIONS)}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ HAS\_HEAD(permissions)\ \ \ \ ((permissions)\ \&\ MASK\_METHOD\_HEAD)}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ HAS\_POST(permissions)\ \ \ \ ((permissions)\ \&\ MASK\_METHOD\_POST)}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ HAS\_PUT(permissions)\ \ \ \ \ ((permissions)\ \&\ MASK\_METHOD\_PUT)}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ HAS\_PATCH(permissions)\ \ \ ((permissions)\ \&\ MASK\_METHOD\_PATCH)}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#define\ HAS\_TRACE(permissions)\ \ \ ((permissions)\ \&\ MASK\_METHOD\_TRACE)}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#define\ HAS\_DELETE(permissions)\ \ ((permissions)\ \&\ MASK\_METHOD\_DELETE)}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ GRANT}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ GRANT\_GET(permissions)\ \ \ \ \ ((permissions)\ |=\ MASK\_METHOD\_GET)}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#define\ GRANT\_OPTIONS(permissions)\ ((permissions)\ |=\ MASK\_METHOD\_OPTIONS)}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ GRANT\_HEAD(permissions)\ \ \ \ ((permissions)\ |=\ MASK\_METHOD\_HEAD)}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ GRANT\_POST(permissions)\ \ \ \ ((permissions)\ |=\ MASK\_METHOD\_POST)}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ GRANT\_PUT(permissions)\ \ \ \ \ ((permissions)\ |=\ MASK\_METHOD\_PUT)}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ GRANT\_PATCH(permissions)\ \ \ ((permissions)\ |=\ MASK\_METHOD\_PATCH)}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ GRANT\_TRACE(permissions)\ \ \ ((permissions)\ |=\ MASK\_METHOD\_TRACE)}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ GRANT\_DELETE(permissions)\ \ ((permissions)\ |=\ MASK\_METHOD\_DELETE)}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ REVOKE}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ REVOKE\_GET(permissions)\ \ \ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_GET)}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#define\ REVOKE\_OPTIONS(permissions)\ ((permissions)\ \&=\ \string~MASK\_METHOD\_OPTIONS)}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#define\ REVOKE\_HEAD(permissions)\ \ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_HEAD)}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#define\ REVOKE\_POST(permissions)\ \ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_POST)}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#define\ REVOKE\_PUT(permissions)\ \ \ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_PUT)}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#define\ REVOKE\_PATCH(permissions)\ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_PATCH)}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#define\ REVOKE\_TRACE(permissions)\ \ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_TRACE)}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#define\ REVOKE\_DELETE(permissions)\ \ ((permissions)\ \&=\ \string~MASK\_METHOD\_DELETE)}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ MULTI\ FLAGS}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#define\ HAS\_PERMISSION(permissions,\ mask)\ \ \ \ \ ((permissions)\ \&\ (mask))}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#define\ GRANT\_PERMISSIONS(permissions,\ mask)\ \ ((permissions)\ |=\ (mask))}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ REVOKE\_PERMISSIONS(permissions,\ mask)\ ((permissions)\ \&=\ \string~(mask))}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ GROUP\ MASKS}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#define\ MASK\_READ\ (MASK\_METHOD\_GET\ |\ MASK\_METHOD\_HEAD\ |\ MASK\_METHOD\_OPTIONS)}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#define\ MASK\_READ\_WRITE\ (MASK\_READ\ |\ MASK\_METHOD\_POST)}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#define\ MASK\_ALL\_PERMISSIONS\ (MASK\_METHOD\_GET\ |\ MASK\_METHOD\_OPTIONS\ |\ MASK\_METHOD\_HEAD\ |\ \(\backslash\)}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MASK\_METHOD\_POST\ |\ MASK\_METHOD\_PUT\ |\ MASK\_METHOD\_PATCH\ |\ \(\backslash\)}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MASK\_METHOD\_TRACE\ |\ MASK\_METHOD\_DELETE)}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ ALL\ PERMISSIONS}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#define\ GRANT\_ALL(permissions)\ ((permissions)\ |=\ MASK\_ALL\_PERMISSIONS)}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

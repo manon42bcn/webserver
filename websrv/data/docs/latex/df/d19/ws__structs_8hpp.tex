@@ -1,0 +1,169 @@
+\doxysection{websrv/inc/ws\+\_\+structs.hpp File Reference}
+\hypertarget{ws__structs_8hpp}{}\label{ws__structs_8hpp}\index{websrv/inc/ws\_structs.hpp@{websrv/inc/ws\_structs.hpp}}
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structs__cgi}{s\+\_\+cgi}}
+\begin{DoxyCompactList}\small\item\em Represents metadata for a CGI (Common Gateway Interface) request. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_location_config}{Location\+Config}}
+\begin{DoxyCompactList}\small\item\em Represents the configuration for a specific location within a server. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_server_config}{Server\+Config}}
+\item 
+struct \mbox{\hyperlink{structs__request}{s\+\_\+request}}
+\begin{DoxyCompactList}\small\item\em Represents an HTTP request and its associated metadata. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_cache_entry}{Cache\+Entry}}
+\begin{DoxyCompactList}\small\item\em Represents an entry in the server\textquotesingle{}s cache. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{struct_cache_request}{Cache\+Request}}
+\begin{DoxyCompactList}\small\item\em Represents a request to retrieve a cached resource. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\+\_\+mode}} \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}}
+\begin{DoxyCompactList}\small\item\em Represents different operational modes for processing. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structs__cgi}{s\+\_\+cgi}} \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\+\_\+cgi}}
+\begin{DoxyCompactList}\small\item\em Represents metadata for a CGI (Common Gateway Interface) request. \end{DoxyCompactList}\item 
+typedef enum \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\+\_\+allowed\+\_\+methods}} \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}}
+\begin{DoxyCompactList}\small\item\em Represents the allowed HTTP methods for a location or server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\+\_\+mode}} \{ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aa8784a60589c30a252c265b610d2e0a9}{TEMPLATE}} =0
+, \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}{LITERAL}} =1
+, \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aaa8f0b9fd723ffc157027631757d7b87}{INVALID\+\_\+\+ERROR\+\_\+\+MODE}} =-\/42
+ \}
+\begin{DoxyCompactList}\small\item\em Represents different operational modes for processing. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\+\_\+path\+\_\+type}} \{ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\+\_\+\+REGULAR}} = 0
+, \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6bd306231858f6f6b77c5751e07e3e35}{PATH\+\_\+\+QUERY}} = 1
+, \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058ac0109377fb88d53d8a3b9c8e98787dfb}{PATH\+\_\+\+ENCODED}} = 2
+, \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058aabb24f0087b7a7e94492af3dc62c0b69}{PATH\+\_\+\+RELATIVE}} = 3
+ \}
+\begin{DoxyCompactList}\small\item\em Represents the type of a file path in an HTTP request. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\+\_\+allowed\+\_\+methods}} \{ \newline
+\mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a12a8dcf59c16b5aadfda3a08ba67d529}{GET}} =0
+, \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a368c5bc07109370b819193871352b926}{POST}} =1
+, \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a9d61e82a9a12752f10aece1b22183913}{DELETE}} =2
+, \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04afec39d40e8bc9e12afa614df5ddb9fa9}{PUT}} =3
+, \newline
+\mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04ad226abaf0bd38444586a018dad8d0674}{INVALID\+\_\+\+METHOD}} =-\/42
+ \}
+\begin{DoxyCompactList}\small\item\em Represents the allowed HTTP methods for a location or server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}\index{ws\_structs.hpp@{ws\_structs.hpp}!t\_allowed\_methods@{t\_allowed\_methods}}
+\index{t\_allowed\_methods@{t\_allowed\_methods}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_allowed\_methods}{t\_allowed\_methods}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1} 
+typedef enum \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\+\_\+allowed\+\_\+methods}} \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}}}
+
+
+
+Represents the allowed HTTP methods for a location or server. 
+
+This enumeration defines the HTTP methods that can be explicitly allowed in the configuration of a server or a specific location. It also includes a value to represent an invalid or unrecognized method. \Hypertarget{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}\index{ws\_structs.hpp@{ws\_structs.hpp}!t\_cgi@{t\_cgi}}
+\index{t\_cgi@{t\_cgi}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_cgi}{t\_cgi}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979} 
+typedef struct \mbox{\hyperlink{structs__cgi}{s\+\_\+cgi}} \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\+\_\+cgi}}}
+
+
+
+Represents metadata for a CGI (Common Gateway Interface) request. 
+
+This structure contains information about the path to the CGI executable and the script being executed. \Hypertarget{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}\index{ws\_structs.hpp@{ws\_structs.hpp}!t\_mode@{t\_mode}}
+\index{t\_mode@{t\_mode}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_mode}{t\_mode}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0} 
+typedef enum \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\+\_\+mode}} \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}}}
+
+
+
+Represents different operational modes for processing. 
+
+This enumeration defines the available modes of operation and their associated constants. 
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}\index{ws\_structs.hpp@{ws\_structs.hpp}!e\_allowed\_methods@{e\_allowed\_methods}}
+\index{e\_allowed\_methods@{e\_allowed\_methods}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{e\_allowed\_methods}{e\_allowed\_methods}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+enum \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\+\_\+allowed\+\_\+methods}}}
+
+
+
+Represents the allowed HTTP methods for a location or server. 
+
+This enumeration defines the HTTP methods that can be explicitly allowed in the configuration of a server or a specific location. It also includes a value to represent an invalid or unrecognized method. \begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GET@{GET}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!GET@{GET}}}\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a12a8dcf59c16b5aadfda3a08ba67d529}\label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+GET&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{POST@{POST}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!POST@{POST}}}\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a368c5bc07109370b819193871352b926}\label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+POST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DELETE@{DELETE}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!DELETE@{DELETE}}}\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a9d61e82a9a12752f10aece1b22183913}\label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+DELETE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PUT@{PUT}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!PUT@{PUT}}}\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04afec39d40e8bc9e12afa614df5ddb9fa9}\label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+PUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INVALID\_METHOD@{INVALID\_METHOD}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!INVALID\_METHOD@{INVALID\_METHOD}}}\Hypertarget{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04ad226abaf0bd38444586a018dad8d0674}\label{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04} 
+INVALID\+\_\+\+METHOD&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}\index{ws\_structs.hpp@{ws\_structs.hpp}!e\_mode@{e\_mode}}
+\index{e\_mode@{e\_mode}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{e\_mode}{e\_mode}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937} 
+enum \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\+\_\+mode}}}
+
+
+
+Represents different operational modes for processing. 
+
+This enumeration defines the available modes of operation and their associated constants. \begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TEMPLATE@{TEMPLATE}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!TEMPLATE@{TEMPLATE}}}\Hypertarget{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aa8784a60589c30a252c265b610d2e0a9}\label{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937} 
+TEMPLATE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LITERAL@{LITERAL}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!LITERAL@{LITERAL}}}\Hypertarget{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}\label{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937} 
+LITERAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{INVALID\_ERROR\_MODE@{INVALID\_ERROR\_MODE}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!INVALID\_ERROR\_MODE@{INVALID\_ERROR\_MODE}}}\Hypertarget{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aaa8f0b9fd723ffc157027631757d7b87}\label{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937} 
+INVALID\+\_\+\+ERROR\+\_\+\+MODE&\\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}\index{ws\_structs.hpp@{ws\_structs.hpp}!e\_path\_type@{e\_path\_type}}
+\index{e\_path\_type@{e\_path\_type}!ws\_structs.hpp@{ws\_structs.hpp}}
+\doxysubsubsection{\texorpdfstring{e\_path\_type}{e\_path\_type}}
+{\footnotesize\ttfamily \label{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058} 
+enum \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\+\_\+path\+\_\+type}}}
+
+
+
+Represents the type of a file path in an HTTP request. 
+
+This enumeration categorizes file paths into different types based on their nature and usage within the request. \begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_REGULAR@{PATH\_REGULAR}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!PATH\_REGULAR@{PATH\_REGULAR}}}\Hypertarget{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}\label{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058} 
+PATH\+\_\+\+REGULAR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_QUERY@{PATH\_QUERY}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!PATH\_QUERY@{PATH\_QUERY}}}\Hypertarget{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6bd306231858f6f6b77c5751e07e3e35}\label{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058} 
+PATH\+\_\+\+QUERY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_ENCODED@{PATH\_ENCODED}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!PATH\_ENCODED@{PATH\_ENCODED}}}\Hypertarget{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058ac0109377fb88d53d8a3b9c8e98787dfb}\label{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058} 
+PATH\+\_\+\+ENCODED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PATH\_RELATIVE@{PATH\_RELATIVE}!ws\_structs.hpp@{ws\_structs.hpp}}\index{ws\_structs.hpp@{ws\_structs.hpp}!PATH\_RELATIVE@{PATH\_RELATIVE}}}\Hypertarget{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058aabb24f0087b7a7e94492af3dc62c0b69}\label{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058} 
+PATH\+\_\+\+RELATIVE&\\
+\hline
+
+\end{DoxyEnumFields}

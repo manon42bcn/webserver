@@ -1,0 +1,229 @@
+.TH "HttpRequestHandler" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HttpRequestHandler \- Handles HTTP requests by parsing, validating, and dispatching them to appropriate response handlers\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <HttpRequestHandler\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHttpRequestHandler\fP (const \fBLogger\fP *log, \fBClientData\fP *client_data)"
+.br
+.RI "Constructs an \fBHttpRequestHandler\fP instance to process and manage HTTP requests\&. "
+.ti -1c
+.RI "\fB~HttpRequestHandler\fP ()"
+.br
+.RI "Destructor for \fBHttpRequestHandler\fP\&. "
+.ti -1c
+.RI "void \fBrequest_workflow\fP ()"
+.br
+.RI "Executes the main workflow for handling an HTTP request\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Handles HTTP requests by parsing, validating, and dispatching them to appropriate response handlers\&. 
+
+The \fR\fBHttpRequestHandler\fP\fP class is responsible for managing the complete lifecycle of an HTTP request, including:
+.IP "\(bu" 2
+Parsing request headers, method, path, and any additional data such as query parameters and multipart boundaries\&.
+.IP "\(bu" 2
+Validating the request's structure and content\&.
+.IP "\(bu" 2
+Determining the appropriate handler based on request type (e\&.g\&., standard, CGI, ranged, or multipart)\&.
+.IP "\(bu" 2
+Generating an error response if the request is invalid or malformed\&.
+.PP
+
+.PP
+The class utilizes a series of private validation and parsing steps, executed in sequence through \fRrequest_workflow\fP\&. If any step detects an invalid state, it halts the process and sends an error response\&.
+.SS "Attributes"
+.IP "\(bu" 2
+\fR_config\fP: Reference to the server configuration\&.
+.IP "\(bu" 2
+\fR_log\fP: Pointer to the logging utility for logging events and errors\&.
+.IP "\(bu" 2
+\fR_client_data\fP: Manages client-specific information, including connection state and timing\&.
+.IP "\(bu" 2
+\fR_cache\fP: Pointer to the server cache to leverage cached responses\&.
+.IP "\(bu" 2
+\fR_location\fP: Configuration for the specific URL location being requested\&.
+.IP "\(bu" 2
+\fR_fd\fP: File descriptor associated with the client request\&.
+.IP "\(bu" 2
+\fR_max_request\fP: Maximum allowed size for request data\&.
+.IP "\(bu" 2
+\fR_request\fP: Raw request data\&.
+.IP "\(bu" 2
+\fR_factory\fP: Determines the handler type (standard, CGI, range, etc\&.)\&.
+.IP "\(bu" 2
+\fR_request_data\fP: Stores parsed request details, including headers, method, path, and body\&.
+.PP
+
+.PP
+The class supports CGI requests, ranged requests, multipart uploads, and standard HTTP methods, using helper classes (\fR\fBHttpResponseHandler\fP\fP, \fR\fBHttpCGIHandler\fP\fP, \fR\fBHttpRangeHandler\fP\fP, and \fR\fBHttpMultipartHandler\fP\fP) to handle each type\&.
+
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBWebServerException\fP\fP Thrown for issues with cache, logging, or invalid configurations\&. 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBHttpResponseHandler\fP, \fBHttpCGIHandler\fP, \fBHttpRangeHandler\fP, \fBHttpMultipartHandler\fP 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HttpRequestHandler::HttpRequestHandler (const \fBLogger\fP * log, \fBClientData\fP * client_data)"
+
+.PP
+Constructs an \fBHttpRequestHandler\fP instance to process and manage HTTP requests\&. This constructor initializes the handler with essential pointers and settings for processing HTTP requests\&. It retrieves configuration details from the associated client data, initializes logging and caching resources, and verifies the validity of the essential components\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlog\fP Pointer to a \fBLogger\fP instance for logging request handling activities\&. 
+.br
+\fIclient_data\fP Pointer to \fBClientData\fP associated with the current client connection\&. 
+.br
+\fIcache\fP Pointer to a \fBWebServerCache\fP instance to manage cached HTTP responses\&.
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::NoLoggerPointer\fP\fP if the provided logger pointer is null\&. 
+.br
+\fI\fBWebServerException\fP\fP if any of the provided pointers (client_data or cache) are null\&.
+.RE
+.PP
+\fBWarning\fP
+.RS 4
+Throws exceptions if essential components (logger, client_data, or cache) are not available, which compromises server functionality\&. 
+.RE
+.PP
+
+.SS "HttpRequestHandler::~HttpRequestHandler ()"
+
+.PP
+Destructor for \fBHttpRequestHandler\fP\&. 
+.PP
+\fBNote\fP
+.RS 4
+This destructor does not perform specific memory deallocation as most resources are managed externally, but it indicates a cleanup phase in logs\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void HttpRequestHandler::request_workflow ()"
+
+.PP
+Executes the main workflow for handling an HTTP request\&. This method defines and executes a series of validation and parsing steps to fully handle an HTTP request\&. It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler\&.
+
+.PP
+The method performs the following actions:
+
+.PP
+.IP "1." 4
+\fBDefine Validation Steps\fP:
+.IP "  \(bu" 4
+Defines an array of function pointers (\fRsteps\fP) representing each step of the request processing workflow:
+.IP "    \(bu" 6
+\fRread_request_header()\fP: Reads the incoming request header\&.
+.IP "    \(bu" 6
+\fRparse_header()\fP: Parses the request headers\&.
+.IP "    \(bu" 6
+\fRparse_method_and_path()\fP: Parses the HTTP method and the requested path\&.
+.IP "    \(bu" 6
+\fRparse_path_type()\fP: Determines the type of path being requested\&.
+.IP "    \(bu" 6
+\fRload_header_data()\fP: Loads additional header data needed for processing\&.
+.IP "    \(bu" 6
+\fRsolver_resource()\fP: Resolves the requested resource path and validates its location\&.
+.IP "    \(bu" 6
+\fRload_content()\fP: Loads the content associated with the request (if applicable)\&.
+.IP "    \(bu" 6
+\fRvalidate_request()\fP: Validates the overall request to ensure it meets server requirements\&.
+.PP
+
+.PP
+
+.IP "2." 4
+\fBStart Request Workflow\fP:
+.IP "  \(bu" 4
+Logs the beginning of the request parsing and validation process\&.
+.IP "  \(bu" 4
+Calls \fR_client_data->chronos_reset()\fP to reset any timers related to the client (e\&.g\&., request start time)\&.
+.PP
+
+.IP "3." 4
+\fBExecute Validation Steps\fP:
+.IP "  \(bu" 4
+Iterates through the array of validation steps (\fRsteps\fP) and executes each one in order using function pointers (\fR(this->*steps[i])()\fP)\&.
+.IP "  \(bu" 4
+After executing each step, checks the \fR_request_data\&.sanity\fP flag:
+.IP "    \(bu" 6
+If the flag is \fRfalse\fP, it indicates an error during processing, and the workflow is terminated\&.
+.PP
+
+.PP
+
+.IP "4." 4
+\fBHandle the Request\fP:
+.IP "  \(bu" 4
+After completing the validation and parsing steps, logs the end of the request validation process\&.
+.IP "  \(bu" 4
+Calls \fRhandle_request()\fP to proceed with responding to the client based on the validated request\&.
+.PP
+
+.IP "5." 4
+\fBLog Response Completion\fP:
+.IP "  \(bu" 4
+Logs the end of the response handling process\&.
+.PP
+
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+The \fR_request_data\&.sanity\fP flag is used throughout the workflow to indicate whether each step was successful\&. If an error occurs, the flag is set to \fRfalse\fP and the workflow is halted\&.
+.IP "\(bu" 2
+The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly\&.
+.PP
+.RE
+.PP
+\fBValidation Steps\fP:
+.IP "\(bu" 2
+\fRread_request_header()\fP: Reads the raw HTTP headers from the incoming request\&.
+.IP "\(bu" 2
+\fRparse_header()\fP: Parses and processes each header to extract key-value pairs\&.
+.IP "\(bu" 2
+\fRparse_method_and_path()\fP: Identifies the HTTP method (e\&.g\&., GET, POST) and the requested path\&.
+.IP "\(bu" 2
+\fRparse_path_type()\fP: Determines the type of path (e\&.g\&., static file, dynamic request)\&.
+.IP "\(bu" 2
+\fRload_header_data()\fP: Loads additional data from headers required for further processing\&.
+.IP "\(bu" 2
+\fRload_host_config()\fP: Loads host from request, to set its configuration, and update host at ClientData*
+.IP "\(bu" 2
+\fRsolver_resource()\fP: Resolves the requested resource path, potentially handling relative paths\&.
+.IP "\(bu" 2
+\fRload_content()\fP: Loads request body content if applicable (e\&.g\&., for POST requests)\&.
+.IP "\(bu" 2
+\fRvalidate_request()\fP: Final validation to ensure that the request conforms to server policies and rules\&. 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

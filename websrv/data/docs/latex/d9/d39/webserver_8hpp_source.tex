@@ -1,0 +1,203 @@
+\doxysection{webserver.\+hpp}
+\hypertarget{webserver_8hpp_source}{}\label{webserver_8hpp_source}\index{websrv/inc/webserver.hpp@{websrv/inc/webserver.hpp}}
+\mbox{\hyperlink{webserver_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ webserver.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/17\ 21:15:39\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/24\ 00:03:24\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#\ ifndef\ WEBSERVER\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#\ define\ WEBSERVER\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_logger_8hpp}{Logger.hpp}}"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{http__enum__codes_8hpp}{http\_enum\_codes.hpp}}"{}}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{ws__structs_8hpp}{ws\_structs.hpp}}"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{ws__permissions__bitwise_8hpp}{ws\_permissions\_bitwise.hpp}}"{}}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{ws__general__defines_8hpp}{ws\_general\_defines.hpp}}"{}}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <fcntl.h>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <sys/socket.h>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <sys/types.h>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <sys/socket.h>}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ <netdb.h>}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <sys/types.h>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <sys/socket.h>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <netinet/in.h>}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <netdb.h>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <csignal>}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#define\ DEL\_LINE\ \ \ \ \ \ \ \ "{}\(\backslash\)033[2K"{}}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#define\ ITALIC\ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[3m"{}}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#define\ BOLD\ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[1m"{}}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#define\ RESET\ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;39m"{}}}
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ GRAY\ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;90m"{}}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#define\ RED\ \ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;91m"{}}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#define\ GREEN\ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;92m"{}}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#define\ YELLOW\ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;93m"{}}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#define\ BLUE\ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;94m"{}}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#define\ MAGENTA\ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;95m"{}}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#define\ CYAN\ \ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;96m"{}}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#define\ WHITE\ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;97m"{}}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#define\ BLACK\ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[0;99m"{}}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#define\ ORANGE\ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[38;5;209m"{}}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#define\ BROWN\ \ \ \ \ \ \ \ \ \ \ "{}\(\backslash\)033[38;2;184;143;29m"{}}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#define\ DARK\_GRAY\ \ \ \ \ \ \ "{}\(\backslash\)033[38;5;234m"{}}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#define\ MID\_GRAY\ \ \ \ \ \ \ \ "{}\(\backslash\)033[38;5;245m"{}}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#define\ DARK\_GREEN\ \ \ \ \ \ "{}\(\backslash\)033[38;2;75;179;82m"{}}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#define\ DARK\_YELLOW\ \ \ \ \ "{}\(\backslash\)033[38;5;143m"{}}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#define\ WS\_MAX\_RETRIES\ 5}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#define\ WS\_RETRY\_DELAY\_MICROSECONDS\ 100000}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ TODO:\ define\ a\ path\ max\ for\ WS\ only,\ path\ max\ is\ defined\ at\ limits.h}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#\ ifndef\ PATH\_MAX}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#define\ PATH\_MAX\ 4096}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#\ endif}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ Methods\ included\ at\ general\_helper.cpp}}
+\DoxyCodeLine{00078\ \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\_methods}}\ \mbox{\hyperlink{webserver_8hpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}{parse\_method}}(\textcolor{keyword}{const}\ std::string\&\ method);}
+\DoxyCodeLine{00079\ std::string\ \mbox{\hyperlink{webserver_8hpp_a411f70b0adb50fb351494b96143fb0ce}{http\_status\_description}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ code);}
+\DoxyCodeLine{00080\ std::map<std::string,\ std::string>\ \mbox{\hyperlink{webserver_8hpp_a901157cdb2c9069d0f08cab6b799eb60}{create\_mime\_types}}();}
+\DoxyCodeLine{00081\ std::string\ \mbox{\hyperlink{webserver_8hpp_a83e2cc49561a109eab7a3c41845ef0c7}{get\_mime\_type}}(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00082\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_aac27fe9a0fc4b3f5222a36edb6b54dae}{valid\_mime\_type}}(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00083\ std::string\ \mbox{\hyperlink{webserver_8hpp_a5671fb0d0191f86588463c6e29911fa6}{replace\_template}}(std::string\ content,\ \textcolor{keyword}{const}\ std::string\&\ key,\ \textcolor{keyword}{const}\ std::string\&\ value);}
+\DoxyCodeLine{00084\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a775a50523b2792565271f85e8d63d72b}{black\_list\_extension}}(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00085\ std::string\ \mbox{\hyperlink{webserver_8hpp_a7d8d6608f966337610cf3eaf4b305d7e}{clean\_host}}(std::string\&\ host\_to\_clean);}
+\DoxyCodeLine{00086\ std::string\ \mbox{\hyperlink{webserver_8hpp_a34cd1ba4270d9f786fe644a5ac82ba78}{normalize\_host}}(\textcolor{keyword}{const}\ std::string\&\ host);}
+\DoxyCodeLine{00087\ std::string\ \mbox{\hyperlink{webserver_8hpp_a9d9e86e84820087878c229831338b2f0}{get\_header\_value}}(std::string\&\ haystack,\ std::string\ needle,\ \textcolor{keyword}{const}\ std::string\&\ sep=\textcolor{stringliteral}{"{}\(\backslash\)r\(\backslash\)n"{}});}
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_ab93fb754820f510dc2d17f64ee15a773}{is\_cgi}}(\textcolor{keyword}{const}\ std::string\&\ filename);}
+\DoxyCodeLine{00089\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{webserver_8hpp_add6108cd0eb7f707a1e58ff83b6c8a3a}{end\_of\_header\_system}}(std::string\&\ header);}
+\DoxyCodeLine{00090\ std::string\ \mbox{\hyperlink{webserver_8hpp_ad3165bd822066c8f5e48045057f94913}{int\_to\_string}}(\textcolor{keywordtype}{int}\ number);}
+\DoxyCodeLine{00091\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432}{is\_dir}}(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00092\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add}{is\_file}}(\textcolor{keyword}{const}\ std::string\&\ path);}
+\DoxyCodeLine{00093\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc}{starts\_with}}(\textcolor{keyword}{const}\ std::string\&\ str,\ \textcolor{keyword}{const}\ std::string\&\ prefix);}
+\DoxyCodeLine{00094\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\_trim\_char}}(\textcolor{keywordtype}{char}\ c,\ \textcolor{keyword}{const}\ std::string\&\ chars\_to\_trim);}
+\DoxyCodeLine{00095\ std::string\ \mbox{\hyperlink{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca}{trim}}(\textcolor{keyword}{const}\ std::string\&\ str,\ \textcolor{keyword}{const}\ std::string\&\ chars\_to\_trim);}
+\DoxyCodeLine{00096\ std::string\ \mbox{\hyperlink{webserver_8hpp_ab0e7abb140f3aefb2efa0a59374bf97d}{to\_lowercase}}(\textcolor{keyword}{const}\ std::string\&\ input);}
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_ab63ae0dbb73446b4a9d635d45dab4658}{is\_valid\_size\_t}}(\textcolor{keyword}{const}\ std::string\&\ value);}
+\DoxyCodeLine{00098\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{webserver_8hpp_af31c1ae26a81eba0c56016b665ce7a7b}{str\_to\_size\_t}}(\textcolor{keyword}{const}\ std::string\&\ value);}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_command_pair}{CommandPair}}\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{struct_command_pair_a54790e332a0bc017a701920a165a27eb}{command}};}
+\DoxyCodeLine{00104\ \ \ \ \ void\ (*\mbox{\hyperlink{struct_command_pair_abc901c3055a635696a4b31a22e999b3f}{function}})(std::vector<std::string>::iterator\&,\ \mbox{\hyperlink{class_logger}{Logger}}*,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&);}
+\DoxyCodeLine{00105\ \};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee}{print\_server\_config}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ config,\ std::string\ location);}
+\DoxyCodeLine{00109\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a2d370221fb0194cd1a79364eece10199}{print\_vector\_config}}(\textcolor{keyword}{const}\ std::vector<ServerConfig>\ \&config,\ std::string\ location);}
+\DoxyCodeLine{00110\ std::string\ \mbox{\hyperlink{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4}{print\_bitwise\_method}}(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ method);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ std::string\ \mbox{\hyperlink{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103}{html\_codes}}(\textcolor{keywordtype}{int}\ code);}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ Parse}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ std::vector<ServerConfig>\ \mbox{\hyperlink{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8}{parse\_file}}(std::string\ file,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00117\ std::vector<ServerConfig>\ \mbox{\hyperlink{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd}{parse\_servers}}(std::vector<std::string>\ rawLines,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00118\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\ \mbox{\hyperlink{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0}{parse\_location\_block}}(std::vector<std::string>::iterator\ start,\ std::vector<std::string>::iterator\ end,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{comment}{//\ Print}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21}{print\_raw\_lines}}(std::vector<std::string>\ rawLines);}
+\DoxyCodeLine{00123\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee}{print\_server\_config}}(\mbox{\hyperlink{struct_server_config}{ServerConfig}}\ server);}
+\DoxyCodeLine{00124\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a4307030c306da743512e19c778c734d9}{print\_location\_config}}(\mbox{\hyperlink{struct_location_config}{LocationConfig}}\ location);}
+\DoxyCodeLine{00125\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6}{print\_servers}}(std::vector<ServerConfig>\ servers);}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ Utils}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ std::string\ \mbox{\hyperlink{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671}{get\_value}}(std::string\ line,\ \textcolor{keyword}{const}\ std::string\&\ key);}
+\DoxyCodeLine{00131\ std::string\ \mbox{\hyperlink{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9}{clean\_line}}(std::string\ line);}
+\DoxyCodeLine{00132\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_afeadc4781b746478b8137404aaf6597f}{find\_exact\_string}}(\textcolor{keyword}{const}\ std::string\&\ line,\ \textcolor{keyword}{const}\ std::string\&\ str);}
+\DoxyCodeLine{00133\ std::vector<std::string>\ \mbox{\hyperlink{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a}{split\_default\_pages}}(std::string\ default\_pages);}
+\DoxyCodeLine{00134\ std::map<int,\ std::string>\ \mbox{\hyperlink{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9}{split\_error\_pages}}(std::string\ error\_pages);}
+\DoxyCodeLine{00135\ std::vector<std::string>\ \mbox{\hyperlink{webserver_8hpp_a450f9c88120dba0a380ac4744569a056}{get\_raw\_lines}}(std::string\ file);}
+\DoxyCodeLine{00136\ std::string\ \mbox{\hyperlink{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea}{delete\_brackets\_clean}}(std::string\ line);}
+\DoxyCodeLine{00137\ std::string\ \mbox{\hyperlink{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7}{delete\_first\_slash}}(std::string\ path);}
+\DoxyCodeLine{00138\ std::string\ \mbox{\hyperlink{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9}{get\_server\_root}}();}
+\DoxyCodeLine{00139\ std::vector<std::string>::iterator\ \mbox{\hyperlink{webserver_8hpp_aa7aa50634040e3947db40560bb98167d}{skip\_block}}(std::vector<std::string>::iterator\ start,\ std::vector<std::string>::iterator\ end);}
+\DoxyCodeLine{00140\ std::vector<std::string>::iterator\ \mbox{\hyperlink{webserver_8hpp_a25878e147619b8924349760761dd3e0b}{find\_block\_end}}(std::vector<std::string>::iterator\ start,\ std::vector<std::string>::iterator\ end);}
+\DoxyCodeLine{00141\ std::string\ \mbox{\hyperlink{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54}{get\_location\_path}}(std::string\ line);}
+\DoxyCodeLine{00142\ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \mbox{\hyperlink{webserver_8hpp_aa92b30f31083f5408d0951bde2270276}{string\_to\_error\_mode}}(std::string\ error\_mode);}
+\DoxyCodeLine{00143\ std::string\ \mbox{\hyperlink{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567}{join\_paths}}(std::string\ path1,\ std::string\ path2);}
+\DoxyCodeLine{00144\ std::vector<std::string>\ \mbox{\hyperlink{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc}{split\_string}}(std::string\ str);}
+\DoxyCodeLine{00145\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ \mbox{\hyperlink{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6}{method\_bitwise}}(std::string\ parsed);}
+\DoxyCodeLine{00146\ std::string\ \mbox{\hyperlink{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0}{get\_first\_word}}(\textcolor{keyword}{const}\ std::string\&\ str);}
+\DoxyCodeLine{00147\ std::map<int,\ std::string>\ \mbox{\hyperlink{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829}{split\_redirections}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00148\ std::string\ \mbox{\hyperlink{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e}{get\_redirection\_url}}(std::string\ redirection,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00149\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e}{get\_status\_code}}(std::string\ status\_code,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00150\ std::string\ \mbox{\hyperlink{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0}{get\_first\_word}}(\textcolor{keyword}{const}\ std::string\&\ str);}
+\DoxyCodeLine{00151\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f}{compare\_paths}}(std::string\ path1,\ std::string\ path2);}
+\DoxyCodeLine{00152\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da}{string\_to\_bytes}}(std::string\ client\_max\_body\_size);}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \textcolor{comment}{//\ Verifications}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a16ef7295adb65127597e839131e68d71}{check\_args}}(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}\ **argv);}
+\DoxyCodeLine{00158\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915}{check\_root}}(std::string\ root);}
+\DoxyCodeLine{00159\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70}{check\_client\_max\_body\_size}}(std::string\ client\_max\_body\_size);}
+\DoxyCodeLine{00160\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{webserver_8hpp_a199339df1bcf67055ef966d29311ca28}{check\_port}}(std::string\ port);}
+\DoxyCodeLine{00161\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25}{check\_server\_name}}(std::string\ server\_name);}
+\DoxyCodeLine{00162\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0}{check\_error\_page}}(std::string\ error\_page);}
+\DoxyCodeLine{00163\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_aed46555e3b91d2beb71b52a794f0ad3b}{check\_default\_page}}(std::string\ default\_page);}
+\DoxyCodeLine{00164\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a9e43646a12942938e3800f867606eaaa}{check\_brackets}}(std::vector<std::string>::iterator\ start);}
+\DoxyCodeLine{00165\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a9e43646a12942938e3800f867606eaaa}{check\_brackets}}(std::vector<std::string>::iterator\ start,\ std::vector<std::string>::iterator\ end);}
+\DoxyCodeLine{00166\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f}{check\_autoindex}}(std::string\ autoindex);}
+\DoxyCodeLine{00167\ \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\_allowed\_methods}}\ \mbox{\hyperlink{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4}{string\_to\_method}}(std::string\ method);}
+\DoxyCodeLine{00168\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79}{check\_error\_mode}}(std::string\ error\_mode);}
+\DoxyCodeLine{00169\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a03289097f527586246ebad563d792a17}{check\_duplicate\_servers}}(std::vector<ServerConfig>\ servers);}
+\DoxyCodeLine{00170\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034}{check\_cgi}}(std::string\ cgi);}
+\DoxyCodeLine{00171\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7}{check\_obligatory\_params}}(\mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ Parse\ Server}}
+\DoxyCodeLine{00174\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e}{parse\_location}}(std::vector<std::string>::iterator\&\ it,\ std::vector<std::string>::iterator\ end,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00175\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0}{parse\_template\_error\_page}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00176\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1}{parse\_port}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00177\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9}{parse\_server\_name}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00178\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4}{parse\_root}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00179\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730}{parse\_index}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00180\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e}{parse\_client\_max\_body\_size}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00181\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984}{parse\_error\_page}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00182\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda}{parse\_autoindex}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00183\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50}{parse\_error\_mode}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ server);}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \textcolor{comment}{//\ Parse\ Location}}
+\DoxyCodeLine{00186\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba}{parse\_location\_index}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00187\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8}{parse\_location\_error\_page}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00188\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4}{parse\_root}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00189\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda}{parse\_autoindex}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00190\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_af31bd57be892e51ef467fa43780687e5}{parse\_cgi}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00191\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0}{parse\_template\_error\_page}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00192\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248}{parse\_accept\_only}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00193\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{webserver_8hpp_a313f72fbd4eee6cea53839586820156e}{parse\_redirection}}(std::vector<std::string>::iterator\&\ it,\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger,\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\&\ location);}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#\ endif}}
+\DoxyCodeLine{00197\ }
+
+\end{DoxyCode}

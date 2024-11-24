@@ -1,0 +1,196 @@
+.TH "HttpRangeHandler" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HttpRangeHandler \- Manages HTTP requests that include range-specific content, such as partial file downloads\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <HttpRangeHandler\&.hpp>\fP
+.PP
+Inherits \fBWsResponseHandler\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHttpRangeHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs an \fR\fBHttpRangeHandler\fP\fP for handling HTTP range requests\&. "
+.ti -1c
+.RI "bool \fBhandle_request\fP ()"
+.br
+.RI "Processes the HTTP range request, allowing only GET requests\&. "
+.in -1c
+
+Public Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "\fBWsResponseHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs a \fR\fBWsResponseHandler\fP\fP to manage web server responses\&. "
+.ti -1c
+.RI "virtual \fB~WsResponseHandler\fP ()"
+.br
+.RI "Destructor for the \fR\fBWsResponseHandler\fP\fP class\&. "
+.ti -1c
+.RI "bool \fBsend_error_response\fP ()"
+.br
+.RI "Sends an HTTP error response to the client, using a custom error page if available\&. "
+.ti -1c
+.RI "bool \fBredirection\fP ()"
+.br
+.RI "Handles HTTP redirection for the current request\&. "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "virtual bool \fBhandle_post\fP ()"
+.br
+.RI "Handles HTTP POST requests, validating access, saving data, and sending a response\&. "
+.ti -1c
+.RI "bool \fBhandle_delete\fP ()"
+.br
+.RI "Handles HTTP DELETE requests by checking permissions and deleting the specified resource\&. "
+.ti -1c
+.RI "virtual bool \fBvalidate_payload\fP ()"
+.br
+.RI "Validates the payload of an HTTP request to ensure it meets requirements\&. "
+.ti -1c
+.RI "bool \fBsave_file\fP (const std::string &save_path, const std::string &content)"
+.br
+.RI "Saves the provided content to a specified file path\&. "
+.ti -1c
+.RI "virtual std::string \fBheader\fP (int code, size_t content_size, std::string mime)"
+.br
+.RI "Constructs an HTTP response header based on provided parameters\&. "
+.ti -1c
+.RI "virtual bool \fBsend_response\fP (const std::string &body, const std::string &path)"
+.br
+.RI "Sends an HTTP response with the specified body content and inferred MIME type\&. "
+.ti -1c
+.RI "bool \fBsender\fP (const std::string &body)"
+.br
+.RI "Sends the HTTP response to the client through the socket file descriptor\&. "
+.ti -1c
+.RI "std::string \fBdefault_plain_error\fP ()"
+.br
+.RI "Generates a default HTML error page for the HTTP response\&. "
+.ti -1c
+.RI "void \fBturn_off_sanity\fP (\fBe_http_sts\fP status, std::string detail)"
+.br
+.RI "Disables further request processing by marking the request as invalid\&. "
+.in -1c
+
+Protected Attributes inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fB_location\fP"
+.br
+.ti -1c
+.RI "const \fBLogger\fP * \fB_log\fP"
+.br
+.ti -1c
+.RI "\fBClientData\fP * \fB_client_data\fP"
+.br
+.ti -1c
+.RI "\fBs_request\fP & \fB_request\fP"
+.br
+.ti -1c
+.RI "\fBs_content\fP \fB_response_data\fP"
+.br
+.ti -1c
+.RI "std::string \fB_headers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages HTTP requests that include range-specific content, such as partial file downloads\&. 
+
+This class extends \fR\fBWsResponseHandler\fP\fP to handle HTTP requests with a range header, enabling partial content retrieval for efficient file handling and data streaming\&.
+
+.PP
+.IP "\(bu" 2
+\fR\fBHttpRangeHandler\fP\fP processes requests with range headers, validates content range, and reads file content based on the specified range\&.
+.IP "\(bu" 2
+Supports GET requests with range validation for files and manages content responses\&.
+.IP "\(bu" 2
+Relies on configuration from \fR\fBLocationConfig\fP\fP and logs actions via \fR\fBLogger\fP\fP\&.
+.PP
+.SS "Public Methods"
+.IP "\(bu" 2
+\fR\fBHttpRangeHandler\fP(const \fBLocationConfig\fP *location, const \fBLogger\fP *log, ClientData* client_data, \fBs_request\fP& request, int fd)\fP: Constructor initializing the range handler with configuration, logger, and client data\&.
+.IP "\(bu" 2
+\fR~HttpRangeHandler()\fP: Destructor to clean up resources, particularly file descriptors\&.
+.IP "\(bu" 2
+\fRbool \fBhandle_request()\fP\fP: Processes the HTTP request, validating the range and retrieving file content\&.
+.PP
+.SS "Private Methods"
+.IP "\(bu" 2
+\fRbool handle_get()\fP: Handles GET requests, validating and serving the requested content range\&.
+.IP "\(bu" 2
+\fRvoid get_file_content(std::string& path)\fP: Reads the specified file content for the range\&.
+.IP "\(bu" 2
+\fRbool validate_content_range(size_t file_size)\fP: Ensures the specified content range is valid within the file's total size\&.
+.IP "\(bu" 2
+\fRvoid parse_content_range()\fP: Parses the range header to determine the requested content range\&.
+.IP "\(bu" 2
+\fRvoid get_file_content(int pid, int (&fd)[2])\fP: Reads file content within a child process for specific cases, managing pipes\&. 
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HttpRangeHandler::HttpRangeHandler (const \fBLocationConfig\fP * location, const \fBLogger\fP * log, \fBClientData\fP * client_data, \fBs_request\fP & request, int fd)"
+
+.PP
+Constructs an \fR\fBHttpRangeHandler\fP\fP for handling HTTP range requests\&. Initializes the \fR\fBHttpRangeHandler\fP\fP by passing the location configuration, logger, client data, request structure, and file descriptor to the base class, \fR\fBWsResponseHandler\fP\fP\&. Logs the initialization process to facilitate tracing\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP Pointer to \fR\fBLocationConfig\fP\fP, providing server configuration settings for the requested location\&. 
+.br
+\fIlog\fP Pointer to the \fR\fBLogger\fP\fP instance for logging operations\&. 
+.br
+\fIclient_data\fP Pointer to \fR\fBClientData\fP\fP, containing information about the client connection\&. 
+.br
+\fIrequest\fP Reference to an \fR\fBs_request\fP\fP structure holding parsed HTTP request data\&. 
+.br
+\fIfd\fP File descriptor used for managing the response output\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Assumes that \fRlocation\fP, \fRlog\fP, and \fRclient_data\fP are valid pointers\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HttpRangeHandler::handle_request ()\fR [virtual]\fP"
+
+.PP
+Processes the HTTP range request, allowing only GET requests\&. This method handles HTTP range requests, verifying that the request method is \fRGET\fP\&. If the method is \fRGET\fP, it proceeds with \fRhandle_get()\fP to manage the range response\&. For any other method, it disables sanity, logs an error, and sends an HTTP bad request response\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the request was processed as a GET range request; \fRfalse\fP otherwise\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Only \fRGET\fP requests are supported for range handling\&. Other methods will result in a \fR400 Bad Request\fP\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBWsResponseHandler\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

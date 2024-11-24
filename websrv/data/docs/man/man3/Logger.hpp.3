@@ -1,0 +1,59 @@
+.TH "websrv/inc/Logger.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/Logger.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <string>\fP
+.br
+\fR#include <fstream>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <cstdlib>\fP
+.br
+\fR#include <sstream>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBLogger\fP"
+.br
+.RI "A simple logging utility for managing log messages with different levels of severity\&. "
+.ti -1c
+.RI "class \fBLogger::NoLoggerPointer\fP"
+.br
+.RI "Exception thrown when a null pointer to a \fBLogger\fP is used\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBe_logger\fP { \fBLOG_DEBUG\fP = 0, \fBLOG_INFO\fP = 1, \fBLOG_WARNING\fP = 2, \fBLOG_ERROR\fP = 3 }"
+.br
+.RI "\fBLogger\fP level enum\&. "
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBe_logger\fP"
+
+.PP
+\fBLogger\fP level enum\&. Inside class, logger level is used as a index for messages\&. Using the enum, is easier to write code and know which level any method is logging\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BILOG_DEBUG \fP
+.TP
+\f(BILOG_INFO \fP
+.TP
+\f(BILOG_WARNING \fP
+.TP
+\f(BILOG_ERROR \fP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

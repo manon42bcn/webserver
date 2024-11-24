@@ -1,0 +1,177 @@
+.TH "s_request" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+s_request \- Represents an HTTP request and its associated metadata\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ws_structs\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBs_request\fP ()"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBheader\fP"
+.br
+.ti -1c
+.RI "std::string \fBbody\fP"
+.br
+.ti -1c
+.RI "std::string \fBhost\fP"
+.br
+.ti -1c
+.RI "\fBt_methods\fP \fBmethod\fP"
+.br
+.ti -1c
+.RI "std::string \fBmethod_str\fP"
+.br
+.ti -1c
+.RI "std::string \fBpath\fP"
+.br
+.ti -1c
+.RI "std::string \fBpath_request\fP"
+.br
+.ti -1c
+.RI "\fBe_path_type\fP \fBpath_type\fP"
+.br
+.ti -1c
+.RI "std::string \fBnormalized_path\fP"
+.br
+.ti -1c
+.RI "std::string \fBpath_info\fP"
+.br
+.ti -1c
+.RI "std::string \fBquery\fP"
+.br
+.ti -1c
+.RI "std::string \fBreferer\fP"
+.br
+.ti -1c
+.RI "size_t \fBcontent_length\fP"
+.br
+.ti -1c
+.RI "std::string \fBcontent_type\fP"
+.br
+.ti -1c
+.RI "std::string \fBcookie\fP"
+.br
+.ti -1c
+.RI "std::string \fBscript\fP"
+.br
+.ti -1c
+.RI "std::string \fBboundary\fP"
+.br
+.ti -1c
+.RI "std::string \fBrange\fP"
+.br
+.ti -1c
+.RI "bool \fBchunks\fP"
+.br
+.ti -1c
+.RI "int \fBfactory\fP"
+.br
+.ti -1c
+.RI "bool \fBis_cached\fP"
+.br
+.ti -1c
+.RI "bool \fBautoindex\fP"
+.br
+.ti -1c
+.RI "bool \fBis_redir\fP"
+.br
+.ti -1c
+.RI "bool \fBcgi\fP"
+.br
+.ti -1c
+.RI "bool \fBsanity\fP"
+.br
+.ti -1c
+.RI "\fBe_http_sts\fP \fBstatus\fP"
+.br
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fBlocation\fP"
+.br
+.ti -1c
+.RI "const \fBServerConfig\fP * \fBhost_config\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents an HTTP request and its associated metadata\&. 
+
+This structure holds all relevant data extracted from an HTTP request, including headers, body, method, path, and other attributes required for processing the request\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "s_request::s_request ()\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "bool s_request::autoindex"
+
+.SS "std::string s_request::body"
+
+.SS "std::string s_request::boundary"
+
+.SS "bool s_request::cgi"
+
+.SS "bool s_request::chunks"
+
+.SS "size_t s_request::content_length"
+
+.SS "std::string s_request::content_type"
+
+.SS "std::string s_request::cookie"
+
+.SS "int s_request::factory"
+
+.SS "std::string s_request::header"
+
+.SS "std::string s_request::host"
+
+.SS "const \fBServerConfig\fP* s_request::host_config"
+
+.SS "bool s_request::is_cached"
+
+.SS "bool s_request::is_redir"
+
+.SS "const \fBLocationConfig\fP* s_request::location"
+
+.SS "\fBt_methods\fP s_request::method"
+
+.SS "std::string s_request::method_str"
+
+.SS "std::string s_request::normalized_path"
+
+.SS "std::string s_request::path"
+
+.SS "std::string s_request::path_info"
+
+.SS "std::string s_request::path_request"
+
+.SS "\fBe_path_type\fP s_request::path_type"
+
+.SS "std::string s_request::query"
+
+.SS "std::string s_request::range"
+
+.SS "std::string s_request::referer"
+
+.SS "bool s_request::sanity"
+
+.SS "std::string s_request::script"
+
+.SS "\fBe_http_sts\fP s_request::status"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

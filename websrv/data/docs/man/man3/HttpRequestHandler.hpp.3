@@ -1,0 +1,80 @@
+.TH "websrv/inc/HttpRequestHandler.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/HttpRequestHandler.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include 'ClientData\&.hpp'\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+\fR#include 'WebserverCache\&.hpp'\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <sstream>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBe_chunk\fP"
+.br
+.ti -1c
+.RI "class \fBHttpRequestHandler\fP"
+.br
+.RI "Handles HTTP requests by parsing, validating, and dispatching them to appropriate response handlers\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBRH_NAME\fP   'HttpRequestHandler'"
+.br
+.ti -1c
+.RI "#define \fBBUFFER_REQUEST\fP   2048"
+.br
+.ti -1c
+.RI "#define \fBURI_MAX\fP   2048"
+.br
+.ti -1c
+.RI "#define \fBMAX_HEADER\fP   16384"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBe_chunk\fP \fBt_chunk\fP"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define BUFFER_REQUEST   2048"
+
+.SS "#define MAX_HEADER   16384"
+
+.SS "#define RH_NAME   'HttpRequestHandler'"
+
+.SS "#define URI_MAX   2048"
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBe_chunk\fP \fBt_chunk\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

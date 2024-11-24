@@ -1,0 +1,233 @@
+.TH "websrv/srcs/parse/verifications.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/verifications.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include <filesystem>\fP
+.br
+\fR#include <sys/stat\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "bool \fBcheck_brackets\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.RI "Checks if the brackets in the given range are balanced\&. "
+.ti -1c
+.RI "bool \fBcan_open_file\fP (const char *filename)"
+.br
+.RI "Checks if a file can be opened\&. "
+.ti -1c
+.RI "bool \fBcheck_args\fP (int argc, char **argv)"
+.br
+.RI "Validates the command line arguments\&. "
+.ti -1c
+.RI "int \fBcheck_port\fP (std::string port)"
+.br
+.RI "Validates a port number\&. "
+.ti -1c
+.RI "bool \fBcheck_server_name\fP (std::string server_name)"
+.br
+.RI "Validates a server name\&. "
+.ti -1c
+.RI "bool \fBis_valid_error_code\fP (int code)"
+.br
+.RI "Checks if an error code is valid\&. "
+.ti -1c
+.RI "bool \fBcheck_error_page\fP (std::string error_page)"
+.br
+.ti -1c
+.RI "bool \fBis_valid_filename\fP (const std::string &filename)"
+.br
+.RI "Checks if a filename is valid\&. "
+.ti -1c
+.RI "bool \fBcheck_default_page\fP (std::string default_page)"
+.br
+.RI "Checks if the default page is valid\&. "
+.ti -1c
+.RI "bool \fBis_directory\fP (const std::string &path)"
+.br
+.ti -1c
+.RI "bool \fBcheck_root\fP (std::string root)"
+.br
+.ti -1c
+.RI "bool \fBcheck_client_max_body_size\fP (std::string client_max_body_size)"
+.br
+.ti -1c
+.RI "bool \fBcheck_autoindex\fP (std::string autoindex)"
+.br
+.ti -1c
+.RI "bool \fBcheck_error_mode\fP (std::string error_mode)"
+.br
+.ti -1c
+.RI "bool \fBcheck_duplicate_servers\fP (std::vector< \fBServerConfig\fP > servers)"
+.br
+.ti -1c
+.RI "bool \fBcheck_cgi\fP (std::string cgi)"
+.br
+.ti -1c
+.RI "bool \fBcheck_obligatory_params\fP (\fBServerConfig\fP &server, \fBLogger\fP *logger)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "bool can_open_file (const char * filename)"
+
+.PP
+Checks if a file can be opened\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP The name of the file to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the file can be opened, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_args (int argc, char ** argv)"
+
+.PP
+Validates the command line arguments\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargc\fP Argument count\&. 
+.br
+\fIargv\fP Argument vector\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if arguments are valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_autoindex (std::string autoindex)"
+
+.SS "bool check_brackets (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.PP
+Checks if the brackets in the given range are balanced\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the range\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if brackets are balanced, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_cgi (std::string cgi)"
+
+.SS "bool check_client_max_body_size (std::string client_max_body_size)"
+
+.SS "bool check_default_page (std::string default_page)"
+
+.PP
+Checks if the default page is valid\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdefault_page\fP The default page to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the default page is valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_duplicate_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.SS "bool check_error_mode (std::string error_mode)"
+
+.SS "bool check_error_page (std::string error_page)"
+
+.SS "bool check_obligatory_params (\fBServerConfig\fP & server, \fBLogger\fP * logger)"
+
+.SS "int check_port (std::string port)"
+
+.PP
+Validates a port number\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIport\fP The port number as a string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The port number as an integer if valid, -1 otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_root (std::string root)"
+
+.SS "bool check_server_name (std::string server_name)"
+
+.PP
+Validates a server name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver_name\fP The server name to validate\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the server name is valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool is_directory (const std::string & path)"
+
+.SS "bool is_valid_error_code (int code)"
+
+.PP
+Checks if an error code is valid\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP The error code to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the error code is valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool is_valid_filename (const std::string & filename)"
+
+.PP
+Checks if a filename is valid\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP The filename to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the filename 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

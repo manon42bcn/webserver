@@ -1,0 +1,200 @@
+.TH "Logger" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Logger \- A simple logging utility for managing log messages with different levels of severity\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Logger\&.hpp>\fP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBNoLoggerPointer\fP"
+.br
+.RI "Exception thrown when a null pointer to a \fBLogger\fP is used\&. "
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLogger\fP (int level, bool log_to_file)"
+.br
+.RI "Constructs a \fBLogger\fP object with a specified log level and optional file logging\&. "
+.ti -1c
+.RI "\fB~Logger\fP ()"
+.br
+.RI "Destructor for the \fBLogger\fP object\&. "
+.ti -1c
+.RI "template<typename T > void \fBnew_log\fP (int level, const std::string &module, T message) const"
+.br
+.ti -1c
+.RI "void \fBlog\fP (int level, const std::string &module, const std::string &message) const"
+.br
+.RI "Logs a message with a specified log level\&. "
+.ti -1c
+.RI "void \fBfatal_log\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs a fatal error message and terminates the program\&. "
+.ti -1c
+.RI "void \fBstatus\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs a status message to the standard output\&. "
+.ti -1c
+.RI "void \fBlog_debug\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs a debug-level message\&. "
+.ti -1c
+.RI "void \fBlog_info\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs an info-level message\&. "
+.ti -1c
+.RI "void \fBlog_warning\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs a warning-level message\&. "
+.ti -1c
+.RI "void \fBlog_error\fP (const std::string &module, const std::string &message) const"
+.br
+.RI "Logs an error-level message\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+A simple logging utility for managing log messages with different levels of severity\&. 
+
+This class provides methods for logging messages with different severity levels, including DEBUG, INFO, WARNING, ERROR, and FATAL\&. It supports logging to the console or to a file, and allows for filtering messages based on a log level\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "Logger::Logger (int level, bool log_to_file)"
+
+.PP
+Constructs a \fBLogger\fP object with a specified log level and optional file logging\&. This constructor initializes the logger with a specific log level, determining the minimum level of messages that will be logged\&. If file logging is enabled, the logger attempts to open a log file; if the file cannot be opened, logging defaults to the console\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlevel\fP The minimum log level for messages to be logged (e\&.g\&., LOG_DEBUG, LOG_INFO)\&. 
+.br
+\fIlog_to_file\fP Boolean indicating whether to log messages to a file\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+If the provided log level is out of the allowed range (LOG_DEBUG to LOG_ERROR), the constructor will terminate the program\&. 
+.RE
+.PP
+
+.SS "Logger::~Logger ()"
+
+.PP
+Destructor for the \fBLogger\fP object\&. Closes the log file if it is open and cleans up any resources\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void Logger::fatal_log (const std::string & module, const std::string & message) const"
+
+.PP
+Logs a fatal error message and terminates the program\&. This function logs a fatal error message, prints it to the standard error output, and then terminates the program\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The fatal error message to be recorded\&. 
+.RE
+.PP
+
+.SS "void Logger::log (int log_level, const std::string & module, const std::string & message) const"
+
+.PP
+Logs a message with a specified log level\&. This function logs a message if the provided log level is equal to or higher than the configured log level for the logger\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlog_level\fP The severity level of the message (e\&.g\&., LOG_DEBUG, LOG_INFO)\&. 
+.br
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The log message to be recorded\&. 
+.RE
+.PP
+
+.SS "void Logger::log_debug (const std::string & module, const std::string & message) const"
+
+.PP
+Logs a debug-level message\&. This function logs a message with DEBUG severity if the current log level permits it\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The debug message to be recorded\&. 
+.RE
+.PP
+
+.SS "void Logger::log_error (const std::string & module, const std::string & message) const"
+
+.PP
+Logs an error-level message\&. This function logs a message with ERROR severity\&. Error messages are always logged regardless of the configured log level\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The error message to be recorded\&. 
+.RE
+.PP
+
+.SS "void Logger::log_info (const std::string & module, const std::string & message) const"
+
+.PP
+Logs an info-level message\&. This function logs a message with INFO severity if the current log level permits it\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The informational message to be recorded\&. 
+.RE
+.PP
+
+.SS "void Logger::log_warning (const std::string & module, const std::string & message) const"
+
+.PP
+Logs a warning-level message\&. This function logs a message with WARNING severity if the current log level permits it\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The warning message to be recorded\&. 
+.RE
+.PP
+
+.SS "template<typename T > void Logger::new_log (int level, const std::string & module, T message) const"
+
+.SS "void Logger::status (const std::string & module, const std::string & message) const"
+
+.PP
+Logs a status message to the standard output\&. This function logs a status message, typically used for indicating non-error status updates\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImodule\fP The name of the module or component generating the log message\&. 
+.br
+\fImessage\fP The status message to be recorded\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

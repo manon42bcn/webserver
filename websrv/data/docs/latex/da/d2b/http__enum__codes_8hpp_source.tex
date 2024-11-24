@@ -1,0 +1,101 @@
+\doxysection{http\+\_\+enum\+\_\+codes.\+hpp}
+\hypertarget{http__enum__codes_8hpp_source}{}\label{http__enum__codes_8hpp_source}\index{websrv/inc/http\_enum\_codes.hpp@{websrv/inc/http\_enum\_codes.hpp}}
+\mbox{\hyperlink{http__enum__codes_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ http\_enum\_codes.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/12\ 11:43:11\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/18\ 16:09:12\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ \_\_HTTP\_ENUM\_CODES\_HPP\_\_}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#\ define\ \_\_HTTP\_ENUM\_CODES\_HPP\_\_}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{typedef}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\_methods}};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{comment}{/*\#\#\#\#\#\#\#\ 1xx\ -\/\ Informational\ \#\#\#\#\#\#\#*/}}
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a80fda2cfe303c918be39ff1d50b95264}{HTTP\_CONTINUE}}\ =\ 100,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Continue"{}}}
+\DoxyCodeLine{00021\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae9242b4badf4d181822fb38b584a8503}{HTTP\_SWITCHING\_PROTOCOLS}}\ =\ 101,\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Switching\ Protocols"{}}}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afcfbc849b357d4472de90c904db60231}{HTTP\_PROCESSING}}\ =\ 102,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Processing"{}}}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac5d6e1457e2d004cbaf3efaf76c830ce}{HTTP\_EARLY\_HINTS}}\ =\ 103,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Early\ Hints"{}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{/*\#\#\#\#\#\#\#\ 2xx\ -\/\ Success\ \#\#\#\#\#\#\#*/}}
+\DoxyCodeLine{00026\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a43f8027764325bbcad2f773511156d0a}{HTTP\_OK}}\ =\ 200,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}OK"{}}}
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a211e5143e6efe62c4f5eefc012a2dc39}{HTTP\_CREATED}}\ =\ 201,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Created"{}}}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afbd61b22f81ac2eb03a889aa50c1c477}{HTTP\_ACCEPTED}}\ =\ 202,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Accepted"{}}}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4e1d6c43bda232d69e7adad6ed6b7265}{HTTP\_NON\_AUTHORITATIVE\_INFORMATION}}\ =\ 203,\ \textcolor{comment}{//\ "{}Non-\/Authoritative\ Information"{}}}
+\DoxyCodeLine{00030\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a924170e0b9e6d6eec63321a20dd6f596}{HTTP\_NO\_CONTENT}}\ =\ 204,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}No\ Content"{}}}
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8c80fef94148da6a55c8c40d6bd0ceb1}{HTTP\_RESET\_CONTENT}}\ =\ 205,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Reset\ Content"{}}}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a999eb85d52738d8914626a076c8395f3}{HTTP\_PARTIAL\_CONTENT}}\ =\ 206,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Partial\ Content"{}}}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a82ffd6b91a86b17c761da28ea9ed57e9}{HTTP\_MULTI\_STATUS}}\ =\ 207,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Multi-\/Status"{}}}
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1e6dd41adfb1132cbd973b6cd115959}{HTTP\_ALREADY\_REPORTED}}\ =\ 208,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Already\ Reported"{}}}
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acda199af7463eab1328ffb5c8060cc71}{HTTP\_IM\_USED}}\ =\ 226,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}IM\ Used"{}}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{/*\#\#\#\#\#\#\#\ 3xx\ -\/\ Redirection\ \#\#\#\#\#\#\#*/}}
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a32880364a5227e921ac6cf3171b37216}{HTTP\_MULTIPLE\_CHOICES}}\ =\ 300,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Multiple\ Choices"{}}}
+\DoxyCodeLine{00039\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aed3a439d476b9214c71eaf7e0f89554d}{HTTP\_MOVED\_PERMANENTLY}}\ =\ 301,\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Moved\ Permanently"{}}}
+\DoxyCodeLine{00040\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8b549d40f11ee20d68042e93e9263ba9}{HTTP\_FOUND}}\ =\ 302,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Found"{}}}
+\DoxyCodeLine{00041\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad67fc5e92d700797b837285f7cae95ae}{HTTP\_SEE\_OTHER}}\ =\ 303,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}See\ Other"{}}}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4d2b0e5c4eda4d6e45bbe2360c299d5a}{HTTP\_NOT\_MODIFIED}}\ =\ 304,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Not\ Modified"{}}}
+\DoxyCodeLine{00043\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af3dcd2f349335becfad0b583dd81332e}{HTTP\_USE\_PROXY}}\ =\ 305,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Use\ Proxy"{}}}
+\DoxyCodeLine{00044\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8fa4c1a40ebd40f88e78db55fd765f63}{HTTP\_TEMPORARY\_REDIRECT}}\ =\ 307,\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Temporary\ Redirect"{}}}
+\DoxyCodeLine{00045\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a89a5ad494b34bf4e30bd7f0fab063f5d}{HTTP\_PERMANENT\_REDIRECT}}\ =\ 308,\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Permanent\ Redirect"{}}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{comment}{/*\#\#\#\#\#\#\#\ 4xx\ -\/\ Client\ Error\ \#\#\#\#\#\#\#*/}}
+\DoxyCodeLine{00048\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a173b2a55d636fe537b9069a4fb3388f2}{HTTP\_BAD\_REQUEST}}\ =\ 400,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Bad\ Request"{}}}
+\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a74677f364201a3d068bc6b9db7359288}{HTTP\_UNAUTHORIZED}}\ =\ 401,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Unauthorized"{}}}
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad6ee2620527a9f13b7b0cfb5dcc775d3}{HTTP\_PAYMENT\_REQUIRED}}\ =\ 402,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Payment\ Required"{}}}
+\DoxyCodeLine{00051\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7aec6e8ecb79ff84830a69e52ff01d17}{HTTP\_FORBIDDEN}}\ =\ 403,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Forbidden"{}}}
+\DoxyCodeLine{00052\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7a2f2a109c030ee9d2d5afe761232451}{HTTP\_NOT\_FOUND}}\ =\ 404,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Not\ Found"{}}}
+\DoxyCodeLine{00053\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab4cf8d97b3203f2926b30c517b45f837}{HTTP\_METHOD\_NOT\_ALLOWED}}\ =\ 405,\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Method\ Not\ Allowed"{}}}
+\DoxyCodeLine{00054\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1c26141bbb0896ff7e999ede4b87050}{HTTP\_NOT\_ACCEPTABLE}}\ =\ 406,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Not\ Acceptable"{}}}
+\DoxyCodeLine{00055\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a68276dc8c7d44249dcedcf6ae9abf610}{HTTP\_PROXY\_AUTHENTICATION\_REQUIRED}}\ =\ 407,\ \textcolor{comment}{//\ "{}Proxy\ Authentication\ Required"{}}}
+\DoxyCodeLine{00056\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390adcc34faaeb56b1d491853257833854a3}{HTTP\_REQUEST\_TIMEOUT}}\ =\ 408,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Request\ Timeout"{}}}
+\DoxyCodeLine{00057\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afc76747d6b2c9cb3c4e03203df3071cb}{HTTP\_CONFLICT}}\ =\ 409,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Conflict"{}}}
+\DoxyCodeLine{00058\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac650cac2fae6f4e079625ba8fb260897}{HTTP\_GONE}}\ =\ 410,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Gone"{}}}
+\DoxyCodeLine{00059\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a685d97fb9ae019416649734ce80f0036}{HTTP\_LENGTH\_REQUIRED}}\ =\ 411,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Length\ Required"{}}}
+\DoxyCodeLine{00060\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a0d85de4bf1ebe6fffe399eb1f56924b5}{HTTP\_PRECONDITION\_FAILED}}\ =\ 412,\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Precondition\ Failed"{}}}
+\DoxyCodeLine{00061\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5a5ce1ad03c6df08ec2a3db99503be98}{HTTP\_CONTENT\_TOO\_LARGE}}\ =\ 413,\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Payload\ Too\ Large"{}}}
+\DoxyCodeLine{00062\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6ec44095953a14e3cb17062192121eba}{HTTP\_URI\_TOO\_LONG}}\ =\ 414,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}URI\ Too\ Long"{}}}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7904c44e90f069dc31dfbfd7c9803609}{HTTP\_UNSUPPORTED\_MEDIA\_TYPE}}\ =\ 415,\ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Unsupported\ Media\ Type"{}}}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af89823c735e2f0f9abab7d78ebb90969}{HTTP\_RANGE\_NOT\_SATISFIABLE}}\ =\ 416,\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Range\ Not\ Satisfiable"{}}}
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a610a81750a4d3322fd0a4da6d969ffeb}{HTTP\_EXPECTATION\_FAILED}}\ =\ 417,\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Expectation\ Failed"{}}}
+\DoxyCodeLine{00066\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\_I\_AM\_A\_TEAPOT}}\ =\ 418,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}I'm\ a\ teapot"{}\ (RFC\ 2324)}}
+\DoxyCodeLine{00067\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a954c041d4715f5ecc9dcd9fe48b74781}{HTTP\_MISDIRECTED\_REQUEST}}\ =\ 421,\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Misdirected\ Request"{}}}
+\DoxyCodeLine{00068\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae2117fc7da5befbd9b8f0f3c5dfd8f17}{HTTP\_UNPROCESSABLE\_ENTITY}}\ =\ 422,\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Unprocessable\ Entity"{}}}
+\DoxyCodeLine{00069\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a3ec71d65b0973034a7f80de8b23e86ff}{HTTP\_LOCKED}}\ =\ 423,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Locked"{}}}
+\DoxyCodeLine{00070\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1b0a23e37da8e6dd601cc3508a811a51}{HTTP\_FAILED\_DEPENDENCY}}\ =\ 424,\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Failed\ Dependency"{}}}
+\DoxyCodeLine{00071\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab0987c038623d7463269cef0104ae78c}{HTTP\_TOO\_EARLY}}\ =\ 425,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Too\ Early"{}}}
+\DoxyCodeLine{00072\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac9fe08aaac1568e7dc9d67a9f689376c}{HTTP\_UPGRADE\_REQUIRED}}\ =\ 426,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Upgrade\ Required"{}}}
+\DoxyCodeLine{00073\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af50f2020d928bf35121b7e11132160d4}{HTTP\_PRECONDITION\_REQUIRED}}\ =\ 428,\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Precondition\ Required"{}}}
+\DoxyCodeLine{00074\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acf3042a4bc71c4bdbf373123b584210f}{HTTP\_TOO\_MANY\_REQUESTS}}\ =\ 429,\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Too\ Many\ Requests"{}}}
+\DoxyCodeLine{00075\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae3374b151efc594ff7c608de80a4d886}{HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE}}\ =\ 431,\ \textcolor{comment}{//\ "{}Request\ Header\ Fields\ Too\ Large"{}}}
+\DoxyCodeLine{00076\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a71176d391305d532eb1ce979c4512394}{HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS}}\ =\ 451,\ \textcolor{comment}{//\ "{}Unavailable\ For\ Legal\ Reasons"{}}}
+\DoxyCodeLine{00077\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a97aa3724e0aab0a4aa4fcc4cd3ead009}{HTTP\_CLIENT\_CLOSE\_REQUEST}}\ =\ 499,\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Client\ Close\ Request"{}}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{/*\#\#\#\#\#\#\#\ 5xx\ -\/\ Server\ Error\ \#\#\#\#\#\#\#*/}}
+\DoxyCodeLine{00080\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac7d2e49bfead01d65a890a2e80e5b3a6}{HTTP\_INTERNAL\_SERVER\_ERROR}}\ =\ 500,\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Internal\ Server\ Error"{}}}
+\DoxyCodeLine{00081\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad46f8921b20784b1d781ed4fcc13c39a}{HTTP\_NOT\_IMPLEMENTED}}\ =\ 501,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Not\ Implemented"{}}}
+\DoxyCodeLine{00082\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c2445431af610981d73859df3c658f2}{HTTP\_BAD\_GATEWAY}}\ =\ 502,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Bad\ Gateway"{}}}
+\DoxyCodeLine{00083\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6251d4710923e5253b159943405a1a3a}{HTTP\_SERVICE\_UNAVAILABLE}}\ =\ 503,\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Service\ Unavailable"{}}}
+\DoxyCodeLine{00084\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c58d9f33fb00db1e99ff34257fd5288}{HTTP\_GATEWAY\_TIMEOUT}}\ =\ 504,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Gateway\ Timeout"{}}}
+\DoxyCodeLine{00085\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a00a76c7b9a9405fd74aea337cfcb7e49}{HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED}}\ =\ 505,\ \ \ \ \textcolor{comment}{//\ "{}HTTP\ Version\ Not\ Supported"{}}}
+\DoxyCodeLine{00086\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1e1ba26efb093d9af420297c4edc3eba}{HTTP\_VARIANT\_ALSO\_NEGOTIATES}}\ =\ 506,\ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Variant\ Also\ Negotiates"{}}}
+\DoxyCodeLine{00087\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a08f0fd3798d377357a345bc2c3a38f66}{HTTP\_INSUFFICIENT\_STORAGE}}\ =\ 507,\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Insufficient\ Storage"{}}}
+\DoxyCodeLine{00088\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5d723c133379deeb9310a5e8a0757c9d}{HTTP\_LOOP\_DETECTED}}\ =\ 508,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Loop\ Detected"{}}}
+\DoxyCodeLine{00089\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1991c83bbb9e37f5c5aebc0ee1173931}{HTTP\_NOT\_EXTENDED}}\ =\ 510,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ "{}Not\ Extended"{}}}
+\DoxyCodeLine{00090\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aa84e72fa1e1be90dd1cec3f697884f91}{HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED}}\ =\ 511,\ \textcolor{comment}{//\ "{}Network\ Authentication\ Required"{}}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aca19f1806492b81b4dbf22a3ca920599}{HTTP\_MAX\_STATUS}}\ =\ 1023\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Máximo\ valor\ para\ códigos\ de\ estado\ HTTP}}
+\DoxyCodeLine{00093\ \};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

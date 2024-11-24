@@ -1,0 +1,247 @@
+\doxysection{websrv/srcs/parse/utils.cpp File Reference}
+\hypertarget{utils_8cpp}{}\label{utils_8cpp}\index{websrv/srcs/parse/utils.cpp@{websrv/srcs/parse/utils.cpp}}
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a01d60626f5ea3ae36076573151964dd9}{clean\+\_\+line}} (std\+::string line)
+\begin{DoxyCompactList}\small\item\em Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with \textquotesingle{}\#\textquotesingle{}. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a96e0404cfce2baf061f229a79d9ba671}{get\+\_\+value}} (std\+::string line, const std\+::string \&key)
+\begin{DoxyCompactList}\small\item\em Extracts the value associated with a key in a given line. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utils_8cpp_afeadc4781b746478b8137404aaf6597f}{find\+\_\+exact\+\_\+string}} (const std\+::string \&line, const std\+::string \&str)
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{utils_8cpp_a65244f92c777dd9739535ad7ea78f4c0}{get\+\_\+raw\+\_\+lines}} (std\+::string path)
+\begin{DoxyCompactList}\small\item\em Reads a file line by line, cleaning each line and returning a vector of non-\/empty lines. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_af2d1f45fcc966edfb209ff7938a0bdea}{delete\+\_\+brackets\+\_\+clean}} (std\+::string line)
+\begin{DoxyCompactList}\small\item\em Removes curly braces \textquotesingle{}\{\textquotesingle{} and \textquotesingle{}\}\textquotesingle{} from a line and cleans it of whitespace. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a29fb894d19f57af222447ddd5d53b8d7}{delete\+\_\+first\+\_\+slash}} (std\+::string path)
+\begin{DoxyCompactList}\small\item\em Removes the first slash from a path if it exists. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_afd56fbe152a151a5a05ec51e2ee616b9}{get\+\_\+server\+\_\+root}} ()
+\item 
+std\+::vector$<$ std\+::string $>$\+::iterator \mbox{\hyperlink{utils_8cpp_aa7aa50634040e3947db40560bb98167d}{skip\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end)
+\item 
+std\+::vector$<$ std\+::string $>$\+::iterator \mbox{\hyperlink{utils_8cpp_a25878e147619b8924349760761dd3e0b}{find\+\_\+block\+\_\+end}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end)
+\item 
+\mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}} \mbox{\hyperlink{utils_8cpp_a4feccc3e5b8727b567e0121f989864b4}{string\+\_\+to\+\_\+method}} (std\+::string method)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_af7d9771c9230d1a886c975b7645045d1}{delete\+\_\+signs}} (std\+::string line)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a4c4ef35dc2401b3175f406150062f415}{delete\+\_\+last\+\_\+slash}} (std\+::string path)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a407fefb75aab67aab4be7abe7a8d8c54}{get\+\_\+location\+\_\+path}} (std\+::string line)
+\item 
+\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} \mbox{\hyperlink{utils_8cpp_aa92b30f31083f5408d0951bde2270276}{string\+\_\+to\+\_\+error\+\_\+mode}} (std\+::string error\+\_\+mode)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_af698e5bab14d89c0a089b04d512a1567}{join\+\_\+paths}} (std\+::string path1, std\+::string path2)
+\item 
+unsigned char \mbox{\hyperlink{utils_8cpp_a0f68294a0532c02abf9bd8a0954c45e6}{method\+\_\+bitwise}} (std\+::string parsed)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a5750c1a848d06a6be5499c29bbe4e4c0}{get\+\_\+first\+\_\+word}} (const std\+::string \&str)
+\item 
+int \mbox{\hyperlink{utils_8cpp_ad9c010cbebbb2e1e76217cd2ff43406e}{get\+\_\+status\+\_\+code}} (std\+::string status\+\_\+code, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+std\+::string \mbox{\hyperlink{utils_8cpp_a7c4c41c929671f0674bed16273805f9e}{get\+\_\+redirection\+\_\+url}} (std\+::string redirection, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{utils_8cpp_aa5a6fc3157e9044a69b6eff29c0ac829}{split\+\_\+redirections}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\item 
+bool \mbox{\hyperlink{utils_8cpp_a7817e2ae3e79861622d09ff6e803c05f}{compare\+\_\+paths}} (std\+::string path1, std\+::string path2)
+\item 
+size\+\_\+t \mbox{\hyperlink{utils_8cpp_ad5bc53a4c299a7dd5aab52a683fb19da}{string\+\_\+to\+\_\+bytes}} (std\+::string client\+\_\+max\+\_\+body\+\_\+size)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{utils_8cpp_a01d60626f5ea3ae36076573151964dd9}\index{utils.cpp@{utils.cpp}!clean\_line@{clean\_line}}
+\index{clean\_line@{clean\_line}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{clean\_line()}{clean\_line()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a01d60626f5ea3ae36076573151964dd9} 
+std\+::string clean\+\_\+line (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+
+
+
+Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with \textquotesingle{}\#\textquotesingle{}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The line to be cleaned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A cleaned version of the line. 
+\end{DoxyReturn}
+\Hypertarget{utils_8cpp_a7817e2ae3e79861622d09ff6e803c05f}\index{utils.cpp@{utils.cpp}!compare\_paths@{compare\_paths}}
+\index{compare\_paths@{compare\_paths}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{compare\_paths()}{compare\_paths()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a7817e2ae3e79861622d09ff6e803c05f} 
+bool compare\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1}{, }\item[{std\+::string}]{path2}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_af2d1f45fcc966edfb209ff7938a0bdea}\index{utils.cpp@{utils.cpp}!delete\_brackets\_clean@{delete\_brackets\_clean}}
+\index{delete\_brackets\_clean@{delete\_brackets\_clean}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_brackets\_clean()}{delete\_brackets\_clean()}}
+{\footnotesize\ttfamily \label{utils_8cpp_af2d1f45fcc966edfb209ff7938a0bdea} 
+std\+::string delete\+\_\+brackets\+\_\+clean (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+
+
+
+Removes curly braces \textquotesingle{}\{\textquotesingle{} and \textquotesingle{}\}\textquotesingle{} from a line and cleans it of whitespace. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The line to be cleaned. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The cleaned line without braces. 
+\end{DoxyReturn}
+\Hypertarget{utils_8cpp_a29fb894d19f57af222447ddd5d53b8d7}\index{utils.cpp@{utils.cpp}!delete\_first\_slash@{delete\_first\_slash}}
+\index{delete\_first\_slash@{delete\_first\_slash}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_first\_slash()}{delete\_first\_slash()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a29fb894d19f57af222447ddd5d53b8d7} 
+std\+::string delete\+\_\+first\+\_\+slash (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Removes the first slash from a path if it exists. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The path to modify. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The path without the leading slash. 
+\end{DoxyReturn}
+\Hypertarget{utils_8cpp_a4c4ef35dc2401b3175f406150062f415}\index{utils.cpp@{utils.cpp}!delete\_last\_slash@{delete\_last\_slash}}
+\index{delete\_last\_slash@{delete\_last\_slash}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_last\_slash()}{delete\_last\_slash()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a4c4ef35dc2401b3175f406150062f415} 
+std\+::string delete\+\_\+last\+\_\+slash (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_af7d9771c9230d1a886c975b7645045d1}\index{utils.cpp@{utils.cpp}!delete\_signs@{delete\_signs}}
+\index{delete\_signs@{delete\_signs}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{delete\_signs()}{delete\_signs()}}
+{\footnotesize\ttfamily \label{utils_8cpp_af7d9771c9230d1a886c975b7645045d1} 
+std\+::string delete\+\_\+signs (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a25878e147619b8924349760761dd3e0b}\index{utils.cpp@{utils.cpp}!find\_block\_end@{find\_block\_end}}
+\index{find\_block\_end@{find\_block\_end}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{find\_block\_end()}{find\_block\_end()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a25878e147619b8924349760761dd3e0b} 
+std\+::vector$<$ std\+::string $>$\+::iterator find\+\_\+block\+\_\+end (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_afeadc4781b746478b8137404aaf6597f}\index{utils.cpp@{utils.cpp}!find\_exact\_string@{find\_exact\_string}}
+\index{find\_exact\_string@{find\_exact\_string}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{find\_exact\_string()}{find\_exact\_string()}}
+{\footnotesize\ttfamily \label{utils_8cpp_afeadc4781b746478b8137404aaf6597f} 
+bool find\+\_\+exact\+\_\+string (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{line}{, }\item[{const std\+::string \&}]{str}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a5750c1a848d06a6be5499c29bbe4e4c0}\index{utils.cpp@{utils.cpp}!get\_first\_word@{get\_first\_word}}
+\index{get\_first\_word@{get\_first\_word}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_first\_word()}{get\_first\_word()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a5750c1a848d06a6be5499c29bbe4e4c0} 
+std\+::string get\+\_\+first\+\_\+word (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a407fefb75aab67aab4be7abe7a8d8c54}\index{utils.cpp@{utils.cpp}!get\_location\_path@{get\_location\_path}}
+\index{get\_location\_path@{get\_location\_path}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_location\_path()}{get\_location\_path()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a407fefb75aab67aab4be7abe7a8d8c54} 
+std\+::string get\+\_\+location\+\_\+path (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a65244f92c777dd9739535ad7ea78f4c0}\index{utils.cpp@{utils.cpp}!get\_raw\_lines@{get\_raw\_lines}}
+\index{get\_raw\_lines@{get\_raw\_lines}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_raw\_lines()}{get\_raw\_lines()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a65244f92c777dd9739535ad7ea78f4c0} 
+std\+::vector$<$ std\+::string $>$ get\+\_\+raw\+\_\+lines (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Reads a file line by line, cleaning each line and returning a vector of non-\/empty lines. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & The path to the file. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A vector of cleaned, non-\/empty lines. 
+\end{DoxyReturn}
+\Hypertarget{utils_8cpp_a7c4c41c929671f0674bed16273805f9e}\index{utils.cpp@{utils.cpp}!get\_redirection\_url@{get\_redirection\_url}}
+\index{get\_redirection\_url@{get\_redirection\_url}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_redirection\_url()}{get\_redirection\_url()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a7c4c41c929671f0674bed16273805f9e} 
+std\+::string get\+\_\+redirection\+\_\+url (\begin{DoxyParamCaption}\item[{std\+::string}]{redirection}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_afd56fbe152a151a5a05ec51e2ee616b9}\index{utils.cpp@{utils.cpp}!get\_server\_root@{get\_server\_root}}
+\index{get\_server\_root@{get\_server\_root}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_server\_root()}{get\_server\_root()}}
+{\footnotesize\ttfamily \label{utils_8cpp_afd56fbe152a151a5a05ec51e2ee616b9} 
+std\+::string get\+\_\+server\+\_\+root (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_ad9c010cbebbb2e1e76217cd2ff43406e}\index{utils.cpp@{utils.cpp}!get\_status\_code@{get\_status\_code}}
+\index{get\_status\_code@{get\_status\_code}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_status\_code()}{get\_status\_code()}}
+{\footnotesize\ttfamily \label{utils_8cpp_ad9c010cbebbb2e1e76217cd2ff43406e} 
+int get\+\_\+status\+\_\+code (\begin{DoxyParamCaption}\item[{std\+::string}]{status\+\_\+code}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a96e0404cfce2baf061f229a79d9ba671}\index{utils.cpp@{utils.cpp}!get\_value@{get\_value}}
+\index{get\_value@{get\_value}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{get\_value()}{get\_value()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a96e0404cfce2baf061f229a79d9ba671} 
+std\+::string get\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{, }\item[{const std\+::string \&}]{key}{}\end{DoxyParamCaption})}
+
+
+
+Extracts the value associated with a key in a given line. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The line containing the key-\/value pair. \\
+\hline
+{\em key} & The key to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The value associated with the key, or an empty string if not found. 
+\end{DoxyReturn}
+\Hypertarget{utils_8cpp_af698e5bab14d89c0a089b04d512a1567}\index{utils.cpp@{utils.cpp}!join\_paths@{join\_paths}}
+\index{join\_paths@{join\_paths}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{join\_paths()}{join\_paths()}}
+{\footnotesize\ttfamily \label{utils_8cpp_af698e5bab14d89c0a089b04d512a1567} 
+std\+::string join\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1}{, }\item[{std\+::string}]{path2}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a0f68294a0532c02abf9bd8a0954c45e6}\index{utils.cpp@{utils.cpp}!method\_bitwise@{method\_bitwise}}
+\index{method\_bitwise@{method\_bitwise}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{method\_bitwise()}{method\_bitwise()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a0f68294a0532c02abf9bd8a0954c45e6} 
+unsigned char method\+\_\+bitwise (\begin{DoxyParamCaption}\item[{std\+::string}]{parsed}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_aa7aa50634040e3947db40560bb98167d}\index{utils.cpp@{utils.cpp}!skip\_block@{skip\_block}}
+\index{skip\_block@{skip\_block}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{skip\_block()}{skip\_block()}}
+{\footnotesize\ttfamily \label{utils_8cpp_aa7aa50634040e3947db40560bb98167d} 
+std\+::vector$<$ std\+::string $>$\+::iterator skip\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_aa5a6fc3157e9044a69b6eff29c0ac829}\index{utils.cpp@{utils.cpp}!split\_redirections@{split\_redirections}}
+\index{split\_redirections@{split\_redirections}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{split\_redirections()}{split\_redirections()}}
+{\footnotesize\ttfamily \label{utils_8cpp_aa5a6fc3157e9044a69b6eff29c0ac829} 
+std\+::map$<$ int, std\+::string $>$ split\+\_\+redirections (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_ad5bc53a4c299a7dd5aab52a683fb19da}\index{utils.cpp@{utils.cpp}!string\_to\_bytes@{string\_to\_bytes}}
+\index{string\_to\_bytes@{string\_to\_bytes}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{string\_to\_bytes()}{string\_to\_bytes()}}
+{\footnotesize\ttfamily \label{utils_8cpp_ad5bc53a4c299a7dd5aab52a683fb19da} 
+size\+\_\+t string\+\_\+to\+\_\+bytes (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_aa92b30f31083f5408d0951bde2270276}\index{utils.cpp@{utils.cpp}!string\_to\_error\_mode@{string\_to\_error\_mode}}
+\index{string\_to\_error\_mode@{string\_to\_error\_mode}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{string\_to\_error\_mode()}{string\_to\_error\_mode()}}
+{\footnotesize\ttfamily \label{utils_8cpp_aa92b30f31083f5408d0951bde2270276} 
+\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} string\+\_\+to\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode}{}\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a4feccc3e5b8727b567e0121f989864b4}\index{utils.cpp@{utils.cpp}!string\_to\_method@{string\_to\_method}}
+\index{string\_to\_method@{string\_to\_method}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{string\_to\_method()}{string\_to\_method()}}
+{\footnotesize\ttfamily \label{utils_8cpp_a4feccc3e5b8727b567e0121f989864b4} 
+\mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}} string\+\_\+to\+\_\+method (\begin{DoxyParamCaption}\item[{std\+::string}]{method}{}\end{DoxyParamCaption})}
+

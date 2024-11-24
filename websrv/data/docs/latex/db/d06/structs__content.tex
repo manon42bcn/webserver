@@ -1,0 +1,121 @@
+\doxysection{s\+\_\+content Struct Reference}
+\hypertarget{structs__content}{}\label{structs__content}\index{s\_content@{s\_content}}
+
+
+Holds data associated with HTTP response content.  
+
+
+
+
+{\ttfamily \#include $<$Web\+Server\+Response\+Handler.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structs__content_a4066ac4181e9ffbffb7eda0e188b0fb9}{s\+\_\+content}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{structs__content_ad435ea62e2b55cee8d50c7d1315bbae8}{ranged}}
+\item 
+size\+\_\+t \mbox{\hyperlink{structs__content_a9aef39b56844ff9428c212c76e34c84f}{start}}
+\item 
+size\+\_\+t \mbox{\hyperlink{structs__content_ad0bbb064271036800ea78239ca039b5f}{end}}
+\item 
+size\+\_\+t \mbox{\hyperlink{structs__content_aad8d8a49a108d7896c04553886323b65}{filesize}}
+\item 
+\mbox{\hyperlink{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}{e\+\_\+range\+\_\+scenario}} \mbox{\hyperlink{structs__content_a9b6f35b56a070799f012dc7ff2c2ce34}{range\+\_\+scenario}}
+\item 
+bool \mbox{\hyperlink{structs__content_a3649d40d83f9716717f2c53616d425e9}{status}}
+\item 
+std\+::string \mbox{\hyperlink{structs__content_a0edf0d4c71e7eaab32cecd3caa47f0ff}{content}}
+\item 
+std\+::string \mbox{\hyperlink{structs__content_a35dc78d824fa00f32ae5b6992e460ea7}{mime}}
+\item 
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} \mbox{\hyperlink{structs__content_a63e772e8c7869ca3699f289c3de77612}{http\+\_\+status}}
+\item 
+std\+::string \mbox{\hyperlink{structs__content_ae0783138667fe0cad00967a23583cb51}{header}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Holds data associated with HTTP response content. 
+
+This structure stores various attributes related to the response content, including range data, MIME type, content length, and response status. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{structs__content_a4066ac4181e9ffbffb7eda0e188b0fb9}\index{s\_content@{s\_content}!s\_content@{s\_content}}
+\index{s\_content@{s\_content}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{s\_content()}{s\_content()}}
+{\footnotesize\ttfamily \label{structs__content_a4066ac4181e9ffbffb7eda0e188b0fb9} 
+s\+\_\+content\+::s\+\_\+content (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Field Documentation}
+\Hypertarget{structs__content_a0edf0d4c71e7eaab32cecd3caa47f0ff}\index{s\_content@{s\_content}!content@{content}}
+\index{content@{content}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{content}{content}}
+{\footnotesize\ttfamily \label{structs__content_a0edf0d4c71e7eaab32cecd3caa47f0ff} 
+std\+::string s\+\_\+content\+::content}
+
+\Hypertarget{structs__content_ad0bbb064271036800ea78239ca039b5f}\index{s\_content@{s\_content}!end@{end}}
+\index{end@{end}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{end}{end}}
+{\footnotesize\ttfamily \label{structs__content_ad0bbb064271036800ea78239ca039b5f} 
+size\+\_\+t s\+\_\+content\+::end}
+
+\Hypertarget{structs__content_aad8d8a49a108d7896c04553886323b65}\index{s\_content@{s\_content}!filesize@{filesize}}
+\index{filesize@{filesize}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{filesize}{filesize}}
+{\footnotesize\ttfamily \label{structs__content_aad8d8a49a108d7896c04553886323b65} 
+size\+\_\+t s\+\_\+content\+::filesize}
+
+\Hypertarget{structs__content_ae0783138667fe0cad00967a23583cb51}\index{s\_content@{s\_content}!header@{header}}
+\index{header@{header}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{header}{header}}
+{\footnotesize\ttfamily \label{structs__content_ae0783138667fe0cad00967a23583cb51} 
+std\+::string s\+\_\+content\+::header}
+
+\Hypertarget{structs__content_a63e772e8c7869ca3699f289c3de77612}\index{s\_content@{s\_content}!http\_status@{http\_status}}
+\index{http\_status@{http\_status}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{http\_status}{http\_status}}
+{\footnotesize\ttfamily \label{structs__content_a63e772e8c7869ca3699f289c3de77612} 
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} s\+\_\+content\+::http\+\_\+status}
+
+\Hypertarget{structs__content_a35dc78d824fa00f32ae5b6992e460ea7}\index{s\_content@{s\_content}!mime@{mime}}
+\index{mime@{mime}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{mime}{mime}}
+{\footnotesize\ttfamily \label{structs__content_a35dc78d824fa00f32ae5b6992e460ea7} 
+std\+::string s\+\_\+content\+::mime}
+
+\Hypertarget{structs__content_a9b6f35b56a070799f012dc7ff2c2ce34}\index{s\_content@{s\_content}!range\_scenario@{range\_scenario}}
+\index{range\_scenario@{range\_scenario}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{range\_scenario}{range\_scenario}}
+{\footnotesize\ttfamily \label{structs__content_a9b6f35b56a070799f012dc7ff2c2ce34} 
+\mbox{\hyperlink{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}{e\+\_\+range\+\_\+scenario}} s\+\_\+content\+::range\+\_\+scenario}
+
+\Hypertarget{structs__content_ad435ea62e2b55cee8d50c7d1315bbae8}\index{s\_content@{s\_content}!ranged@{ranged}}
+\index{ranged@{ranged}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{ranged}{ranged}}
+{\footnotesize\ttfamily \label{structs__content_ad435ea62e2b55cee8d50c7d1315bbae8} 
+bool s\+\_\+content\+::ranged}
+
+\Hypertarget{structs__content_a9aef39b56844ff9428c212c76e34c84f}\index{s\_content@{s\_content}!start@{start}}
+\index{start@{start}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{start}{start}}
+{\footnotesize\ttfamily \label{structs__content_a9aef39b56844ff9428c212c76e34c84f} 
+size\+\_\+t s\+\_\+content\+::start}
+
+\Hypertarget{structs__content_a3649d40d83f9716717f2c53616d425e9}\index{s\_content@{s\_content}!status@{status}}
+\index{status@{status}!s\_content@{s\_content}}
+\doxysubsubsection{\texorpdfstring{status}{status}}
+{\footnotesize\ttfamily \label{structs__content_a3649d40d83f9716717f2c53616d425e9} 
+bool s\+\_\+content\+::status}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_web_server_response_handler_8hpp}{Web\+Server\+Response\+Handler.\+hpp}}\end{DoxyCompactItemize}

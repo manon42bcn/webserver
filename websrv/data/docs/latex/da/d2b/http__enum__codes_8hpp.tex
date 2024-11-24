@@ -1,0 +1,368 @@
+\doxysection{websrv/inc/http\+\_\+enum\+\_\+codes.hpp File Reference}
+\hypertarget{http__enum__codes_8hpp}{}\label{http__enum__codes_8hpp}\index{websrv/inc/http\_enum\_codes.hpp@{websrv/inc/http\_enum\_codes.hpp}}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef unsigned char \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} \{ \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a80fda2cfe303c918be39ff1d50b95264}{HTTP\+\_\+\+CONTINUE}} = 100
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae9242b4badf4d181822fb38b584a8503}{HTTP\+\_\+\+SWITCHING\+\_\+\+PROTOCOLS}} = 101
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afcfbc849b357d4472de90c904db60231}{HTTP\+\_\+\+PROCESSING}} = 102
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac5d6e1457e2d004cbaf3efaf76c830ce}{HTTP\+\_\+\+EARLY\+\_\+\+HINTS}} = 103
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a43f8027764325bbcad2f773511156d0a}{HTTP\+\_\+\+OK}} = 200
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a211e5143e6efe62c4f5eefc012a2dc39}{HTTP\+\_\+\+CREATED}} = 201
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afbd61b22f81ac2eb03a889aa50c1c477}{HTTP\+\_\+\+ACCEPTED}} = 202
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4e1d6c43bda232d69e7adad6ed6b7265}{HTTP\+\_\+\+NON\+\_\+\+AUTHORITATIVE\+\_\+\+INFORMATION}} = 203
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a924170e0b9e6d6eec63321a20dd6f596}{HTTP\+\_\+\+NO\+\_\+\+CONTENT}} = 204
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8c80fef94148da6a55c8c40d6bd0ceb1}{HTTP\+\_\+\+RESET\+\_\+\+CONTENT}} = 205
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a999eb85d52738d8914626a076c8395f3}{HTTP\+\_\+\+PARTIAL\+\_\+\+CONTENT}} = 206
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a82ffd6b91a86b17c761da28ea9ed57e9}{HTTP\+\_\+\+MULTI\+\_\+\+STATUS}} = 207
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1e6dd41adfb1132cbd973b6cd115959}{HTTP\+\_\+\+ALREADY\+\_\+\+REPORTED}} = 208
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acda199af7463eab1328ffb5c8060cc71}{HTTP\+\_\+\+IM\+\_\+\+USED}} = 226
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a32880364a5227e921ac6cf3171b37216}{HTTP\+\_\+\+MULTIPLE\+\_\+\+CHOICES}} = 300
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aed3a439d476b9214c71eaf7e0f89554d}{HTTP\+\_\+\+MOVED\+\_\+\+PERMANENTLY}} = 301
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8b549d40f11ee20d68042e93e9263ba9}{HTTP\+\_\+\+FOUND}} = 302
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad67fc5e92d700797b837285f7cae95ae}{HTTP\+\_\+\+SEE\+\_\+\+OTHER}} = 303
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4d2b0e5c4eda4d6e45bbe2360c299d5a}{HTTP\+\_\+\+NOT\+\_\+\+MODIFIED}} = 304
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af3dcd2f349335becfad0b583dd81332e}{HTTP\+\_\+\+USE\+\_\+\+PROXY}} = 305
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8fa4c1a40ebd40f88e78db55fd765f63}{HTTP\+\_\+\+TEMPORARY\+\_\+\+REDIRECT}} = 307
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a89a5ad494b34bf4e30bd7f0fab063f5d}{HTTP\+\_\+\+PERMANENT\+\_\+\+REDIRECT}} = 308
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a173b2a55d636fe537b9069a4fb3388f2}{HTTP\+\_\+\+BAD\+\_\+\+REQUEST}} = 400
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a74677f364201a3d068bc6b9db7359288}{HTTP\+\_\+\+UNAUTHORIZED}} = 401
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad6ee2620527a9f13b7b0cfb5dcc775d3}{HTTP\+\_\+\+PAYMENT\+\_\+\+REQUIRED}} = 402
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7aec6e8ecb79ff84830a69e52ff01d17}{HTTP\+\_\+\+FORBIDDEN}} = 403
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7a2f2a109c030ee9d2d5afe761232451}{HTTP\+\_\+\+NOT\+\_\+\+FOUND}} = 404
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab4cf8d97b3203f2926b30c517b45f837}{HTTP\+\_\+\+METHOD\+\_\+\+NOT\+\_\+\+ALLOWED}} = 405
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1c26141bbb0896ff7e999ede4b87050}{HTTP\+\_\+\+NOT\+\_\+\+ACCEPTABLE}} = 406
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a68276dc8c7d44249dcedcf6ae9abf610}{HTTP\+\_\+\+PROXY\+\_\+\+AUTHENTICATION\+\_\+\+REQUIRED}} = 407
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390adcc34faaeb56b1d491853257833854a3}{HTTP\+\_\+\+REQUEST\+\_\+\+TIMEOUT}} = 408
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afc76747d6b2c9cb3c4e03203df3071cb}{HTTP\+\_\+\+CONFLICT}} = 409
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac650cac2fae6f4e079625ba8fb260897}{HTTP\+\_\+\+GONE}} = 410
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a685d97fb9ae019416649734ce80f0036}{HTTP\+\_\+\+LENGTH\+\_\+\+REQUIRED}} = 411
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a0d85de4bf1ebe6fffe399eb1f56924b5}{HTTP\+\_\+\+PRECONDITION\+\_\+\+FAILED}} = 412
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5a5ce1ad03c6df08ec2a3db99503be98}{HTTP\+\_\+\+CONTENT\+\_\+\+TOO\+\_\+\+LARGE}} = 413
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6ec44095953a14e3cb17062192121eba}{HTTP\+\_\+\+URI\+\_\+\+TOO\+\_\+\+LONG}} = 414
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7904c44e90f069dc31dfbfd7c9803609}{HTTP\+\_\+\+UNSUPPORTED\+\_\+\+MEDIA\+\_\+\+TYPE}} = 415
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af89823c735e2f0f9abab7d78ebb90969}{HTTP\+\_\+\+RANGE\+\_\+\+NOT\+\_\+\+SATISFIABLE}} = 416
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a610a81750a4d3322fd0a4da6d969ffeb}{HTTP\+\_\+\+EXPECTATION\+\_\+\+FAILED}} = 417
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\+\_\+\+I\+\_\+\+AM\+\_\+\+A\+\_\+\+TEAPOT}} = 418
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a954c041d4715f5ecc9dcd9fe48b74781}{HTTP\+\_\+\+MISDIRECTED\+\_\+\+REQUEST}} = 421
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae2117fc7da5befbd9b8f0f3c5dfd8f17}{HTTP\+\_\+\+UNPROCESSABLE\+\_\+\+ENTITY}} = 422
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a3ec71d65b0973034a7f80de8b23e86ff}{HTTP\+\_\+\+LOCKED}} = 423
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1b0a23e37da8e6dd601cc3508a811a51}{HTTP\+\_\+\+FAILED\+\_\+\+DEPENDENCY}} = 424
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab0987c038623d7463269cef0104ae78c}{HTTP\+\_\+\+TOO\+\_\+\+EARLY}} = 425
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac9fe08aaac1568e7dc9d67a9f689376c}{HTTP\+\_\+\+UPGRADE\+\_\+\+REQUIRED}} = 426
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af50f2020d928bf35121b7e11132160d4}{HTTP\+\_\+\+PRECONDITION\+\_\+\+REQUIRED}} = 428
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acf3042a4bc71c4bdbf373123b584210f}{HTTP\+\_\+\+TOO\+\_\+\+MANY\+\_\+\+REQUESTS}} = 429
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae3374b151efc594ff7c608de80a4d886}{HTTP\+\_\+\+REQUEST\+\_\+\+HEADER\+\_\+\+FIELDS\+\_\+\+TOO\+\_\+\+LARGE}} = 431
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a71176d391305d532eb1ce979c4512394}{HTTP\+\_\+\+UNAVAILABLE\+\_\+\+FOR\+\_\+\+LEGAL\+\_\+\+REASONS}} = 451
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a97aa3724e0aab0a4aa4fcc4cd3ead009}{HTTP\+\_\+\+CLIENT\+\_\+\+CLOSE\+\_\+\+REQUEST}} = 499
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac7d2e49bfead01d65a890a2e80e5b3a6}{HTTP\+\_\+\+INTERNAL\+\_\+\+SERVER\+\_\+\+ERROR}} = 500
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad46f8921b20784b1d781ed4fcc13c39a}{HTTP\+\_\+\+NOT\+\_\+\+IMPLEMENTED}} = 501
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c2445431af610981d73859df3c658f2}{HTTP\+\_\+\+BAD\+\_\+\+GATEWAY}} = 502
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6251d4710923e5253b159943405a1a3a}{HTTP\+\_\+\+SERVICE\+\_\+\+UNAVAILABLE}} = 503
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c58d9f33fb00db1e99ff34257fd5288}{HTTP\+\_\+\+GATEWAY\+\_\+\+TIMEOUT}} = 504
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a00a76c7b9a9405fd74aea337cfcb7e49}{HTTP\+\_\+\+HTTP\+\_\+\+VERSION\+\_\+\+NOT\+\_\+\+SUPPORTED}} = 505
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1e1ba26efb093d9af420297c4edc3eba}{HTTP\+\_\+\+VARIANT\+\_\+\+ALSO\+\_\+\+NEGOTIATES}} = 506
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a08f0fd3798d377357a345bc2c3a38f66}{HTTP\+\_\+\+INSUFFICIENT\+\_\+\+STORAGE}} = 507
+, \newline
+\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5d723c133379deeb9310a5e8a0757c9d}{HTTP\+\_\+\+LOOP\+\_\+\+DETECTED}} = 508
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1991c83bbb9e37f5c5aebc0ee1173931}{HTTP\+\_\+\+NOT\+\_\+\+EXTENDED}} = 510
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aa84e72fa1e1be90dd1cec3f697884f91}{HTTP\+\_\+\+NETWORK\+\_\+\+AUTHENTICATION\+\_\+\+REQUIRED}} = 511
+, \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aca19f1806492b81b4dbf22a3ca920599}{HTTP\+\_\+\+MAX\+\_\+\+STATUS}} = 1023
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!t\_methods@{t\_methods}}
+\index{t\_methods@{t\_methods}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_methods}{t\_methods}}
+{\footnotesize\ttfamily \label{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a} 
+typedef unsigned char \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}}}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!e\_http\_sts@{e\_http\_sts}}
+\index{e\_http\_sts@{e\_http\_sts}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}
+\doxysubsubsection{\texorpdfstring{e\_http\_sts}{e\_http\_sts}}
+{\footnotesize\ttfamily \label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+enum \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_CONTINUE@{HTTP\_CONTINUE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_CONTINUE@{HTTP\_CONTINUE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a80fda2cfe303c918be39ff1d50b95264}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+CONTINUE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_SWITCHING\_PROTOCOLS@{HTTP\_SWITCHING\_PROTOCOLS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_SWITCHING\_PROTOCOLS@{HTTP\_SWITCHING\_PROTOCOLS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae9242b4badf4d181822fb38b584a8503}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+SWITCHING\+\_\+\+PROTOCOLS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PROCESSING@{HTTP\_PROCESSING}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PROCESSING@{HTTP\_PROCESSING}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afcfbc849b357d4472de90c904db60231}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PROCESSING&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_EARLY\_HINTS@{HTTP\_EARLY\_HINTS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_EARLY\_HINTS@{HTTP\_EARLY\_HINTS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac5d6e1457e2d004cbaf3efaf76c830ce}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+EARLY\+\_\+\+HINTS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_OK@{HTTP\_OK}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_OK@{HTTP\_OK}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a43f8027764325bbcad2f773511156d0a}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+OK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_CREATED@{HTTP\_CREATED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_CREATED@{HTTP\_CREATED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a211e5143e6efe62c4f5eefc012a2dc39}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+CREATED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_ACCEPTED@{HTTP\_ACCEPTED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_ACCEPTED@{HTTP\_ACCEPTED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afbd61b22f81ac2eb03a889aa50c1c477}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+ACCEPTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NON\_AUTHORITATIVE\_INFORMATION@{HTTP\_NON\_AUTHORITATIVE\_INFORMATION}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NON\_AUTHORITATIVE\_INFORMATION@{HTTP\_NON\_AUTHORITATIVE\_INFORMATION}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4e1d6c43bda232d69e7adad6ed6b7265}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NON\+\_\+\+AUTHORITATIVE\+\_\+\+INFORMATION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NO\_CONTENT@{HTTP\_NO\_CONTENT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NO\_CONTENT@{HTTP\_NO\_CONTENT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a924170e0b9e6d6eec63321a20dd6f596}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NO\+\_\+\+CONTENT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_RESET\_CONTENT@{HTTP\_RESET\_CONTENT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_RESET\_CONTENT@{HTTP\_RESET\_CONTENT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8c80fef94148da6a55c8c40d6bd0ceb1}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+RESET\+\_\+\+CONTENT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PARTIAL\_CONTENT@{HTTP\_PARTIAL\_CONTENT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PARTIAL\_CONTENT@{HTTP\_PARTIAL\_CONTENT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a999eb85d52738d8914626a076c8395f3}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PARTIAL\+\_\+\+CONTENT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_MULTI\_STATUS@{HTTP\_MULTI\_STATUS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_MULTI\_STATUS@{HTTP\_MULTI\_STATUS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a82ffd6b91a86b17c761da28ea9ed57e9}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+MULTI\+\_\+\+STATUS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_ALREADY\_REPORTED@{HTTP\_ALREADY\_REPORTED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_ALREADY\_REPORTED@{HTTP\_ALREADY\_REPORTED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1e6dd41adfb1132cbd973b6cd115959}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+ALREADY\+\_\+\+REPORTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_IM\_USED@{HTTP\_IM\_USED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_IM\_USED@{HTTP\_IM\_USED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acda199af7463eab1328ffb5c8060cc71}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+IM\+\_\+\+USED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_MULTIPLE\_CHOICES@{HTTP\_MULTIPLE\_CHOICES}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_MULTIPLE\_CHOICES@{HTTP\_MULTIPLE\_CHOICES}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a32880364a5227e921ac6cf3171b37216}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+MULTIPLE\+\_\+\+CHOICES&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_MOVED\_PERMANENTLY@{HTTP\_MOVED\_PERMANENTLY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_MOVED\_PERMANENTLY@{HTTP\_MOVED\_PERMANENTLY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aed3a439d476b9214c71eaf7e0f89554d}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+MOVED\+\_\+\+PERMANENTLY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_FOUND@{HTTP\_FOUND}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_FOUND@{HTTP\_FOUND}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8b549d40f11ee20d68042e93e9263ba9}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+FOUND&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_SEE\_OTHER@{HTTP\_SEE\_OTHER}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_SEE\_OTHER@{HTTP\_SEE\_OTHER}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad67fc5e92d700797b837285f7cae95ae}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+SEE\+\_\+\+OTHER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NOT\_MODIFIED@{HTTP\_NOT\_MODIFIED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NOT\_MODIFIED@{HTTP\_NOT\_MODIFIED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4d2b0e5c4eda4d6e45bbe2360c299d5a}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NOT\+\_\+\+MODIFIED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_USE\_PROXY@{HTTP\_USE\_PROXY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_USE\_PROXY@{HTTP\_USE\_PROXY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af3dcd2f349335becfad0b583dd81332e}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+USE\+\_\+\+PROXY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_TEMPORARY\_REDIRECT@{HTTP\_TEMPORARY\_REDIRECT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_TEMPORARY\_REDIRECT@{HTTP\_TEMPORARY\_REDIRECT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8fa4c1a40ebd40f88e78db55fd765f63}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+TEMPORARY\+\_\+\+REDIRECT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PERMANENT\_REDIRECT@{HTTP\_PERMANENT\_REDIRECT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PERMANENT\_REDIRECT@{HTTP\_PERMANENT\_REDIRECT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a89a5ad494b34bf4e30bd7f0fab063f5d}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PERMANENT\+\_\+\+REDIRECT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_BAD\_REQUEST@{HTTP\_BAD\_REQUEST}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_BAD\_REQUEST@{HTTP\_BAD\_REQUEST}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a173b2a55d636fe537b9069a4fb3388f2}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+BAD\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_UNAUTHORIZED@{HTTP\_UNAUTHORIZED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_UNAUTHORIZED@{HTTP\_UNAUTHORIZED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a74677f364201a3d068bc6b9db7359288}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+UNAUTHORIZED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PAYMENT\_REQUIRED@{HTTP\_PAYMENT\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PAYMENT\_REQUIRED@{HTTP\_PAYMENT\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad6ee2620527a9f13b7b0cfb5dcc775d3}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PAYMENT\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_FORBIDDEN@{HTTP\_FORBIDDEN}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_FORBIDDEN@{HTTP\_FORBIDDEN}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7aec6e8ecb79ff84830a69e52ff01d17}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+FORBIDDEN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NOT\_FOUND@{HTTP\_NOT\_FOUND}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NOT\_FOUND@{HTTP\_NOT\_FOUND}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7a2f2a109c030ee9d2d5afe761232451}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NOT\+\_\+\+FOUND&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_METHOD\_NOT\_ALLOWED@{HTTP\_METHOD\_NOT\_ALLOWED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_METHOD\_NOT\_ALLOWED@{HTTP\_METHOD\_NOT\_ALLOWED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab4cf8d97b3203f2926b30c517b45f837}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+METHOD\+\_\+\+NOT\+\_\+\+ALLOWED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NOT\_ACCEPTABLE@{HTTP\_NOT\_ACCEPTABLE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NOT\_ACCEPTABLE@{HTTP\_NOT\_ACCEPTABLE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1c26141bbb0896ff7e999ede4b87050}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NOT\+\_\+\+ACCEPTABLE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PROXY\_AUTHENTICATION\_REQUIRED@{HTTP\_PROXY\_AUTHENTICATION\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PROXY\_AUTHENTICATION\_REQUIRED@{HTTP\_PROXY\_AUTHENTICATION\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a68276dc8c7d44249dcedcf6ae9abf610}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PROXY\+\_\+\+AUTHENTICATION\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_REQUEST\_TIMEOUT@{HTTP\_REQUEST\_TIMEOUT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_REQUEST\_TIMEOUT@{HTTP\_REQUEST\_TIMEOUT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390adcc34faaeb56b1d491853257833854a3}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+REQUEST\+\_\+\+TIMEOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_CONFLICT@{HTTP\_CONFLICT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_CONFLICT@{HTTP\_CONFLICT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afc76747d6b2c9cb3c4e03203df3071cb}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+CONFLICT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_GONE@{HTTP\_GONE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_GONE@{HTTP\_GONE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac650cac2fae6f4e079625ba8fb260897}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+GONE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_LENGTH\_REQUIRED@{HTTP\_LENGTH\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_LENGTH\_REQUIRED@{HTTP\_LENGTH\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a685d97fb9ae019416649734ce80f0036}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+LENGTH\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PRECONDITION\_FAILED@{HTTP\_PRECONDITION\_FAILED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PRECONDITION\_FAILED@{HTTP\_PRECONDITION\_FAILED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a0d85de4bf1ebe6fffe399eb1f56924b5}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PRECONDITION\+\_\+\+FAILED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_CONTENT\_TOO\_LARGE@{HTTP\_CONTENT\_TOO\_LARGE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_CONTENT\_TOO\_LARGE@{HTTP\_CONTENT\_TOO\_LARGE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5a5ce1ad03c6df08ec2a3db99503be98}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+CONTENT\+\_\+\+TOO\+\_\+\+LARGE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_URI\_TOO\_LONG@{HTTP\_URI\_TOO\_LONG}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_URI\_TOO\_LONG@{HTTP\_URI\_TOO\_LONG}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6ec44095953a14e3cb17062192121eba}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+URI\+\_\+\+TOO\+\_\+\+LONG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_UNSUPPORTED\_MEDIA\_TYPE@{HTTP\_UNSUPPORTED\_MEDIA\_TYPE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_UNSUPPORTED\_MEDIA\_TYPE@{HTTP\_UNSUPPORTED\_MEDIA\_TYPE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7904c44e90f069dc31dfbfd7c9803609}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+UNSUPPORTED\+\_\+\+MEDIA\+\_\+\+TYPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_RANGE\_NOT\_SATISFIABLE@{HTTP\_RANGE\_NOT\_SATISFIABLE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_RANGE\_NOT\_SATISFIABLE@{HTTP\_RANGE\_NOT\_SATISFIABLE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af89823c735e2f0f9abab7d78ebb90969}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+RANGE\+\_\+\+NOT\+\_\+\+SATISFIABLE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_EXPECTATION\_FAILED@{HTTP\_EXPECTATION\_FAILED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_EXPECTATION\_FAILED@{HTTP\_EXPECTATION\_FAILED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a610a81750a4d3322fd0a4da6d969ffeb}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+EXPECTATION\+\_\+\+FAILED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_I\_AM\_A\_TEAPOT@{HTTP\_I\_AM\_A\_TEAPOT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_I\_AM\_A\_TEAPOT@{HTTP\_I\_AM\_A\_TEAPOT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+I\+\_\+\+AM\+\_\+\+A\+\_\+\+TEAPOT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_MISDIRECTED\_REQUEST@{HTTP\_MISDIRECTED\_REQUEST}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_MISDIRECTED\_REQUEST@{HTTP\_MISDIRECTED\_REQUEST}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a954c041d4715f5ecc9dcd9fe48b74781}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+MISDIRECTED\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_UNPROCESSABLE\_ENTITY@{HTTP\_UNPROCESSABLE\_ENTITY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_UNPROCESSABLE\_ENTITY@{HTTP\_UNPROCESSABLE\_ENTITY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae2117fc7da5befbd9b8f0f3c5dfd8f17}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+UNPROCESSABLE\+\_\+\+ENTITY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_LOCKED@{HTTP\_LOCKED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_LOCKED@{HTTP\_LOCKED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a3ec71d65b0973034a7f80de8b23e86ff}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+LOCKED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_FAILED\_DEPENDENCY@{HTTP\_FAILED\_DEPENDENCY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_FAILED\_DEPENDENCY@{HTTP\_FAILED\_DEPENDENCY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1b0a23e37da8e6dd601cc3508a811a51}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+FAILED\+\_\+\+DEPENDENCY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_TOO\_EARLY@{HTTP\_TOO\_EARLY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_TOO\_EARLY@{HTTP\_TOO\_EARLY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab0987c038623d7463269cef0104ae78c}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+TOO\+\_\+\+EARLY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_UPGRADE\_REQUIRED@{HTTP\_UPGRADE\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_UPGRADE\_REQUIRED@{HTTP\_UPGRADE\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac9fe08aaac1568e7dc9d67a9f689376c}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+UPGRADE\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_PRECONDITION\_REQUIRED@{HTTP\_PRECONDITION\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_PRECONDITION\_REQUIRED@{HTTP\_PRECONDITION\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af50f2020d928bf35121b7e11132160d4}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+PRECONDITION\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_TOO\_MANY\_REQUESTS@{HTTP\_TOO\_MANY\_REQUESTS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_TOO\_MANY\_REQUESTS@{HTTP\_TOO\_MANY\_REQUESTS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acf3042a4bc71c4bdbf373123b584210f}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+TOO\+\_\+\+MANY\+\_\+\+REQUESTS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE@{HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE@{HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae3374b151efc594ff7c608de80a4d886}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+REQUEST\+\_\+\+HEADER\+\_\+\+FIELDS\+\_\+\+TOO\+\_\+\+LARGE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS@{HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS@{HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a71176d391305d532eb1ce979c4512394}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+UNAVAILABLE\+\_\+\+FOR\+\_\+\+LEGAL\+\_\+\+REASONS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_CLIENT\_CLOSE\_REQUEST@{HTTP\_CLIENT\_CLOSE\_REQUEST}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_CLIENT\_CLOSE\_REQUEST@{HTTP\_CLIENT\_CLOSE\_REQUEST}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a97aa3724e0aab0a4aa4fcc4cd3ead009}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+CLIENT\+\_\+\+CLOSE\+\_\+\+REQUEST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_INTERNAL\_SERVER\_ERROR@{HTTP\_INTERNAL\_SERVER\_ERROR}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_INTERNAL\_SERVER\_ERROR@{HTTP\_INTERNAL\_SERVER\_ERROR}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac7d2e49bfead01d65a890a2e80e5b3a6}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+INTERNAL\+\_\+\+SERVER\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NOT\_IMPLEMENTED@{HTTP\_NOT\_IMPLEMENTED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NOT\_IMPLEMENTED@{HTTP\_NOT\_IMPLEMENTED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad46f8921b20784b1d781ed4fcc13c39a}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NOT\+\_\+\+IMPLEMENTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_BAD\_GATEWAY@{HTTP\_BAD\_GATEWAY}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_BAD\_GATEWAY@{HTTP\_BAD\_GATEWAY}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c2445431af610981d73859df3c658f2}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+BAD\+\_\+\+GATEWAY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_SERVICE\_UNAVAILABLE@{HTTP\_SERVICE\_UNAVAILABLE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_SERVICE\_UNAVAILABLE@{HTTP\_SERVICE\_UNAVAILABLE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6251d4710923e5253b159943405a1a3a}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+SERVICE\+\_\+\+UNAVAILABLE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_GATEWAY\_TIMEOUT@{HTTP\_GATEWAY\_TIMEOUT}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_GATEWAY\_TIMEOUT@{HTTP\_GATEWAY\_TIMEOUT}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c58d9f33fb00db1e99ff34257fd5288}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+GATEWAY\+\_\+\+TIMEOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED@{HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED@{HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a00a76c7b9a9405fd74aea337cfcb7e49}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+HTTP\+\_\+\+VERSION\+\_\+\+NOT\+\_\+\+SUPPORTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_VARIANT\_ALSO\_NEGOTIATES@{HTTP\_VARIANT\_ALSO\_NEGOTIATES}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_VARIANT\_ALSO\_NEGOTIATES@{HTTP\_VARIANT\_ALSO\_NEGOTIATES}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1e1ba26efb093d9af420297c4edc3eba}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+VARIANT\+\_\+\+ALSO\+\_\+\+NEGOTIATES&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_INSUFFICIENT\_STORAGE@{HTTP\_INSUFFICIENT\_STORAGE}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_INSUFFICIENT\_STORAGE@{HTTP\_INSUFFICIENT\_STORAGE}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a08f0fd3798d377357a345bc2c3a38f66}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+INSUFFICIENT\+\_\+\+STORAGE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_LOOP\_DETECTED@{HTTP\_LOOP\_DETECTED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_LOOP\_DETECTED@{HTTP\_LOOP\_DETECTED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5d723c133379deeb9310a5e8a0757c9d}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+LOOP\+\_\+\+DETECTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NOT\_EXTENDED@{HTTP\_NOT\_EXTENDED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NOT\_EXTENDED@{HTTP\_NOT\_EXTENDED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1991c83bbb9e37f5c5aebc0ee1173931}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NOT\+\_\+\+EXTENDED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED@{HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED@{HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aa84e72fa1e1be90dd1cec3f697884f91}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+NETWORK\+\_\+\+AUTHENTICATION\+\_\+\+REQUIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HTTP\_MAX\_STATUS@{HTTP\_MAX\_STATUS}!http\_enum\_codes.hpp@{http\_enum\_codes.hpp}}\index{http\_enum\_codes.hpp@{http\_enum\_codes.hpp}!HTTP\_MAX\_STATUS@{HTTP\_MAX\_STATUS}}}\Hypertarget{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aca19f1806492b81b4dbf22a3ca920599}\label{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390} 
+HTTP\+\_\+\+MAX\+\_\+\+STATUS&\\
+\hline
+
+\end{DoxyEnumFields}

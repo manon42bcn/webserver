@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 22:06:22 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 02:14:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ HttpCGIHandler::~HttpCGIHandler () {
  * - **Error Handling**: Sends appropriate error responses if validation fails.
  */
 bool HttpCGIHandler::handle_request() {
-//	TODO: This is a workaround to fix some path issues
 	if (_request.normalized_path[_request.normalized_path.size() - 1] != '/') {
 		_request.normalized_path += "/";
 	}

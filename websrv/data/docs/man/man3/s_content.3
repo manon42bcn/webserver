@@ -1,0 +1,87 @@
+.TH "s_content" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+s_content \- Holds data associated with HTTP response content\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <WebServerResponseHandler\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBs_content\fP ()"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "bool \fBranged\fP"
+.br
+.ti -1c
+.RI "size_t \fBstart\fP"
+.br
+.ti -1c
+.RI "size_t \fBend\fP"
+.br
+.ti -1c
+.RI "size_t \fBfilesize\fP"
+.br
+.ti -1c
+.RI "\fBe_range_scenario\fP \fBrange_scenario\fP"
+.br
+.ti -1c
+.RI "bool \fBstatus\fP"
+.br
+.ti -1c
+.RI "std::string \fBcontent\fP"
+.br
+.ti -1c
+.RI "std::string \fBmime\fP"
+.br
+.ti -1c
+.RI "\fBe_http_sts\fP \fBhttp_status\fP"
+.br
+.ti -1c
+.RI "std::string \fBheader\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Holds data associated with HTTP response content\&. 
+
+This structure stores various attributes related to the response content, including range data, MIME type, content length, and response status\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "s_content::s_content ()\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "std::string s_content::content"
+
+.SS "size_t s_content::end"
+
+.SS "size_t s_content::filesize"
+
+.SS "std::string s_content::header"
+
+.SS "\fBe_http_sts\fP s_content::http_status"
+
+.SS "std::string s_content::mime"
+
+.SS "\fBe_range_scenario\fP s_content::range_scenario"
+
+.SS "bool s_content::ranged"
+
+.SS "size_t s_content::start"
+
+.SS "bool s_content::status"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

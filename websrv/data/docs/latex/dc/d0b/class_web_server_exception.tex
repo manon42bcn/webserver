@@ -1,0 +1,113 @@
+\doxysection{Web\+Server\+Exception Class Reference}
+\hypertarget{class_web_server_exception}{}\label{class_web_server_exception}\index{WebServerException@{WebServerException}}
+
+
+Custom exception class for handling errors within the web server project.  
+
+
+
+
+{\ttfamily \#include $<$Webserver\+Exception.\+hpp$>$}
+
+Inheritance diagram for Web\+Server\+Exception\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{dc/d0b/class_web_server_exception}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_web_server_exception_af8b66252286cd7b3fad68d47023517e2}{Web\+Server\+Exception}} (const std\+::string \&message)
+\item 
+\mbox{\hyperlink{class_web_server_exception_a95fc942d2cdb14819988ae5986a999b1}{Web\+Server\+Exception}} (const char \texorpdfstring{$\ast$}{*}message)
+\item 
+\mbox{\hyperlink{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}{Web\+Server\+Exception}} ()
+\item 
+\mbox{\hyperlink{class_web_server_exception_a17e8190883d5e055f2435b643d4ff73a}{Web\+Server\+Exception}} (const \mbox{\hyperlink{class_web_server_exception}{Web\+Server\+Exception}} \&other)
+\item 
+virtual \mbox{\hyperlink{class_web_server_exception_a4cbdb573ca4d41b725fcee91f43bd446}{\texorpdfstring{$\sim$}{\string~}\+Web\+Server\+Exception}} ()  throw ()
+\item 
+virtual const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f}{what}} () const  throw ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Custom exception class for handling errors within the web server project. 
+
+This exception class provides a standard way to handle errors by allowing custom messages. It inherits from {\ttfamily std\+::exception} and overrides the {\ttfamily \doxylink{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f}{what()}} method to return a message.
+
+
+\begin{DoxyItemize}
+\item Can be initialized with either {\ttfamily std\+::string} or {\ttfamily const char\texorpdfstring{$\ast$}{*}} for message flexibility.
+\item The destructor is {\ttfamily noexcept}, ensuring that it does not throw exceptions during destruction.
+\end{DoxyItemize}\hypertarget{class_web_server_exception_autotoc_md7}{}\doxysubsubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{class_web_server_exception_autotoc_md7}
+
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_web_server_exception}{Web\+Server\+Exception}(const std\+::string\& message)}\+: Constructor that accepts a custom error message.
+\item {\ttfamily \doxylink{class_web_server_exception_a95fc942d2cdb14819988ae5986a999b1}{Web\+Server\+Exception(const char\texorpdfstring{$\ast$}{*} message)}}\+: Constructor for C-\/string error messages.
+\item {\ttfamily const char\texorpdfstring{$\ast$}{*} \doxylink{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f}{what() const }throw()}\+: Returns the error message.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+Use this exception throughout the project to ensure consistent error handling. 
+\end{DoxyNote}
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/inc/\+Webserver\+Exception.\+hpp}}.\end{Desc}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_web_server_exception_af8b66252286cd7b3fad68d47023517e2}\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{WebServerException()}{WebServerException()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily \label{class_web_server_exception_af8b66252286cd7b3fad68d47023517e2} 
+Web\+Server\+Exception\+::\+Web\+Server\+Exception (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{message}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+\Hypertarget{class_web_server_exception_a95fc942d2cdb14819988ae5986a999b1}\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{WebServerException()}{WebServerException()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily \label{class_web_server_exception_a95fc942d2cdb14819988ae5986a999b1} 
+Web\+Server\+Exception\+::\+Web\+Server\+Exception (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{message}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+\Hypertarget{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178}\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{WebServerException()}{WebServerException()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily \label{class_web_server_exception_a1cba8fa3bffe985aae3ae7164e66a178} 
+Web\+Server\+Exception\+::\+Web\+Server\+Exception (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/inc/\+Webserver\+Exception.\+hpp}}.\end{Desc}
+\Hypertarget{class_web_server_exception_a17e8190883d5e055f2435b643d4ff73a}\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\index{WebServerException@{WebServerException}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{WebServerException()}{WebServerException()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily \label{class_web_server_exception_a17e8190883d5e055f2435b643d4ff73a} 
+Web\+Server\+Exception\+::\+Web\+Server\+Exception (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_web_server_exception}{Web\+Server\+Exception}} \&}]{other}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_web_server_exception_a4cbdb573ca4d41b725fcee91f43bd446}\index{WebServerException@{WebServerException}!````~WebServerException@{\texorpdfstring{$\sim$}{\string~}WebServerException}}
+\index{````~WebServerException@{\texorpdfstring{$\sim$}{\string~}WebServerException}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}WebServerException()}{\string~WebServerException()}}
+{\footnotesize\ttfamily \label{class_web_server_exception_a4cbdb573ca4d41b725fcee91f43bd446} 
+virtual Web\+Server\+Exception\+::\texorpdfstring{$\sim$}{\string~}\+Web\+Server\+Exception (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) throw ( ) \hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/inc/\+Webserver\+Exception.\+hpp}}.\end{Desc}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f}\index{WebServerException@{WebServerException}!what@{what}}
+\index{what@{what}!WebServerException@{WebServerException}}
+\doxysubsubsection{\texorpdfstring{what()}{what()}}
+{\footnotesize\ttfamily \label{class_web_server_exception_ac8a96b6d2eb4ef391ab045314815100f} 
+virtual const char \texorpdfstring{$\ast$}{*} Web\+Server\+Exception\+::what (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const throw ( ) \hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+\begin{Desc}
+\item[Examples]\par
+\mbox{\hyperlink{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2inc_2_webserver_exception_8hpp-example}{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/inc/\+Webserver\+Exception.\+hpp}}.\end{Desc}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_webserver_exception_8hpp}{Webserver\+Exception.\+hpp}}\end{DoxyCompactItemize}

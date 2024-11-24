@@ -1,0 +1,318 @@
+\doxysection{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}
+\hypertarget{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{}\label{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}Normalizes a host string by collapsing consecutive slashes into a single slash.
+
+Normalizes a host string by collapsing consecutive slashes into a single slash.\+This function processes a host string and ensures that sequences of consecutive slashes ({\ttfamily /}) are reduced to a single slash. The resulting string maintains the original order of characters but removes unnecessary redundancy caused by multiple slashes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em host} & A string representing the host to normalize. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A normalized string where consecutive slashes are collapsed into a single slash.
+\end{DoxyReturn}
+
+\begin{DoxyItemize}
+\item The function iterates through each character in the input string, appending characters to the result while collapsing sequences of {\ttfamily /} into a single instance.
+\item The logic uses a {\ttfamily was\+\_\+slash} flag to track whether the last character processed was a slash, ensuring that additional slashes are ignored.
+\item If the input string does not contain redundant slashes, it is returned unchanged.
+\end{DoxyItemize}
+
+std\+::string raw\+\_\+host = "{}example.\+com////path//to//resource"{}; std\+::string normalized\+\_\+host = normalize\+\_\+host(raw\+\_\+host); // normalized\+\_\+host will be "{}example.\+com/path/to/resource"{}
+
+
+\begin{DoxyCodeInclude}{0}
+\DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ http\_request\_helper.cpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Created:\ 2024/11/23\ 22:49:58\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Updated:\ 2024/11/23\ 23:39:14\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{http__enum__codes_8hpp}{http\_enum\_codes.hpp}}"{}}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a411f70b0adb50fb351494b96143fb0ce}{http\_status\_description}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ code)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ std::map<int,\ std::string>\ http\_codes;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (http\_codes.empty())\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a80fda2cfe303c918be39ff1d50b95264}{HTTP\_CONTINUE}}]\ =\ \textcolor{stringliteral}{"{}Continue"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae9242b4badf4d181822fb38b584a8503}{HTTP\_SWITCHING\_PROTOCOLS}}]\ =\ \textcolor{stringliteral}{"{}Switching\ Protocols"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afcfbc849b357d4472de90c904db60231}{HTTP\_PROCESSING}}]\ =\ \textcolor{stringliteral}{"{}Processing"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac5d6e1457e2d004cbaf3efaf76c830ce}{HTTP\_EARLY\_HINTS}}]\ =\ \textcolor{stringliteral}{"{}Early\ Hints"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ 2xx\ Success}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a43f8027764325bbcad2f773511156d0a}{HTTP\_OK}}]\ =\ \textcolor{stringliteral}{"{}OK"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a211e5143e6efe62c4f5eefc012a2dc39}{HTTP\_CREATED}}]\ =\ \textcolor{stringliteral}{"{}Created"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afbd61b22f81ac2eb03a889aa50c1c477}{HTTP\_ACCEPTED}}]\ =\ \textcolor{stringliteral}{"{}Accepted"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4e1d6c43bda232d69e7adad6ed6b7265}{HTTP\_NON\_AUTHORITATIVE\_INFORMATION}}]\ =\ \textcolor{stringliteral}{"{}Non-\/Authoritative\ Information"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a924170e0b9e6d6eec63321a20dd6f596}{HTTP\_NO\_CONTENT}}]\ =\ \textcolor{stringliteral}{"{}No\ Content"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8c80fef94148da6a55c8c40d6bd0ceb1}{HTTP\_RESET\_CONTENT}}]\ =\ \textcolor{stringliteral}{"{}Reset\ Content"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a999eb85d52738d8914626a076c8395f3}{HTTP\_PARTIAL\_CONTENT}}]\ =\ \textcolor{stringliteral}{"{}Partial\ Content"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a82ffd6b91a86b17c761da28ea9ed57e9}{HTTP\_MULTI\_STATUS}}]\ =\ \textcolor{stringliteral}{"{}Multi-\/Status"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1e6dd41adfb1132cbd973b6cd115959}{HTTP\_ALREADY\_REPORTED}}]\ =\ \textcolor{stringliteral}{"{}Already\ Reported"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acda199af7463eab1328ffb5c8060cc71}{HTTP\_IM\_USED}}]\ =\ \textcolor{stringliteral}{"{}IM\ Used"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ 3xx\ Redirection}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a32880364a5227e921ac6cf3171b37216}{HTTP\_MULTIPLE\_CHOICES}}]\ =\ \textcolor{stringliteral}{"{}Multiple\ Choices"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aed3a439d476b9214c71eaf7e0f89554d}{HTTP\_MOVED\_PERMANENTLY}}]\ =\ \textcolor{stringliteral}{"{}Moved\ Permanently"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8b549d40f11ee20d68042e93e9263ba9}{HTTP\_FOUND}}]\ =\ \textcolor{stringliteral}{"{}Found"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad67fc5e92d700797b837285f7cae95ae}{HTTP\_SEE\_OTHER}}]\ =\ \textcolor{stringliteral}{"{}See\ Other"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a4d2b0e5c4eda4d6e45bbe2360c299d5a}{HTTP\_NOT\_MODIFIED}}]\ =\ \textcolor{stringliteral}{"{}Not\ Modified"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af3dcd2f349335becfad0b583dd81332e}{HTTP\_USE\_PROXY}}]\ =\ \textcolor{stringliteral}{"{}Use\ Proxy"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a8fa4c1a40ebd40f88e78db55fd765f63}{HTTP\_TEMPORARY\_REDIRECT}}]\ =\ \textcolor{stringliteral}{"{}Temporary\ Redirect"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a89a5ad494b34bf4e30bd7f0fab063f5d}{HTTP\_PERMANENT\_REDIRECT}}]\ =\ \textcolor{stringliteral}{"{}Permanent\ Redirect"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ 4xx\ Client\ Error}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a173b2a55d636fe537b9069a4fb3388f2}{HTTP\_BAD\_REQUEST}}]\ =\ \textcolor{stringliteral}{"{}Bad\ Request"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a74677f364201a3d068bc6b9db7359288}{HTTP\_UNAUTHORIZED}}]\ =\ \textcolor{stringliteral}{"{}Unauthorized"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad6ee2620527a9f13b7b0cfb5dcc775d3}{HTTP\_PAYMENT\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Payment\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7aec6e8ecb79ff84830a69e52ff01d17}{HTTP\_FORBIDDEN}}]\ =\ \textcolor{stringliteral}{"{}Forbidden"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7a2f2a109c030ee9d2d5afe761232451}{HTTP\_NOT\_FOUND}}]\ =\ \textcolor{stringliteral}{"{}Not\ Found"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab4cf8d97b3203f2926b30c517b45f837}{HTTP\_METHOD\_NOT\_ALLOWED}}]\ =\ \textcolor{stringliteral}{"{}Method\ Not\ Allowed"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac1c26141bbb0896ff7e999ede4b87050}{HTTP\_NOT\_ACCEPTABLE}}]\ =\ \textcolor{stringliteral}{"{}Not\ Acceptable"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a68276dc8c7d44249dcedcf6ae9abf610}{HTTP\_PROXY\_AUTHENTICATION\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Proxy\ Authentication\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390adcc34faaeb56b1d491853257833854a3}{HTTP\_REQUEST\_TIMEOUT}}]\ =\ \textcolor{stringliteral}{"{}Request\ Timeout"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390afc76747d6b2c9cb3c4e03203df3071cb}{HTTP\_CONFLICT}}]\ =\ \textcolor{stringliteral}{"{}Conflict"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac650cac2fae6f4e079625ba8fb260897}{HTTP\_GONE}}]\ =\ \textcolor{stringliteral}{"{}Gone"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a685d97fb9ae019416649734ce80f0036}{HTTP\_LENGTH\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Length\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a0d85de4bf1ebe6fffe399eb1f56924b5}{HTTP\_PRECONDITION\_FAILED}}]\ =\ \textcolor{stringliteral}{"{}Precondition\ Failed"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5a5ce1ad03c6df08ec2a3db99503be98}{HTTP\_CONTENT\_TOO\_LARGE}}]\ =\ \textcolor{stringliteral}{"{}Payload\ Too\ Large"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6ec44095953a14e3cb17062192121eba}{HTTP\_URI\_TOO\_LONG}}]\ =\ \textcolor{stringliteral}{"{}URI\ Too\ Long"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a7904c44e90f069dc31dfbfd7c9803609}{HTTP\_UNSUPPORTED\_MEDIA\_TYPE}}]\ =\ \textcolor{stringliteral}{"{}Unsupported\ Media\ Type"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af89823c735e2f0f9abab7d78ebb90969}{HTTP\_RANGE\_NOT\_SATISFIABLE}}]\ =\ \textcolor{stringliteral}{"{}Range\ Not\ Satisfiable"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a610a81750a4d3322fd0a4da6d969ffeb}{HTTP\_EXPECTATION\_FAILED}}]\ =\ \textcolor{stringliteral}{"{}Expectation\ Failed"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\_I\_AM\_A\_TEAPOT}}]\ =\ \textcolor{stringliteral}{"{}I'm\ a\ teapot"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a954c041d4715f5ecc9dcd9fe48b74781}{HTTP\_MISDIRECTED\_REQUEST}}]\ =\ \textcolor{stringliteral}{"{}Misdirected\ Request"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae2117fc7da5befbd9b8f0f3c5dfd8f17}{HTTP\_UNPROCESSABLE\_ENTITY}}]\ =\ \textcolor{stringliteral}{"{}Unprocessable\ Entity"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a3ec71d65b0973034a7f80de8b23e86ff}{HTTP\_LOCKED}}]\ =\ \textcolor{stringliteral}{"{}Locked"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1b0a23e37da8e6dd601cc3508a811a51}{HTTP\_FAILED\_DEPENDENCY}}]\ =\ \textcolor{stringliteral}{"{}Failed\ Dependency"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ab0987c038623d7463269cef0104ae78c}{HTTP\_TOO\_EARLY}}]\ =\ \textcolor{stringliteral}{"{}Too\ Early"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac9fe08aaac1568e7dc9d67a9f689376c}{HTTP\_UPGRADE\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Upgrade\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390af50f2020d928bf35121b7e11132160d4}{HTTP\_PRECONDITION\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Precondition\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390acf3042a4bc71c4bdbf373123b584210f}{HTTP\_TOO\_MANY\_REQUESTS}}]\ =\ \textcolor{stringliteral}{"{}Too\ Many\ Requests"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ae3374b151efc594ff7c608de80a4d886}{HTTP\_REQUEST\_HEADER\_FIELDS\_TOO\_LARGE}}]\ =\ \textcolor{stringliteral}{"{}Request\ Header\ Fields\ Too\ Large"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a71176d391305d532eb1ce979c4512394}{HTTP\_UNAVAILABLE\_FOR\_LEGAL\_REASONS}}]\ =\ \textcolor{stringliteral}{"{}Unavailable\ For\ Legal\ Reasons"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a97aa3724e0aab0a4aa4fcc4cd3ead009}{HTTP\_CLIENT\_CLOSE\_REQUEST}}]\ =\ \textcolor{stringliteral}{"{}Client\ Close\ Request"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{//\ 5xx\ Server\ Error}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ac7d2e49bfead01d65a890a2e80e5b3a6}{HTTP\_INTERNAL\_SERVER\_ERROR}}]\ =\ \textcolor{stringliteral}{"{}Internal\ Server\ Error"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390ad46f8921b20784b1d781ed4fcc13c39a}{HTTP\_NOT\_IMPLEMENTED}}]\ =\ \textcolor{stringliteral}{"{}Not\ Implemented"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c2445431af610981d73859df3c658f2}{HTTP\_BAD\_GATEWAY}}]\ =\ \textcolor{stringliteral}{"{}Bad\ Gateway"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a6251d4710923e5253b159943405a1a3a}{HTTP\_SERVICE\_UNAVAILABLE}}]\ =\ \textcolor{stringliteral}{"{}Service\ Unavailable"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a9c58d9f33fb00db1e99ff34257fd5288}{HTTP\_GATEWAY\_TIMEOUT}}]\ =\ \textcolor{stringliteral}{"{}Gateway\ Timeout"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a00a76c7b9a9405fd74aea337cfcb7e49}{HTTP\_HTTP\_VERSION\_NOT\_SUPPORTED}}]\ =\ \textcolor{stringliteral}{"{}HTTP\ Version\ Not\ Supported"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1e1ba26efb093d9af420297c4edc3eba}{HTTP\_VARIANT\_ALSO\_NEGOTIATES}}]\ =\ \textcolor{stringliteral}{"{}Variant\ Also\ Negotiates"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a08f0fd3798d377357a345bc2c3a38f66}{HTTP\_INSUFFICIENT\_STORAGE}}]\ =\ \textcolor{stringliteral}{"{}Insufficient\ Storage"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a5d723c133379deeb9310a5e8a0757c9d}{HTTP\_LOOP\_DETECTED}}]\ =\ \textcolor{stringliteral}{"{}Loop\ Detected"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a1991c83bbb9e37f5c5aebc0ee1173931}{HTTP\_NOT\_EXTENDED}}]\ =\ \textcolor{stringliteral}{"{}Not\ Extended"{}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ http\_codes[\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390aa84e72fa1e1be90dd1cec3f697884f91}{HTTP\_NETWORK\_AUTHENTICATION\_REQUIRED}}]\ =\ \textcolor{stringliteral}{"{}Network\ Authentication\ Required"{}};}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ std::map<int,\ std::string>::const\_iterator\ it\ =\ http\_codes.find(code);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (it\ ==\ http\_codes.end())}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{stringliteral}{"{}No\ Info\ Associated"{}});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (it-\/>second);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\_methods}}\ \mbox{\hyperlink{general__helpers_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}{parse\_method}}(\textcolor{keyword}{const}\ std::string\&\ method)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ std::map<std::string,\ t\_methods>\ methods\_codes;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (methods\_codes.empty())}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}GET"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_a129fe30b2f46c7817308153fb61fc760}{MASK\_METHOD\_GET}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}POST"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_ab503f57eff7edd68a4b0156f9100a80b}{MASK\_METHOD\_POST}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}DELETE"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_af665a58713645c1c6edf6cb2a357b86e}{MASK\_METHOD\_DELETE}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}PUT"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_af345e26d4672c89e602835f710d2d08d}{MASK\_METHOD\_PUT}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}HEAD"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_a7a65b657e43a8c75d5080f96629f1639}{MASK\_METHOD\_HEAD}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}OPTIONS"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_ad7de1ae0c2aa2164824e8b54ba9ed46e}{MASK\_METHOD\_OPTIONS}};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ methods\_codes[\textcolor{stringliteral}{"{}PATCH"{}}]\ =\ \mbox{\hyperlink{ws__permissions__bitwise_8hpp_aaf446a500e89ebadb91cdb83684ceb3e}{MASK\_METHOD\_PATCH}};}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ std::map<std::string,\ t\_methods>::const\_iterator\ it\ =\ methods\_codes.find(method);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (it\ ==\ methods\_codes.end())}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (0);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (it-\/>second);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::map<std::string,\ std::string>\ \mbox{\hyperlink{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60}{create\_mime\_types}}()\ \{}
+\DoxyCodeLine{\ \ \ \ std::map<std::string,\ std::string>\ mime\_types;}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Text\ and\ Web}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.html"{}}]\ =\ \textcolor{stringliteral}{"{}text/html"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.css"{}}]\ =\ \textcolor{stringliteral}{"{}text/css"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.js"{}}]\ =\ \textcolor{stringliteral}{"{}application/javascript"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.json"{}}]\ =\ \textcolor{stringliteral}{"{}application/json"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.txt"{}}]\ =\ \textcolor{stringliteral}{"{}text/plain"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Images}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.jpg"{}}]\ =\ \textcolor{stringliteral}{"{}image/jpeg"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.jpeg"{}}]\ =\ \textcolor{stringliteral}{"{}image/jpeg"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.png"{}}]\ =\ \textcolor{stringliteral}{"{}image/png"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.gif"{}}]\ =\ \textcolor{stringliteral}{"{}image/gif"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.webp"{}}]\ =\ \textcolor{stringliteral}{"{}image/webp"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.svg"{}}]\ =\ \textcolor{stringliteral}{"{}image/svg+xml"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Audio}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.mp3"{}}]\ =\ \textcolor{stringliteral}{"{}audio/mpeg"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.wav"{}}]\ =\ \textcolor{stringliteral}{"{}audio/wav"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.ogg"{}}]\ =\ \textcolor{stringliteral}{"{}audio/ogg"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Video}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.mp4"{}}]\ =\ \textcolor{stringliteral}{"{}video/mp4"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.ogg"{}}]\ =\ \textcolor{stringliteral}{"{}video/ogg"{}};\ \ \textcolor{comment}{//\ Ogg\ can\ be\ both\ audio\ and\ video}}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Documents}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.pdf"{}}]\ =\ \textcolor{stringliteral}{"{}application/pdf"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.doc"{}}]\ =\ \textcolor{stringliteral}{"{}application/msword"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.docx"{}}]\ =\ \textcolor{stringliteral}{"{}application/vnd.openxmlformats-\/officedocument.wordprocessingml.document"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.xlsx"{}}]\ =\ \textcolor{stringliteral}{"{}application/vnd.openxmlformats-\/officedocument.spreadsheetml.sheet"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Fonts}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.ttf"{}}]\ =\ \textcolor{stringliteral}{"{}font/ttf"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.woff"{}}]\ =\ \textcolor{stringliteral}{"{}font/woff"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.woff2"{}}]\ =\ \textcolor{stringliteral}{"{}font/woff2"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Archives}}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.zip"{}}]\ =\ \textcolor{stringliteral}{"{}application/zip"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.rar"{}}]\ =\ \textcolor{stringliteral}{"{}application/vnd.rar"{}};}
+\DoxyCodeLine{\ \ \ \ mime\_types[\textcolor{stringliteral}{"{}.gz"{}}]\ =\ \textcolor{stringliteral}{"{}application/gzip"{}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (mime\_types);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a83e2cc49561a109eab7a3c41845ef0c7}{get\_mime\_type}}(\textcolor{keyword}{const}\ std::string\&\ path)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::map<std::string,\ std::string>\ mime\_types\ =\ \mbox{\hyperlink{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60}{create\_mime\_types}}();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ dot\_pos\ =\ path.find\_last\_of(\textcolor{charliteral}{'.'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (dot\_pos\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ std::string\ extension\ =\ path.substr(dot\_pos);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (mime\_types.find(extension)\ !=\ mime\_types.end())\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (mime\_types.at(extension));}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{stringliteral}{"{}text/plain"{}});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae}{valid\_mime\_type}}(\textcolor{keyword}{const}\ std::string\&\ path)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::map<std::string,\ std::string>\ mime\_types\ =\ \mbox{\hyperlink{general__helpers_8cpp_a901157cdb2c9069d0f08cab6b799eb60}{create\_mime\_types}}();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ dot\_pos\ =\ path.find\_last\_of(\textcolor{charliteral}{'.'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (dot\_pos\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ std::string\ extension\ =\ path.substr(dot\_pos);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (mime\_types.find(extension)\ !=\ mime\_types.end())\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{true});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_a775a50523b2792565271f85e8d63d72b}{black\_list\_extension}}(\textcolor{keyword}{const}\ std::string\&\ path)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ std::set<std::string>\ disallowed\_extensions;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (disallowed\_extensions.empty())\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.exe"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.bat"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.sh"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.php"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.pl"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disallowed\_extensions.insert(\textcolor{stringliteral}{"{}.py"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ dot\_pos\ =\ path.find\_last\_of(\textcolor{charliteral}{'.'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (dot\_pos\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ std::string\ extension\ =\ path.substr(dot\_pos);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (disallowed\_extensions.find(extension)\ !=\ disallowed\_extensions.end())\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{true});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a5671fb0d0191f86588463c6e29911fa6}{replace\_template}}(std::string\ content,\ \textcolor{keyword}{const}\ std::string\&\ key,\ \textcolor{keyword}{const}\ std::string\&\ value)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ pos\ =\ 0;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (value.find(key)\ !=\ std::string::npos)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (content);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ ((pos\ =\ content.find(key,\ pos))\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ content.replace(pos,\ key.length(),\ value);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ pos\ +=\ value.length();}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (content);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a7d8d6608f966337610cf3eaf4b305d7e}{clean\_host}}(std::string\&\ host\_to\_clean)\ \{}
+\DoxyCodeLine{\ \ \ \ std::string\ host\ =\ host\_to\_clean;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ to\_clean\ =\ host.find(\textcolor{stringliteral}{"{}//"{}});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (to\_clean\ !=\ std::string::npos\ \&\&\ host.size()\ >\ 2)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ host\ =\ host.substr(to\_clean\ +\ 2);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ to\_clean\ =\ host.find\_last\_of(\textcolor{charliteral}{':'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (to\_clean\ !=\ std::string::npos\ \&\&\ host.size()\ >\ 1)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ host\ =\ host.substr(0,\ to\_clean);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ to\_clean\ =\ host.find(\textcolor{charliteral}{'/'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ (to\_clean\ !=\ std::string::npos\ \&\&\ host.size()\ >\ 1)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ host\ =\ host.substr(to\_clean);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ to\_clean\ =\ host.find(\textcolor{charliteral}{'/'});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (host);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78}{normalize\_host}}(\textcolor{keyword}{const}\ std::string\&\ host)\ \{}
+\DoxyCodeLine{\ \ \ \ std::string\ result;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ was\_slash\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ host.size();\ ++i)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (host[i]\ ==\ \textcolor{charliteral}{'/'})\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!was\_slash)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ result\ +=\ \textcolor{charliteral}{'/'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ was\_slash\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ result\ +=\ host[i];}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ was\_slash\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (result);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a1405af62ae4c7c679726a051ba7bc3a0}{get\_header\_value}}(std::string\&\ haystack,\ std::string\ needle,\ \textcolor{keyword}{const}\ std::string\&\ sep)\ \{}
+\DoxyCodeLine{\ \ \ \ std::string\ lower\_header\ =\ \mbox{\hyperlink{general__helpers_8cpp_ab0e7abb140f3aefb2efa0a59374bf97d}{to\_lowercase}}(haystack);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ key\_pos\ =\ lower\_header.find(needle);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (key\_pos\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ key\_pos\ +=\ needle.length()\ +\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ end\_key\ =\ lower\_header.find(sep,\ key\_pos);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (end\_key\ ==\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (haystack.substr(key\_pos));}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (haystack.substr(key\_pos,\ end\_key\ -\/\ key\_pos));}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_ab93fb754820f510dc2d17f64ee15a773}{is\_cgi}}(\textcolor{keyword}{const}\ std::string\&\ filename)\{}
+\DoxyCodeLine{\ \ \ \ std::string\ cgi\_files\ []\ =\ \{\textcolor{stringliteral}{"{}.py"{}},\ \textcolor{stringliteral}{"{}.pl"{}}\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ dot\_pos\ =\ filename.find\_last\_of(\textcolor{charliteral}{'.'});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (dot\_pos\ ==\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ std::string\ extension\ =\ filename.substr(dot\_pos);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ cgi\_files[i].size()\ ;\ i++)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extension\ ==\ cgi\_files[i])\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{true});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{general__helpers_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a}{end\_of\_header\_system}}(std::string\&\ header)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ \ pos\ =\ header.find(\textcolor{stringliteral}{"{}\(\backslash\)r\(\backslash\)n\(\backslash\)r\(\backslash\)n"{}});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (pos\ ==\ std::string::npos)\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ pos\ =\ header.find(\textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)n"{}});}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (pos);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+
+\end{DoxyCodeInclude}
+ 

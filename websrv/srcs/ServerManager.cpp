@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 22:00:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 02:33:07 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
  * easier monitoring and debugging.
  */
 ServerManager::~ServerManager() {
-	clear_clients();
-	clear_servers();
-	clear_poll();
+	turn_off_server();
 	_log->log_debug( SM_NAME,
 	          "Server Manager Resources Clean Up.");
 	_log->status(SM_NAME, "Server Resources Clean up.");
@@ -298,7 +296,7 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			usleep(300);
+			usleep(700);
 			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
 			if (poll_count == 0) {
 				continue ;
@@ -325,8 +323,7 @@ void ServerManager::run() {
 					break;
 				}
 				if (_poll_fds[i].revents & POLLOUT) {
-					std::map<int, ClientData *>::iterator client_it = _clients.find(_poll_fds[i].fd);
-					if (client_it != _clients.end()) {
+					if (i > _servers_map.size() - 1) {
 						process_response(i);
 						poll_count--;
 						continue;
@@ -424,6 +421,7 @@ bool    ServerManager::process_request(size_t& poll_index) {
 				--poll_index;
 			} else {
 				_poll_fds[poll_index].events = POLLOUT;
+				_poll_fds[poll_index].revents = 0;
 				int fd = it->second->get_fd().fd;
 				time_t new_cycle = timeout_timestamp();
 				t_fd_timestamp index_timeout = _index_timeout.find(fd);
@@ -497,7 +495,7 @@ bool ServerManager::process_response(size_t& poll_index) {
 	ClientData* client = it->second;
 	try {
 		s_request& request = client->client_request();
-		SocketHandler* server = client->get_server();
+//		SocketHandler* server = client->get_server();
 		if (!request.sanity){
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
 			response.send_error_response();
@@ -505,17 +503,17 @@ bool ServerManager::process_response(size_t& poll_index) {
 		else if (request.factory == 0) {
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
 			response.handle_request();
-			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
-			if (request.is_cached) {
-				if (!request.sanity) {
-					request_cache.remove(request.path);
-				}
-			}
-			if (request.sanity && HAS_GET(request.method)) {
-				request_cache.put(request.path,
-				                   CacheRequest(request.path, request.host_config,
-				                                request.location, request.normalized_path));
-			}
+//			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
+//			if (request.is_cached) {
+//				if (!request.sanity) {
+//					request_cache.remove(request.path);
+//				}
+//			}
+//			if (request.sanity && HAS_GET(request.method)) {
+//				request_cache.put(request.path,
+//				                   CacheRequest(request.path, request.host_config,
+//				                                request.location, request.normalized_path));
+//			}
 		}
 		else if (request.is_redir) {
 			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
@@ -604,16 +602,9 @@ void ServerManager::turn_off_server() {
 	_log->log_info( SM_NAME, "Server shutdown initiated.");
 	_active = false;
 	_healthy = false;
-	
-	// Primero cerrar todos los clientes
 	clear_clients();
-	
-	// Luego cerrar todos los servidores
 	clear_servers();
-	
-	// Finalmente limpiar los pollpoll_fds
 	clear_poll();
-	
 	_log->log_info( SM_NAME, "Server shutdown completed.");
 }
 

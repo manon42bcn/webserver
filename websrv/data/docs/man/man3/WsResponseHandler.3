@@ -1,0 +1,432 @@
+.TH "WsResponseHandler" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+WsResponseHandler \- Base class for handling HTTP responses in a web server\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <WebServerResponseHandler\&.hpp>\fP
+.PP
+Inherited by \fBHttpAutoIndex\fP, \fBHttpCGIHandler\fP, \fBHttpMultipartHandler\fP, \fBHttpRangeHandler\fP, and \fBHttpResponseHandler\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBWsResponseHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs a \fR\fBWsResponseHandler\fP\fP to manage web server responses\&. "
+.ti -1c
+.RI "virtual \fB~WsResponseHandler\fP ()"
+.br
+.RI "Destructor for the \fR\fBWsResponseHandler\fP\fP class\&. "
+.ti -1c
+.RI "virtual bool \fBhandle_request\fP ()"
+.br
+.RI "Handles the incoming HTTP request based on the request method\&. "
+.ti -1c
+.RI "bool \fBsend_error_response\fP ()"
+.br
+.RI "Sends an HTTP error response to the client, using a custom error page if available\&. "
+.ti -1c
+.RI "bool \fBredirection\fP ()"
+.br
+.RI "Handles HTTP redirection for the current request\&. "
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual bool \fBhandle_get\fP ()"
+.br
+.RI "Handles HTTP GET requests, validating access, resource data, and sending a response\&. "
+.ti -1c
+.RI "virtual bool \fBhandle_post\fP ()"
+.br
+.RI "Handles HTTP POST requests, validating access, saving data, and sending a response\&. "
+.ti -1c
+.RI "bool \fBhandle_delete\fP ()"
+.br
+.RI "Handles HTTP DELETE requests by checking permissions and deleting the specified resource\&. "
+.ti -1c
+.RI "virtual bool \fBvalidate_payload\fP ()"
+.br
+.RI "Validates the payload of an HTTP request to ensure it meets requirements\&. "
+.ti -1c
+.RI "virtual void \fBget_file_content\fP (int pid, int(&fd)[2])=0"
+.br
+.ti -1c
+.RI "virtual void \fBget_file_content\fP (std::string &path)"
+.br
+.RI "Retrieves the content of a file specified by the path\&. "
+.ti -1c
+.RI "bool \fBsave_file\fP (const std::string &save_path, const std::string &content)"
+.br
+.RI "Saves the provided content to a specified file path\&. "
+.ti -1c
+.RI "virtual std::string \fBheader\fP (int code, size_t content_size, std::string mime)"
+.br
+.RI "Constructs an HTTP response header based on provided parameters\&. "
+.ti -1c
+.RI "virtual bool \fBsend_response\fP (const std::string &body, const std::string &path)"
+.br
+.RI "Sends an HTTP response with the specified body content and inferred MIME type\&. "
+.ti -1c
+.RI "bool \fBsender\fP (const std::string &body)"
+.br
+.RI "Sends the HTTP response to the client through the socket file descriptor\&. "
+.ti -1c
+.RI "std::string \fBdefault_plain_error\fP ()"
+.br
+.RI "Generates a default HTML error page for the HTTP response\&. "
+.ti -1c
+.RI "void \fBturn_off_sanity\fP (\fBe_http_sts\fP status, std::string detail)"
+.br
+.RI "Disables further request processing by marking the request as invalid\&. "
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fB_location\fP"
+.br
+.ti -1c
+.RI "const \fBLogger\fP * \fB_log\fP"
+.br
+.ti -1c
+.RI "\fBClientData\fP * \fB_client_data\fP"
+.br
+.ti -1c
+.RI "\fBs_request\fP & \fB_request\fP"
+.br
+.ti -1c
+.RI "\fBs_content\fP \fB_response_data\fP"
+.br
+.ti -1c
+.RI "std::string \fB_headers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Base class for handling HTTP responses in a web server\&. 
+
+The \fR\fBWsResponseHandler\fP\fP class manages the processing of HTTP responses, supporting GET, POST, and DELETE operations\&. It handles file reading, content validation, response headers, error responses, and client interactions\&. Derived classes can implement additional logic, including specialized response handling such as for multipart or CGI responses\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "WsResponseHandler::WsResponseHandler (const \fBLocationConfig\fP * location, const \fBLogger\fP * log, \fBClientData\fP * client_data, \fBs_request\fP & request, int fd)"
+
+.PP
+Constructs a \fR\fBWsResponseHandler\fP\fP to manage web server responses\&. Initializes the \fR\fBWsResponseHandler\fP\fP with essential components for handling server responses, including location configuration, logging, client data, request details, and the client's file descriptor\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP Pointer to the \fR\fBLocationConfig\fP\fP containing the location-specific configuration\&. 
+.br
+\fIlog\fP Pointer to the \fR\fBLogger\fP\fP instance for logging activities and errors\&. 
+.br
+\fIclient_data\fP Pointer to the \fR\fBClientData\fP\fP object representing the client connection\&. 
+.br
+\fIrequest\fP Reference to the \fR\fBs_request\fP\fP structure with details about the client's request\&. 
+.br
+\fIfd\fP File descriptor associated with the client connection\&.
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::NoLoggerPointer\fP\fP if the \fRlog\fP pointer is \fRNULL\fP, indicating that logging is required\&. 
+.RE
+.PP
+
+.SS "WsResponseHandler::~WsResponseHandler ()\fR [virtual]\fP"
+
+.PP
+Destructor for the \fR\fBWsResponseHandler\fP\fP class\&. Cleans up any resources held by the \fR\fBWsResponseHandler\fP\fP instance\&. Abstract class does not need to free any resource\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "std::string WsResponseHandler::default_plain_error ()\fR [protected]\fP"
+
+.PP
+Generates a default HTML error page for the HTTP response\&. 
+.SH "responses"
+.PP
+This method constructs a basic HTML page with an error message that includes the HTTP status code and a brief description of the error\&. The error page is returned as a string and can be used as a fallback response in cases where more specific error content is unavailable\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A \fRstd::string\fP containing the default error page in HTML format\&. 
+.RE
+.PP
+
+.SS "virtual void WsResponseHandler::get_file_content (int pid, int(&) fd[2])\fR [protected]\fP, \fR [pure virtual]\fP"
+
+.PP
+Implemented in \fBHttpResponseHandler\fP\&.
+.SS "void WsResponseHandler::get_file_content (std::string & path)\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Retrieves the content of a file specified by the path\&. 
+.PP
+Reimplemented in \fBHttpResponseHandler\fP\&.
+.SS "bool WsResponseHandler::handle_delete ()\fR [protected]\fP"
+
+.PP
+Handles HTTP DELETE requests by checking permissions and deleting the specified resource\&. This method processes DELETE requests by verifying that the client has sufficient permissions\&. If permissions are adequate, it checks the existence of the resource, deletes it, and sends a success response\&. If any step fails, an error response is sent to the client\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the resource is successfully deleted and a success response is sent; \fRfalse\fP if an error occurs, such as insufficient permissions, resource not found, or failure to delete the resource\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::handle_get ()\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Handles HTTP GET requests, validating access, resource data, and sending a response\&. This method processes GET requests by checking if the client has read access to the location\&. If access is allowed, it get file content Upon successful validation, _response_data\&.content is sent to the client\&. If any step fails, an error response is sent to the client\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the GET request is successfully handled and the data is properly read; otherwise, \fRfalse\fP if an error occurs or access is denied\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::handle_post ()\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Handles HTTP POST requests, validating access, saving data, and sending a response\&. This method processes POST requests by checking if the client has write access to the location\&. If access is allowed, it validates the payload and resets the client timeout\&. Upon successful validation, the request body is saved to the specified path, and a success response is sent\&. If any step fails, an error response is sent to the client\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the POST request is successfully handled and the data is saved; otherwise, \fRfalse\fP if an error occurs or access is denied\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::handle_request ()\fR [virtual]\fP"
+
+.PP
+Handles the incoming HTTP request based on the request method\&. 
+.PP
+Reimplemented in \fBHttpAutoIndex\fP, \fBHttpCGIHandler\fP, \fBHttpMultipartHandler\fP, and \fBHttpRangeHandler\fP\&.
+.SS "std::string WsResponseHandler::header (int code, size_t content_size, std::string mime)\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Constructs an HTTP response header based on provided parameters\&. 
+.SH "Builders"
+.PP
+This method builds an HTTP response header string with status code, content length, content type, connection type, and range support, if applicable\&. The method supports connection keep-alive if the client is active and the request is valid (\fRsanity\fP is true)\&. For ranged responses, the \fRContent-Range\fP and \fRAccept-Ranges\fP headers are included\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP HTTP status code for the response\&. 
+.br
+\fIcontent_size\fP Size of the response content in bytes\&. 
+.br
+\fImime\fP MIME type of the response content\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A fully constructed HTTP response header as a \fRstd::string\fP\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::redirection ()"
+
+.PP
+Handles HTTP redirection for the current request\&. 
+.SH "General"
+.PP
+This method generates an HTTP redirection response based on the redirection information available in the current location configuration (\fR_location->redirections\fP)\&. It constructs an HTTP response header indicating the redirection status code and the new location URL, and sends it to the client\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the response was successfully sent, otherwise \fRfalse\fP\&.
+.RE
+.PP
+The method follows these steps:
+.IP "1." 4
+\fBRedirection Configuration\fP:
+.IP "  \(bu" 4
+Retrieves the first redirection entry from \fR_location->redirections\fP by calling \fRbegin()\fP\&.
+.PP
+
+.IP "2." 4
+\fBGenerate Redirection Header\fP:
+.IP "  \(bu" 4
+Constructs an HTTP response header using a \fRstd::ostringstream\fP\&.
+.IP "  \(bu" 4
+Includes:
+.IP "    \(bu" 6
+\fBHTTP Status Line\fP: Constructs the status line with the status code (\fRit->first\fP) and the corresponding reason phrase obtained from \fR\fBhttp_status_description()\fP\fP\&.
+.IP "    \(bu" 6
+\fBLocation Header\fP: Specifies the new location to which the client should be redirected (\fRit->second\fP)\&.
+.IP "    \(bu" 6
+\fBContent-Length\fP: Set to \fR0\fP, indicating no body content\&.
+.IP "    \(bu" 6
+\fBContent-Type\fP: Set to \fRtext/html\fP for compatibility, even though there is no body content\&.
+.PP
+
+.PP
+
+.IP "3." 4
+\fBSend Response\fP:
+.IP "  \(bu" 4
+Sets \fR_headers\fP to the constructed redirection header\&.
+.IP "  \(bu" 4
+Calls \fR\fBsender()\fP\fP to send the response to the client, passing an empty string as the body since there is no content\&.
+.PP
+
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+This method assumes that the redirection configuration (\fR_location->redirections\fP) is not empty\&. It uses \fRbegin()\fP to access the first redirection entry\&. this is controlled before 
+.PP
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+SocketHandler::mapping_redir() 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::save_file (const std::string & save_path, const std::string & content)\fR [protected]\fP"
+
+.PP
+Saves the provided content to a specified file path\&. This method attempts to save the given content to a file at the specified path\&. If the file already exists, an error response is set, as overwriting is not permitted\&. If the file does not exist, it is created, and the content is written to it\&. Any errors encountered during file operations will log an error, update the HTTP status, and mark the request as failed\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIsave_path\fP The path where the content should be saved\&. 
+.br
+\fIcontent\fP The content to be written to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the file is saved successfully; \fRfalse\fP if an error occurs\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::send_error_response ()"
+
+.PP
+Sends an HTTP error response to the client, using a custom error page if available\&. This method attempts to retrieve a custom error page based on the HTTP status code and location configuration\&. If a custom error page is defined, it loads and sends that page as the error response\&. If no custom page is available or an error occurs while loading it, a default error page is generated and sent\&. The response header is constructed according to the status code, content length, and MIME type\&.
+
+.PP
+If a location was not provided, a plain default text will be sent\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the error response is successfully sent; \fRfalse\fP if an error occurs\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::send_response (const std::string & body, const std::string & path)\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Sends an HTTP response with the specified body content and inferred MIME type\&. This method constructs and sends an HTTP response header and body to the client\&. The MIME type is determined based on the response data, or inferred from the file path if no MIME type is specified\&. The response header is created using the status code and content length, after which the full response is sent\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbody\fP The body content of the response\&. 
+.br
+\fIpath\fP The file path used to infer the MIME type if not specified in the response data\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the response is successfully sent; \fRfalse\fP if sending fails\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::sender (const std::string & body)\fR [protected]\fP"
+
+.PP
+Sends the HTTP response to the client through the socket file descriptor\&. This function sends the complete response, including headers and body, to the client\&. It handles partial writes and ensures that all data is sent correctly by using a loop\&.
+
+.PP
+The flow of the function is as follows:
+.IP "1." 4
+Concatenate the response headers and body into a single response string\&.
+.IP "2." 4
+Attempt to send the response data using \fRsend()\fP\&.
+.IP "3." 4
+If \fRsend()\fP returns \fR-1\fP, retry sending up to a predefined maximum number of times without checking \fRerrno\fP\&.
+.IP "4." 4
+Introduce a small delay between retries to avoid a busy-wait loop\&.
+.IP "5." 4
+Accumulate the number of bytes successfully sent and continue until the entire response is sent\&.
+.IP "6." 4
+If the response is sent successfully, log the details and return true\&. If it fails after maximum retries, return false\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIbody\fP The body content of the HTTP response to be sent\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the response is sent successfully, false otherwise\&. 
+.RE
+.PP
+
+.SS "void WsResponseHandler::turn_off_sanity (\fBe_http_sts\fP status, std::string detail)\fR [protected]\fP"
+
+.PP
+Disables further request processing by marking the request as invalid\&. This method is used to set the request's \fRsanity\fP flag to \fRfalse\fP, indicating that the request should not continue being processed due to an error\&. It also sets the HTTP status code for the response, logs the provided error detail, and marks the response data status as invalid\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIstatus\fP The HTTP status code representing the error condition\&. 
+.br
+\fIdetail\fP A detailed message describing the reason for marking the request as invalid\&. 
+.RE
+.PP
+
+.SS "bool WsResponseHandler::validate_payload ()\fR [protected]\fP, \fR [virtual]\fP"
+
+.PP
+Validates the payload of an HTTP request to ensure it meets requirements\&. This method checks if the request payload satisfies necessary criteria for processing, specifically for POST requests\&. It verifies that the \fRContent-Length\fP and \fRContent-Type\fP headers are present, that the request body exists and matches the expected length, and that the file extension is not blacklisted\&. If any validation fails, the request is marked as invalid and an error response is prepared\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the payload is valid and ready for further processing; \fRfalse\fP otherwise\&. 
+.RE
+.PP
+
+.SH "Field Documentation"
+.PP 
+.SS "\fBClientData\fP* WsResponseHandler::_client_data\fR [protected]\fP"
+
+.SS "std::string WsResponseHandler::_headers\fR [protected]\fP"
+
+.SS "const \fBLocationConfig\fP* WsResponseHandler::_location\fR [protected]\fP"
+
+.SS "const \fBLogger\fP* WsResponseHandler::_log\fR [protected]\fP"
+
+.SS "\fBs_request\fP& WsResponseHandler::_request\fR [protected]\fP"
+
+.SS "\fBs_content\fP WsResponseHandler::_response_data\fR [protected]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

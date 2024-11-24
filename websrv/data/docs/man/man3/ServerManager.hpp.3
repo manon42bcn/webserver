@@ -1,0 +1,95 @@
+.TH "websrv/inc/ServerManager.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/ServerManager.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <vector>\fP
+.br
+\fR#include <poll\&.h>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <cstring>\fP
+.br
+\fR#include <algorithm>\fP
+.br
+\fR#include <sys/time\&.h>\fP
+.br
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include 'SocketHandler\&.hpp'\fP
+.br
+\fR#include 'HttpRequestHandler\&.hpp'\fP
+.br
+\fR#include 'HttpResponseHandler\&.hpp'\fP
+.br
+\fR#include 'HttpCGIHandler\&.hpp'\fP
+.br
+\fR#include 'HttpRangeHandler\&.hpp'\fP
+.br
+\fR#include 'HttpMultipartHandler\&.hpp'\fP
+.br
+\fR#include 'HttpAutoIndex\&.hpp'\fP
+.br
+\fR#include 'WebserverCache\&.hpp'\fP
+.br
+\fR#include 'ClientData\&.hpp'\fP
+.br
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBServerManager\fP"
+.br
+.RI "Manages the operation of web server instances, client connections, and network events\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCLIENT_LIFECYCLE\fP   10000000"
+.br
+.ti -1c
+.RI "#define \fBSM_NAME\fP   'ServerManager'"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef std::map< int, \fBClientData\fP * >::iterator \fBt_client_it\fP"
+.br
+.ti -1c
+.RI "typedef std::map< int, time_t >::iterator \fBt_fd_timestamp\fP"
+.br
+.ti -1c
+.RI "typedef std::map< time_t, int >::iterator \fBt_timestamp_fd\fP"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define CLIENT_LIFECYCLE   10000000"
+
+.SS "#define SM_NAME   'ServerManager'"
+
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef std::map<int,\fBClientData\fP*>::iterator \fBt_client_it\fP"
+
+.SS "typedef std::map<int,time_t>::iterator \fBt_fd_timestamp\fP"
+
+.SS "typedef std::map<time_t,int>::iterator \fBt_timestamp_fd\fP"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

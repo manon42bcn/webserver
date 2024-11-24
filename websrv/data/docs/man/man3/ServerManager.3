@@ -1,0 +1,132 @@
+.TH "ServerManager" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ServerManager \- Manages the operation of web server instances, client connections, and network events\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ServerManager\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBServerManager\fP (std::vector< \fBServerConfig\fP > &configs, const \fBLogger\fP *logger)"
+.br
+.RI "Constructs a \fBServerManager\fP instance, initializing server configurations and socket handlers\&. "
+.ti -1c
+.RI "\fB~ServerManager\fP ()"
+.br
+.RI "Destructor for the \fBServerManager\fP class, responsible for resource cleanup\&. "
+.ti -1c
+.RI "void \fBrun\fP ()"
+.br
+.RI "Starts and manages the main event loop for the server\&. "
+.ti -1c
+.RI "void \fBturn_off_server\fP ()"
+.br
+.RI "Turn off server\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages the operation of web server instances, client connections, and network events\&. 
+
+The \fR\fBServerManager\fP\fP class is responsible for:
+.IP "\(bu" 2
+Initializing and managing multiple server instances (\fR\fBSocketHandler\fP\fP objects) based on the provided configuration\&.
+.IP "\(bu" 2
+Maintaining active client connections and polling their events\&.
+.IP "\(bu" 2
+Handling critical server functions, such as timeouts, connection cleanup, and error handling\&.
+.PP
+
+.PP
+This class uses a \fRpoll\fP-based event loop in the \fRrun\fP method to handle incoming connections and requests\&. It provides a shutdown mechanism in case of unrecoverable errors and is equipped with logging for server status tracking\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ServerManager::ServerManager (std::vector< \fBServerConfig\fP > & configs, const \fBLogger\fP * logger)"
+
+.PP
+Constructs a \fBServerManager\fP instance, initializing server configurations and socket handlers\&. This constructor initializes the \fBServerManager\fP with the provided server configurations, logger, and cache\&. It creates server instances based on the configurations, setting up socket connections and handling potential exceptions related to socket creation, linking, listening, and non-blocking mode\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIconfigs\fP Vector of server configurations, each containing port and other server settings\&. 
+.br
+\fIlogger\fP Pointer to the \fBLogger\fP instance for logging activities within the \fBServerManager\fP\&. 
+.br
+\fIcache\fP Pointer to the \fBWebServerCache\fP for caching resources\&.
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::NoLoggerPointer\fP\fP If the logger pointer is null\&. 
+.br
+\fI\fBWebServerException\fP\fP If no cache pointer is provided, if configs are empty, or if a \fBSocketHandler\fP exception is caught\&.
+.RE
+.PP
+This constructor sets up sockets for each configuration in \fRconfigs\fP using \fRadd_server\fP\&. If any socket operation fails, it logs the error details and throws a \fR\fBWebServerException\fP\fP\&. Once initialized successfully, the instance is marked as healthy and active\&. 
+.SS "ServerManager::~ServerManager ()"
+
+.PP
+Destructor for the \fBServerManager\fP class, responsible for resource cleanup\&. This destructor ensures a proper cleanup of server resources managed by the \fBServerManager\fP instance\&. It deactivates and clears client connections, server instances, and poll file descriptors, releasing any associated resources\&.
+
+.PP
+The destructor also logs the cleanup process, marking the completion of resource cleanup for easier monitoring and debugging\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void ServerManager::run ()"
+
+.PP
+Starts and manages the main event loop for the server\&. This method runs the server's event loop, continuously monitoring file descriptors for events using \fRpoll()\fP\&. It handles incoming connections, client requests, and outgoing responses\&. The loop also manages timeouts for inactive clients and ensures the server remains operational unless a critical error occurs\&.
+
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBWebServerException\fP\fP If a fatal error occurs that prevents the server from continuing\&.
+.RE
+.PP
+The main functionalities of the event loop are:
+.IP "\(bu" 2
+\fBTimeout Management:\fP Inactive clients are detected and removed using \fRtimeout_clients\fP\&.
+.IP "\(bu" 2
+\fBPolling for Events:\fP The \fRpoll()\fP function is used to monitor file descriptors for readiness to read (\fRPOLLIN\fP) or write (\fRPOLLOUT\fP)\&.
+.IP "\(bu" 2
+\fBHandling Events:\fP
+.IP "  \(bu" 4
+For \fRPOLLIN\fP: Accepts new connections or processes incoming client requests\&.
+.IP "  \(bu" 4
+For \fRPOLLOUT\fP: Sends responses to clients\&.
+.PP
+
+.IP "\(bu" 2
+\fBError Handling:\fP Handles errors from \fRpoll()\fP such as \fREINTR\fP (interrupted by a signal) or \fREBADF\fP (bad file descriptor), logging warnings and cleaning up resources as needed\&.
+.IP "\(bu" 2
+\fBGraceful Shutdown:\fP The loop exits when \fR_active\fP is set to \fRfalse\fP, ensuring that resources are properly cleaned up\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+The method ensures robustness by catching and logging exceptions, and by cleaning up invalid file descriptors if detected\&.
+.IP "\(bu" 2
+A short sleep (\fRusleep\fP) is included to avoid excessive CPU usage during idle periods\&. 
+.PP
+.RE
+.PP
+
+.SS "void ServerManager::turn_off_server ()"
+
+.PP
+Turn off server\&. 
+.SH "to Build Server\&."
+.PP
+This method is be used by signal handler\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

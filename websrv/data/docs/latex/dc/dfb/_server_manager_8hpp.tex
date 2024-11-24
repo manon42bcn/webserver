@@ -1,0 +1,78 @@
+\doxysection{websrv/inc/\+Server\+Manager.hpp File Reference}
+\hypertarget{_server_manager_8hpp}{}\label{_server_manager_8hpp}\index{websrv/inc/ServerManager.hpp@{websrv/inc/ServerManager.hpp}}
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$poll.\+h$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$sys/time.\+h$>$}\newline
+{\ttfamily \#include "{}http\+\_\+enum\+\_\+codes.\+hpp"{}}\newline
+{\ttfamily \#include "{}Socket\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+Request\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+Response\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+CGIHandler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+Range\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+Multipart\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Http\+Auto\+Index.\+hpp"{}}\newline
+{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
+{\ttfamily \#include "{}Client\+Data.\+hpp"{}}\newline
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include "{}Logger.\+hpp"{}}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_server_manager}{Server\+Manager}}
+\begin{DoxyCompactList}\small\item\em Manages the operation of web server instances, client connections, and network events. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_server_manager_8hpp_a3835eae8f16dd599ed67eb9f9cfd6c4b}{CLIENT\+\_\+\+LIFECYCLE}}~10000000
+\item 
+\#define \mbox{\hyperlink{_server_manager_8hpp_ab03a7c308d8dec7a5431b0bb0fdf41b9}{SM\+\_\+\+NAME}}~"{}Server\+Manager"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ int, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*} $>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\+\_\+client\+\_\+it}}
+\item 
+typedef std\+::map$<$ int, time\+\_\+t $>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102}{t\+\_\+fd\+\_\+timestamp}}
+\item 
+typedef std\+::map$<$ time\+\_\+t, int $>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9}{t\+\_\+timestamp\+\_\+fd}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{_server_manager_8hpp_a3835eae8f16dd599ed67eb9f9cfd6c4b}\index{ServerManager.hpp@{ServerManager.hpp}!CLIENT\_LIFECYCLE@{CLIENT\_LIFECYCLE}}
+\index{CLIENT\_LIFECYCLE@{CLIENT\_LIFECYCLE}!ServerManager.hpp@{ServerManager.hpp}}
+\doxysubsubsection{\texorpdfstring{CLIENT\_LIFECYCLE}{CLIENT\_LIFECYCLE}}
+{\footnotesize\ttfamily \label{_server_manager_8hpp_a3835eae8f16dd599ed67eb9f9cfd6c4b} 
+\#define CLIENT\+\_\+\+LIFECYCLE~10000000}
+
+\Hypertarget{_server_manager_8hpp_ab03a7c308d8dec7a5431b0bb0fdf41b9}\index{ServerManager.hpp@{ServerManager.hpp}!SM\_NAME@{SM\_NAME}}
+\index{SM\_NAME@{SM\_NAME}!ServerManager.hpp@{ServerManager.hpp}}
+\doxysubsubsection{\texorpdfstring{SM\_NAME}{SM\_NAME}}
+{\footnotesize\ttfamily \label{_server_manager_8hpp_ab03a7c308d8dec7a5431b0bb0fdf41b9} 
+\#define SM\+\_\+\+NAME~"{}Server\+Manager"{}}
+
+
+
+\doxysubsection{Typedef Documentation}
+\Hypertarget{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}\index{ServerManager.hpp@{ServerManager.hpp}!t\_client\_it@{t\_client\_it}}
+\index{t\_client\_it@{t\_client\_it}!ServerManager.hpp@{ServerManager.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_client\_it}{t\_client\_it}}
+{\footnotesize\ttfamily \label{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd} 
+typedef std\+::map$<$int,\mbox{\hyperlink{class_client_data}{Client\+Data}}\texorpdfstring{$\ast$}{*}$>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\+\_\+client\+\_\+it}}}
+
+\Hypertarget{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102}\index{ServerManager.hpp@{ServerManager.hpp}!t\_fd\_timestamp@{t\_fd\_timestamp}}
+\index{t\_fd\_timestamp@{t\_fd\_timestamp}!ServerManager.hpp@{ServerManager.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_fd\_timestamp}{t\_fd\_timestamp}}
+{\footnotesize\ttfamily \label{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102} 
+typedef std\+::map$<$int,time\+\_\+t$>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102}{t\+\_\+fd\+\_\+timestamp}}}
+
+\Hypertarget{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9}\index{ServerManager.hpp@{ServerManager.hpp}!t\_timestamp\_fd@{t\_timestamp\_fd}}
+\index{t\_timestamp\_fd@{t\_timestamp\_fd}!ServerManager.hpp@{ServerManager.hpp}}
+\doxysubsubsection{\texorpdfstring{t\_timestamp\_fd}{t\_timestamp\_fd}}
+{\footnotesize\ttfamily \label{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9} 
+typedef std\+::map$<$time\+\_\+t,int$>$\+::iterator \mbox{\hyperlink{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9}{t\+\_\+timestamp\+\_\+fd}}}
+
