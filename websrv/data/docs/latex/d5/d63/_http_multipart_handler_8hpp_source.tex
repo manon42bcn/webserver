@@ -1,0 +1,59 @@
+\doxysection{Http\+Multipart\+Handler.\+hpp}
+\hypertarget{_http_multipart_handler_8hpp_source}{}\label{_http_multipart_handler_8hpp_source}\index{websrv/inc/HttpMultipartHandler.hpp@{websrv/inc/HttpMultipartHandler.hpp}}
+\mbox{\hyperlink{_http_multipart_handler_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00002\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00003\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
+\DoxyCodeLine{00004\ \textcolor{comment}{/*\ \ \ HttpMultipartHandler.hpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{00005\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
+\DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/07\ 23:48:37\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/08\ 23:53:48\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ \_HTTP\_MULTIPART\_HANDLER\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ \_HTTP\_MULTIPART\_HANDLER\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#\ include\ "{}\mbox{\hyperlink{_web_server_response_handler_8hpp}{WebServerResponseHandler.hpp}}"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MP\_NAME\ "{}HttpMultipartHandler"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structs__multi__part}{s\_multi\_part}}\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ std::string\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a80848fb6864df4025af3a4ebbc0975b4}{disposition}};}
+\DoxyCodeLine{00028\ \ \ \ \ std::string\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_aabc131f84a3f8723a50857c70403d334}{name}};}
+\DoxyCodeLine{00029\ \ \ \ \ std::string\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a28245db4e7b3e9530be20115fc78dc7e}{filename}};}
+\DoxyCodeLine{00030\ \ \ \ \ std::string\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_ab056ccf68c1c87199a341f3949675d39}{type}};}
+\DoxyCodeLine{00031\ \ \ \ \ std::string\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a858c9f68dd1d742682c2be71aa9326e4}{data}};}
+\DoxyCodeLine{00032\ \ \ \ \ \mbox{\hyperlink{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}{e\_content\_type}}\ \ \ \ \mbox{\hyperlink{structs__multi__part_a75c9fef411fe5cdc6ba6d4ec3e781088}{data\_type}};}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ \ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a107014c8f94c0e0cb96eaacd151db660}{status}};}
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a89e389f6f5f6ecb0a044503a79f63695}{s\_multi\_part}}(std::string\ di,\ std::string\ n,}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ fn,\ std::string\ t,}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ d):\ \mbox{\hyperlink{structs__multi__part_a80848fb6864df4025af3a4ebbc0975b4}{disposition}}(di),\ \mbox{\hyperlink{structs__multi__part_aabc131f84a3f8723a50857c70403d334}{name}}(n),}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a28245db4e7b3e9530be20115fc78dc7e}{filename}}(fn),\ \mbox{\hyperlink{structs__multi__part_ab056ccf68c1c87199a341f3949675d39}{type}}(t),\ \mbox{\hyperlink{structs__multi__part_a858c9f68dd1d742682c2be71aa9326e4}{data}}(d),\ \mbox{\hyperlink{structs__multi__part_a75c9fef411fe5cdc6ba6d4ec3e781088}{data\_type}}(\mbox{\hyperlink{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a27759b496b82a0e6d680cec7cdb87b30}{CT\_FILE}}),}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a107014c8f94c0e0cb96eaacd151db660}{status}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a211e5143e6efe62c4f5eefc012a2dc39}{HTTP\_CREATED}})\ \{\};}
+\DoxyCodeLine{00039\ \ \ \ \ \mbox{\hyperlink{structs__multi__part_ad38c1e1e9280e33064f818cbd7170579}{s\_multi\_part}}(std::string\ fn,\ \mbox{\hyperlink{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}{e\_content\_type}}\ dt,\ std::string\ d):}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__multi__part_a28245db4e7b3e9530be20115fc78dc7e}{filename}}(fn),\ \mbox{\hyperlink{structs__multi__part_a858c9f68dd1d742682c2be71aa9326e4}{data}}(d),\ \mbox{\hyperlink{structs__multi__part_a75c9fef411fe5cdc6ba6d4ec3e781088}{data\_type}}(dt)\ \{\};}
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00067\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_http_multipart_handler}{HttpMultipartHandler}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_ws_response_handler}{WsResponseHandler}}\ \{}
+\DoxyCodeLine{00068\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00069\ \ \ \ \ std::vector<s\_multi\_part>\ \ \ \_multi\_content;}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{bool}\ handle\_post();}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ parse\_multipart\_data();}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{bool}\ validate\_payload();}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ get\_file\_content(\textcolor{keywordtype}{int}\ pid,\ \textcolor{keywordtype}{int}\ (\&fd)[2]);}
+\DoxyCodeLine{00074\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00075\ \ \ \ \ \mbox{\hyperlink{class_http_multipart_handler_a19ba2ac751acb3d533fcc1a3ff1ae87f}{HttpMultipartHandler}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}\ *location,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}\ *log,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_client_data}{ClientData}}*\ client\_data,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request}{s\_request}}\&\ request,}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ fd);}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_http_multipart_handler_a238c811869507cc202214d5e34c540d4}{handle\_request}}();}
+\DoxyCodeLine{00081\ \};}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

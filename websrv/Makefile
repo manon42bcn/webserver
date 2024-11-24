@@ -17,7 +17,6 @@ SRCS_FILES		=	webserver.cpp \
 					HttpRangeHandler.cpp \
 					HttpMultipartHandler.cpp \
 					HttpAutoIndex.cpp \
-					http_codes_helper.cpp \
 					main.cpp \
 					Logger.cpp \
 					SocketHandler.cpp \
@@ -34,7 +33,6 @@ SRCS_FILES		=	webserver.cpp \
 					parse/parse_location.cpp
 HEADER_DIR		=	inc
 HEADER			=	webserver.hpp \
-					general_helpers.hpp \
 					ws_general_defines.hpp \
 					ws_structs.hpp \
 					ws_permissions_bitwise.hpp \

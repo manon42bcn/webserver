@@ -1,0 +1,255 @@
+\doxysection{Client\+Data Class Reference}
+\hypertarget{class_client_data}{}\label{class_client_data}\index{ClientData@{ClientData}}
+
+
+Manages individual client connections in the web server, tracking their state and activity.  
+
+
+
+
+{\ttfamily \#include $<$Client\+Data.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_client_data_ace64209b0eb0ecf17b839c04e9800f38}{Client\+Data}} (\mbox{\hyperlink{class_socket_handler}{Socket\+Handler}} \texorpdfstring{$\ast$}{*}server, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a {\ttfamily \doxylink{class_client_data}{Client\+Data}} instance for a client connection. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_client_data_a722d09ec49cd3e0f33c1394a78441070}{\texorpdfstring{$\sim$}{\string~}\+Client\+Data}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for {\ttfamily \doxylink{class_client_data}{Client\+Data}}, cleaning up resources associated with the client connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_client_data_aa5eb5efbe94407c96d370c36b1847610}{close\+\_\+fd}} ()
+\begin{DoxyCompactList}\small\item\em Closes the client\textquotesingle{}s socket file descriptor and marks it as inactive. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_socket_handler}{Socket\+Handler}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_client_data_a72d1aba7c8b240eb3859762d076f77fe}{get\+\_\+server}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the server\textquotesingle{}s socket handler associated with this client. \end{DoxyCompactList}\item 
+struct pollfd \mbox{\hyperlink{class_client_data_ac23ae0bd953e3bfd68bbbc72e2ba0895}{get\+\_\+fd}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the client\textquotesingle{}s poll file descriptor structure. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9}{chronos\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Checks if the client connection has exceeded the request timeout. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_client_data_a926a452ea3e46acfe12db36737bfffe7}{chronos\+\_\+reset}} ()
+\begin{DoxyCompactList}\small\item\em Resets the client activity timestamp to the current time. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_client_data_a1996039013d4a9fb82c2e9859ff405b2}{chronos\+\_\+connection}} ()
+\begin{DoxyCompactList}\small\item\em Checks if the client connection has exceeded the client timeout. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_client_data_a21120ede60438ddc6947ebdf74259268}{deactivate}} ()
+\begin{DoxyCompactList}\small\item\em Marks the client connection as inactive. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_client_data_a11bd829d13b5b868f2c30469484b4e75}{kill\+\_\+client}} ()
+\begin{DoxyCompactList}\small\item\em Sets the client life cycle to false. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_client_data_a3280a4659590dcf30568d3ab2effc346}{is\+\_\+alive}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the client was set to kill. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_client_data_af0767f15de3c837f6e977a5aef8c1e87}{is\+\_\+active}} () const
+\begin{DoxyCompactList}\small\item\em Checks if the client connection is set to remain active. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_client_data_a5ae6121bc925284da977c3eaebe12222}{keep\+\_\+active}} ()
+\begin{DoxyCompactList}\small\item\em Sets the client connection as active. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& \mbox{\hyperlink{class_client_data_a9f63bd0b5139b2d76a656342b6c26075}{client\+\_\+request}} ()
+\item 
+void \mbox{\hyperlink{class_client_data_aaf2c37cb4c585c6b0c36eed1bd937c01}{to\+\_\+pollout}} ()
+\item 
+void \mbox{\hyperlink{class_client_data_aa93eda5e44b2ce98fa0e4807d0b889fd}{to\+\_\+pollin}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages individual client connections in the web server, tracking their state and activity. 
+
+The {\ttfamily \doxylink{class_client_data}{Client\+Data}} class encapsulates client connection data and provides methods to monitor and control the client\textquotesingle{}s connection state, such as handling timeouts, deactivation, and status checks. Each instance is associated with a specific client connection, providing an interface for managing socket file descriptors, connection timestamps, and logging. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_client_data_ace64209b0eb0ecf17b839c04e9800f38}\index{ClientData@{ClientData}!ClientData@{ClientData}}
+\index{ClientData@{ClientData}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{ClientData()}{ClientData()}}
+{\footnotesize\ttfamily \label{class_client_data_ace64209b0eb0ecf17b839c04e9800f38} 
+Client\+Data\+::\+Client\+Data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_socket_handler}{Socket\+Handler}} \texorpdfstring{$\ast$}{*}}]{server}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a {\ttfamily \doxylink{class_client_data}{Client\+Data}} instance for a client connection. 
+
+Initializes the client data with the provided server socket handler, logger, and client file descriptor. Sets initial connection state to active and timestamps the connection for monitoring.
+
+
+\begin{DoxyParams}{Parameters}
+{\em server} & Pointer to the server\textquotesingle{}s {\ttfamily \doxylink{class_socket_handler}{Socket\+Handler}}, responsible for managing the client connection. \\
+\hline
+{\em log} & Pointer to the {\ttfamily \doxylink{class_logger}{Logger}} instance for recording client activities. \\
+\hline
+{\em fd} & File descriptor for the client\textquotesingle{}s socket, set to monitor read events ({\ttfamily POLLIN}). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_client_data_a722d09ec49cd3e0f33c1394a78441070}\index{ClientData@{ClientData}!````~ClientData@{\texorpdfstring{$\sim$}{\string~}ClientData}}
+\index{````~ClientData@{\texorpdfstring{$\sim$}{\string~}ClientData}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}ClientData()}{\string~ClientData()}}
+{\footnotesize\ttfamily \label{class_client_data_a722d09ec49cd3e0f33c1394a78441070} 
+Client\+Data\+::\texorpdfstring{$\sim$}{\string~}\+Client\+Data (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destructor for {\ttfamily \doxylink{class_client_data}{Client\+Data}}, cleaning up resources associated with the client connection. 
+
+Closes the client\textquotesingle{}s socket file descriptor if it is open, and logs the cleanup process. Catches any exceptions during cleanup to ensure safe and consistent deallocation. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_client_data_a1996039013d4a9fb82c2e9859ff405b2}\index{ClientData@{ClientData}!chronos\_connection@{chronos\_connection}}
+\index{chronos\_connection@{chronos\_connection}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{chronos\_connection()}{chronos\_connection()}}
+{\footnotesize\ttfamily \label{class_client_data_a1996039013d4a9fb82c2e9859ff405b2} 
+bool Client\+Data\+::chronos\+\_\+connection (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Checks if the client connection has exceeded the client timeout. 
+
+\begin{DoxyNote}{Note}
+This method controls timeout using last request timestamp. Similar to {\ttfamily \doxylink{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9}{chronos\+\_\+request()}}, but uses a longer timeout threshold ({\ttfamily TIMEOUT\+\_\+\+CLIENT}). This is typically used to determine if the client session itself should be terminated.
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+True if the client connection is still within the allowed client timeout period, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9}\index{ClientData@{ClientData}!chronos\_request@{chronos\_request}}
+\index{chronos\_request@{chronos\_request}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{chronos\_request()}{chronos\_request()}}
+{\footnotesize\ttfamily \label{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9} 
+bool Client\+Data\+::chronos\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Checks if the client connection has exceeded the request timeout. 
+
+\begin{DoxyNote}{Note}
+This method controls only request related timeout.
+\end{DoxyNote}
+Compares the current time with the last recorded activity timestamp. If the difference exceeds {\ttfamily TIMEOUT\+\_\+\+REQUEST}, marks the client as inactive.
+
+\begin{DoxyReturn}{Returns}
+True if the client connection is still within the timeout period, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_a926a452ea3e46acfe12db36737bfffe7}\index{ClientData@{ClientData}!chronos\_reset@{chronos\_reset}}
+\index{chronos\_reset@{chronos\_reset}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{chronos\_reset()}{chronos\_reset()}}
+{\footnotesize\ttfamily \label{class_client_data_a926a452ea3e46acfe12db36737bfffe7} 
+void Client\+Data\+::chronos\+\_\+reset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Resets the client activity timestamp to the current time. 
+
+Updates {\ttfamily \+\_\+timestamp} with the current time, effectively marking recent activity and resetting the timeout period for the client. \Hypertarget{class_client_data_a9f63bd0b5139b2d76a656342b6c26075}\index{ClientData@{ClientData}!client\_request@{client\_request}}
+\index{client\_request@{client\_request}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{client\_request()}{client\_request()}}
+{\footnotesize\ttfamily \label{class_client_data_a9f63bd0b5139b2d76a656342b6c26075} 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& Client\+Data\+::client\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_client_data_aa5eb5efbe94407c96d370c36b1847610}\index{ClientData@{ClientData}!close\_fd@{close\_fd}}
+\index{close\_fd@{close\_fd}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{close\_fd()}{close\_fd()}}
+{\footnotesize\ttfamily \label{class_client_data_aa5eb5efbe94407c96d370c36b1847610} 
+void Client\+Data\+::close\+\_\+fd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Closes the client\textquotesingle{}s socket file descriptor and marks it as inactive. 
+
+Attempts to close the client\textquotesingle{}s file descriptor ({\ttfamily fd}) and set {\ttfamily \+\_\+active} to {\ttfamily false}. Logs the closure process and any issues that arise. If the {\ttfamily fd} is already inactive or invalid, it logs a warning message instead.
+
+\begin{DoxyNote}{Note}
+Ensures safe cleanup of client resources, preventing potential resource leaks. 
+\end{DoxyNote}
+\Hypertarget{class_client_data_a21120ede60438ddc6947ebdf74259268}\index{ClientData@{ClientData}!deactivate@{deactivate}}
+\index{deactivate@{deactivate}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{deactivate()}{deactivate()}}
+{\footnotesize\ttfamily \label{class_client_data_a21120ede60438ddc6947ebdf74259268} 
+void Client\+Data\+::deactivate (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Marks the client connection as inactive. 
+
+Sets {\ttfamily \+\_\+active} to {\ttfamily false}, indicating that the client connection is no longer active. This can be used in conjunction with timeout checks or when a connection is manually closed. \Hypertarget{class_client_data_ac23ae0bd953e3bfd68bbbc72e2ba0895}\index{ClientData@{ClientData}!get\_fd@{get\_fd}}
+\index{get\_fd@{get\_fd}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{get\_fd()}{get\_fd()}}
+{\footnotesize\ttfamily \label{class_client_data_ac23ae0bd953e3bfd68bbbc72e2ba0895} 
+struct pollfd Client\+Data\+::get\+\_\+fd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Retrieves the client\textquotesingle{}s poll file descriptor structure. 
+
+Provides access to the {\ttfamily pollfd} structure, which contains the client\textquotesingle{}s file descriptor and event monitoring settings (e.\+g., {\ttfamily POLLIN} for incoming data).
+
+\begin{DoxyReturn}{Returns}
+A {\ttfamily pollfd} structure containing the client\textquotesingle{}s file descriptor and polling events. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_a72d1aba7c8b240eb3859762d076f77fe}\index{ClientData@{ClientData}!get\_server@{get\_server}}
+\index{get\_server@{get\_server}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{get\_server()}{get\_server()}}
+{\footnotesize\ttfamily \label{class_client_data_a72d1aba7c8b240eb3859762d076f77fe} 
+\mbox{\hyperlink{class_socket_handler}{Socket\+Handler}} \texorpdfstring{$\ast$}{*} Client\+Data\+::get\+\_\+server (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Retrieves the server\textquotesingle{}s socket handler associated with this client. 
+
+\begin{DoxyReturn}{Returns}
+Pointer to the {\ttfamily \doxylink{class_socket_handler}{Socket\+Handler}} instance managing the server connection for this client. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_af0767f15de3c837f6e977a5aef8c1e87}\index{ClientData@{ClientData}!is\_active@{is\_active}}
+\index{is\_active@{is\_active}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{is\_active()}{is\_active()}}
+{\footnotesize\ttfamily \label{class_client_data_af0767f15de3c837f6e977a5aef8c1e87} 
+bool Client\+Data\+::is\+\_\+active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Checks if the client connection is set to remain active. 
+
+\begin{DoxyReturn}{Returns}
+True if the client connection is active, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_a3280a4659590dcf30568d3ab2effc346}\index{ClientData@{ClientData}!is\_alive@{is\_alive}}
+\index{is\_alive@{is\_alive}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{is\_alive()}{is\_alive()}}
+{\footnotesize\ttfamily \label{class_client_data_a3280a4659590dcf30568d3ab2effc346} 
+bool Client\+Data\+::is\+\_\+alive (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Checks if the client was set to kill. 
+
+\begin{DoxyReturn}{Returns}
+True if the client is alive, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{class_client_data_a5ae6121bc925284da977c3eaebe12222}\index{ClientData@{ClientData}!keep\_active@{keep\_active}}
+\index{keep\_active@{keep\_active}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{keep\_active()}{keep\_active()}}
+{\footnotesize\ttfamily \label{class_client_data_a5ae6121bc925284da977c3eaebe12222} 
+void Client\+Data\+::keep\+\_\+active (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Sets the client connection as active. 
+
+Updates the {\ttfamily \+\_\+active} flag to {\ttfamily true}, indicating that the client connection is currently in use and not eligible for cleanup or timeout handling. \Hypertarget{class_client_data_a11bd829d13b5b868f2c30469484b4e75}\index{ClientData@{ClientData}!kill\_client@{kill\_client}}
+\index{kill\_client@{kill\_client}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{kill\_client()}{kill\_client()}}
+{\footnotesize\ttfamily \label{class_client_data_a11bd829d13b5b868f2c30469484b4e75} 
+void Client\+Data\+::kill\+\_\+client (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Sets the client life cycle to false. 
+
+Updates the {\ttfamily \+\_\+alive} flag to {\ttfamily false}, indicating that the client connection Process should end. \Hypertarget{class_client_data_aa93eda5e44b2ce98fa0e4807d0b889fd}\index{ClientData@{ClientData}!to\_pollin@{to\_pollin}}
+\index{to\_pollin@{to\_pollin}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{to\_pollin()}{to\_pollin()}}
+{\footnotesize\ttfamily \label{class_client_data_aa93eda5e44b2ce98fa0e4807d0b889fd} 
+void Client\+Data\+::to\+\_\+pollin (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_client_data_aaf2c37cb4c585c6b0c36eed1bd937c01}\index{ClientData@{ClientData}!to\_pollout@{to\_pollout}}
+\index{to\_pollout@{to\_pollout}!ClientData@{ClientData}}
+\doxysubsubsection{\texorpdfstring{to\_pollout()}{to\_pollout()}}
+{\footnotesize\ttfamily \label{class_client_data_aaf2c37cb4c585c6b0c36eed1bd937c01} 
+void Client\+Data\+::to\+\_\+pollout (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_client_data_8hpp}{Client\+Data.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_client_data_8cpp}{Client\+Data.\+cpp}}\end{DoxyCompactItemize}

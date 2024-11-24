@@ -1,0 +1,68 @@
+\doxysection{websrv/srcs/main.cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{websrv/srcs/main.cpp@{websrv/srcs/main.cpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$poll.\+h$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$cstdlib$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include "{}Server\+Manager.\+hpp"{}}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8cpp_a7da340630db90f46a57cb6939626e2ee}{print\+\_\+server\+\_\+config}} (const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&config, std\+::string location)
+\item 
+void \mbox{\hyperlink{main_8cpp_a2d370221fb0194cd1a79364eece10199}{print\+\_\+vector\+\_\+config}} (const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&config, std\+::string location)
+\item 
+void \mbox{\hyperlink{main_8cpp_a6aa59f98cad89c73966351ad7afb303c}{signal\+\_\+handler}} (int sig)
+\item 
+int \mbox{\hyperlink{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_server_manager}{Server\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{main_8cpp_a5e1dbc6492c3297fcd501faa82bea834}{running\+\_\+server}} = NULL
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{main_8cpp_a3c04138a5bfe5d72780bb7e82a18e627} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main_8cpp_a7da340630db90f46a57cb6939626e2ee}\index{main.cpp@{main.cpp}!print\_server\_config@{print\_server\_config}}
+\index{print\_server\_config@{print\_server\_config}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_server\_config()}{print\_server\_config()}}
+{\footnotesize\ttfamily \label{main_8cpp_a7da340630db90f46a57cb6939626e2ee} 
+void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main_8cpp_a2d370221fb0194cd1a79364eece10199}\index{main.cpp@{main.cpp}!print\_vector\_config@{print\_vector\_config}}
+\index{print\_vector\_config@{print\_vector\_config}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_vector\_config()}{print\_vector\_config()}}
+{\footnotesize\ttfamily \label{main_8cpp_a2d370221fb0194cd1a79364eece10199} 
+void print\+\_\+vector\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main_8cpp_a6aa59f98cad89c73966351ad7afb303c}\index{main.cpp@{main.cpp}!signal\_handler@{signal\_handler}}
+\index{signal\_handler@{signal\_handler}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{signal\_handler()}{signal\_handler()}}
+{\footnotesize\ttfamily \label{main_8cpp_a6aa59f98cad89c73966351ad7afb303c} 
+void signal\+\_\+handler (\begin{DoxyParamCaption}\item[{int}]{sig}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{main_8cpp_a5e1dbc6492c3297fcd501faa82bea834}\index{main.cpp@{main.cpp}!running\_server@{running\_server}}
+\index{running\_server@{running\_server}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{running\_server}{running\_server}}
+{\footnotesize\ttfamily \label{main_8cpp_a5e1dbc6492c3297fcd501faa82bea834} 
+\mbox{\hyperlink{class_server_manager}{Server\+Manager}}\texorpdfstring{$\ast$}{*} running\+\_\+server = NULL}
+

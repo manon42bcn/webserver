@@ -1,0 +1,77 @@
+.TH "websrv/srcs/main.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/main.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <iostream>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <poll\&.h>\fP
+.br
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include <cstring>\fP
+.br
+\fR#include <cstdlib>\fP
+.br
+\fR#include <sys/stat\&.h>\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'ServerManager\&.hpp'\fP
+.br
+\fR#include <signal\&.h>\fP
+.br
+\fR#include 'WebserverCache\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint_server_config\fP (const \fBServerConfig\fP &config, std::string location)"
+.br
+.ti -1c
+.RI "void \fBprint_vector_config\fP (const std::vector< \fBServerConfig\fP > &config, std::string location)"
+.br
+.ti -1c
+.RI "void \fBsignal_handler\fP (int sig)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char **argv)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBServerManager\fP * \fBrunning_server\fP = NULL"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int main (int argc, char ** argv)"
+
+.SS "void print_server_config (const \fBServerConfig\fP & config, std::string location)"
+
+.SS "void print_vector_config (const std::vector< \fBServerConfig\fP > & config, std::string location)"
+
+.SS "void signal_handler (int sig)"
+
+.SH "Variable Documentation"
+.PP 
+.SS "\fBServerManager\fP* running_server = NULL"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

@@ -1,0 +1,1305 @@
+.TH "websrv/inc/webserver.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/webserver.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <vector>\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <sstream>\fP
+.br
+\fR#include <cstdlib>\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include 'ws_structs\&.hpp'\fP
+.br
+\fR#include 'ws_permissions_bitwise\&.hpp'\fP
+.br
+\fR#include 'ws_general_defines\&.hpp'\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <fstream>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <sys/types\&.h>\fP
+.br
+\fR#include <netdb\&.h>\fP
+.br
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <ctype\&.h>\fP
+.br
+\fR#include <cstring>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+\fR#include <csignal>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBCommandPair\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBDEL_LINE\fP   '\\033[2K'"
+.br
+.ti -1c
+.RI "#define \fBITALIC\fP   '\\033[3m'"
+.br
+.ti -1c
+.RI "#define \fBBOLD\fP   '\\033[1m'"
+.br
+.ti -1c
+.RI "#define \fBRESET\fP   '\\033[0;39m'"
+.br
+.ti -1c
+.RI "#define \fBGRAY\fP   '\\033[0;90m'"
+.br
+.ti -1c
+.RI "#define \fBRED\fP   '\\033[0;91m'"
+.br
+.ti -1c
+.RI "#define \fBGREEN\fP   '\\033[0;92m'"
+.br
+.ti -1c
+.RI "#define \fBYELLOW\fP   '\\033[0;93m'"
+.br
+.ti -1c
+.RI "#define \fBBLUE\fP   '\\033[0;94m'"
+.br
+.ti -1c
+.RI "#define \fBMAGENTA\fP   '\\033[0;95m'"
+.br
+.ti -1c
+.RI "#define \fBCYAN\fP   '\\033[0;96m'"
+.br
+.ti -1c
+.RI "#define \fBWHITE\fP   '\\033[0;97m'"
+.br
+.ti -1c
+.RI "#define \fBBLACK\fP   '\\033[0;99m'"
+.br
+.ti -1c
+.RI "#define \fBORANGE\fP   '\\033[38;5;209m'"
+.br
+.ti -1c
+.RI "#define \fBBROWN\fP   '\\033[38;2;184;143;29m'"
+.br
+.ti -1c
+.RI "#define \fBDARK_GRAY\fP   '\\033[38;5;234m'"
+.br
+.ti -1c
+.RI "#define \fBMID_GRAY\fP   '\\033[38;5;245m'"
+.br
+.ti -1c
+.RI "#define \fBDARK_GREEN\fP   '\\033[38;2;75;179;82m'"
+.br
+.ti -1c
+.RI "#define \fBDARK_YELLOW\fP   '\\033[38;5;143m'"
+.br
+.ti -1c
+.RI "#define \fBWS_MAX_RETRIES\fP   5"
+.br
+.ti -1c
+.RI "#define \fBWS_RETRY_DELAY_MICROSECONDS\fP   100000"
+.br
+.ti -1c
+.RI "#define \fBPATH_MAX\fP   4096"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBt_methods\fP \fBparse_method\fP (const std::string &method)"
+.br
+.RI "Parses an HTTP method string and returns the corresponding method mask\&. "
+.ti -1c
+.RI "std::string \fBhttp_status_description\fP (\fBe_http_sts\fP code)"
+.br
+.RI "Get a standard message for a http code\&. "
+.ti -1c
+.RI "std::map< std::string, std::string > \fBcreate_mime_types\fP ()"
+.br
+.RI "Creates and returns a map of file extensions to MIME types\&. "
+.ti -1c
+.RI "std::string \fBget_mime_type\fP (const std::string &path)"
+.br
+.RI "Retrieves the MIME type based on the file extension\&. "
+.ti -1c
+.RI "bool \fBvalid_mime_type\fP (const std::string &path)"
+.br
+.RI "Validate the MIME type based on the file extension\&. "
+.ti -1c
+.RI "std::string \fBreplace_template\fP (std::string content, const std::string &key, const std::string &value)"
+.br
+.RI "Replaces all occurrences of a key in the content with a given value\&. "
+.ti -1c
+.RI "bool \fBblack_list_extension\fP (const std::string &path)"
+.br
+.RI "Checks if a given file path has a disallowed extension\&. "
+.ti -1c
+.RI "std::string \fBclean_host\fP (std::string &host_to_clean)"
+.br
+.RI "Cleans up a host string by removing protocol prefixes, port numbers, and path segments\&. "
+.ti -1c
+.RI "std::string \fBnormalize_host\fP (const std::string &host)"
+.br
+.ti -1c
+.RI "std::string \fBget_header_value\fP (std::string &haystack, std::string needle, const std::string &sep='\\r\\n')"
+.br
+.RI "Extracts the value of a specific HTTP header field\&. "
+.ti -1c
+.RI "bool \fBis_cgi\fP (const std::string &filename)"
+.br
+.RI "Checks if a file is a CGI script based on its extension\&. "
+.ti -1c
+.RI "size_t \fBend_of_header_system\fP (std::string &header)"
+.br
+.RI "Finds the end of the HTTP header in a string\&. "
+.ti -1c
+.RI "std::string \fBint_to_string\fP (int number)"
+.br
+.RI "Converts an integer to a string\&. "
+.ti -1c
+.RI "bool \fBis_dir\fP (const std::string &path)"
+.br
+.RI "Checks if a given path is a directory\&. "
+.ti -1c
+.RI "bool \fBis_file\fP (const std::string &path)"
+.br
+.RI "Checks if a given path is a regular file\&. "
+.ti -1c
+.RI "bool \fBstarts_with\fP (const std::string &str, const std::string &prefix)"
+.br
+.RI "Converts an integer to a string\&. "
+.ti -1c
+.RI "bool \fBto_trim_char\fP (char c, const std::string &chars_to_trim)"
+.br
+.RI "Checks if a character should be trimmed\&. "
+.ti -1c
+.RI "std::string \fBtrim\fP (const std::string &str, const std::string &chars_to_trim)"
+.br
+.RI "Trims characters from both ends of a string\&. "
+.ti -1c
+.RI "std::string \fBto_lowercase\fP (const std::string &input)"
+.br
+.RI "Converts a string to lowercase\&. "
+.ti -1c
+.RI "bool \fBis_valid_size_t\fP (const std::string &value)"
+.br
+.RI "Validates if a string represents a valid \fRsize_t\fP value\&. "
+.ti -1c
+.RI "size_t \fBstr_to_size_t\fP (const std::string &value)"
+.br
+.RI "Converts a valid numeric string to \fRsize_t\fP\&. "
+.ti -1c
+.RI "void \fBprint_server_config\fP (const \fBServerConfig\fP &config, std::string location)"
+.br
+.ti -1c
+.RI "void \fBprint_vector_config\fP (const std::vector< \fBServerConfig\fP > &config, std::string location)"
+.br
+.ti -1c
+.RI "std::string \fBprint_bitwise_method\fP (unsigned char method)"
+.br
+.ti -1c
+.RI "std::string \fBhtml_codes\fP (int code)"
+.br
+.ti -1c
+.RI "std::vector< \fBServerConfig\fP > \fBparse_file\fP (std::string file, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::vector< \fBServerConfig\fP > \fBparse_servers\fP (std::vector< std::string > rawLines, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "\fBLocationConfig\fP \fBparse_location_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "void \fBprint_raw_lines\fP (std::vector< std::string > rawLines)"
+.br
+.RI "Prints raw lines from a vector of strings\&. "
+.ti -1c
+.RI "void \fBprint_server_config\fP (\fBServerConfig\fP server)"
+.br
+.RI "Prints the server configuration\&. "
+.ti -1c
+.RI "void \fBprint_location_config\fP (\fBLocationConfig\fP location)"
+.br
+.RI "Prints the location configuration\&. "
+.ti -1c
+.RI "void \fBprint_servers\fP (std::vector< \fBServerConfig\fP > servers)"
+.br
+.ti -1c
+.RI "std::string \fBget_value\fP (std::string line, const std::string &key)"
+.br
+.RI "Extracts the value associated with a key in a given line\&. "
+.ti -1c
+.RI "std::string \fBclean_line\fP (std::string line)"
+.br
+.RI "Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. "
+.ti -1c
+.RI "bool \fBfind_exact_string\fP (const std::string &line, const std::string &str)"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBsplit_default_pages\fP (std::string default_pages)"
+.br
+.RI "Splits a string of default pages into a vector of strings, separated by spaces\&. "
+.ti -1c
+.RI "std::map< int, std::string > \fBsplit_error_pages\fP (std::string error_pages)"
+.br
+.RI "Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. "
+.ti -1c
+.RI "std::vector< std::string > \fBget_raw_lines\fP (std::string file)"
+.br
+.RI "Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. "
+.ti -1c
+.RI "std::string \fBdelete_brackets_clean\fP (std::string line)"
+.br
+.RI "Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. "
+.ti -1c
+.RI "std::string \fBdelete_first_slash\fP (std::string path)"
+.br
+.RI "Removes the first slash from a path if it exists\&. "
+.ti -1c
+.RI "std::string \fBget_server_root\fP ()"
+.br
+.ti -1c
+.RI "std::vector< std::string >::iterator \fBskip_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.ti -1c
+.RI "std::vector< std::string >::iterator \fBfind_block_end\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.ti -1c
+.RI "std::string \fBget_location_path\fP (std::string line)"
+.br
+.ti -1c
+.RI "\fBt_mode\fP \fBstring_to_error_mode\fP (std::string error_mode)"
+.br
+.ti -1c
+.RI "std::string \fBjoin_paths\fP (std::string path1, std::string path2)"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBsplit_string\fP (std::string str)"
+.br
+.ti -1c
+.RI "unsigned char \fBmethod_bitwise\fP (std::string parsed)"
+.br
+.ti -1c
+.RI "std::string \fBget_first_word\fP (const std::string &str)"
+.br
+.ti -1c
+.RI "std::map< int, std::string > \fBsplit_redirections\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::string \fBget_redirection_url\fP (std::string redirection, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "int \fBget_status_code\fP (std::string status_code, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "bool \fBcompare_paths\fP (std::string path1, std::string path2)"
+.br
+.ti -1c
+.RI "size_t \fBstring_to_bytes\fP (std::string client_max_body_size)"
+.br
+.ti -1c
+.RI "bool \fBcheck_args\fP (int argc, char **argv)"
+.br
+.RI "Validates the command line arguments\&. "
+.ti -1c
+.RI "bool \fBcheck_root\fP (std::string root)"
+.br
+.ti -1c
+.RI "bool \fBcheck_client_max_body_size\fP (std::string client_max_body_size)"
+.br
+.ti -1c
+.RI "int \fBcheck_port\fP (std::string port)"
+.br
+.RI "Validates a port number\&. "
+.ti -1c
+.RI "bool \fBcheck_server_name\fP (std::string server_name)"
+.br
+.RI "Validates a server name\&. "
+.ti -1c
+.RI "bool \fBcheck_error_page\fP (std::string error_page)"
+.br
+.ti -1c
+.RI "bool \fBcheck_default_page\fP (std::string default_page)"
+.br
+.RI "Checks if the default page is valid\&. "
+.ti -1c
+.RI "bool \fBcheck_brackets\fP (std::vector< std::string >::iterator start)"
+.br
+.ti -1c
+.RI "bool \fBcheck_brackets\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.RI "Checks if the brackets in the given range are balanced\&. "
+.ti -1c
+.RI "bool \fBcheck_autoindex\fP (std::string autoindex)"
+.br
+.ti -1c
+.RI "\fBt_allowed_methods\fP \fBstring_to_method\fP (std::string method)"
+.br
+.ti -1c
+.RI "bool \fBcheck_error_mode\fP (std::string error_mode)"
+.br
+.ti -1c
+.RI "bool \fBcheck_duplicate_servers\fP (std::vector< \fBServerConfig\fP > servers)"
+.br
+.ti -1c
+.RI "bool \fBcheck_cgi\fP (std::string cgi)"
+.br
+.ti -1c
+.RI "bool \fBcheck_obligatory_params\fP (\fBServerConfig\fP &server, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "void \fBparse_location\fP (std::vector< std::string >::iterator &it, std::vector< std::string >::iterator end, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_port\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_server_name\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_client_max_body_size\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_error_mode\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_location_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_location_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_cgi\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_accept_only\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.ti -1c
+.RI "void \fBparse_redirection\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define BLACK   '\\033[0;99m'"
+
+.SS "#define BLUE   '\\033[0;94m'"
+
+.SS "#define BOLD   '\\033[1m'"
+
+.SS "#define BROWN   '\\033[38;2;184;143;29m'"
+
+.SS "#define CYAN   '\\033[0;96m'"
+
+.SS "#define DARK_GRAY   '\\033[38;5;234m'"
+
+.SS "#define DARK_GREEN   '\\033[38;2;75;179;82m'"
+
+.SS "#define DARK_YELLOW   '\\033[38;5;143m'"
+
+.SS "#define DEL_LINE   '\\033[2K'"
+
+.SS "#define GRAY   '\\033[0;90m'"
+
+.SS "#define GREEN   '\\033[0;92m'"
+
+.SS "#define ITALIC   '\\033[3m'"
+
+.SS "#define MAGENTA   '\\033[0;95m'"
+
+.SS "#define MID_GRAY   '\\033[38;5;245m'"
+
+.SS "#define ORANGE   '\\033[38;5;209m'"
+
+.SS "#define PATH_MAX   4096"
+
+.SS "#define RED   '\\033[0;91m'"
+
+.SS "#define RESET   '\\033[0;39m'"
+
+.SS "#define WHITE   '\\033[0;97m'"
+
+.SS "#define WS_MAX_RETRIES   5"
+
+.SS "#define WS_RETRY_DELAY_MICROSECONDS   100000"
+
+.SS "#define YELLOW   '\\033[0;93m'"
+
+.SH "Function Documentation"
+.PP 
+.SS "bool black_list_extension (const std::string & path)"
+
+.PP
+Checks if a given file path has a disallowed extension\&. This function determines whether the file extension of the provided path is part of a predefined blacklist of disallowed extensions\&. If the extension is blacklisted, the function returns \fRtrue\fP; otherwise, it returns \fRfalse\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP A string representing the file path to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the file's extension is blacklisted; otherwise, \fRfalse\fP\&.
+.RE
+.PP
+.IP "\(bu" 2
+The function uses a static set of disallowed extensions, which is initialized on the first call\&. The blacklist includes extensions such as \fR\&.exe\fP, \fR\&.bat\fP, \fR\&.sh\fP, \fR\&.php\fP, \fR\&.pl\fP, and \fR\&.py\fP\&.
+.IP "\(bu" 2
+The function extracts the file extension by locating the last \fR\&.\fP character in the file path and comparing the substring to the blacklist\&.
+.IP "\(bu" 2
+If no \fR\&.\fP character is found in the path, or if the extension is not in the blacklist, the function returns \fRfalse\fP\&. 
+.PP
+
+.SS "bool check_args (int argc, char ** argv)"
+
+.PP
+Validates the command line arguments\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargc\fP Argument count\&. 
+.br
+\fIargv\fP Argument vector\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if arguments are valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_autoindex (std::string autoindex)"
+
+.SS "bool check_brackets (std::vector< std::string >::iterator start)"
+
+.SS "bool check_brackets (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.PP
+Checks if the brackets in the given range are balanced\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the range\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if brackets are balanced, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_cgi (std::string cgi)"
+
+.SS "bool check_client_max_body_size (std::string client_max_body_size)"
+
+.SS "bool check_default_page (std::string default_page)"
+
+.PP
+Checks if the default page is valid\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdefault_page\fP The default page to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the default page is valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_duplicate_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.SS "bool check_error_mode (std::string error_mode)"
+
+.SS "bool check_error_page (std::string error_page)"
+
+.SS "bool check_obligatory_params (\fBServerConfig\fP & server, \fBLogger\fP * logger)"
+
+.SS "int check_port (std::string port)"
+
+.PP
+Validates a port number\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIport\fP The port number as a string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The port number as an integer if valid, -1 otherwise\&. 
+.RE
+.PP
+
+.SS "bool check_root (std::string root)"
+
+.SS "bool check_server_name (std::string server_name)"
+
+.PP
+Validates a server name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver_name\fP The server name to validate\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the server name is valid, false otherwise\&. 
+.RE
+.PP
+
+.SS "std::string clean_host (std::string & host_to_clean)"
+
+.PP
+Cleans up a host string by removing protocol prefixes, port numbers, and path segments\&. This function processes a host string to extract the clean hostname by:
+.IP "1." 4
+Removing any leading protocol prefixes (e\&.g\&., 'http://')\&.
+.IP "2." 4
+Stripping port numbers appended with a colon (e\&.g\&., ':8080')\&.
+.IP "3." 4
+Removing any path segments following the hostname (e\&.g\&., '/path/to/resource')\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIhost_to_clean\fP A reference to the original host string to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A cleaned host string containing only the hostname without prefixes, ports, or paths\&.
+.RE
+.PP
+.IP "\(bu" 2
+The function works step by step:
+.IP "  1." 6
+Finds and removes the \fR//\fP sequence, which typically appears in protocol prefixes like 'http://'\&.
+.IP "  2." 6
+Removes anything after the last \fR:\fP to discard port numbers\&.
+.IP "  3." 6
+Iteratively removes any leading \fR/\fP characters and paths\&.
+.PP
+
+.IP "\(bu" 2
+If the input string does not contain these patterns, it is returned as-is\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+This function assumes the input string follows a valid URL-like format\&.
+.IP "\(bu" 2
+The function performs string operations such as \fRfind\fP and \fRsubstr\fP, which are safe in C++98\&. 
+.PP
+.RE
+.PP
+
+.SS "std::string clean_line (std::string line)"
+
+.PP
+Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A cleaned version of the line\&. 
+.RE
+.PP
+
+.SS "bool compare_paths (std::string path1, std::string path2)"
+
+.SS "std::map< std::string, std::string > create_mime_types ()"
+
+.PP
+Creates and returns a map of file extensions to MIME types\&. This method generates a map that associates common file extensions (e\&.g\&., '\&.html', '\&.jpg') with their corresponding MIME types (e\&.g\&., 'text/html', 'image/jpeg')\&. The map is used to determine the \fRContent-Type\fP header when serving files\&.
+
+.PP
+.IP "\(bu" 2
+The method ensures that the map is initialized only once, using a static map to avoid recreating the map on each call\&. If additional MIME types are required, they can be added to the map\&.
+.IP "\(bu" 2
+Common MIME types such as \fRtext/html\fP, \fRapplication/javascript\fP, and \fRimage/jpeg\fP are included\&.
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+std::map<std::string, std::string> A map that associates file extensions with their MIME types\&. 
+.RE
+.PP
+
+.SS "std::string delete_brackets_clean (std::string line)"
+
+.PP
+Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned line without braces\&. 
+.RE
+.PP
+
+.SS "std::string delete_first_slash (std::string path)"
+
+.PP
+Removes the first slash from a path if it exists\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to modify\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The path without the leading slash\&. 
+.RE
+.PP
+
+.SS "size_t end_of_header_system (std::string & header)"
+
+.PP
+Finds the end of the HTTP header in a string\&. This function locates the end of the HTTP header in the given string by searching for the sequence \fR\\\\r\\\\n\\\\r\\\\n\fP or \fR\\\\n\\\\n\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIheader\fP The HTTP header string to be analyzed\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The position where the header ends\&. If no header end is found, returns \fRstd::string::npos\fP\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string >::iterator find_block_end (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.SS "bool find_exact_string (const std::string & line, const std::string & str)"
+
+.SS "std::string get_first_word (const std::string & str)"
+
+.SS "std::string get_header_value (std::string & haystack, std::string needle, const std::string & sep)"
+
+.PP
+Extracts the value of a specific HTTP header field\&. This method searches the provided header string for a specific key and returns the associated value\&. The search is case-insensitive, and it assumes the format \fRkey: value\fP\&.
+
+.PP
+.IP "\(bu" 2
+The method first converts the key and the header string to lowercase for a case-insensitive search\&.
+.IP "\(bu" 2
+The value is extracted by searching for the next occurrence of \fR\\r\\n\fP, which signifies the end of the value\&.
+.IP "\(bu" 2
+If the key is not found, the method returns an empty string\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIhaystack\fP The HTTP Header format string to be searched over it\&. 
+.br
+\fIneedle\fP The key for which the value is to be retrieved (e\&.g\&., 'content-type')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The value associated with the key, or an empty string if the key is not found\&. 
+.RE
+.PP
+
+.SS "std::string get_location_path (std::string line)"
+
+.SS "std::string get_mime_type (const std::string & path)"
+
+.PP
+Retrieves the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, the associated MIME type is returned\&. If the extension is not recognized, it defaults to \fRtext/plain\fP\&.
+
+.PP
+.IP "\(bu" 2
+The method extracts the file extension by searching for the last '\&.' character in the path\&.
+.IP "\(bu" 2
+If the extension is found in the \fRmime_types\fP map, the corresponding MIME type is returned\&.
+.IP "\(bu" 2
+If no recognized extension is found, the default MIME type \fRtext/plain\fP is returned\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The file system path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The MIME type corresponding to the file extension, or \fRtext/plain\fP if not found\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string > get_raw_lines (std::string path)"
+
+.PP
+Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A vector of cleaned, non-empty lines\&. 
+.RE
+.PP
+
+.SS "std::string get_redirection_url (std::string redirection, \fBLogger\fP * logger)"
+
+.SS "std::string get_server_root ()"
+
+.SS "int get_status_code (std::string status_code, \fBLogger\fP * logger)"
+
+.SS "std::string get_value (std::string line, const std::string & key)"
+
+.PP
+Extracts the value associated with a key in a given line\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line containing the key-value pair\&. 
+.br
+\fIkey\fP The key to search for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The value associated with the key, or an empty string if not found\&. 
+.RE
+.PP
+
+.SS "std::string html_codes (int code)"
+
+.SS "std::string http_status_description (\fBe_http_sts\fP code)"
+
+.PP
+Get a standard message for a http code\&. 
+.SH "Helpers"
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP http code\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+short standard message associated with the http code\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP http code\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+short standard message associated with the http code\&. 
+.RE
+.PP
+
+.SS "std::string int_to_string (int number)"
+
+.PP
+Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fInumber\fP The integer to be converted\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A string representation of the provided integer\&.
+.RE
+.PP
+\fBParameters\fP
+.RS 4
+\fInumber\fP The integer to convert\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A string representation of the integer\&. 
+.RE
+.PP
+
+.SS "bool is_cgi (const std::string & filename)"
+
+.PP
+Checks if a file is a CGI script based on its extension\&. This function checks whether the given filename corresponds to a CGI script by looking at its extension\&. It checks for extensions such as \fR\&.py\fP and \fR\&.php\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP The filename to be checked\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the filename corresponds to a CGI script, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "bool is_dir (const std::string & path)"
+
+.PP
+Checks if a given path is a directory\&. This function checks if the provided path corresponds to a directory by using the \fRstat()\fP system call\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to be checked\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the path is a directory, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "bool is_file (const std::string & path)"
+
+.PP
+Checks if a given path is a regular file\&. This function checks if the provided path corresponds to a regular file by using the \fRstat()\fP system call\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to be checked\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the path is a regular file, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "bool is_valid_size_t (const std::string & value)"
+
+.PP
+Validates if a string represents a valid \fRsize_t\fP value\&. This function checks whether the provided string contains only numeric characters (digits), which would make it a valid positive integer for conversion to \fRsize_t\fP\&.
+
+.PP
+.IP "\(bu" 2
+The function first checks if the string is empty\&. An empty string is not considered valid\&.
+.IP "\(bu" 2
+It then iterates through each character of the string, verifying that all characters are digits\&.
+.IP "\(bu" 2
+If all characters are digits and the string is not empty, the function returns \fRtrue\fP\&.
+.IP "\(bu" 2
+Otherwise, it returns \fRfalse\fP\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The string to validate\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+bool True if the string contains only digits, false otherwise\&. 
+.RE
+.PP
+
+.SS "std::string join_paths (std::string path1, std::string path2)"
+
+.SS "unsigned char method_bitwise (std::string parsed)"
+
+.SS "std::string normalize_host (const std::string & host)"
+
+.SS "void parse_accept_only (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_cgi (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_client_max_body_size (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_error_mode (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "std::vector< \fBServerConfig\fP > parse_file (std::string file, \fBLogger\fP * logger)"
+
+.SS "void parse_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_location (std::vector< std::string >::iterator & it, std::vector< std::string >::iterator end, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "\fBLocationConfig\fP parse_location_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
+
+.SS "void parse_location_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_location_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "\fBt_methods\fP parse_method (const std::string & method)"
+
+.PP
+Parses an HTTP method string and returns the corresponding method mask\&. This function maps a given HTTP method string (e\&.g\&., 'GET', 'POST') to its corresponding predefined method mask (\fRt_methods\fP)\&. If the method is not recognized, it returns 0\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP A string representing the HTTP method to parse (e\&.g\&., 'GET', 'POST')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding \fRt_methods\fP mask if the method is recognized; otherwise, returns 0\&.
+.RE
+.PP
+.IP "\(bu" 2
+The method uses a static map to store the mapping between HTTP method strings and their corresponding bitmask constants (e\&.g\&., \fRMASK_METHOD_GET\fP for 'GET')\&.
+.IP "\(bu" 2
+The map is initialized only once, ensuring efficiency for subsequent calls\&.
+.IP "\(bu" 2
+If the provided method string is not found in the map, the function returns 0, indicating an unrecognized or unsupported method\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+Supported methods include: 'GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'OPTIONS', and 'PATCH'\&.
+.IP "\(bu" 2
+This function is case-sensitive\&. Ensure that the input method string matches the expected format (e\&.g\&., 'GET' must be uppercase)\&. 
+.PP
+.RE
+.PP
+
+.SS "void parse_port (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_redirection (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_server_name (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "std::vector< \fBServerConfig\fP > parse_servers (std::vector< std::string > rawLines, \fBLogger\fP * logger)"
+
+.SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "std::string print_bitwise_method (unsigned char method)"
+
+.SS "void print_location_config (\fBLocationConfig\fP location)"
+
+.PP
+Prints the location configuration\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP The location configuration to print\&. 
+.RE
+.PP
+
+.SS "void print_raw_lines (std::vector< std::string > rawLines)"
+
+.PP
+Prints raw lines from a vector of strings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrawLines\fP The vector of strings to print\&. 
+.RE
+.PP
+
+.SS "void print_server_config (const \fBServerConfig\fP & config, std::string location)"
+
+.SS "void print_server_config (\fBServerConfig\fP server)"
+
+.PP
+Prints the server configuration\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver\fP The server configuration to print\&. 
+.RE
+.PP
+
+.SS "void print_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.SS "void print_vector_config (const std::vector< \fBServerConfig\fP > & config, std::string location)"
+
+.SS "std::string replace_template (std::string content, const std::string & key, const std::string & value)"
+
+.PP
+Replaces all occurrences of a key in the content with a given value\&. This method searches the provided content for all occurrences of the key and replaces each one with the specified value\&. It returns the modified content with all replacements made\&.
+
+.PP
+.IP "\(bu" 2
+The method iterates through the content, finding each occurrence of the key using \fRstd::string::find()\fP\&.
+.IP "\(bu" 2
+For each occurrence, it replaces the key with the value using \fRstd::string::replace()\fP\&.
+.IP "\(bu" 2
+If the value contains the key (which could cause an infinite loop), the method does not perform any replacements\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontent\fP The content in which to perform the replacements (e\&.g\&., HTML file content)\&. 
+.br
+\fIkey\fP The key to search for in the content (e\&.g\&., '{error_code}')\&. 
+.br
+\fIvalue\fP The value to replace the key with (e\&.g\&., '404')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The content with all occurrences of the key replaced by the value\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string >::iterator skip_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.SS "std::vector< std::string > split_default_pages (std::string default_pages)"
+
+.PP
+Splits a string of default pages into a vector of strings, separated by spaces\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdefault_pages\fP The string containing default pages\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A vector of default page strings\&. 
+.RE
+.PP
+
+.SS "std::map< int, std::string > split_error_pages (std::string error_pages)"
+
+.PP
+Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror_pages\fP The string containing error pages\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A map of error codes to file paths\&. 
+.RE
+.PP
+
+.SS "std::map< int, std::string > split_redirections (std::vector< std::string >::iterator & it, \fBLogger\fP * logger)"
+
+.SS "std::vector< std::string > split_string (std::string str)"
+
+.SS "bool starts_with (const std::string & str, const std::string & prefix)"
+
+.PP
+Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fInumber\fP The integer to be converted\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A string representation of the provided integer\&.
+.RE
+.PP
+Checks if a string starts with a given prefix\&.
+
+.PP
+This function checks whether the provided string begins with the specified prefix\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP The string to be checked\&. 
+.br
+\fIprefix\fP The prefix to check for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the string starts with the prefix, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "size_t str_to_size_t (const std::string & value)"
+
+.PP
+Converts a valid numeric string to \fRsize_t\fP\&. This function converts a valid numeric string (verified externally) to a \fRsize_t\fP value\&. It assumes that the input string contains only digits, as it should be validated by \fR\fBis_valid_size_t()\fP\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIvalue\fP The numeric string to convert to \fRsize_t\fP\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+size_t The converted \fRsize_t\fP value\&. 
+.RE
+.PP
+
+.SS "size_t string_to_bytes (std::string client_max_body_size)"
+
+.SS "\fBt_mode\fP string_to_error_mode (std::string error_mode)"
+
+.SS "\fBt_allowed_methods\fP string_to_method (std::string method)"
+
+.SS "std::string to_lowercase (const std::string & input)"
+
+.PP
+Converts a string to lowercase\&. This function iterates through each character in the input string and converts it to lowercase using \fRstd::tolower()\fP\&. It handles characters safely by casting them to \fRunsigned char\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIinput\fP The input string to be converted to lowercase\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string A new string where all characters are lowercase\&. 
+.RE
+.PP
+
+.SS "bool to_trim_char (char c, const std::string & chars_to_trim)"
+
+.PP
+Checks if a character should be trimmed\&. This function checks if the provided character exists within a set of characters designated for trimming\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP The character to check\&. 
+.br
+\fIchars_to_trim\fP A string containing the characters to be trimmed\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the character should be trimmed, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "std::string trim (const std::string & str, const std::string & chars_to_trim = \fR' \\t\\n\\r\\f\\v'\fP)"
+
+.PP
+Trims characters from both ends of a string\&. This function removes any characters found in \fRchars_to_trim\fP from the beginning and end of the input string\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP The string to be trimmed\&. 
+.br
+\fIchars_to_trim\fP A string containing the characters to be trimmed (default is whitespace characters)\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A new string with the specified characters trimmed from both ends\&. 
+.RE
+.PP
+
+.SS "bool valid_mime_type (const std::string & path)"
+
+.PP
+Validate the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, true is returned\&. If the extension is not recognized, false
+
+.PP
+.IP "\(bu" 2
+The method extracts the file extension by searching for the last '\&.' character in the path\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The file system path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+bool true if a MIME type is recognized, false otherwise\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

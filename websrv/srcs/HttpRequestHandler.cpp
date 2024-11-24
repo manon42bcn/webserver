@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 20:32:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 22:06:01 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_client_data(client_data),
 	_request_cache(client_data->get_server()->get_request_cache()),
 	_location(NULL),
-	_fd(_client_data->get_fd().fd) {
+	_fd(_client_data->get_fd().fd),
+	_request_data(client_data->client_request()){
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
@@ -44,8 +45,6 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	if (!client_data) {
 		throw WebServerException("Client Data is not valid. Server health is compromised.");
 	}
-	_factory = 0;
-	_is_cached = false;
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
 
@@ -106,6 +105,7 @@ HttpRequestHandler::~HttpRequestHandler() {
  * - `parse_method_and_path()`: Identifies the HTTP method (e.g., GET, POST) and the requested path.
  * - `parse_path_type()`: Determines the type of path (e.g., static file, dynamic request).
  * - `load_header_data()`: Loads additional data from headers required for further processing.
+ * - `load_host_config()`: Loads host from request, to set its configuration, and update host at ClientData*
  * - `solver_resource()`: Resolves the requested resource path, potentially handling relative paths.
  * - `load_content()`: Loads request body content if applicable (e.g., for POST requests).
  * - `validate_request()`: Final validation to ensure that the request conforms to server policies and rules.
@@ -116,6 +116,7 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::parse_method_and_path,
 	                         &HttpRequestHandler::parse_path_type,
 	                         &HttpRequestHandler::load_header_data,
+							 &HttpRequestHandler::load_host_config,
 							 &HttpRequestHandler::solver_resource,
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
@@ -256,7 +257,7 @@ void HttpRequestHandler::parse_header() {
 		std::string tmp = _request.substr(header_end);
 		_request.clear();
 		_request = tmp;
-		if (_request_data.header.length() > _max_request) {
+		if (_request_data.header.length() > MAX_HEADER) {
 			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
 							"Request Header too large.");
 		}
@@ -295,15 +296,15 @@ void HttpRequestHandler::parse_header() {
  * @see turn_off_sanity
  */
 void HttpRequestHandler::parse_method_and_path() {
-	std::string method;
 	std::string path;
 
 	_log->log_debug( RH_NAME,
 			  "Parsing Request to get path and method.");
 	size_t method_end = _request_data.header.find(' ');
 	if (method_end != std::string::npos) {
-		method = _request_data.header.substr(0, method_end);
-		if (method.empty() || (_request_data.method = method_string_to_enum(method)) == 0 ) {
+		_request_data.method_str = _request_data.header.substr(0, method_end);
+		if (_request_data.method_str.empty()
+			|| (_request_data.method = parse_method(_request_data.method_str)) == 0 ) {
 			turn_off_sanity(HTTP_BAD_REQUEST,
 			                "Error parsing request: Method is empty or not valid.");
 			return ;
@@ -411,7 +412,7 @@ void HttpRequestHandler::parse_path_type() {
  *
  * 4. **Range Header**:
  *    - Retrieves the `Range` header value.
- *    - If the `Range` header is present, increments `_factory` to indicate that this data will be used later.
+ *    - If the `Range` header is present, increments `_request_data.factory` to indicate that this data will be used later.
  *
  * 5. **Connection Header**:
  *    - Retrieves the `Connection` header value.
@@ -424,16 +425,17 @@ void HttpRequestHandler::parse_path_type() {
  * 7. **Referer Header**:
  *    - Retrieves the `Referer` header value and stores it in `_request_data.referer`.
  *
+ * 8. **Host**:
+ * 	  - Retrieves `Host` header value, and stores it in `_request_data.host` to be parsed.
+ *
  * @note
  * - The method uses `get_header_value()` to extract specific header values from `_request_data.header`.
- * - The `_factory` variable is incremented whenever additional processing for multipart content or range is required.
+ * - The `_request_data.factory` variable is incremented whenever additional processing for multipart content or range is required.
  * - The method ensures that malformed headers, such as an invalid `Content-Length` or missing `boundary`, are caught and the request is marked as invalid.
  */
 void HttpRequestHandler::load_header_data() {
-	std::string content_length = get_header_value(_request_data.header,
-												  "content-length:", "\r\n");
-	_request_data.content_type = get_header_value(_request_data.header,
-												  "content-type:", "\r\n");
+	std::string content_length = get_header_value(_request_data.header, "content-length:");
+	_request_data.content_type = get_header_value(_request_data.header, "content-type:");
 
 	if (!content_length.empty()){
 		if (is_valid_size_t(content_length)) {
@@ -447,42 +449,51 @@ void HttpRequestHandler::load_header_data() {
 	}
 	if (!_request_data.content_type.empty()) {
 		if (starts_with(_request_data.content_type, "multipart")) {
-			_request_data.boundary = get_header_value(_request_data.content_type,
-													  "boundary", "\r\n");
+			_request_data.boundary = get_header_value(_request_data.content_type, "boundary");
 			if (_request_data.boundary.empty()) {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 				                "Boundary malformed or not present with a multipart Content-Type.");
 			}
-			_factory++;
+			_request_data.factory++;
 			size_t end_type = _request_data.content_type.find(';');
 			if (end_type != std::string::npos) {
 				_request_data.content_type = _request_data.content_type.substr(0, end_type);
 			}
 		}
 	}
-	std::string chunks = get_header_value(_request_data.header,
-										  "transfer-encoding:", "\r\n");
+	_request_data.host = get_header_value(_request_data.header, "host:");
+	std::string chunks = get_header_value(_request_data.header, "transfer-encoding:");
 	if (!chunks.empty()) {
 		chunks = trim(chunks, " ");
 		if (chunks == "chunked") {
 			_request_data.chunks = true;
 		}
 	}
-	_request_data.range = get_header_value(_request_data.header,
-										   "range:", "\r\n");
+	_request_data.range = get_header_value(_request_data.header, "range:");
 	if (!_request_data.range.empty()) {
-		_factory++;
+		_request_data.factory++;
 	}
-	std::string keep = get_header_value(_request_data.header,
-										"connection:", "\r\n");
+	std::string keep = get_header_value(_request_data.header, "connection:");
 	if (keep == "keep-alive") {
 		_client_data->keep_active();
 	} else {
 		_client_data->deactivate();
 	}
-	_request_data.cookie = get_header_value(_request_data.header,
-											"cookie", "\r\n");
+	_request_data.cookie = get_header_value(_request_data.header, "cookie");
 	_request_data.referer = get_header_value(_request_data.header, "referer:");
+}
+
+void HttpRequestHandler::load_host_config() {
+	std::string host = clean_host(_request_data.host);
+	_host_config = _client_data->get_server()->get_config(host);
+	_request_data.host_config = _host_config;
+	if (_host_config == NULL) {
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						"Host Config Pointer NULL.");
+		return ;
+	}
+	_log->status(RH_NAME, host);
+	_request_data.host = normalize_host(_request_data.host);
 }
 
 /**
@@ -539,6 +550,7 @@ void HttpRequestHandler::solver_resource() {
 		return ;
 	}
 	_location = NULL;
+	_request_data.location = NULL;
 	_request_data.sanity = true;
 	_request_data.status = HTTP_MAX_STATUS;
 	_request_data.path = _request_data.path_request;
@@ -591,13 +603,12 @@ void HttpRequestHandler::resolve_relative_path() {
 	if (_request_data.referer.empty()) {
 		return;
 	}
-	size_t http_slash = _request_data.referer.find("//");
-	if (http_slash == std::string::npos) {
-		turn_off_sanity(HTTP_BAD_REQUEST,
-						"Referer field malformed.");
-		return;
+	std::string base = _request_data.referer;
+	size_t http_slash = base.find("//");
+	if (http_slash != std::string::npos) {
+		base = base.substr(http_slash + 2);
 	}
-	std::string base = _request_data.referer.substr(http_slash + 2);
+	base = normalize_host(base);
 	http_slash = base.find('/');
 	if (http_slash == std::string::npos) {
 		return ;
@@ -610,10 +621,6 @@ void HttpRequestHandler::resolve_relative_path() {
 			base = base.substr(0, base_test);
 		}
 	}
-	std::string tmp_base;
-	if (base[base.size() - 1] != '/') {
-		tmp_base = base + "/";
-	}
 	if (base == "/" || starts_with(_request_data.path, base)) {
 		return;
 	}
@@ -625,12 +632,12 @@ void HttpRequestHandler::resolve_relative_path() {
 /**
  * @brief Retrieves and sets the location configuration based on the request path.
  *
- * This method searches for the most specific matching location within `_config.locations`
+ * This method searches for the most specific matching location within `_host_config->locations`
  * based on the `_request_data.path`. The `LocationConfig` object associated with the longest
  * matching key is selected, allowing for precise path matching.
  *
  * Detailed Workflow:
- * - Iterates through `_config.locations` to find entries whose paths match the beginning of
+ * - Iterates through `_host_config->locations` to find entries whose paths match the beginning of
  *   `_request_data.path`.
  * - The longest matching key is selected, ensuring the most specific location configuration
  *   is applied.
@@ -654,14 +661,15 @@ void HttpRequestHandler::get_location_config() {
 			  "Searching related location.");
 	_log->log_error(RH_NAME, _request_data.header);
 
-	_is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (HAS_GET(_request_data.method) && _is_cached) {
+	_request_data.is_cached = _request_cache.get(_request_data.path, _cache_data);
+	if (HAS_GET(_request_data.method) && _request_data.is_cached && _cache_data.host->server_name == _host_config->server_name) {
 		_location = _cache_data.location;
+		_request_data.location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
 		return ;
 	}
-	for (std::map<std::string, LocationConfig>::const_iterator it = _config.locations.begin();
-	     it != _config.locations.end(); ++it) {
+	for (std::map<std::string, LocationConfig>::const_iterator it = _host_config->locations.begin();
+	     it != _host_config->locations.end(); ++it) {
 		const std::string& key = it->first;
 		if (starts_with(_request_data.path, key)) {
 			if (key.length() > saved_key.length()) {
@@ -674,9 +682,10 @@ void HttpRequestHandler::get_location_config() {
 		_log->log_debug( RH_NAME,
 				  "Location Found: " + saved_key);
 		_location = result;
+		_request_data.location = result;
 		if (_location->is_redir) {
 			_request_data.is_redir = true;
-			_factory++;
+			_request_data.factory++;
 		}
 		if (!_location->is_root) {
 			if (saved_key == "/") {
@@ -700,16 +709,16 @@ void HttpRequestHandler::get_location_config() {
  *
  * Detailed Workflow:
  * - If `_location->cgi_file` is not set, CGI handling is not enabled, and the function exits early.
- * - Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - Constructs `eval_path` by combining `_host_config->server_root` and `_request_data.path`.
  * - Checks if `eval_path` is a directory or a non-CGI file. If so, it is not treated as a CGI path.
  * - If `eval_path` points to a CGI file directly, it is marked for CGI handling:
  *   - Sets `_request_data.script` to the filename part of the path.
  *   - Sets `_request_data.normalized_path` to the directory containing the CGI file.
- *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ *   - Marks `_request_data.cgi` as `true` and increments `_request_data.factory`.
  * - If no direct CGI file is found, checks if the path matches any mapped CGI locations in `_location->cgi_locations`:
  *   - Iterates over `cgi_locations` to find the longest matching prefix.
  *   - If a match is found, sets `_request_data.normalized_path`, `_request_data.script`, and `_request_data.path_info`.
- *   - Marks `_request_data.cgi` as `true` and increments `_factory`.
+ *   - Marks `_request_data.cgi` as `true` and increments `_request_data.factory`.
  *
  * Error Handling:
  * - This method assumes that if a CGI configuration is specified but not found in the request path, it will not
@@ -718,12 +727,12 @@ void HttpRequestHandler::get_location_config() {
  * @see is_file, is_dir, starts_with, _request_data
  */
 void HttpRequestHandler::cgi_normalize_path() {
-	if (!_location->cgi_file || _is_cached) {
+	if (!_location->cgi_file || _request_data.is_cached) {
 		_log->log_debug( RH_NAME,
 		          "No CGI locations at server config.");
 		return ;
 	}
-	std::string eval_path = _config.server_root + _request_data.path;
+	std::string eval_path = _host_config->server_root + _request_data.path;
 	if (is_dir(eval_path) || (is_file(eval_path) && !is_cgi(eval_path))) {
 		_log->log_debug( RH_NAME,
 		          "CGI test - Directory or resource exist.");
@@ -737,7 +746,7 @@ void HttpRequestHandler::cgi_normalize_path() {
 		_request_data.script = eval_path.substr(dot_pos + 1);
 		_request_data.normalized_path = eval_path.substr(0, dot_pos);
 		_request_data.cgi = true;
-		_factory++;
+		_request_data.factory++;
 		return ;
 	}
 
@@ -759,11 +768,11 @@ void HttpRequestHandler::cgi_normalize_path() {
 	if (cgi_data) {
 		_log->log_debug( RH_NAME,
 		          "CGI - Location Found: " + saved_key);
-		_request_data.normalized_path = _config.server_root + cgi_data->cgi_path;
+		_request_data.normalized_path = _host_config->server_root + cgi_data->cgi_path;
 		_request_data.script = cgi_data->script;
 		_request_data.path_info = _request_data.path.substr(saved_key.length());
 		_request_data.cgi = true;
-		_factory++;
+		_request_data.factory++;
 	}
 }
 
@@ -775,7 +784,7 @@ void HttpRequestHandler::cgi_normalize_path() {
  *
  * Workflow:
  * - **CGI Context**: If `_request_data.cgi` is true, the path is already normalized for CGI, and the function exits early.
- * - **Build and Validate Path**: Constructs `eval_path` by combining `_config.server_root` and `_request_data.path`.
+ * - **Build and Validate Path**: Constructs `eval_path` by combining `_host_config->server_root` and `_request_data.path`.
  * - **POST Request**:
  *   - If the HTTP method is POST, ensures `eval_path` is a directory and allows resource creation within it.
  *   - Updates `_request_data.normalized_path` with `eval_path` if it passes validation.
@@ -802,10 +811,10 @@ void HttpRequestHandler::normalize_request_path() {
 		          "CGI context. path has been normalized");
 		return ;
 	}
-	if (_is_cached || _request_data.is_redir) {
+	if (_request_data.is_cached || _request_data.is_redir) {
 		return;
 	}
-	std::string eval_path = _config.server_root + _request_data.path;
+	std::string eval_path = _host_config->server_root + _request_data.path;
 
 	_log->log_debug( RH_NAME,
 			  "Normalize path to get proper file to serve.");
@@ -853,7 +862,7 @@ void HttpRequestHandler::normalize_request_path() {
 			}
 		}
 		if (_location->autoindex && HAS_GET(_request_data.method)) {
-			_factory++;
+			_request_data.factory++;
 			_request_data.autoindex = true;
 			_request_data.normalized_path = eval_path;
 			return ;
@@ -1211,7 +1220,7 @@ void HttpRequestHandler::validate_request() {
  * 1. **Sanity Check**: If `_request_data.sanity` is false, a generic error response
  *    is sent via `HttpResponseHandler`.
  * 2. **Request Type Decision**:
- *   - If `_factory` is 0, uses `HttpResponseHandler`.
+ *   - If `_request_data.factory` is 0, uses `HttpResponseHandler`.
  *   - If `_request_data.cgi` is true, uses `HttpCGIHandler`.
  *   - If `_request_data.range` is non-empty, uses `HttpRangeHandler`.
  *   - If `_request_data.boundary` is non-empty, uses `HttpMultipartHandler`.
@@ -1230,72 +1239,73 @@ void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_alive()) {
 		return;
 	}
-	try {
-		if (!_request_data.sanity){
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.send_error_response();
-			return ;
-		}
-		if (_factory == 0) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			if (_is_cached) {
-				if (!_request_data.sanity) {
-					_request_cache.remove(_request_data.path);
-					return ;
-				}
-				return;
-			}
-			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-				_request_cache.put(_request_data.path,
-								   CacheRequest(_request_data.path, _location, _request_data.normalized_path));
-			}
-			return;
-		}
-		if (_request_data.is_redir) {
-			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.redirection();
-			return;
-		}
-		if (_request_data.autoindex) {
-			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return;
-		}
-		if (_request_data.cgi) {
-			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			_client_data->deactivate();
-			return ;
-		} else if (!_request_data.range.empty()){
-			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return ;
-		} else if (!_request_data.boundary.empty()){
-			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
-			response.handle_request();
-			return ;
-		}
-	} catch (WebServerException& e) {
-		std::ostringstream detail;
-		detail << "Error Handling response: " << e.what();
-		_log->log_error( RH_NAME,
-				  detail.str());
-		_client_data->deactivate();
-	} catch (Logger::NoLoggerPointer& e) {
-		std::ostringstream detail;
-		detail << "Logger Pointer Error at Response Handler. "
-			   << "Server Sanity could be compromise.";
-		_log->log_error( RH_NAME,
-		          detail.str());
-		_client_data->deactivate();
-	} catch (std::exception& e) {
-		std::ostringstream detail;
-		detail << "Unknown error handling response: " << e.what();
-		_log->log_error( RH_NAME,
-		          detail.str());
-		_client_data->deactivate();
-	}
+//	try {
+//		if (!_request_data.sanity){
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.send_error_response();
+//			return ;
+//		}
+//		if (_factory == 0) {
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			if (_request_data.is_cached) {
+//				if (!_request_data.sanity) {
+//					_request_cache.remove(_request_data.path);
+//					return ;
+//				}
+//				return;
+//			}
+//			if (_request_data.sanity && HAS_GET(_request_data.method)) {
+//				_request_cache.put(_request_data.path,
+//								   CacheRequest(_request_data.path, _host_config,
+//													 _location, _request_data.normalized_path));
+//			}
+//			return;
+//		}
+//		if (_request_data.is_redir) {
+//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.redirection();
+//			return;
+//		}
+//		if (_request_data.autoindex) {
+//			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return;
+//		}
+//		if (_request_data.cgi) {
+//			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			_client_data->deactivate();
+//			return ;
+//		} else if (!_request_data.range.empty()){
+//			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return ;
+//		} else if (!_request_data.boundary.empty()){
+//			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+//			response.handle_request();
+//			return ;
+//		}
+//	} catch (WebServerException& e) {
+//		std::ostringstream detail;
+//		detail << "Error Handling response: " << e.what();
+//		_log->log_error( RH_NAME,
+//				  detail.str());
+//		_client_data->deactivate();
+//	} catch (Logger::NoLoggerPointer& e) {
+//		std::ostringstream detail;
+//		detail << "Logger Pointer Error at Response Handler. "
+//			   << "Server Sanity could be compromise.";
+//		_log->log_error( RH_NAME,
+//		          detail.str());
+//		_client_data->deactivate();
+//	} catch (std::exception& e) {
+//		std::ostringstream detail;
+//		detail << "Unknown error handling response: " << e.what();
+//		_log->log_error( RH_NAME,
+//		          detail.str());
+//		_client_data->deactivate();
+//	}
 }
 
 /**

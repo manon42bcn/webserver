@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 21:25:51 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 02:33:07 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
 			  "Server Manager Instance init.");
 	std::ostringstream detail;
 	try {
-		for (size_t i = 0; i < configs.size(); ++i) {
-			add_server(configs[i].port, configs[i]);
-		}
+		build_servers(configs);
 	} catch (const WebServerException& e) {
 		detail << "Error Creating Servers: " << e.what();
 		_log->log_error( SM_NAME,
@@ -76,9 +74,7 @@ ServerManager::ServerManager(std::vector<ServerConfig>& configs,
  * easier monitoring and debugging.
  */
 ServerManager::~ServerManager() {
-	clear_clients();
-	clear_servers();
-	clear_poll();
+	turn_off_server();
 	_log->log_debug( SM_NAME,
 	          "Server Manager Resources Clean Up.");
 	_log->status(SM_NAME, "Server Resources Clean up.");
@@ -87,6 +83,43 @@ ServerManager::~ServerManager() {
 /**
  @section Functions to Build Server.
  */
+
+/**
+ * @brief Configures and builds servers based on the provided configurations.
+ *
+ * This method iterates through the given server configurations and performs the following actions:
+ * 1. Checks if the port in the current configuration is already in use by an active server.
+ * 2. If the port is not active:
+ *    - Calls `add_server` to create a new server on the specified port.
+ *    - Throws a `WebServerException` if server creation fails.
+ * 3. If the port is already active:
+ *    - Retrieves the server associated with the port and adds the host configuration to it.
+ *
+ * @param configs A vector of server configurations (`ServerConfig`) containing details such
+ *                as ports, server names, and other necessary settings.
+ *
+ * @throws WebServerException If a new server cannot be created on any of the specified ports.
+ *
+ * @details
+ * - Active servers are managed through the `_servers_map`, while active ports are tracked
+ *   in `_active_ports`.
+ *
+ */
+void ServerManager::build_servers(std::vector<ServerConfig> &configs) {
+	_log->status(SM_NAME,
+				 "Creating Server and hosts.");
+	for (std::vector<ServerConfig>::iterator config_it = configs.begin(); config_it != configs.end(); config_it++) {
+		std::map<int, int>::iterator listen_on = _active_ports.find(config_it->port);
+		if (listen_on == _active_ports.end()) {
+			if (!add_server(config_it->port, *config_it)) {
+				throw WebServerException("Error creating new server.");
+			}
+		} else {
+			SocketHandler* server = _servers_map[listen_on->second];
+			server->add_host(*config_it);
+		}
+	}
+}
 
 /**
 * @brief Adds a new server instance to the manager and its poll list.
@@ -99,21 +132,22 @@ ServerManager::~ServerManager() {
  * @param port Port number for the server.
  * @param config Configuration settings for the server.
  *
- * Logs the creation of each `SocketHandler` and any failures in adding it to the poll list.
+ * @return true if the process end without errors, false otherwise
  */
-void ServerManager::add_server(int port, ServerConfig& config) {
+bool ServerManager::add_server(int port, ServerConfig& config) {
 	SocketHandler* server = new SocketHandler(port, config, _log);
 	if (server == NULL) {
-		throw WebServerException("New server allocation error.");
+		return (false);
 	}
 	_log->log_debug( SM_NAME,
 	          "SocketHandler instance created and added to _servers.");
-
 	if (!add_server_to_poll(server->get_socket_fd())) {
 		delete (server);
-		throw WebServerException("Fail to add server to poll.");
+		return (false);
 	}
 	_servers_map[server->get_socket_fd()] = server;
+	_active_ports[config.port] = server->get_socket_fd();
+	return (true);
 }
 
 /**
@@ -146,7 +180,7 @@ bool ServerManager::add_server_to_poll(int server_fd) {
 	}
 	struct pollfd pfd;
 	pfd.fd = server_fd;
-	pfd.events = POLLIN;
+	pfd.events = POLLIN | POLLOUT;
 	pfd.revents = 0;
 
 	_poll_fds.push_back(pfd);
@@ -228,22 +262,33 @@ void ServerManager::timeout_clients() {
 }
 
 /**
- * @brief Main event loop for managing client connections and processing requests.
+ * @brief Starts and manages the main event loop for the server.
  *
- * This method runs an event loop that handles timeouts, polling, and request processing
- * for all active connections. The loop will continue executing as long as `_active` remains true.
+ * This method runs the server's event loop, continuously monitoring file descriptors for
+ * events using `poll()`. It handles incoming connections, client requests, and outgoing
+ * responses. The loop also manages timeouts for inactive clients and ensures the server
+ * remains operational unless a critical error occurs.
  *
- * - The method begins by checking and removing any timed-out clients.
- * - It then polls the `_poll_fds` list for incoming events on file descriptors.
- * - If a server socket receives an event, a new client is accepted.
- * - If a client connection receives an event, the request is processed.
+ * @throws WebServerException If a fatal error occurs that prevents the server from continuing.
  *
- * In case of errors:
- * - If `poll` is interrupted by a signal, it logs a warning and retries.
- * - For `EBADF` errors, it attempts to clean up invalid file descriptors and continue.
- * - For unrecoverable errors, it logs the error and sets `_healthy` to false.
+ * @details
+ * The main functionalities of the event loop are:
+ * - **Timeout Management:** Inactive clients are detected and removed using `timeout_clients`.
+ * - **Polling for Events:** The `poll()` function is used to monitor file descriptors
+ *   for readiness to read (`POLLIN`) or write (`POLLOUT`).
+ * - **Handling Events:**
+ *   - For `POLLIN`: Accepts new connections or processes incoming client requests.
+ *   - For `POLLOUT`: Sends responses to clients.
+ * - **Error Handling:** Handles errors from `poll()` such as `EINTR` (interrupted by a signal)
+ *   or `EBADF` (bad file descriptor), logging warnings and cleaning up resources as needed.
+ * - **Graceful Shutdown:** The loop exits when `_active` is set to `false`, ensuring that
+ *   resources are properly cleaned up.
  *
- * @throws WebServerException If an unrecoverable error occurs, the exception is thrown with a detailed message.
+ * @note
+ * - The method ensures robustness by catching and logging exceptions, and by cleaning up
+ *   invalid file descriptors if detected.
+ * - A short sleep (`usleep`) is included to avoid excessive CPU usage during idle periods.
+ *
  */
 void ServerManager::run() {
 	_log->log_debug( SM_NAME, "Event loop started.");
@@ -252,7 +297,7 @@ void ServerManager::run() {
 		while (_active) {
 			timeout_clients();
 			usleep(700);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 100);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -274,12 +319,25 @@ void ServerManager::run() {
 				}
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
-				if (_poll_fds[i].revents & POLLIN) {
+				if (poll_count == 0) {
+					break;
+				}
+				if (_poll_fds[i].revents & POLLOUT) {
+					if (i > _servers_map.size() - 1) {
+						process_response(i);
+						poll_count--;
+						continue;
+					}
+				} else if (_poll_fds[i].revents & POLLIN) {
 					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
 					if (server_it != _servers_map.end()) {
-						while (new_client(server_it->second)) {};
+						while (new_client(server_it->second)) {
+							poll_count--;
+						};
 					} else {
 						process_request(i);
+						poll_count--;
+						continue;
 					}
 				}
 			}
@@ -358,10 +416,12 @@ bool    ServerManager::process_request(size_t& poll_index) {
 		if (it != _clients.end()) {
 			HttpRequestHandler request_handler(_log, it->second);
 			request_handler.request_workflow();
-			if (!it->second->is_active() || !it->second->is_alive()) {
+			if (!it->second->is_alive()) {
 				remove_client_from_poll(it);
 				--poll_index;
 			} else {
+				_poll_fds[poll_index].events = POLLOUT;
+				_poll_fds[poll_index].revents = 0;
 				int fd = it->second->get_fd().fd;
 				time_t new_cycle = timeout_timestamp();
 				t_fd_timestamp index_timeout = _index_timeout.find(fd);
@@ -426,6 +486,89 @@ void    ServerManager::remove_client_from_poll(t_client_it client_data) {
 	}
 }
 
+bool ServerManager::process_response(size_t& poll_index) {
+	int poll_fd = _poll_fds[poll_index].fd;
+	std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
+	if (it == _clients.end()) {
+		return (false);
+	}
+	ClientData* client = it->second;
+	try {
+		s_request& request = client->client_request();
+//		SocketHandler* server = client->get_server();
+		if (!request.sanity){
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.send_error_response();
+		}
+		else if (request.factory == 0) {
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+//			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
+//			if (request.is_cached) {
+//				if (!request.sanity) {
+//					request_cache.remove(request.path);
+//				}
+//			}
+//			if (request.sanity && HAS_GET(request.method)) {
+//				request_cache.put(request.path,
+//				                   CacheRequest(request.path, request.host_config,
+//				                                request.location, request.normalized_path));
+//			}
+		}
+		else if (request.is_redir) {
+			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
+			response.redirection();
+		}
+		else if (request.autoindex) {
+			HttpAutoIndex response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		}
+		else if (request.cgi) {
+			HttpCGIHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+			client->deactivate();
+		} else if (!request.range.empty()){
+			HttpRangeHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		} else if (!request.boundary.empty()){
+			HttpMultipartHandler response(request.location, _log, client, request, poll_fd);
+			response.handle_request();
+		}
+		if (client->is_active() && client->is_alive()) {
+			_poll_fds[poll_index].events = POLLIN;
+			time_t new_cycle = timeout_timestamp();
+			t_fd_timestamp index_timeout = _index_timeout.find(poll_fd);
+			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
+			_timeout_index.erase(timeout_index);
+			_timeout_index[new_cycle] = poll_fd;
+			_index_timeout[poll_fd] = new_cycle;
+			return (true);
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+		       << "Server Sanity could be compromise.";
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		                 detail.str());
+		client->deactivate();
+	}
+	remove_client_from_poll(it);
+	--poll_index;
+	return (false);
+}
+
 /**
  * @brief Deactivates the server and logs a critical error, indicating an unrecoverable issue.
  *
@@ -459,16 +602,9 @@ void ServerManager::turn_off_server() {
 	_log->log_info( SM_NAME, "Server shutdown initiated.");
 	_active = false;
 	_healthy = false;
-	
-	// Primero cerrar todos los clientes
 	clear_clients();
-	
-	// Luego cerrar todos los servidores
 	clear_servers();
-	
-	// Finalmente limpiar los poll_fds
 	clear_poll();
-	
 	_log->log_info( SM_NAME, "Server shutdown completed.");
 }
 
@@ -516,6 +652,7 @@ void ServerManager::clear_servers() {
 			delete it->second;
 		}
 		_servers_map.clear();
+		_active_ports.clear();
 		_log->log_debug( SM_NAME,
 						 "Servers cleared successfully.");
 	} catch (std::exception& e) {

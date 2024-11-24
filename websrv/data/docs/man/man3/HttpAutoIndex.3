@@ -1,0 +1,202 @@
+.TH "HttpAutoIndex" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+HttpAutoIndex \- The \fR\fBHttpAutoIndex\fP\fP class handles the generation of an automatic index for a directory listing\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <HttpAutoIndex\&.hpp>\fP
+.PP
+Inherits \fBWsResponseHandler\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBHttpAutoIndex\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs a new \fR\fBHttpAutoIndex\fP\fP object\&. "
+.ti -1c
+.RI "bool \fBhandle_request\fP ()"
+.br
+.RI "Handles an HTTP GET request for auto-generating a directory index\&. "
+.in -1c
+
+Public Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "\fBWsResponseHandler\fP (const \fBLocationConfig\fP *location, const \fBLogger\fP *log, \fBClientData\fP *client_data, \fBs_request\fP &request, int fd)"
+.br
+.RI "Constructs a \fR\fBWsResponseHandler\fP\fP to manage web server responses\&. "
+.ti -1c
+.RI "virtual \fB~WsResponseHandler\fP ()"
+.br
+.RI "Destructor for the \fR\fBWsResponseHandler\fP\fP class\&. "
+.ti -1c
+.RI "bool \fBsend_error_response\fP ()"
+.br
+.RI "Sends an HTTP error response to the client, using a custom error page if available\&. "
+.ti -1c
+.RI "bool \fBredirection\fP ()"
+.br
+.RI "Handles HTTP redirection for the current request\&. "
+.in -1c
+.SS "Additional Inherited Members"
+
+
+Protected Member Functions inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "virtual bool \fBhandle_get\fP ()"
+.br
+.RI "Handles HTTP GET requests, validating access, resource data, and sending a response\&. "
+.ti -1c
+.RI "virtual bool \fBhandle_post\fP ()"
+.br
+.RI "Handles HTTP POST requests, validating access, saving data, and sending a response\&. "
+.ti -1c
+.RI "bool \fBhandle_delete\fP ()"
+.br
+.RI "Handles HTTP DELETE requests by checking permissions and deleting the specified resource\&. "
+.ti -1c
+.RI "virtual bool \fBvalidate_payload\fP ()"
+.br
+.RI "Validates the payload of an HTTP request to ensure it meets requirements\&. "
+.ti -1c
+.RI "bool \fBsave_file\fP (const std::string &save_path, const std::string &content)"
+.br
+.RI "Saves the provided content to a specified file path\&. "
+.ti -1c
+.RI "virtual std::string \fBheader\fP (int code, size_t content_size, std::string mime)"
+.br
+.RI "Constructs an HTTP response header based on provided parameters\&. "
+.ti -1c
+.RI "virtual bool \fBsend_response\fP (const std::string &body, const std::string &path)"
+.br
+.RI "Sends an HTTP response with the specified body content and inferred MIME type\&. "
+.ti -1c
+.RI "bool \fBsender\fP (const std::string &body)"
+.br
+.RI "Sends the HTTP response to the client through the socket file descriptor\&. "
+.ti -1c
+.RI "std::string \fBdefault_plain_error\fP ()"
+.br
+.RI "Generates a default HTML error page for the HTTP response\&. "
+.ti -1c
+.RI "void \fBturn_off_sanity\fP (\fBe_http_sts\fP status, std::string detail)"
+.br
+.RI "Disables further request processing by marking the request as invalid\&. "
+.in -1c
+
+Protected Attributes inherited from \fBWsResponseHandler\fP
+.in +1c
+.ti -1c
+.RI "const \fBLocationConfig\fP * \fB_location\fP"
+.br
+.ti -1c
+.RI "const \fBLogger\fP * \fB_log\fP"
+.br
+.ti -1c
+.RI "\fBClientData\fP * \fB_client_data\fP"
+.br
+.ti -1c
+.RI "\fBs_request\fP & \fB_request\fP"
+.br
+.ti -1c
+.RI "\fBs_content\fP \fB_response_data\fP"
+.br
+.ti -1c
+.RI "std::string \fB_headers\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The \fR\fBHttpAutoIndex\fP\fP class handles the generation of an automatic index for a directory listing\&. 
+
+This class inherits from \fR\fBWsResponseHandler\fP\fP and is responsible for providing a response that contains a directory index when requested\&. It includes methods for reading the content of a directory and generating the appropriate response\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "HttpAutoIndex::HttpAutoIndex (const \fBLocationConfig\fP * location, const \fBLogger\fP * log, \fBClientData\fP * client_data, \fBs_request\fP & request, int fd)"
+
+.PP
+Constructs a new \fR\fBHttpAutoIndex\fP\fP object\&. This constructor initializes an \fR\fBHttpAutoIndex\fP\fP instance to handle auto-indexing of directory requests\&. It calls the base class \fR\fBWsResponseHandler\fP\fP constructor to initialize common attributes, and then logs the initialization of the \fR\fBHttpAutoIndex\fP\fP handler\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP A pointer to the \fR\fBLocationConfig\fP\fP object containing location-specific settings\&. 
+.br
+\fIlog\fP A pointer to the \fR\fBLogger\fP\fP object for logging purposes\&. 
+.br
+\fIclient_data\fP A pointer to the \fR\fBClientData\fP\fP object containing data for the current client\&. 
+.br
+\fIrequest\fP A reference to the \fR\fBs_request\fP\fP structure containing the current request data\&. 
+.br
+\fIfd\fP The file descriptor used for managing the connection\&.
+.RE
+.PP
+The constructor performs the following actions:
+.IP "1." 4
+Calls the constructor of the base class \fR\fBWsResponseHandler\fP\fP to initialize the necessary attributes (\fRlocation\fP, \fRlog\fP, \fRclient_data\fP, \fRrequest\fP, and \fRfd\fP)\&.
+.IP "2." 4
+Logs a debug message indicating the successful initialization of the \fR\fBHttpAutoIndex\fP\fP handler\&. 
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool HttpAutoIndex::handle_request ()\fR [virtual]\fP"
+
+.PP
+Handles an HTTP GET request for auto-generating a directory index\&. This method processes an HTTP GET request to generate an automatic index page for a directory\&. It first checks if the GET method is allowed on the requested resource\&. If not allowed, it sends an HTTP 403 Forbidden response\&. If GET is allowed, it attempts to load the content of the directory by calling \fRget_file_content()\fP\&. Depending on the success of the file content loading, it either sends the generated HTML response or returns an error response\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the request is handled successfully and the response is sent, otherwise \fRfalse\fP\&.
+.RE
+.PP
+The method follows these main steps:
+.IP "1." 4
+\fBAllowed Method Check\fP:
+.IP "  \(bu" 4
+Checks if the HTTP GET method is allowed for the current resource by evaluating \fR_location->loc_allowed_methods\fP\&.
+.IP "  \(bu" 4
+If GET is not allowed, the method sets the response status to HTTP 403 (Forbidden) and sends an error response\&.
+.IP "  \(bu" 4
+It then returns \fRfalse\fP indicating that the request was not handled successfully\&.
+.PP
+
+.IP "2." 4
+\fBLoading File Content\fP:
+.IP "  \(bu" 4
+If GET is allowed, it calls \fRget_file_content()\fP to load the content of the directory indicated by \fR_request\&.normalized_path\fP\&.
+.IP "  \(bu" 4
+If the directory content is successfully loaded (\fR_response_data\&.status\fP is \fRtrue\fP), it sets the MIME type to \fRtext/html\fP\&.
+.IP "  \(bu" 4
+Logs a debug message indicating that the file content will be sent\&.
+.IP "  \(bu" 4
+Sends the response containing the generated directory index using \fR\fBsend_response()\fP\fP\&.
+.IP "  \(bu" 4
+Returns \fRtrue\fP if the response was successfully sent\&.
+.PP
+
+.IP "3." 4
+\fBError Handling\fP:
+.IP "  \(bu" 4
+If \fRget_file_content()\fP fails to load the directory content, it logs a debug message\&.
+.IP "  \(bu" 4
+Sends an error response using \fR\fBsend_error_response()\fP\fP\&.
+.IP "  \(bu" 4
+Returns \fRfalse\fP indicating that an error occurred while handling the request\&. 
+.PP
+
+.PP
+
+.PP
+Reimplemented from \fBWsResponseHandler\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

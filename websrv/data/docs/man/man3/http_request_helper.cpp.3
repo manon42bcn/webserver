@@ -1,0 +1,357 @@
+.TH "websrv/srcs/http_request_helper.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/http_request_helper.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'http_enum_codes\&.hpp'\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include <iostream>\fP
+.br
+\fR#include <set>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBhttp_status_description\fP (\fBe_http_sts\fP code)"
+.br
+.RI "Get a standard message for a http code\&. "
+.ti -1c
+.RI "\fBt_methods\fP \fBparse_method\fP (const std::string &method)"
+.br
+.RI "Parses an HTTP method string and returns the corresponding method mask\&. "
+.ti -1c
+.RI "std::map< std::string, std::string > \fBcreate_mime_types\fP ()"
+.br
+.RI "Creates and returns a map of file extensions to MIME types\&. "
+.ti -1c
+.RI "std::string \fBget_mime_type\fP (const std::string &path)"
+.br
+.RI "Retrieves the MIME type based on the file extension\&. "
+.ti -1c
+.RI "bool \fBvalid_mime_type\fP (const std::string &path)"
+.br
+.RI "Validate the MIME type based on the file extension\&. "
+.ti -1c
+.RI "bool \fBblack_list_extension\fP (const std::string &path)"
+.br
+.RI "Checks if a given file path has a disallowed extension\&. "
+.ti -1c
+.RI "std::string \fBreplace_template\fP (std::string content, const std::string &key, const std::string &value)"
+.br
+.RI "Replaces all occurrences of a key in the content with a given value\&. "
+.ti -1c
+.RI "std::string \fBclean_host\fP (std::string &host_to_clean)"
+.br
+.RI "Cleans up a host string by removing protocol prefixes, port numbers, and path segments\&. "
+.ti -1c
+.RI "std::string \fBnormalize_host\fP (const std::string &host)"
+.br
+.ti -1c
+.RI "std::string \fBget_header_value\fP (std::string &haystack, std::string needle, const std::string &sep)"
+.br
+.RI "Extracts the value of a specific HTTP header field\&. "
+.ti -1c
+.RI "bool \fBis_cgi\fP (const std::string &filename)"
+.br
+.RI "Checks if a file is a CGI script based on its extension\&. "
+.ti -1c
+.RI "size_t \fBend_of_header_system\fP (std::string &header)"
+.br
+.RI "Finds the end of the HTTP header in a string\&. "
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "bool black_list_extension (const std::string & path)"
+
+.PP
+Checks if a given file path has a disallowed extension\&. This function determines whether the file extension of the provided path is part of a predefined blacklist of disallowed extensions\&. If the extension is blacklisted, the function returns \fRtrue\fP; otherwise, it returns \fRfalse\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP A string representing the file path to check\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the file's extension is blacklisted; otherwise, \fRfalse\fP\&.
+.RE
+.PP
+.IP "\(bu" 2
+The function uses a static set of disallowed extensions, which is initialized on the first call\&. The blacklist includes extensions such as \fR\&.exe\fP, \fR\&.bat\fP, \fR\&.sh\fP, \fR\&.php\fP, \fR\&.pl\fP, and \fR\&.py\fP\&.
+.IP "\(bu" 2
+The function extracts the file extension by locating the last \fR\&.\fP character in the file path and comparing the substring to the blacklist\&.
+.IP "\(bu" 2
+If no \fR\&.\fP character is found in the path, or if the extension is not in the blacklist, the function returns \fRfalse\fP\&. 
+.PP
+
+.SS "std::string clean_host (std::string & host_to_clean)"
+
+.PP
+Cleans up a host string by removing protocol prefixes, port numbers, and path segments\&. This function processes a host string to extract the clean hostname by:
+.IP "1." 4
+Removing any leading protocol prefixes (e\&.g\&., 'http://')\&.
+.IP "2." 4
+Stripping port numbers appended with a colon (e\&.g\&., ':8080')\&.
+.IP "3." 4
+Removing any path segments following the hostname (e\&.g\&., '/path/to/resource')\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIhost_to_clean\fP A reference to the original host string to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A cleaned host string containing only the hostname without prefixes, ports, or paths\&.
+.RE
+.PP
+.IP "\(bu" 2
+The function works step by step:
+.IP "  1." 6
+Finds and removes the \fR//\fP sequence, which typically appears in protocol prefixes like 'http://'\&.
+.IP "  2." 6
+Removes anything after the last \fR:\fP to discard port numbers\&.
+.IP "  3." 6
+Iteratively removes any leading \fR/\fP characters and paths\&.
+.PP
+
+.IP "\(bu" 2
+If the input string does not contain these patterns, it is returned as-is\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+This function assumes the input string follows a valid URL-like format\&.
+.IP "\(bu" 2
+The function performs string operations such as \fRfind\fP and \fRsubstr\fP, which are safe in C++98\&. 
+.PP
+.RE
+.PP
+
+.SS "std::map< std::string, std::string > create_mime_types ()"
+
+.PP
+Creates and returns a map of file extensions to MIME types\&. This method generates a map that associates common file extensions (e\&.g\&., '\&.html', '\&.jpg') with their corresponding MIME types (e\&.g\&., 'text/html', 'image/jpeg')\&. The map is used to determine the \fRContent-Type\fP header when serving files\&.
+
+.PP
+.IP "\(bu" 2
+The method ensures that the map is initialized only once, using a static map to avoid recreating the map on each call\&. If additional MIME types are required, they can be added to the map\&.
+.IP "\(bu" 2
+Common MIME types such as \fRtext/html\fP, \fRapplication/javascript\fP, and \fRimage/jpeg\fP are included\&.
+.PP
+
+.PP
+\fBReturns\fP
+.RS 4
+std::map<std::string, std::string> A map that associates file extensions with their MIME types\&. 
+.RE
+.PP
+
+.SS "size_t end_of_header_system (std::string & header)"
+
+.PP
+Finds the end of the HTTP header in a string\&. This function locates the end of the HTTP header in the given string by searching for the sequence \fR\\\\r\\\\n\\\\r\\\\n\fP or \fR\\\\n\\\\n\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIheader\fP The HTTP header string to be analyzed\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The position where the header ends\&. If no header end is found, returns \fRstd::string::npos\fP\&. 
+.RE
+.PP
+
+.SS "std::string get_header_value (std::string & haystack, std::string needle, const std::string & sep)"
+
+.PP
+Extracts the value of a specific HTTP header field\&. This method searches the provided header string for a specific key and returns the associated value\&. The search is case-insensitive, and it assumes the format \fRkey: value\fP\&.
+
+.PP
+.IP "\(bu" 2
+The method first converts the key and the header string to lowercase for a case-insensitive search\&.
+.IP "\(bu" 2
+The value is extracted by searching for the next occurrence of \fR\\r\\n\fP, which signifies the end of the value\&.
+.IP "\(bu" 2
+If the key is not found, the method returns an empty string\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIhaystack\fP The HTTP Header format string to be searched over it\&. 
+.br
+\fIneedle\fP The key for which the value is to be retrieved (e\&.g\&., 'content-type')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The value associated with the key, or an empty string if the key is not found\&. 
+.RE
+.PP
+
+.SS "std::string get_mime_type (const std::string & path)"
+
+.PP
+Retrieves the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, the associated MIME type is returned\&. If the extension is not recognized, it defaults to \fRtext/plain\fP\&.
+
+.PP
+.IP "\(bu" 2
+The method extracts the file extension by searching for the last '\&.' character in the path\&.
+.IP "\(bu" 2
+If the extension is found in the \fRmime_types\fP map, the corresponding MIME type is returned\&.
+.IP "\(bu" 2
+If no recognized extension is found, the default MIME type \fRtext/plain\fP is returned\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The file system path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The MIME type corresponding to the file extension, or \fRtext/plain\fP if not found\&. 
+.RE
+.PP
+
+.SS "std::string http_status_description (\fBe_http_sts\fP code)"
+
+.PP
+Get a standard message for a http code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP http code\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+short standard message associated with the http code\&. 
+.RE
+.PP
+
+.SS "bool is_cgi (const std::string & filename)"
+
+.PP
+Checks if a file is a CGI script based on its extension\&. This function checks whether the given filename corresponds to a CGI script by looking at its extension\&. It checks for extensions such as \fR\&.py\fP and \fR\&.php\fP\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIfilename\fP The filename to be checked\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the filename corresponds to a CGI script, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SS "std::string normalize_host (const std::string & host)"
+
+.SS "\fBt_methods\fP parse_method (const std::string & method)"
+
+.PP
+Parses an HTTP method string and returns the corresponding method mask\&. This function maps a given HTTP method string (e\&.g\&., 'GET', 'POST') to its corresponding predefined method mask (\fRt_methods\fP)\&. If the method is not recognized, it returns 0\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP A string representing the HTTP method to parse (e\&.g\&., 'GET', 'POST')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding \fRt_methods\fP mask if the method is recognized; otherwise, returns 0\&.
+.RE
+.PP
+.IP "\(bu" 2
+The method uses a static map to store the mapping between HTTP method strings and their corresponding bitmask constants (e\&.g\&., \fRMASK_METHOD_GET\fP for 'GET')\&.
+.IP "\(bu" 2
+The map is initialized only once, ensuring efficiency for subsequent calls\&.
+.IP "\(bu" 2
+If the provided method string is not found in the map, the function returns 0, indicating an unrecognized or unsupported method\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+Supported methods include: 'GET', 'POST', 'DELETE', 'PUT', 'HEAD', 'OPTIONS', and 'PATCH'\&.
+.IP "\(bu" 2
+This function is case-sensitive\&. Ensure that the input method string matches the expected format (e\&.g\&., 'GET' must be uppercase)\&. 
+.PP
+.RE
+.PP
+
+.SS "std::string replace_template (std::string content, const std::string & key, const std::string & value)"
+
+.PP
+Replaces all occurrences of a key in the content with a given value\&. This method searches the provided content for all occurrences of the key and replaces each one with the specified value\&. It returns the modified content with all replacements made\&.
+
+.PP
+.IP "\(bu" 2
+The method iterates through the content, finding each occurrence of the key using \fRstd::string::find()\fP\&.
+.IP "\(bu" 2
+For each occurrence, it replaces the key with the value using \fRstd::string::replace()\fP\&.
+.IP "\(bu" 2
+If the value contains the key (which could cause an infinite loop), the method does not perform any replacements\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcontent\fP The content in which to perform the replacements (e\&.g\&., HTML file content)\&. 
+.br
+\fIkey\fP The key to search for in the content (e\&.g\&., '{error_code}')\&. 
+.br
+\fIvalue\fP The value to replace the key with (e\&.g\&., '404')\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string The content with all occurrences of the key replaced by the value\&. 
+.RE
+.PP
+
+.SS "bool valid_mime_type (const std::string & path)"
+
+.PP
+Validate the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, true is returned\&. If the extension is not recognized, false
+
+.PP
+.IP "\(bu" 2
+The method extracts the file extension by searching for the last '\&.' character in the path\&.
+.PP
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The file system path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+bool true if a MIME type is recognized, false otherwise\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

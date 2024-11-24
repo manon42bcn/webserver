@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/21 01:55:05 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 00:04:03 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,7 @@
 #include "http_enum_codes.hpp"
 #include "ClientData.hpp"
 #include "Logger.hpp"
-#include "HttpResponseHandler.hpp"
-#include "HttpCGIHandler.hpp"
-#include "HttpRangeHandler.hpp"
-#include "HttpMultipartHandler.hpp"
-#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
-#include "general_helpers.hpp"
 // Libraries
 #include <string>
 #include <fcntl.h>
@@ -34,6 +28,7 @@
 #define RH_NAME "HttpRequestHandler"
 #define BUFFER_REQUEST  2048
 #define URI_MAX         2048
+#define MAX_HEADER      16384
 
 typedef struct e_chunk {
 	size_t      size;
@@ -76,6 +71,7 @@ typedef struct e_chunk {
 class HttpRequestHandler {
 	private:
 	    typedef void (HttpRequestHandler::*validate_step)( );
+		const ServerConfig*             _host_config;
 		const ServerConfig&             _config;
 		const Logger*                   _log;
 		ClientData*                     _client_data;
@@ -84,9 +80,7 @@ class HttpRequestHandler {
 		int                             _fd;
 		size_t 					        _max_request;
 	    std::string                     _request;
-		int                             _factory;
-		s_request                       _request_data;
-		bool                            _is_cached;
+		s_request&                      _request_data;
 		CacheRequest                    _cache_data;
 
 		void read_request_header();
@@ -94,6 +88,7 @@ class HttpRequestHandler {
 		void parse_method_and_path();
 		void parse_path_type();
 		void load_header_data();
+		void load_host_config();
 		void solver_resource();
 		void resolve_relative_path();
 		void get_location_config();

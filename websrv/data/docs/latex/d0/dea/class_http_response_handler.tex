@@ -1,0 +1,160 @@
+\doxysection{Http\+Response\+Handler Class Reference}
+\hypertarget{class_http_response_handler}{}\label{class_http_response_handler}\index{HttpResponseHandler@{HttpResponseHandler}}
+
+
+Manages HTTP responses, with support for caching static file content.  
+
+
+
+
+{\ttfamily \#include $<$Http\+Response\+Handler.\+hpp$>$}
+
+Inheritance diagram for Http\+Response\+Handler\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{d0/dea/class_http_response_handler}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94}{Http\+Response\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs an {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}} instance for handling HTTP responses. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025}{get\+\_\+file\+\_\+content}} (std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Retrieves the content of a file, utilizing the cache if available. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb}{get\+\_\+file\+\_\+content}} (int pid, int(\&fd)\mbox{[}2\mbox{]})
+\begin{DoxyCompactList}\small\item\em Placeholder for retrieving file content using process ID and file descriptor array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_ws_response_handler_a3cd12128a8690f0dfa0d4e5c8619b995}{Ws\+Response\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to manage web server responses. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_ws_response_handler_a8baab27d8124fd3ec88dc9727b280ac7}{\texorpdfstring{$\sim$}{\string~}\+Ws\+Response\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} class. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_ac424b9087f15dc526de36c473dd0b99b}{handle\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Handles the incoming HTTP request based on the request method. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_abeedbeb84a4e00fcbf33c1864d7c6a15}{send\+\_\+error\+\_\+response}} ()
+\begin{DoxyCompactList}\small\item\em Sends an HTTP error response to the client, using a custom error page if available. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_ac8c8694f89236b819db3906a1e2f1872}{redirection}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP redirection for the current request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aca126bfa03d064a8d94de7ab480b3733}{handle\+\_\+get}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP GET requests, validating access, resource data, and sending a response. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_a644b3ca7a7cec3dc191f182fb47cc68f}{handle\+\_\+post}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP POST requests, validating access, saving data, and sending a response. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a1e1d6f36fa589140b0feb50013295720}{handle\+\_\+delete}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP DELETE requests by checking permissions and deleting the specified resource. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aaa165d0cdad3ce51a5e1bd755b501277}{validate\+\_\+payload}} ()
+\begin{DoxyCompactList}\small\item\em Validates the payload of an HTTP request to ensure it meets requirements. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a567d0413981e44eae8146cba69ae8a7a}{save\+\_\+file}} (const std\+::string \&save\+\_\+path, const std\+::string \&content)
+\begin{DoxyCompactList}\small\item\em Saves the provided content to a specified file path. \end{DoxyCompactList}\item 
+virtual std\+::string \mbox{\hyperlink{class_ws_response_handler_a1f6fa4b16b1bb217c5c76f84de70cd0b}{header}} (int code, size\+\_\+t content\+\_\+size, std\+::string mime)
+\begin{DoxyCompactList}\small\item\em Constructs an HTTP response header based on provided parameters. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_ac1c7496ce4287eb698166bbe52852cfa}{send\+\_\+response}} (const std\+::string \&body, const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Sends an HTTP response with the specified body content and inferred MIME type. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a01217e2efc87284c0642d2a4341fc26b}{sender}} (const std\+::string \&body)
+\begin{DoxyCompactList}\small\item\em Sends the HTTP response to the client through the socket file descriptor. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_a1b93f248882a4eda90403c83321071a4}{default\+\_\+plain\+\_\+error}} ()
+\begin{DoxyCompactList}\small\item\em Generates a default HTML error page for the HTTP response. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_ws_response_handler_ad11ac0e6036e8a641cfe74569c47314f}{turn\+\_\+off\+\_\+sanity}} (\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} status, std\+::string detail)
+\begin{DoxyCompactList}\small\item\em Disables further request processing by marking the request as invalid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_a85c6c1dda9c16243a5cb1cbe7d7981e8}{\+\_\+location}}
+\item 
+const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ad16c39c951b521fbb836260bfdd620b2}{\+\_\+log}}
+\item 
+\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ab10cfb3b580bd147399038a7a2431e9b}{\+\_\+client\+\_\+data}}
+\item 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& \mbox{\hyperlink{class_ws_response_handler_a394876bb9233128373d9aa1c2a6fb392}{\+\_\+request}}
+\item 
+\mbox{\hyperlink{structs__content}{s\+\_\+content}} \mbox{\hyperlink{class_ws_response_handler_a67ccf1b36d737f643651b8df1d207870}{\+\_\+response\+\_\+data}}
+\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_ad89c7d5cc6459655f69f0f4db824757f}{\+\_\+headers}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages HTTP responses, with support for caching static file content. 
+
+The {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}} class extends {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to handle HTTP responses, utilizing a caching mechanism to optimize retrieval of static files. It checks for content in the cache before loading from disk, reducing redundant I/O operations and improving response times for frequently requested resources. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94}\index{HttpResponseHandler@{HttpResponseHandler}!HttpResponseHandler@{HttpResponseHandler}}
+\index{HttpResponseHandler@{HttpResponseHandler}!HttpResponseHandler@{HttpResponseHandler}}
+\doxysubsubsection{\texorpdfstring{HttpResponseHandler()}{HttpResponseHandler()}}
+{\footnotesize\ttfamily \label{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94} 
+Http\+Response\+Handler\+::\+Http\+Response\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{, }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Constructs an {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}} instance for handling HTTP responses. 
+
+Initializes the response handler with configuration, logging, client data, and the server cache, setting up the necessary components for managing static responses.
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & Pointer to the {\ttfamily \doxylink{struct_location_config}{Location\+Config}} containing the configuration details for the server location. \\
+\hline
+{\em log} & Pointer to the {\ttfamily \doxylink{class_logger}{Logger}} instance to record request and response details. \\
+\hline
+{\em client\+\_\+data} & Pointer to {\ttfamily \doxylink{class_client_data}{Client\+Data}} associated with the client connection. \\
+\hline
+{\em request} & Reference to the {\ttfamily \doxylink{structs__request}{s\+\_\+request}} structure containing request details. \\
+\hline
+{\em fd} & File descriptor for the client connection. \\
+\hline
+{\em cache} & Pointer to the {\ttfamily \doxylink{class_web_server_cache}{Web\+Server\+Cache}} for handling cached responses and resources. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb}\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
+\index{get\_file\_content@{get\_file\_content}!HttpResponseHandler@{HttpResponseHandler}}
+\doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb} 
+void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{int}]{pid}{, }\item[{int(\&)}]{fd}{\mbox{[}2\mbox{]}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Placeholder for retrieving file content using process ID and file descriptor array. 
+
+\begin{DoxyNote}{Note}
+Unused function 
+\end{DoxyNote}
+
+
+Implements \mbox{\hyperlink{class_ws_response_handler_a13110e781354f17e2628be2c9a5c89ae}{Ws\+Response\+Handler}}.
+
+\Hypertarget{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025}\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
+\index{get\_file\_content@{get\_file\_content}!HttpResponseHandler@{HttpResponseHandler}}
+\doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025} 
+void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{std\+::string \&}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Retrieves the content of a file, utilizing the cache if available. 
+
+Attempts to retrieve the file content from the cache. If the content is not cached, it loads the file content from disk using the base {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} method. If the content is successfully loaded, it is then stored in the cache.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to the file whose content is to be retrieved. \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \mbox{\hyperlink{class_ws_response_handler_aa5f538a7d770aecb593e27cbae11bebb}{Ws\+Response\+Handler}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_http_response_handler_8hpp}{Http\+Response\+Handler.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_http_response_handler_8cpp}{Http\+Response\+Handler.\+cpp}}\end{DoxyCompactItemize}

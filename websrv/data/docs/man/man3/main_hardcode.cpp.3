@@ -1,0 +1,146 @@
+.TH "websrv/srcs/main_hardcode.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/main_hardcode.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <iostream>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <poll\&.h>\fP
+.br
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include <cstring>\fP
+.br
+\fR#include <cstdlib>\fP
+.br
+\fR#include <sys/stat\&.h>\fP
+.br
+\fR#include <map>\fP
+.br
+\fR#include 'webserver\&.hpp'\fP
+.br
+\fR#include 'ServerManager\&.hpp'\fP
+.br
+\fR#include <signal\&.h>\fP
+.br
+\fR#include 'WebserverCache\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint_server_config\fP (const \fBServerConfig\fP &config, std::string location)"
+.br
+.ti -1c
+.RI "void \fBprint_vector_config\fP (const std::vector< \fBServerConfig\fP > &config, std::string location)"
+.br
+.ti -1c
+.RI "bool \fBis_dir\fP (std::string ruta)"
+.br
+.ti -1c
+.RI "bool \fBis_file\fP (std::string ruta)"
+.br
+.ti -1c
+.RI "std::string \fBint_to_string\fP (int number)"
+.br
+.RI "Converts an integer to a string\&. "
+.ti -1c
+.RI "bool \fBstarts_with\fP (const std::string &str, const std::string &prefix)"
+.br
+.RI "Converts an integer to a string\&. "
+.ti -1c
+.RI "void \fBsignal_handler\fP (int sig)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char **argv)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBServerManager\fP * \fBrunning_server\fP = NULL"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "std::string int_to_string (int number)"
+
+.PP
+Converts an integer to a string\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fInumber\fP The integer to convert\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A string representation of the integer\&. 
+.RE
+.PP
+
+.SS "bool is_dir (std::string ruta)"
+
+.SS "bool is_file (std::string ruta)"
+
+.SS "int main (int argc, char ** argv)"
+
+.SS "void print_server_config (const \fBServerConfig\fP & config, std::string location)"
+
+.SS "void print_vector_config (const std::vector< \fBServerConfig\fP > & config, std::string location)"
+
+.SS "void signal_handler (int sig)"
+
+.SS "bool starts_with (const std::string & str, const std::string & prefix)"
+
+.PP
+Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fInumber\fP The integer to be converted\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A string representation of the provided integer\&.
+.RE
+.PP
+Checks if a string starts with a given prefix\&.
+
+.PP
+This function checks whether the provided string begins with the specified prefix\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP The string to be checked\&. 
+.br
+\fIprefix\fP The prefix to check for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fRtrue\fP if the string starts with the prefix, otherwise \fRfalse\fP\&. 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "\fBServerManager\fP* running_server = NULL"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

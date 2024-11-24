@@ -1,0 +1,131 @@
+.TH "websrv/inc/ws_structs.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/ws_structs.hpp
+.SH SYNOPSIS
+.br
+.PP
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBs_cgi\fP"
+.br
+.RI "Represents metadata for a CGI (Common Gateway Interface) request\&. "
+.ti -1c
+.RI "struct \fBLocationConfig\fP"
+.br
+.RI "Represents the configuration for a specific location within a server\&. "
+.ti -1c
+.RI "struct \fBServerConfig\fP"
+.br
+.ti -1c
+.RI "struct \fBs_request\fP"
+.br
+.RI "Represents an HTTP request and its associated metadata\&. "
+.ti -1c
+.RI "struct \fBCacheEntry\fP"
+.br
+.RI "Represents an entry in the server's cache\&. "
+.ti -1c
+.RI "struct \fBCacheRequest\fP"
+.br
+.RI "Represents a request to retrieve a cached resource\&. "
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef enum \fBe_mode\fP \fBt_mode\fP"
+.br
+.RI "Represents different operational modes for processing\&. "
+.ti -1c
+.RI "typedef struct \fBs_cgi\fP \fBt_cgi\fP"
+.br
+.RI "Represents metadata for a CGI (Common Gateway Interface) request\&. "
+.ti -1c
+.RI "typedef enum \fBe_allowed_methods\fP \fBt_allowed_methods\fP"
+.br
+.RI "Represents the allowed HTTP methods for a location or server\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBe_mode\fP { \fBTEMPLATE\fP =0, \fBLITERAL\fP =1, \fBINVALID_ERROR_MODE\fP =-42 }"
+.br
+.RI "Represents different operational modes for processing\&. "
+.ti -1c
+.RI "enum \fBe_path_type\fP { \fBPATH_REGULAR\fP = 0, \fBPATH_QUERY\fP = 1, \fBPATH_ENCODED\fP = 2, \fBPATH_RELATIVE\fP = 3 }"
+.br
+.RI "Represents the type of a file path in an HTTP request\&. "
+.ti -1c
+.RI "enum \fBe_allowed_methods\fP { \fBGET\fP =0, \fBPOST\fP =1, \fBDELETE\fP =2, \fBPUT\fP =3, \fBINVALID_METHOD\fP =-42 }"
+.br
+.RI "Represents the allowed HTTP methods for a location or server\&. "
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef enum \fBe_allowed_methods\fP \fBt_allowed_methods\fP"
+
+.PP
+Represents the allowed HTTP methods for a location or server\&. This enumeration defines the HTTP methods that can be explicitly allowed in the configuration of a server or a specific location\&. It also includes a value to represent an invalid or unrecognized method\&. 
+.SS "typedef struct \fBs_cgi\fP \fBt_cgi\fP"
+
+.PP
+Represents metadata for a CGI (Common Gateway Interface) request\&. This structure contains information about the path to the CGI executable and the script being executed\&. 
+.SS "typedef enum \fBe_mode\fP \fBt_mode\fP"
+
+.PP
+Represents different operational modes for processing\&. This enumeration defines the available modes of operation and their associated constants\&. 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBe_allowed_methods\fP"
+
+.PP
+Represents the allowed HTTP methods for a location or server\&. This enumeration defines the HTTP methods that can be explicitly allowed in the configuration of a server or a specific location\&. It also includes a value to represent an invalid or unrecognized method\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIGET \fP
+.TP
+\f(BIPOST \fP
+.TP
+\f(BIDELETE \fP
+.TP
+\f(BIPUT \fP
+.TP
+\f(BIINVALID_METHOD \fP
+.SS "enum \fBe_mode\fP"
+
+.PP
+Represents different operational modes for processing\&. This enumeration defines the available modes of operation and their associated constants\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BITEMPLATE \fP
+.TP
+\f(BILITERAL \fP
+.TP
+\f(BIINVALID_ERROR_MODE \fP
+.SS "enum \fBe_path_type\fP"
+
+.PP
+Represents the type of a file path in an HTTP request\&. This enumeration categorizes file paths into different types based on their nature and usage within the request\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\f(BIPATH_REGULAR \fP
+.TP
+\f(BIPATH_QUERY \fP
+.TP
+\f(BIPATH_ENCODED \fP
+.TP
+\f(BIPATH_RELATIVE \fP
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

@@ -1,0 +1,70 @@
+.TH "websrv/srcs/parse/parse_server.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/parse_server.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBparse_location\fP (std::vector< std::string >::iterator &it, std::vector< std::string >::iterator end, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_port\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_server_name\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_client_max_body_size\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.ti -1c
+.RI "void \fBparse_error_mode\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_client_max_body_size (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_error_mode (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_location (std::vector< std::string >::iterator & it, std::vector< std::string >::iterator end, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_port (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_server_name (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

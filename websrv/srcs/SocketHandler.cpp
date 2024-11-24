@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/19 22:45:36 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 04:29:34 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 			  "Instance building start.");
 	_log->log_debug( SH_NAME,
 	          "Creating Sockets.");
-
 	_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket_fd < 0) {
 		throw WebServerException("Error Creating Socket.");
@@ -81,13 +80,9 @@ SocketHandler::SocketHandler(int port, ServerConfig& config, const Logger* logge
 		close_socket();
 		throw WebServerException("Error setting socket as non blocking.");
 	}
-	_log->log_info(SH_NAME,
-				   "Mapping CGI whitelist.");
-	mapping_cgi_locations(".py");
-	mapping_cgi_locations(".pl");
-	mapping_redir();
 	_log->log_info( SH_NAME,
 					"Server listening. Port: " + int_to_string(port));
+	add_host(config);
 	_log->log_info( SH_NAME,
 	          "Instance built.");
 	_log->status(SH_NAME, "Socket Handler Instance is ready.");
@@ -108,6 +103,38 @@ SocketHandler::~SocketHandler() {
 	close_socket();
 	_log->log_debug( SH_NAME,
 					 "SockedHandler resources clean up.");
+}
+
+/**
+ * @brief Adds a host to the internal map of hosts if it doesn't already exist.
+ *
+ * This method takes a reference to a `ServerConfig` object and adds it to the internal map of hosts (`_hosts`) managed by `SocketHandler`.
+ * If the host (identified by `server_name` in the `ServerConfig`) does not already exist in `_hosts`, it is added to the map and additional
+ * configurations such as redirections and CGI mappings are performed.
+ *
+ * @param config A reference to the `ServerConfig` object representing the server configuration to be added.
+ *
+ * The method performs the following steps:
+ * 1. Converts the `server_name` from the provided `ServerConfig` to lowercase for consistent key storage.
+ * 2. Searches for the `server_name` in the `_hosts` map.
+ * 3. If the host is not found (`_hosts.end()`), logs the addition of the new host, adds the configuration to the `_hosts` map, and then
+ *    performs additional setup for redirections and CGI script mappings:
+ *    - Calls `mapping_redir(config)` to handle redirection setup.
+ *    - Calls `mapping_cgi_locations(config, ".py")` and `mapping_cgi_locations(config, ".pl")` to map CGI scripts for Python and Perl respectively.
+ *
+ * @note This method does not add the host if it already exists in the `_hosts` map.
+ *
+ */
+void SocketHandler::add_host(ServerConfig &config) {
+	std::string host_name = to_lowercase(config.server_name);
+	std::map<std::string, ServerConfig*>::iterator it =  _hosts.find(host_name);
+	if (it == _hosts.end()) {
+		_log->status(SH_NAME, "Append host to map.");
+		_hosts[host_name] = &config;
+		mapping_redir(config);
+		mapping_cgi_locations(config, ".py");
+		mapping_cgi_locations(config, ".pl");
+	}
 }
 
 /**
@@ -192,6 +219,14 @@ const ServerConfig& SocketHandler::get_config() const {
 	return (_config);
 }
 
+const ServerConfig* SocketHandler::get_config(const std::string &host) {
+	std::map<std::string, ServerConfig*>::iterator it = _hosts.find(to_lowercase(host));
+	if (it != _hosts.end()) {
+		return (it->second);
+	}
+	return (&_config);
+}
+
 /**
  * @brief Sets the socket to non-blocking mode.
  *
@@ -215,6 +250,11 @@ bool SocketHandler::set_nonblocking(int fd) {
 				  "Error setting socket as nonblocking.");
 		return (false);
 	}
+	if (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1) {
+		_log->log_warning( SH_NAME,
+		                   "Error setting FD_CLOEXEC.");
+		return (false);
+	}
 	_log->log_info( SH_NAME,
 			  "Socket set as nonblocking.");
 	return (true);
@@ -231,12 +271,12 @@ bool SocketHandler::set_nonblocking(int fd) {
  *
  * @return `true` if the path belongs to the specified location, `false` otherwise.
  */
-bool SocketHandler::belongs_to_location(const std::string& path, const std::string& loc_root) {
+bool SocketHandler::belongs_to_location(ServerConfig& host, const std::string& path, const std::string& loc_root) {
 	std::string saved_key;
 	LocationConfig* result = NULL;
 
-	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin();
-	     it != _config.locations.end(); ++it) {
+	for (std::map<std::string, LocationConfig>::iterator it = host.locations.begin();
+	     it != host.locations.end(); ++it) {
 		const std::string& key = it->first;
 		if (starts_with(path, key)) {
 			if (key.length() > saved_key.length()) {
@@ -280,7 +320,7 @@ bool SocketHandler::is_cgi_file(const std::string &filename, const std::string& 
  * @param extension The CGI file extension to search for.
  * @param mapped_files A map where the found CGI files will be stored.
  */
-void SocketHandler::get_cgi_files(const std::string& directory, const std::string& loc_root,
+void SocketHandler::get_cgi_files(ServerConfig& host, const std::string& directory, const std::string& loc_root,
                                   const std::string& extension, std::map<std::string, t_cgi>& mapped_files) {
 	DIR* dir = opendir(directory.c_str());
 	if (dir == NULL) {
@@ -305,13 +345,13 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
 		}
 
 		if (S_ISDIR(info.st_mode)) {
-			get_cgi_files(full_path, loc_root, extension, mapped_files);
+			get_cgi_files(host, full_path, loc_root, extension, mapped_files);
 		} else if (S_ISREG(info.st_mode) && is_cgi_file(name, extension)) {
-			std::string clean_path = full_path.substr(_config.server_root.length());
+			std::string clean_path = full_path.substr(host.server_root.length());
 			std::string real_path = clean_path.substr(0, clean_path.find(name));
 			size_t pos = clean_path.find(extension);
 			clean_path = clean_path.substr(0, pos);
-			if (belongs_to_location(clean_path, loc_root)) {
+			if (belongs_to_location(host, clean_path, loc_root)) {
 				std::ostringstream detail;
 				detail << "CGI found path for location root <" << loc_root << ">: ["
 					   << clean_path << "] - filename : " << name;
@@ -335,20 +375,20 @@ void SocketHandler::get_cgi_files(const std::string& directory, const std::strin
  *
  * @param extension The file extension to search for CGI scripts (e.g., ".py" or ".pl").
  */
-void SocketHandler::mapping_cgi_locations(const std::string& extension) {
-	_log->log_debug( SH_NAME,
-	          "mapping cgi locations.");
+void SocketHandler::mapping_cgi_locations(ServerConfig& host, const std::string& extension) {
+	_log->log_info(SH_NAME,
+	               "Mapping CGI whitelist for host: " + extension);
 	std::map<std::string, std::string> results;
-	for (std::map<std::string, LocationConfig>::iterator it = _config.locations.begin(); it != _config.locations.end(); it++) {
+	for (std::map<std::string, LocationConfig>::iterator it = host.locations.begin(); it != host.locations.end(); it++) {
 		if (it->second.cgi_file) {
 			_log->log_debug( SH_NAME,
 			          "Location with CGI activated, mapping for files.");
-			get_cgi_files(_config.server_root + it->second.loc_root,
+			get_cgi_files(host, host.server_root + it->second.loc_root,
 			              it->second.loc_root, extension, it->second.cgi_locations);
 			if (!it->second.cgi_locations.empty()){
-				_config.cgi_locations = true;
+				host.cgi_locations = true;
 			} else {
-				_config.cgi_locations = false;
+				host.cgi_locations = false;
 			}
 		}
 	}
@@ -368,9 +408,11 @@ void SocketHandler::mapping_cgi_locations(const std::string& extension) {
  *
  * This allows the server to efficiently determine which locations have redirection logic configured during request handling.
  */
-void SocketHandler::mapping_redir() {
-	for (std::map<std::string, struct LocationConfig>::iterator it = _config.locations.begin();
-		it != _config.locations.end(); it++) {
+void SocketHandler::mapping_redir(ServerConfig& host) {
+	_log->log_info(SH_NAME,
+	               "Mapping Redir locations to host.");
+	for (std::map<std::string, struct LocationConfig>::iterator it = host.locations.begin();
+		it != host.locations.end(); it++) {
 		if (!it->second.redirections.empty()) {
 			it->second.is_redir = true;
 		}

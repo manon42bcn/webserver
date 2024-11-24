@@ -1,0 +1,43 @@
+.TH "Logger::NoLoggerPointer" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Logger::NoLoggerPointer \- Exception thrown when a null pointer to a \fBLogger\fP is used\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <Logger\&.hpp>\fP
+.PP
+Inherits std::exception\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual const char * \fBwhat\fP () const  throw ()"
+.br
+.RI "Returns a message indicating that the \fBLogger\fP pointer is null\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Exception thrown when a null pointer to a \fBLogger\fP is used\&. 
+
+This exception is used to indicate that a null pointer was passed where a valid \fBLogger\fP pointer was expected\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "const char * Logger::NoLoggerPointer::what (void ) const\fR [virtual]\fP"
+
+.PP
+Returns a message indicating that the \fBLogger\fP pointer is null\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A constant character pointer with an error message\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

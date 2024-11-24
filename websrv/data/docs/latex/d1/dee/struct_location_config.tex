@@ -1,0 +1,145 @@
+\doxysection{Location\+Config Struct Reference}
+\hypertarget{struct_location_config}{}\label{struct_location_config}\index{LocationConfig@{LocationConfig}}
+
+
+Represents the configuration for a specific location within a server.  
+
+
+
+
+{\ttfamily \#include $<$ws\+\_\+structs.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_location_config_a4d9d9ff50c98b379a1cbcc834abc115e}{Location\+Config}} ()
+\item 
+\mbox{\hyperlink{struct_location_config_a3edea4a0fcafaea9a2d059e70539ac14}{Location\+Config}} (std\+::string r, std\+::vector$<$ std\+::string $>$ \&dp, \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} em, std\+::map$<$ int, std\+::string $>$ \&ep)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\+\_\+root}}
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\+\_\+default\+\_\+pages}}
+\item 
+\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\+\_\+error\+\_\+mode}}
+\item 
+std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\+\_\+error\+\_\+pages}}
+\item 
+unsigned char \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\+\_\+allowed\+\_\+methods}}
+\item 
+bool \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}}
+\item 
+bool \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\+\_\+file}}
+\item 
+std\+::map$<$ std\+::string, \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\+\_\+cgi}} $>$ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\+\_\+locations}}
+\item 
+std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}
+\item 
+bool \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\+\_\+root}}
+\item 
+bool \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\+\_\+redir}}
+\item 
+std\+::string \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\+\_\+root}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents the configuration for a specific location within a server. 
+
+This structure holds all configuration parameters specific to a location (e.\+g., a particular path or directory) within a server. It includes settings for default pages, error handling, CGI configurations, redirections, and allowed methods. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{struct_location_config_a4d9d9ff50c98b379a1cbcc834abc115e}\index{LocationConfig@{LocationConfig}!LocationConfig@{LocationConfig}}
+\index{LocationConfig@{LocationConfig}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{LocationConfig()}{LocationConfig()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{struct_location_config_a4d9d9ff50c98b379a1cbcc834abc115e} 
+Location\+Config\+::\+Location\+Config (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{struct_location_config_a3edea4a0fcafaea9a2d059e70539ac14}\index{LocationConfig@{LocationConfig}!LocationConfig@{LocationConfig}}
+\index{LocationConfig@{LocationConfig}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{LocationConfig()}{LocationConfig()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{struct_location_config_a3edea4a0fcafaea9a2d059e70539ac14} 
+Location\+Config\+::\+Location\+Config (\begin{DoxyParamCaption}\item[{std\+::string}]{r}{, }\item[{std\+::vector$<$ std\+::string $>$ \&}]{dp}{, }\item[{\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}}}]{em}{, }\item[{std\+::map$<$ int, std\+::string $>$ \&}]{ep}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Field Documentation}
+\Hypertarget{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}\index{LocationConfig@{LocationConfig}!autoindex@{autoindex}}
+\index{autoindex@{autoindex}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{autoindex}{autoindex}}
+{\footnotesize\ttfamily \label{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93} 
+bool Location\+Config\+::autoindex}
+
+\Hypertarget{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}\index{LocationConfig@{LocationConfig}!cgi\_file@{cgi\_file}}
+\index{cgi\_file@{cgi\_file}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{cgi\_file}{cgi\_file}}
+{\footnotesize\ttfamily \label{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc} 
+bool Location\+Config\+::cgi\+\_\+file}
+
+\Hypertarget{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}\index{LocationConfig@{LocationConfig}!cgi\_locations@{cgi\_locations}}
+\index{cgi\_locations@{cgi\_locations}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{cgi\_locations}{cgi\_locations}}
+{\footnotesize\ttfamily \label{struct_location_config_ada81ab1d2d40b5a1965104cda5468834} 
+std\+::map$<$std\+::string, \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\+\_\+cgi}}$>$ Location\+Config\+::cgi\+\_\+locations}
+
+\Hypertarget{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}\index{LocationConfig@{LocationConfig}!is\_redir@{is\_redir}}
+\index{is\_redir@{is\_redir}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{is\_redir}{is\_redir}}
+{\footnotesize\ttfamily \label{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34} 
+bool Location\+Config\+::is\+\_\+redir}
+
+\Hypertarget{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}\index{LocationConfig@{LocationConfig}!is\_root@{is\_root}}
+\index{is\_root@{is\_root}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{is\_root}{is\_root}}
+{\footnotesize\ttfamily \label{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02} 
+bool Location\+Config\+::is\+\_\+root}
+
+\Hypertarget{struct_location_config_af1bb7fed770070d6ff51eee821d50580}\index{LocationConfig@{LocationConfig}!loc\_allowed\_methods@{loc\_allowed\_methods}}
+\index{loc\_allowed\_methods@{loc\_allowed\_methods}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{loc\_allowed\_methods}{loc\_allowed\_methods}}
+{\footnotesize\ttfamily \label{struct_location_config_af1bb7fed770070d6ff51eee821d50580} 
+unsigned char Location\+Config\+::loc\+\_\+allowed\+\_\+methods}
+
+\Hypertarget{struct_location_config_a10d82014e26eda8490b372ab525f229d}\index{LocationConfig@{LocationConfig}!loc\_default\_pages@{loc\_default\_pages}}
+\index{loc\_default\_pages@{loc\_default\_pages}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{loc\_default\_pages}{loc\_default\_pages}}
+{\footnotesize\ttfamily \label{struct_location_config_a10d82014e26eda8490b372ab525f229d} 
+std\+::vector$<$std\+::string$>$ Location\+Config\+::loc\+\_\+default\+\_\+pages}
+
+\Hypertarget{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}\index{LocationConfig@{LocationConfig}!loc\_error\_mode@{loc\_error\_mode}}
+\index{loc\_error\_mode@{loc\_error\_mode}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{loc\_error\_mode}{loc\_error\_mode}}
+{\footnotesize\ttfamily \label{struct_location_config_a575f1eb25902aee238e1890b0475b2fc} 
+\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} Location\+Config\+::loc\+\_\+error\+\_\+mode}
+
+\Hypertarget{struct_location_config_a8e65310785507dab7b87257f40a6761d}\index{LocationConfig@{LocationConfig}!loc\_error\_pages@{loc\_error\_pages}}
+\index{loc\_error\_pages@{loc\_error\_pages}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{loc\_error\_pages}{loc\_error\_pages}}
+{\footnotesize\ttfamily \label{struct_location_config_a8e65310785507dab7b87257f40a6761d} 
+std\+::map$<$int, std\+::string$>$ Location\+Config\+::loc\+\_\+error\+\_\+pages}
+
+\Hypertarget{struct_location_config_ac491f691a5205041cc7998745ca77e7e}\index{LocationConfig@{LocationConfig}!loc\_root@{loc\_root}}
+\index{loc\_root@{loc\_root}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{loc\_root}{loc\_root}}
+{\footnotesize\ttfamily \label{struct_location_config_ac491f691a5205041cc7998745ca77e7e} 
+std\+::string Location\+Config\+::loc\+\_\+root}
+
+\Hypertarget{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}\index{LocationConfig@{LocationConfig}!path\_root@{path\_root}}
+\index{path\_root@{path\_root}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{path\_root}{path\_root}}
+{\footnotesize\ttfamily \label{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0} 
+std\+::string Location\+Config\+::path\+\_\+root}
+
+\Hypertarget{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}\index{LocationConfig@{LocationConfig}!redirections@{redirections}}
+\index{redirections@{redirections}!LocationConfig@{LocationConfig}}
+\doxysubsubsection{\texorpdfstring{redirections}{redirections}}
+{\footnotesize\ttfamily \label{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa} 
+std\+::map$<$int, std\+::string$>$ Location\+Config\+::redirections}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{ws__structs_8hpp}{ws\+\_\+structs.\+hpp}}\end{DoxyCompactItemize}

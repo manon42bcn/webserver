@@ -1,0 +1,65 @@
+.TH "websrv/srcs/parse/split.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/split.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::map< int, std::string > \fBsplit_error_pages\fP (std::string error_pages)"
+.br
+.RI "Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. "
+.ti -1c
+.RI "std::vector< std::string > \fBsplit_default_pages\fP (std::string default_pages)"
+.br
+.RI "Splits a string of default pages into a vector of strings, separated by spaces\&. "
+.ti -1c
+.RI "std::vector< std::string > \fBsplit_string\fP (std::string str)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "std::vector< std::string > split_default_pages (std::string default_pages)"
+
+.PP
+Splits a string of default pages into a vector of strings, separated by spaces\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdefault_pages\fP The string containing default pages\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A vector of default page strings\&. 
+.RE
+.PP
+
+.SS "std::map< int, std::string > split_error_pages (std::string error_pages)"
+
+.PP
+Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror_pages\fP The string containing error pages\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A map of error codes to file paths\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string > split_string (std::string str)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

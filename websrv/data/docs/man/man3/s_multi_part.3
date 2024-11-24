@@ -1,0 +1,77 @@
+.TH "s_multi_part" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+s_multi_part \- Represents a multipart section within an HTTP request payload\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <HttpMultipartHandler\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBs_multi_part\fP (std::string di, std::string n, std::string fn, std::string t, std::string d)"
+.br
+.ti -1c
+.RI "\fBs_multi_part\fP (std::string fn, \fBe_content_type\fP dt, std::string d)"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBdisposition\fP"
+.br
+.ti -1c
+.RI "std::string \fBname\fP"
+.br
+.ti -1c
+.RI "std::string \fBfilename\fP"
+.br
+.ti -1c
+.RI "std::string \fBtype\fP"
+.br
+.ti -1c
+.RI "std::string \fBdata\fP"
+.br
+.ti -1c
+.RI "\fBe_content_type\fP \fBdata_type\fP"
+.br
+.ti -1c
+.RI "\fBe_http_sts\fP \fBstatus\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a multipart section within an HTTP request payload\&. 
+
+Contains details about a multipart element such as the disposition, name, filename, content type, data, and status\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "s_multi_part::s_multi_part (std::string di, std::string n, std::string fn, std::string t, std::string d)\fR [inline]\fP"
+
+.SS "s_multi_part::s_multi_part (std::string fn, \fBe_content_type\fP dt, std::string d)\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "std::string s_multi_part::data"
+
+.SS "\fBe_content_type\fP s_multi_part::data_type"
+
+.SS "std::string s_multi_part::disposition"
+
+.SS "std::string s_multi_part::filename"
+
+.SS "std::string s_multi_part::name"
+
+.SS "\fBe_http_sts\fP s_multi_part::status"
+
+.SS "std::string s_multi_part::type"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

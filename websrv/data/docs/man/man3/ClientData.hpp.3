@@ -1,0 +1,51 @@
+.TH "websrv/inc/ClientData.hpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/inc/ClientData.hpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'SocketHandler\&.hpp'\fP
+.br
+\fR#include 'Logger\&.hpp'\fP
+.br
+\fR#include <poll\&.h>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <ctime>\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "class \fBClientData\fP"
+.br
+.RI "Manages individual client connections in the web server, tracking their state and activity\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCD_MODULE\fP   'ClientData'"
+.br
+.ti -1c
+.RI "#define \fBTIMEOUT_REQUEST\fP   10"
+.br
+.ti -1c
+.RI "#define \fBTIMEOUT_CLIENT\fP   10"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define CD_MODULE   'ClientData'"
+
+.SS "#define TIMEOUT_CLIENT   10"
+
+.SS "#define TIMEOUT_REQUEST   10"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

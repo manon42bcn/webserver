@@ -1,0 +1,75 @@
+.TH "websrv/srcs/parse/print.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/print.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBprint_raw_lines\fP (std::vector< std::string > rawLines)"
+.br
+.RI "Prints raw lines from a vector of strings\&. "
+.ti -1c
+.RI "void \fBprint_server_config\fP (\fBServerConfig\fP server)"
+.br
+.RI "Prints the server configuration\&. "
+.ti -1c
+.RI "void \fBprint_location_config\fP (\fBLocationConfig\fP location)"
+.br
+.RI "Prints the location configuration\&. "
+.ti -1c
+.RI "std::string \fBprint_bitwise_method\fP (unsigned char method)"
+.br
+.ti -1c
+.RI "void \fBprint_servers\fP (std::vector< \fBServerConfig\fP > servers)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "std::string print_bitwise_method (unsigned char method)"
+
+.SS "void print_location_config (\fBLocationConfig\fP location)"
+
+.PP
+Prints the location configuration\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP The location configuration to print\&. 
+.RE
+.PP
+
+.SS "void print_raw_lines (std::vector< std::string > rawLines)"
+
+.PP
+Prints raw lines from a vector of strings\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIrawLines\fP The vector of strings to print\&. 
+.RE
+.PP
+
+.SS "void print_server_config (\fBServerConfig\fP server)"
+
+.PP
+Prints the server configuration\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver\fP The server configuration to print\&. 
+.RE
+.PP
+
+.SS "void print_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/16 02:23:11 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/23 03:38:59 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -190,4 +190,8 @@ void ClientData::keep_active() {
  */
 void ClientData::kill_client() {
 	_alive = false;
+}
+
+s_request& ClientData::client_request() {
+	return (_request);
 }

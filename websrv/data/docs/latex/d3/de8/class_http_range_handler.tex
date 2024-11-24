@@ -1,0 +1,160 @@
+\doxysection{Http\+Range\+Handler Class Reference}
+\hypertarget{class_http_range_handler}{}\label{class_http_range_handler}\index{HttpRangeHandler@{HttpRangeHandler}}
+
+
+Manages HTTP requests that include range-\/specific content, such as partial file downloads.  
+
+
+
+
+{\ttfamily \#include $<$Http\+Range\+Handler.\+hpp$>$}
+
+Inheritance diagram for Http\+Range\+Handler\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{d3/de8/class_http_range_handler}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_http_range_handler_ada770279e3a8c8608a54a588bfdf6fbe}{Http\+Range\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs an {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}} for handling HTTP range requests. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_http_range_handler_a9eb046811130668c9a85d7df2798187e}{handle\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Processes the HTTP range request, allowing only GET requests. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_ws_response_handler_a3cd12128a8690f0dfa0d4e5c8619b995}{Ws\+Response\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to manage web server responses. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_ws_response_handler_a8baab27d8124fd3ec88dc9727b280ac7}{\texorpdfstring{$\sim$}{\string~}\+Ws\+Response\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} class. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_abeedbeb84a4e00fcbf33c1864d7c6a15}{send\+\_\+error\+\_\+response}} ()
+\begin{DoxyCompactList}\small\item\em Sends an HTTP error response to the client, using a custom error page if available. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_ac8c8694f89236b819db3906a1e2f1872}{redirection}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP redirection for the current request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_a644b3ca7a7cec3dc191f182fb47cc68f}{handle\+\_\+post}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP POST requests, validating access, saving data, and sending a response. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a1e1d6f36fa589140b0feb50013295720}{handle\+\_\+delete}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP DELETE requests by checking permissions and deleting the specified resource. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aaa165d0cdad3ce51a5e1bd755b501277}{validate\+\_\+payload}} ()
+\begin{DoxyCompactList}\small\item\em Validates the payload of an HTTP request to ensure it meets requirements. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a567d0413981e44eae8146cba69ae8a7a}{save\+\_\+file}} (const std\+::string \&save\+\_\+path, const std\+::string \&content)
+\begin{DoxyCompactList}\small\item\em Saves the provided content to a specified file path. \end{DoxyCompactList}\item 
+virtual std\+::string \mbox{\hyperlink{class_ws_response_handler_a1f6fa4b16b1bb217c5c76f84de70cd0b}{header}} (int code, size\+\_\+t content\+\_\+size, std\+::string mime)
+\begin{DoxyCompactList}\small\item\em Constructs an HTTP response header based on provided parameters. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_ac1c7496ce4287eb698166bbe52852cfa}{send\+\_\+response}} (const std\+::string \&body, const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Sends an HTTP response with the specified body content and inferred MIME type. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a01217e2efc87284c0642d2a4341fc26b}{sender}} (const std\+::string \&body)
+\begin{DoxyCompactList}\small\item\em Sends the HTTP response to the client through the socket file descriptor. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_a1b93f248882a4eda90403c83321071a4}{default\+\_\+plain\+\_\+error}} ()
+\begin{DoxyCompactList}\small\item\em Generates a default HTML error page for the HTTP response. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_ws_response_handler_ad11ac0e6036e8a641cfe74569c47314f}{turn\+\_\+off\+\_\+sanity}} (\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} status, std\+::string detail)
+\begin{DoxyCompactList}\small\item\em Disables further request processing by marking the request as invalid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_a85c6c1dda9c16243a5cb1cbe7d7981e8}{\+\_\+location}}
+\item 
+const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ad16c39c951b521fbb836260bfdd620b2}{\+\_\+log}}
+\item 
+\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ab10cfb3b580bd147399038a7a2431e9b}{\+\_\+client\+\_\+data}}
+\item 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& \mbox{\hyperlink{class_ws_response_handler_a394876bb9233128373d9aa1c2a6fb392}{\+\_\+request}}
+\item 
+\mbox{\hyperlink{structs__content}{s\+\_\+content}} \mbox{\hyperlink{class_ws_response_handler_a67ccf1b36d737f643651b8df1d207870}{\+\_\+response\+\_\+data}}
+\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_ad89c7d5cc6459655f69f0f4db824757f}{\+\_\+headers}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages HTTP requests that include range-\/specific content, such as partial file downloads. 
+
+This class extends {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to handle HTTP requests with a range header, enabling partial content retrieval for efficient file handling and data streaming.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}} processes requests with range headers, validates content range, and reads file content based on the specified range.
+\item Supports GET requests with range validation for files and manages content responses.
+\item Relies on configuration from {\ttfamily \doxylink{struct_location_config}{Location\+Config}} and logs actions via {\ttfamily \doxylink{class_logger}{Logger}}.
+\end{DoxyItemize}\hypertarget{class_http_range_handler_autotoc_md4}{}\doxysubsubsubsection{\texorpdfstring{Public Methods}{Public Methods}}\label{class_http_range_handler_autotoc_md4}
+
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}(const \doxylink{struct_location_config}{Location\+Config} \texorpdfstring{$\ast$}{*}location, const \doxylink{class_logger}{Logger} \texorpdfstring{$\ast$}{*}log, Client\+Data\texorpdfstring{$\ast$}{*} client\+\_\+data, \doxylink{structs__request}{s\+\_\+request}\& request, int fd)}\+: Constructor initializing the range handler with configuration, logger, and client data.
+\item {\ttfamily \texorpdfstring{$\sim$}{\string~}\+Http\+Range\+Handler()}\+: Destructor to clean up resources, particularly file descriptors.
+\item {\ttfamily bool \doxylink{class_http_range_handler_a9eb046811130668c9a85d7df2798187e}{handle\+\_\+request()}}\+: Processes the HTTP request, validating the range and retrieving file content.
+\end{DoxyItemize}\hypertarget{class_http_range_handler_autotoc_md5}{}\doxysubsubsubsection{\texorpdfstring{Private Methods}{Private Methods}}\label{class_http_range_handler_autotoc_md5}
+
+\begin{DoxyItemize}
+\item {\ttfamily bool handle\+\_\+get()}\+: Handles GET requests, validating and serving the requested content range.
+\item {\ttfamily void get\+\_\+file\+\_\+content(std\+::string\& path)}\+: Reads the specified file content for the range.
+\item {\ttfamily bool validate\+\_\+content\+\_\+range(size\+\_\+t file\+\_\+size)}\+: Ensures the specified content range is valid within the file\textquotesingle{}s total size.
+\item {\ttfamily void parse\+\_\+content\+\_\+range()}\+: Parses the range header to determine the requested content range.
+\item {\ttfamily void get\+\_\+file\+\_\+content(int pid, int (\&fd)\mbox{[}2\mbox{]})}\+: Reads file content within a child process for specific cases, managing pipes. 
+\end{DoxyItemize}
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_http_range_handler_ada770279e3a8c8608a54a588bfdf6fbe}\index{HttpRangeHandler@{HttpRangeHandler}!HttpRangeHandler@{HttpRangeHandler}}
+\index{HttpRangeHandler@{HttpRangeHandler}!HttpRangeHandler@{HttpRangeHandler}}
+\doxysubsubsection{\texorpdfstring{HttpRangeHandler()}{HttpRangeHandler()}}
+{\footnotesize\ttfamily \label{class_http_range_handler_ada770279e3a8c8608a54a588bfdf6fbe} 
+Http\+Range\+Handler\+::\+Http\+Range\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{, }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Constructs an {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}} for handling HTTP range requests. 
+
+Initializes the {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}} by passing the location configuration, logger, client data, request structure, and file descriptor to the base class, {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}}. Logs the initialization process to facilitate tracing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & Pointer to {\ttfamily \doxylink{struct_location_config}{Location\+Config}}, providing server configuration settings for the requested location. \\
+\hline
+{\em log} & Pointer to the {\ttfamily \doxylink{class_logger}{Logger}} instance for logging operations. \\
+\hline
+{\em client\+\_\+data} & Pointer to {\ttfamily \doxylink{class_client_data}{Client\+Data}}, containing information about the client connection. \\
+\hline
+{\em request} & Reference to an {\ttfamily \doxylink{structs__request}{s\+\_\+request}} structure holding parsed HTTP request data. \\
+\hline
+{\em fd} & File descriptor used for managing the response output.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Assumes that {\ttfamily location}, {\ttfamily log}, and {\ttfamily client\+\_\+data} are valid pointers. 
+\end{DoxyNote}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_http_range_handler_a9eb046811130668c9a85d7df2798187e}\index{HttpRangeHandler@{HttpRangeHandler}!handle\_request@{handle\_request}}
+\index{handle\_request@{handle\_request}!HttpRangeHandler@{HttpRangeHandler}}
+\doxysubsubsection{\texorpdfstring{handle\_request()}{handle\_request()}}
+{\footnotesize\ttfamily \label{class_http_range_handler_a9eb046811130668c9a85d7df2798187e} 
+bool Http\+Range\+Handler\+::handle\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Processes the HTTP range request, allowing only GET requests. 
+
+This method handles HTTP range requests, verifying that the request method is {\ttfamily GET}. If the method is {\ttfamily GET}, it proceeds with {\ttfamily handle\+\_\+get()} to manage the range response. For any other method, it disables sanity, logs an error, and sends an HTTP bad request response.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the request was processed as a GET range request; {\ttfamily false} otherwise.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Only {\ttfamily GET} requests are supported for range handling. Other methods will result in a {\ttfamily 400 Bad Request}. 
+\end{DoxyNote}
+
+
+Reimplemented from \mbox{\hyperlink{class_ws_response_handler_ac424b9087f15dc526de36c473dd0b99b}{Ws\+Response\+Handler}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_http_range_handler_8hpp}{Http\+Range\+Handler.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_http_range_handler_8cpp}{Http\+Range\+Handler.\+cpp}}\end{DoxyCompactItemize}

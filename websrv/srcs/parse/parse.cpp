@@ -6,7 +6,7 @@
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:03:40 by vaguilar          #+#    #+#             */
-/*   Updated: 2024/11/21 03:37:06 by vaguilar         ###   ########.fr       */
+/*   Updated: 2024/11/23 18:31:28 by vaguilar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,9 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
         if (it->second.loc_error_pages.size() == 0)
             it->second.loc_error_pages =  server.error_pages;
     }
+
+    if (server.server_name == "")
+        server.server_name = "localhost";
 
     if (check_obligatory_params(server, logger))
         logger->fatal_log("parse_server_block", "Obligatory parameters are not valid.");

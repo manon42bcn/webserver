@@ -1,0 +1,161 @@
+\doxysection{Http\+Auto\+Index Class Reference}
+\hypertarget{class_http_auto_index}{}\label{class_http_auto_index}\index{HttpAutoIndex@{HttpAutoIndex}}
+
+
+The {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} class handles the generation of an automatic index for a directory listing.  
+
+
+
+
+{\ttfamily \#include $<$Http\+Auto\+Index.\+hpp$>$}
+
+Inheritance diagram for Http\+Auto\+Index\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{dc/d06/class_http_auto_index}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_http_auto_index_adef030c0feea501084d82cdf17811f73}{Http\+Auto\+Index}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a new {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} object. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_http_auto_index_ac86e61db08b2297750c609ff477ac864}{handle\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Handles an HTTP GET request for auto-\/generating a directory index. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_ws_response_handler_a3cd12128a8690f0dfa0d4e5c8619b995}{Ws\+Response\+Handler}} (const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}location, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}log, \mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}client\+\_\+data, \mbox{\hyperlink{structs__request}{s\+\_\+request}} \&request, int fd)
+\begin{DoxyCompactList}\small\item\em Constructs a {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to manage web server responses. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_ws_response_handler_a8baab27d8124fd3ec88dc9727b280ac7}{\texorpdfstring{$\sim$}{\string~}\+Ws\+Response\+Handler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} class. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_abeedbeb84a4e00fcbf33c1864d7c6a15}{send\+\_\+error\+\_\+response}} ()
+\begin{DoxyCompactList}\small\item\em Sends an HTTP error response to the client, using a custom error page if available. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_ac8c8694f89236b819db3906a1e2f1872}{redirection}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP redirection for the current request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aca126bfa03d064a8d94de7ab480b3733}{handle\+\_\+get}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP GET requests, validating access, resource data, and sending a response. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_a644b3ca7a7cec3dc191f182fb47cc68f}{handle\+\_\+post}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP POST requests, validating access, saving data, and sending a response. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a1e1d6f36fa589140b0feb50013295720}{handle\+\_\+delete}} ()
+\begin{DoxyCompactList}\small\item\em Handles HTTP DELETE requests by checking permissions and deleting the specified resource. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_aaa165d0cdad3ce51a5e1bd755b501277}{validate\+\_\+payload}} ()
+\begin{DoxyCompactList}\small\item\em Validates the payload of an HTTP request to ensure it meets requirements. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a567d0413981e44eae8146cba69ae8a7a}{save\+\_\+file}} (const std\+::string \&save\+\_\+path, const std\+::string \&content)
+\begin{DoxyCompactList}\small\item\em Saves the provided content to a specified file path. \end{DoxyCompactList}\item 
+virtual std\+::string \mbox{\hyperlink{class_ws_response_handler_a1f6fa4b16b1bb217c5c76f84de70cd0b}{header}} (int code, size\+\_\+t content\+\_\+size, std\+::string mime)
+\begin{DoxyCompactList}\small\item\em Constructs an HTTP response header based on provided parameters. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_ws_response_handler_ac1c7496ce4287eb698166bbe52852cfa}{send\+\_\+response}} (const std\+::string \&body, const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Sends an HTTP response with the specified body content and inferred MIME type. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_ws_response_handler_a01217e2efc87284c0642d2a4341fc26b}{sender}} (const std\+::string \&body)
+\begin{DoxyCompactList}\small\item\em Sends the HTTP response to the client through the socket file descriptor. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_a1b93f248882a4eda90403c83321071a4}{default\+\_\+plain\+\_\+error}} ()
+\begin{DoxyCompactList}\small\item\em Generates a default HTML error page for the HTTP response. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_ws_response_handler_ad11ac0e6036e8a641cfe74569c47314f}{turn\+\_\+off\+\_\+sanity}} (\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} status, std\+::string detail)
+\begin{DoxyCompactList}\small\item\em Disables further request processing by marking the request as invalid. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}}
+\begin{DoxyCompactItemize}
+\item 
+const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_a85c6c1dda9c16243a5cb1cbe7d7981e8}{\+\_\+location}}
+\item 
+const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ad16c39c951b521fbb836260bfdd620b2}{\+\_\+log}}
+\item 
+\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_ws_response_handler_ab10cfb3b580bd147399038a7a2431e9b}{\+\_\+client\+\_\+data}}
+\item 
+\mbox{\hyperlink{structs__request}{s\+\_\+request}} \& \mbox{\hyperlink{class_ws_response_handler_a394876bb9233128373d9aa1c2a6fb392}{\+\_\+request}}
+\item 
+\mbox{\hyperlink{structs__content}{s\+\_\+content}} \mbox{\hyperlink{class_ws_response_handler_a67ccf1b36d737f643651b8df1d207870}{\+\_\+response\+\_\+data}}
+\item 
+std\+::string \mbox{\hyperlink{class_ws_response_handler_ad89c7d5cc6459655f69f0f4db824757f}{\+\_\+headers}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} class handles the generation of an automatic index for a directory listing. 
+
+This class inherits from {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} and is responsible for providing a response that contains a directory index when requested. It includes methods for reading the content of a directory and generating the appropriate response. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_http_auto_index_adef030c0feea501084d82cdf17811f73}\index{HttpAutoIndex@{HttpAutoIndex}!HttpAutoIndex@{HttpAutoIndex}}
+\index{HttpAutoIndex@{HttpAutoIndex}!HttpAutoIndex@{HttpAutoIndex}}
+\doxysubsubsection{\texorpdfstring{HttpAutoIndex()}{HttpAutoIndex()}}
+{\footnotesize\ttfamily \label{class_http_auto_index_adef030c0feea501084d82cdf17811f73} 
+Http\+Auto\+Index\+::\+Http\+Auto\+Index (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{, }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a new {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} object. 
+
+This constructor initializes an {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} instance to handle auto-\/indexing of directory requests. It calls the base class {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} constructor to initialize common attributes, and then logs the initialization of the {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} handler.
+
+
+\begin{DoxyParams}{Parameters}
+{\em location} & A pointer to the {\ttfamily \doxylink{struct_location_config}{Location\+Config}} object containing location-\/specific settings. \\
+\hline
+{\em log} & A pointer to the {\ttfamily \doxylink{class_logger}{Logger}} object for logging purposes. \\
+\hline
+{\em client\+\_\+data} & A pointer to the {\ttfamily \doxylink{class_client_data}{Client\+Data}} object containing data for the current client. \\
+\hline
+{\em request} & A reference to the {\ttfamily \doxylink{structs__request}{s\+\_\+request}} structure containing the current request data. \\
+\hline
+{\em fd} & The file descriptor used for managing the connection.\\
+\hline
+\end{DoxyParams}
+The constructor performs the following actions\+:
+\begin{DoxyEnumerate}
+\item Calls the constructor of the base class {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to initialize the necessary attributes ({\ttfamily location}, {\ttfamily log}, {\ttfamily client\+\_\+data}, {\ttfamily request}, and {\ttfamily fd}).
+\item Logs a debug message indicating the successful initialization of the {\ttfamily \doxylink{class_http_auto_index}{Http\+Auto\+Index}} handler. 
+\end{DoxyEnumerate}
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_http_auto_index_ac86e61db08b2297750c609ff477ac864}\index{HttpAutoIndex@{HttpAutoIndex}!handle\_request@{handle\_request}}
+\index{handle\_request@{handle\_request}!HttpAutoIndex@{HttpAutoIndex}}
+\doxysubsubsection{\texorpdfstring{handle\_request()}{handle\_request()}}
+{\footnotesize\ttfamily \label{class_http_auto_index_ac86e61db08b2297750c609ff477ac864} 
+bool Http\+Auto\+Index\+::handle\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Handles an HTTP GET request for auto-\/generating a directory index. 
+
+This method processes an HTTP GET request to generate an automatic index page for a directory. It first checks if the GET method is allowed on the requested resource. If not allowed, it sends an HTTP 403 Forbidden response. If GET is allowed, it attempts to load the content of the directory by calling {\ttfamily get\+\_\+file\+\_\+content()}. Depending on the success of the file content loading, it either sends the generated HTML response or returns an error response.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the request is handled successfully and the response is sent, otherwise {\ttfamily false}.
+\end{DoxyReturn}
+The method follows these main steps\+:
+\begin{DoxyEnumerate}
+\item {\bfseries{Allowed Method Check}}\+:
+\begin{DoxyItemize}
+\item Checks if the HTTP GET method is allowed for the current resource by evaluating {\ttfamily \+\_\+location-\/\texorpdfstring{$>$}{>}loc\+\_\+allowed\+\_\+methods}.
+\item If GET is not allowed, the method sets the response status to HTTP 403 (Forbidden) and sends an error response.
+\item It then returns {\ttfamily false} indicating that the request was not handled successfully.
+\end{DoxyItemize}
+\item {\bfseries{Loading File Content}}\+:
+\begin{DoxyItemize}
+\item If GET is allowed, it calls {\ttfamily get\+\_\+file\+\_\+content()} to load the content of the directory indicated by {\ttfamily \+\_\+request.\+normalized\+\_\+path}.
+\item If the directory content is successfully loaded ({\ttfamily \+\_\+response\+\_\+data.\+status} is {\ttfamily true}), it sets the MIME type to {\ttfamily text/html}.
+\item Logs a debug message indicating that the file content will be sent.
+\item Sends the response containing the generated directory index using {\ttfamily \doxylink{class_ws_response_handler_ac1c7496ce4287eb698166bbe52852cfa}{send\+\_\+response()}}.
+\item Returns {\ttfamily true} if the response was successfully sent.
+\end{DoxyItemize}
+\item {\bfseries{Error Handling}}\+:
+\begin{DoxyItemize}
+\item If {\ttfamily get\+\_\+file\+\_\+content()} fails to load the directory content, it logs a debug message.
+\item Sends an error response using {\ttfamily \doxylink{class_ws_response_handler_abeedbeb84a4e00fcbf33c1864d7c6a15}{send\+\_\+error\+\_\+response()}}.
+\item Returns {\ttfamily false} indicating that an error occurred while handling the request. 
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+
+Reimplemented from \mbox{\hyperlink{class_ws_response_handler_ac424b9087f15dc526de36c473dd0b99b}{Ws\+Response\+Handler}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_http_auto_index_8hpp}{Http\+Auto\+Index.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_http_auto_index_8cpp}{Http\+Auto\+Index.\+cpp}}\end{DoxyCompactItemize}

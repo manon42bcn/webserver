@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/18 15:29:53 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/24 02:14:35 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ HttpCGIHandler::~HttpCGIHandler () {
  * - **Error Handling**: Sends appropriate error responses if validation fails.
  */
 bool HttpCGIHandler::handle_request() {
-//	TODO: This is a workaround to fix some path issues
 	if (_request.normalized_path[_request.normalized_path.size() - 1] != '/') {
 		_request.normalized_path += "/";
 	}
@@ -309,20 +308,21 @@ void HttpCGIHandler::get_file_content(int pid, int (&fd)[2]) {
  * - **Null-Termination**: Ensures the environment array is null-terminated as required by `execve`.
  */
 std::vector<char*> HttpCGIHandler::cgi_environment() {
+	const ServerConfig* host = _request.host_config;
 	std::vector<std::string> env_vars;
 
 	env_vars.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vars.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	env_vars.push_back("HTTP_COOKIE=" + _request.cookie);
-	env_vars.push_back("REQUEST_METHOD=" + method_enum_to_string(_request.method));
+	env_vars.push_back("REQUEST_METHOD=" + _request.method_str);
 	env_vars.push_back("QUERY_STRING=" + _request.query);
 	env_vars.push_back("CONTENT_TYPE=" + _request.content_type);
 	env_vars.push_back("CONTENT_LENGTH=" + int_to_string((int)_request.content_length));
 	env_vars.push_back("PATH_INFO=" + _request.path_info);
 	env_vars.push_back("SCRIPT_NAME=" + _request.script);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_NAME=" + _client_data->get_server()->get_config().server_name);
-	env_vars.push_back("SERVER_PORT=" + _client_data->get_server()->get_port());
+	env_vars.push_back("SERVER_NAME=" + host->server_name);
+	env_vars.push_back("SERVER_NAME=" + host->server_name);
+	env_vars.push_back("SERVER_PORT=" + host->server_name);
 	std::vector<char*> env_ptrs;
 	try {
 		for (size_t i = 0; i < env_vars.size(); ++i) {

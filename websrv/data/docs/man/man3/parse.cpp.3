@@ -1,0 +1,40 @@
+.TH "websrv/srcs/parse/parse.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/parse.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLocationConfig\fP \fBparse_location_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "\fBServerConfig\fP \fBparse_server_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::vector< \fBServerConfig\fP > \fBparse_servers\fP (std::vector< std::string > rawLines, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::vector< \fBServerConfig\fP > \fBparse_file\fP (std::string path, \fBLogger\fP *logger)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "std::vector< \fBServerConfig\fP > parse_file (std::string path, \fBLogger\fP * logger)"
+
+.SS "\fBLocationConfig\fP parse_location_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
+
+.SS "\fBServerConfig\fP parse_server_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
+
+.SS "std::vector< \fBServerConfig\fP > parse_servers (std::vector< std::string > rawLines, \fBLogger\fP * logger)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

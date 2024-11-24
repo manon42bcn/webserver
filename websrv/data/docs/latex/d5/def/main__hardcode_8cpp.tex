@@ -1,0 +1,140 @@
+\doxysection{websrv/srcs/main\+\_\+hardcode.cpp File Reference}
+\hypertarget{main__hardcode_8cpp}{}\label{main__hardcode_8cpp}\index{websrv/srcs/main\_hardcode.cpp@{websrv/srcs/main\_hardcode.cpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$sys/socket.\+h$>$}\newline
+{\ttfamily \#include $<$netinet/in.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$poll.\+h$>$}\newline
+{\ttfamily \#include $<$fcntl.\+h$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include $<$cstdlib$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include "{}Server\+Manager.\+hpp"{}}\newline
+{\ttfamily \#include $<$signal.\+h$>$}\newline
+{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main__hardcode_8cpp_a7da340630db90f46a57cb6939626e2ee}{print\+\_\+server\+\_\+config}} (const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&config, std\+::string location)
+\item 
+void \mbox{\hyperlink{main__hardcode_8cpp_a2d370221fb0194cd1a79364eece10199}{print\+\_\+vector\+\_\+config}} (const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&config, std\+::string location)
+\item 
+bool \mbox{\hyperlink{main__hardcode_8cpp_ae00ec3b5c2599d9237908e09f691cc79}{is\+\_\+dir}} (std\+::string ruta)
+\item 
+bool \mbox{\hyperlink{main__hardcode_8cpp_aeb660fc493c660dd9ecca3606adae3f0}{is\+\_\+file}} (std\+::string ruta)
+\item 
+std\+::string \mbox{\hyperlink{main__hardcode_8cpp_ad3165bd822066c8f5e48045057f94913}{int\+\_\+to\+\_\+string}} (int number)
+\begin{DoxyCompactList}\small\item\em Converts an integer to a string. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main__hardcode_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc}{starts\+\_\+with}} (const std\+::string \&str, const std\+::string \&prefix)
+\begin{DoxyCompactList}\small\item\em Converts an integer to a string. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main__hardcode_8cpp_a6aa59f98cad89c73966351ad7afb303c}{signal\+\_\+handler}} (int sig)
+\item 
+int \mbox{\hyperlink{main__hardcode_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_server_manager}{Server\+Manager}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{main__hardcode_8cpp_a5e1dbc6492c3297fcd501faa82bea834}{running\+\_\+server}} = NULL
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{main__hardcode_8cpp_ad3165bd822066c8f5e48045057f94913}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!int\_to\_string@{int\_to\_string}}
+\index{int\_to\_string@{int\_to\_string}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{int\_to\_string()}{int\_to\_string()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_ad3165bd822066c8f5e48045057f94913} 
+std\+::string int\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{int}]{number}{}\end{DoxyParamCaption})}
+
+
+
+Converts an integer to a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em number} & The integer to convert. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the integer. 
+\end{DoxyReturn}
+\Hypertarget{main__hardcode_8cpp_ae00ec3b5c2599d9237908e09f691cc79}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!is\_dir@{is\_dir}}
+\index{is\_dir@{is\_dir}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_dir()}{is\_dir()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_ae00ec3b5c2599d9237908e09f691cc79} 
+bool is\+\_\+dir (\begin{DoxyParamCaption}\item[{std\+::string}]{ruta}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_aeb660fc493c660dd9ecca3606adae3f0}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!is\_file@{is\_file}}
+\index{is\_file@{is\_file}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{is\_file()}{is\_file()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_aeb660fc493c660dd9ecca3606adae3f0} 
+bool is\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{ruta}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!main@{main}}
+\index{main@{main}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a3c04138a5bfe5d72780bb7e82a18e627} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_a7da340630db90f46a57cb6939626e2ee}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!print\_server\_config@{print\_server\_config}}
+\index{print\_server\_config@{print\_server\_config}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_server\_config()}{print\_server\_config()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a7da340630db90f46a57cb6939626e2ee} 
+void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_a2d370221fb0194cd1a79364eece10199}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!print\_vector\_config@{print\_vector\_config}}
+\index{print\_vector\_config@{print\_vector\_config}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{print\_vector\_config()}{print\_vector\_config()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a2d370221fb0194cd1a79364eece10199} 
+void print\+\_\+vector\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_a6aa59f98cad89c73966351ad7afb303c}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!signal\_handler@{signal\_handler}}
+\index{signal\_handler@{signal\_handler}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{signal\_handler()}{signal\_handler()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a6aa59f98cad89c73966351ad7afb303c} 
+void signal\+\_\+handler (\begin{DoxyParamCaption}\item[{int}]{sig}{}\end{DoxyParamCaption})}
+
+\Hypertarget{main__hardcode_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!starts\_with@{starts\_with}}
+\index{starts\_with@{starts\_with}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{starts\_with()}{starts\_with()}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc} 
+bool starts\+\_\+with (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{, }\item[{const std\+::string \&}]{prefix}{}\end{DoxyParamCaption})}
+
+
+
+Converts an integer to a string. 
+
+This function converts an integer to its string representation using a stringstream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em number} & The integer to be converted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the provided integer.
+\end{DoxyReturn}
+Checks if a string starts with a given prefix.
+
+This function checks whether the provided string begins with the specified prefix.
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & The string to be checked. \\
+\hline
+{\em prefix} & The prefix to check for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the string starts with the prefix, otherwise {\ttfamily false}. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{main__hardcode_8cpp_a5e1dbc6492c3297fcd501faa82bea834}\index{main\_hardcode.cpp@{main\_hardcode.cpp}!running\_server@{running\_server}}
+\index{running\_server@{running\_server}!main\_hardcode.cpp@{main\_hardcode.cpp}}
+\doxysubsubsection{\texorpdfstring{running\_server}{running\_server}}
+{\footnotesize\ttfamily \label{main__hardcode_8cpp_a5e1dbc6492c3297fcd501faa82bea834} 
+\mbox{\hyperlink{class_server_manager}{Server\+Manager}}\texorpdfstring{$\ast$}{*} running\+\_\+server = NULL}
+

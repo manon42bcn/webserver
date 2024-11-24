@@ -1,0 +1,223 @@
+.TH "ClientData" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ClientData \- Manages individual client connections in the web server, tracking their state and activity\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ClientData\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBClientData\fP (\fBSocketHandler\fP *server, const \fBLogger\fP *log, int fd)"
+.br
+.RI "Constructs a \fR\fBClientData\fP\fP instance for a client connection\&. "
+.ti -1c
+.RI "\fB~ClientData\fP ()"
+.br
+.RI "Destructor for \fR\fBClientData\fP\fP, cleaning up resources associated with the client connection\&. "
+.ti -1c
+.RI "void \fBclose_fd\fP ()"
+.br
+.RI "Closes the client's socket file descriptor and marks it as inactive\&. "
+.ti -1c
+.RI "\fBSocketHandler\fP * \fBget_server\fP ()"
+.br
+.RI "Retrieves the server's socket handler associated with this client\&. "
+.ti -1c
+.RI "struct pollfd \fBget_fd\fP ()"
+.br
+.RI "Retrieves the client's poll file descriptor structure\&. "
+.ti -1c
+.RI "bool \fBchronos_request\fP ()"
+.br
+.RI "Checks if the client connection has exceeded the request timeout\&. "
+.ti -1c
+.RI "void \fBchronos_reset\fP ()"
+.br
+.RI "Resets the client activity timestamp to the current time\&. "
+.ti -1c
+.RI "bool \fBchronos_connection\fP ()"
+.br
+.RI "Checks if the client connection has exceeded the client timeout\&. "
+.ti -1c
+.RI "void \fBdeactivate\fP ()"
+.br
+.RI "Marks the client connection as inactive\&. "
+.ti -1c
+.RI "void \fBkill_client\fP ()"
+.br
+.RI "Sets the client life cycle to false\&. "
+.ti -1c
+.RI "bool \fBis_alive\fP () const"
+.br
+.RI "Checks if the client was set to kill\&. "
+.ti -1c
+.RI "bool \fBis_active\fP () const"
+.br
+.RI "Checks if the client connection is set to remain active\&. "
+.ti -1c
+.RI "void \fBkeep_active\fP ()"
+.br
+.RI "Sets the client connection as active\&. "
+.ti -1c
+.RI "\fBs_request\fP & \fBclient_request\fP ()"
+.br
+.ti -1c
+.RI "void \fBto_pollout\fP ()"
+.br
+.ti -1c
+.RI "void \fBto_pollin\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages individual client connections in the web server, tracking their state and activity\&. 
+
+The \fR\fBClientData\fP\fP class encapsulates client connection data and provides methods to monitor and control the client's connection state, such as handling timeouts, deactivation, and status checks\&. Each instance is associated with a specific client connection, providing an interface for managing socket file descriptors, connection timestamps, and logging\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "ClientData::ClientData (\fBSocketHandler\fP * server, const \fBLogger\fP * log, int fd)"
+
+.PP
+Constructs a \fR\fBClientData\fP\fP instance for a client connection\&. Initializes the client data with the provided server socket handler, logger, and client file descriptor\&. Sets initial connection state to active and timestamps the connection for monitoring\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver\fP Pointer to the server's \fR\fBSocketHandler\fP\fP, responsible for managing the client connection\&. 
+.br
+\fIlog\fP Pointer to the \fR\fBLogger\fP\fP instance for recording client activities\&. 
+.br
+\fIfd\fP File descriptor for the client's socket, set to monitor read events (\fRPOLLIN\fP)\&. 
+.RE
+.PP
+
+.SS "ClientData::~ClientData ()"
+
+.PP
+Destructor for \fR\fBClientData\fP\fP, cleaning up resources associated with the client connection\&. Closes the client's socket file descriptor if it is open, and logs the cleanup process\&. Catches any exceptions during cleanup to ensure safe and consistent deallocation\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool ClientData::chronos_connection ()"
+
+.PP
+Checks if the client connection has exceeded the client timeout\&. 
+.PP
+\fBNote\fP
+.RS 4
+This method controls timeout using last request timestamp\&. Similar to \fR\fBchronos_request()\fP\fP, but uses a longer timeout threshold (\fRTIMEOUT_CLIENT\fP)\&. This is typically used to determine if the client session itself should be terminated\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the client connection is still within the allowed client timeout period, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool ClientData::chronos_request ()"
+
+.PP
+Checks if the client connection has exceeded the request timeout\&. 
+.PP
+\fBNote\fP
+.RS 4
+This method controls only request related timeout\&.
+.RE
+.PP
+Compares the current time with the last recorded activity timestamp\&. If the difference exceeds \fRTIMEOUT_REQUEST\fP, marks the client as inactive\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+True if the client connection is still within the timeout period, false otherwise\&. 
+.RE
+.PP
+
+.SS "void ClientData::chronos_reset ()"
+
+.PP
+Resets the client activity timestamp to the current time\&. Updates \fR_timestamp\fP with the current time, effectively marking recent activity and resetting the timeout period for the client\&. 
+.SS "\fBs_request\fP & ClientData::client_request ()"
+
+.SS "void ClientData::close_fd ()"
+
+.PP
+Closes the client's socket file descriptor and marks it as inactive\&. Attempts to close the client's file descriptor (\fRfd\fP) and set \fR_active\fP to \fRfalse\fP\&. Logs the closure process and any issues that arise\&. If the \fRfd\fP is already inactive or invalid, it logs a warning message instead\&.
+
+.PP
+\fBNote\fP
+.RS 4
+Ensures safe cleanup of client resources, preventing potential resource leaks\&. 
+.RE
+.PP
+
+.SS "void ClientData::deactivate ()"
+
+.PP
+Marks the client connection as inactive\&. Sets \fR_active\fP to \fRfalse\fP, indicating that the client connection is no longer active\&. This can be used in conjunction with timeout checks or when a connection is manually closed\&. 
+.SS "struct pollfd ClientData::get_fd ()"
+
+.PP
+Retrieves the client's poll file descriptor structure\&. Provides access to the \fRpollfd\fP structure, which contains the client's file descriptor and event monitoring settings (e\&.g\&., \fRPOLLIN\fP for incoming data)\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A \fRpollfd\fP structure containing the client's file descriptor and polling events\&. 
+.RE
+.PP
+
+.SS "\fBSocketHandler\fP * ClientData::get_server ()"
+
+.PP
+Retrieves the server's socket handler associated with this client\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Pointer to the \fR\fBSocketHandler\fP\fP instance managing the server connection for this client\&. 
+.RE
+.PP
+
+.SS "bool ClientData::is_active () const"
+
+.PP
+Checks if the client connection is set to remain active\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the client connection is active, false otherwise\&. 
+.RE
+.PP
+
+.SS "bool ClientData::is_alive () const"
+
+.PP
+Checks if the client was set to kill\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the client is alive, false otherwise\&. 
+.RE
+.PP
+
+.SS "void ClientData::keep_active ()"
+
+.PP
+Sets the client connection as active\&. Updates the \fR_active\fP flag to \fRtrue\fP, indicating that the client connection is currently in use and not eligible for cleanup or timeout handling\&. 
+.SS "void ClientData::kill_client ()"
+
+.PP
+Sets the client life cycle to false\&. Updates the \fR_alive\fP flag to \fRfalse\fP, indicating that the client connection Process should end\&. 
+.SS "void ClientData::to_pollin ()\fR [inline]\fP"
+
+.SS "void ClientData::to_pollout ()\fR [inline]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

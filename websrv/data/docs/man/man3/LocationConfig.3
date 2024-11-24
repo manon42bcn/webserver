@@ -1,0 +1,102 @@
+.TH "LocationConfig" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+LocationConfig \- Represents the configuration for a specific location within a server\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <ws_structs\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBLocationConfig\fP ()"
+.br
+.ti -1c
+.RI "\fBLocationConfig\fP (std::string r, std::vector< std::string > &dp, \fBt_mode\fP em, std::map< int, std::string > &ep)"
+.br
+.in -1c
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBloc_root\fP"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBloc_default_pages\fP"
+.br
+.ti -1c
+.RI "\fBt_mode\fP \fBloc_error_mode\fP"
+.br
+.ti -1c
+.RI "std::map< int, std::string > \fBloc_error_pages\fP"
+.br
+.ti -1c
+.RI "unsigned char \fBloc_allowed_methods\fP"
+.br
+.ti -1c
+.RI "bool \fBautoindex\fP"
+.br
+.ti -1c
+.RI "bool \fBcgi_file\fP"
+.br
+.ti -1c
+.RI "std::map< std::string, \fBt_cgi\fP > \fBcgi_locations\fP"
+.br
+.ti -1c
+.RI "std::map< int, std::string > \fBredirections\fP"
+.br
+.ti -1c
+.RI "bool \fBis_root\fP"
+.br
+.ti -1c
+.RI "bool \fBis_redir\fP"
+.br
+.ti -1c
+.RI "std::string \fBpath_root\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents the configuration for a specific location within a server\&. 
+
+This structure holds all configuration parameters specific to a location (e\&.g\&., a particular path or directory) within a server\&. It includes settings for default pages, error handling, CGI configurations, redirections, and allowed methods\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "LocationConfig::LocationConfig ()\fR [inline]\fP"
+
+.SS "LocationConfig::LocationConfig (std::string r, std::vector< std::string > & dp, \fBt_mode\fP em, std::map< int, std::string > & ep)\fR [inline]\fP"
+
+.SH "Field Documentation"
+.PP 
+.SS "bool LocationConfig::autoindex"
+
+.SS "bool LocationConfig::cgi_file"
+
+.SS "std::map<std::string, \fBt_cgi\fP> LocationConfig::cgi_locations"
+
+.SS "bool LocationConfig::is_redir"
+
+.SS "bool LocationConfig::is_root"
+
+.SS "unsigned char LocationConfig::loc_allowed_methods"
+
+.SS "std::vector<std::string> LocationConfig::loc_default_pages"
+
+.SS "\fBt_mode\fP LocationConfig::loc_error_mode"
+
+.SS "std::map<int, std::string> LocationConfig::loc_error_pages"
+
+.SS "std::string LocationConfig::loc_root"
+
+.SS "std::string LocationConfig::path_root"
+
+.SS "std::map<int, std::string> LocationConfig::redirections"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

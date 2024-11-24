@@ -1,0 +1,260 @@
+.TH "SocketHandler" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SocketHandler \- Manages socket operations and configurations for a server\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <SocketHandler\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBSocketHandler\fP (int port, \fBServerConfig\fP &config, const \fBLogger\fP *logger)"
+.br
+.RI "Constructs a new \fBSocketHandler\fP object\&. "
+.ti -1c
+.RI "\fB~SocketHandler\fP ()"
+.br
+.RI "Destroys the \fBSocketHandler\fP object\&. "
+.ti -1c
+.RI "int \fBaccept_connection\fP ()"
+.br
+.RI "Accepts a new incoming connection\&. "
+.ti -1c
+.RI "int \fBget_socket_fd\fP () const"
+.br
+.RI "Gets the socket file descriptor\&. "
+.ti -1c
+.RI "void \fBadd_host\fP (\fBServerConfig\fP &config)"
+.br
+.RI "Adds a host to the internal map of hosts if it doesn't already exist\&. "
+.ti -1c
+.RI "const \fBServerConfig\fP & \fBget_config\fP () const"
+.br
+.RI "Gets the server configuration\&. "
+.ti -1c
+.RI "const \fBServerConfig\fP * \fBget_config\fP (const std::string &host)"
+.br
+.ti -1c
+.RI "std::string \fBget_port\fP () const"
+.br
+.RI "Gets the port number as a string\&. "
+.ti -1c
+.RI "\fBWebServerCache\fP< \fBCacheEntry\fP > & \fBget_cache\fP ()"
+.br
+.RI "Gets the general cache\&. "
+.ti -1c
+.RI "\fBWebServerCache\fP< \fBCacheRequest\fP > & \fBget_request_cache\fP ()"
+.br
+.RI "Gets the request cache\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Manages socket operations and configurations for a server\&. 
+
+The \fR\fBSocketHandler\fP\fP class encapsulates the logic for handling a single server socket, including accepting client connections, managing host-specific configurations, and handling auxiliary features like caching and CGI mapping\&.
+
+.PP
+.IP "\(bu" 2
+This class is responsible for initializing and configuring a socket for the server, including setting it to non-blocking mode and ensuring proper cleanup upon destruction\&.
+.IP "\(bu" 2
+Each instance is associated with a specific port and server configuration, and it supports multiple hosts by managing their configurations in the \fR_hosts\fP map\&.
+.IP "\(bu" 2
+The class also provides caching functionality using \fR\fBWebServerCache\fP\fP to optimize request and response handling\&.
+.IP "\(bu" 2
+Auxiliary methods handle CGI file mapping, redirection configuration, and path validation within a specific location\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+.IP "\(bu" 2
+This class assumes that the provided \fR\fBServerConfig\fP\fP and \fR\fBLogger\fP\fP instances are valid and persist for the lifetime of the \fR\fBSocketHandler\fP\fP instance\&.
+.IP "\(bu" 2
+Proper error handling and logging are integrated to ensure robustness in socket operations and configuration management\&. 
+.PP
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "SocketHandler::SocketHandler (int port, \fBServerConfig\fP & config, const \fBLogger\fP * logger)"
+
+.PP
+Constructs a new \fBSocketHandler\fP object\&. This constructor initializes a socket, sets its options, binds it to a specific port, and sets it in listening mode\&. Additionally, it configures the logger, manages server configurations, and performs initialization for cache instances\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIport\fP The port number on which the server will listen for incoming connections\&. 
+.br
+\fIconfig\fP A reference to the server configuration (\fBServerConfig\fP) containing server settings\&. 
+.br
+\fIlogger\fP A pointer to a logger instance (\fBLogger\fP) for logging purposes\&.
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::NoLoggerPointer\fP\fP If the provided logger pointer is null\&. 
+.br
+\fI\fBWebServerException\fP\fP If an error occurs while creating the socket, setting socket options, binding, listening, or setting non-blocking mode\&.
+.RE
+.PP
+The constructor follows these steps to establish a socket:
+.IP "1." 4
+Checks if a valid logger pointer is provided, throws if null\&.
+.IP "2." 4
+Creates a socket using \fRsocket()\fP function, throwing an exception if it fails\&.
+.IP "3." 4
+Sets the socket option \fRSO_REUSEADDR\fP to reuse local addresses\&.
+.IP "4." 4
+Binds the socket to the provided port using the \fRbind()\fP function\&.
+.IP "5." 4
+Sets the socket in listening mode to accept incoming connections\&.
+.IP "6." 4
+Sets the socket to non-blocking mode using \fRset_nonblocking()\fP\&.
+.IP "7." 4
+Logs relevant information at various stages to provide detailed flow insights\&.
+.IP "8." 4
+Maps CGI extensions (\&.py, \&.pl) to handle dynamic requests as part of initialization\&.
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+Throws an exception and properly closes the socket on any failure, preventing resource leaks\&. 
+.RE
+.PP
+
+.SS "SocketHandler::~SocketHandler ()"
+
+.PP
+Destroys the \fBSocketHandler\fP object\&. This destructor cleans up resources by closing the socket and logs the cleanup process\&.
+
+.PP
+The destructor calls \fRclose_socket()\fP to properly close the socket and release any associated resources\&. It then logs a debug message indicating that the \fBSocketHandler\fP resources have been cleaned up\&.
+
+.PP
+\fBNote\fP
+.RS 4
+Ensure that any allocated resources are properly cleaned up to prevent resource leaks\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "int SocketHandler::accept_connection ()"
+
+.PP
+Accepts a new incoming connection\&. This method accepts an incoming connection on the socket\&. If a client connection is accepted successfully, the client socket is set to non-blocking mode\&. If there is an error while accepting the connection, a warning is logged\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+The file descriptor for the accepted client connection, or -1 if an error occurs\&. 
+.RE
+.PP
+
+.SS "void SocketHandler::add_host (\fBServerConfig\fP & config)"
+
+.PP
+Adds a host to the internal map of hosts if it doesn't already exist\&. This method takes a reference to a \fR\fBServerConfig\fP\fP object and adds it to the internal map of hosts (\fR_hosts\fP) managed by \fR\fBSocketHandler\fP\fP\&. If the host (identified by \fRserver_name\fP in the \fR\fBServerConfig\fP\fP) does not already exist in \fR_hosts\fP, it is added to the map and additional configurations such as redirections and CGI mappings are performed\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIconfig\fP A reference to the \fR\fBServerConfig\fP\fP object representing the server configuration to be added\&.
+.RE
+.PP
+The method performs the following steps:
+.IP "1." 4
+Converts the \fRserver_name\fP from the provided \fR\fBServerConfig\fP\fP to lowercase for consistent key storage\&.
+.IP "2." 4
+Searches for the \fRserver_name\fP in the \fR_hosts\fP map\&.
+.IP "3." 4
+If the host is not found (\fR_hosts\&.end()\fP), logs the addition of the new host, adds the configuration to the \fR_hosts\fP map, and then performs additional setup for redirections and CGI script mappings:
+.IP "  \(bu" 4
+Calls \fRmapping_redir(config)\fP to handle redirection setup\&.
+.IP "  \(bu" 4
+Calls \fRmapping_cgi_locations(config, '\&.py')\fP and \fRmapping_cgi_locations(config, '\&.pl')\fP to map CGI scripts for Python and Perl respectively\&.
+.PP
+
+.PP
+
+.PP
+\fBNote\fP
+.RS 4
+This method does not add the host if it already exists in the \fR_hosts\fP map\&. 
+.RE
+.PP
+
+.SS "\fBWebServerCache\fP< \fBCacheEntry\fP > & SocketHandler::get_cache ()"
+
+.PP
+Gets the general cache\&. This method returns a reference to the general cache used by the \fBSocketHandler\fP\&. The cache stores \fR\fBCacheEntry\fP\fP objects for managing web server data\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A reference to the \fR\fBWebServerCache\fP\fP object containing \fR\fBCacheEntry\fP\fP elements\&. 
+.RE
+.PP
+
+.SS "const \fBServerConfig\fP & SocketHandler::get_config () const"
+
+.PP
+Gets the server configuration\&. This method returns a constant reference to the server configuration associated with the \fBSocketHandler\fP\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A constant reference to the server configuration (\fBServerConfig\fP)\&. 
+.RE
+.PP
+
+.SS "const \fBServerConfig\fP * SocketHandler::get_config (const std::string & host)"
+
+.SS "std::string SocketHandler::get_port () const"
+
+.PP
+Gets the port number as a string\&. This method returns the port number to which the socket is bound, represented as a string\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A string representing the port number\&. 
+.RE
+.PP
+
+.SS "\fBWebServerCache\fP< \fBCacheRequest\fP > & SocketHandler::get_request_cache ()"
+
+.PP
+Gets the request cache\&. This method returns a reference to the request cache used by the \fBSocketHandler\fP\&. The cache stores \fR\fBCacheRequest\fP\fP objects for managing requests to the server\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+A reference to the \fR\fBWebServerCache\fP\fP object containing \fR\fBCacheRequest\fP\fP elements\&. 
+.RE
+.PP
+
+.SS "int SocketHandler::get_socket_fd () const"
+
+.PP
+Gets the socket file descriptor\&. This method returns the file descriptor for the socket associated with the \fBSocketHandler\fP\&.
+
+.PP
+\fBReturns\fP
+.RS 4
+The socket file descriptor\&. 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

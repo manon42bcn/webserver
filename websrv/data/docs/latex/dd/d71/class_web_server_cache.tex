@@ -1,0 +1,125 @@
+\doxysection{Web\+Server\+Cache\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_web_server_cache}{}\label{class_web_server_cache}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+
+
+A simple, in-\/memory Least Recently Used (LRU) cache.  
+
+
+
+
+{\ttfamily \#include $<$Webserver\+Cache.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c}{Web\+Server\+Cache}} (size\+\_\+t capacity)
+\begin{DoxyCompactList}\small\item\em Constructs a cache with a specified maximum capacity. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae}{get}} (const std\+::string \&key, T \&entry)
+\begin{DoxyCompactList}\small\item\em Retrieves an entry from the cache. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0}{put}} (const std\+::string \&key, const T \&entry)
+\begin{DoxyCompactList}\small\item\em Adds or updates an entry in the cache. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9}{remove}} (const std\+::string \&key)
+\begin{DoxyCompactList}\small\item\em Removes a specific entry from the cache by its key. This function searches for the entry with the specified key in the cache. If found, it removes the entry from both the list (which maintains the order of usage) and the map (which provides quick access by key). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class Web\+Server\+Cache$<$ T $>$}
+A simple, in-\/memory Least Recently Used (LRU) cache. 
+
+The {\ttfamily \doxylink{class_web_server_cache}{Web\+Server\+Cache}} class is designed to manage a fixed-\/size cache for storing frequently accessed items in a web server context. It utilizes a Least Recently Used (LRU) eviction policy, where the least recently accessed entry is removed when the cache reaches its maximum capacity.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The data type of the entries stored in the cache. The data type {\ttfamily T} should have a {\ttfamily std\+::string} member named {\ttfamily url} or a similar identifier that can be used to uniquely identify cache entries. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!WebServerCache@{WebServerCache}}
+\index{WebServerCache@{WebServerCache}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{WebServerCache()}{WebServerCache()}}
+{\footnotesize\ttfamily \label{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c} 
+template$<$typename T $>$ \\
+\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\mbox{\hyperlink{class_web_server_cache}{\+::\+Web\+Server\+Cache}} (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{capacity}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Constructs a cache with a specified maximum capacity. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em capacity} & The maximum number of entries the cache can hold. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!get@{get}}
+\index{get@{get}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}}
+{\footnotesize\ttfamily \label{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae} 
+template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{, }\item[{T \&}]{entry}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Retrieves an entry from the cache. 
+
+This method searches the cache for an entry with the specified key. If the entry is found, it is moved to the front of the LRU list.
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & The unique key identifying the cache entry. \\
+\hline
+{\em entry} & Reference to an object where the retrieved entry will be stored.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the entry was found and {\ttfamily entry} was updated; otherwise, {\ttfamily false}. 
+\end{DoxyReturn}
+\Hypertarget{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!put@{put}}
+\index{put@{put}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{put()}{put()}}
+{\footnotesize\ttfamily \label{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::put (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{, }\item[{const T \&}]{entry}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Adds or updates an entry in the cache. 
+
+If an entry with the specified key already exists, it is updated and moved to the front of the LRU list. If the cache is at capacity, the least recently used entry is removed to make space for the new entry.
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & The unique key identifying the cache entry. \\
+\hline
+{\em entry} & The entry to be added or updated in the cache. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!remove@{remove}}
+\index{remove@{remove}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily \label{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9} 
+template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::remove (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Removes a specific entry from the cache by its key. This function searches for the entry with the specified key in the cache. If found, it removes the entry from both the list (which maintains the order of usage) and the map (which provides quick access by key). 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & The key associated with the cache entry to be removed.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The cache is updated to remove the entry, making space for new entries if necessary. 
+\end{DoxyNote}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_webserver_cache_8hpp}{Webserver\+Cache.\+hpp}}\end{DoxyCompactItemize}

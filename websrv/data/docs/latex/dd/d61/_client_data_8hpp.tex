@@ -1,0 +1,42 @@
+\doxysection{websrv/inc/\+Client\+Data.hpp File Reference}
+\hypertarget{_client_data_8hpp}{}\label{_client_data_8hpp}\index{websrv/inc/ClientData.hpp@{websrv/inc/ClientData.hpp}}
+{\ttfamily \#include "{}Socket\+Handler.\+hpp"{}}\newline
+{\ttfamily \#include "{}Logger.\+hpp"{}}\newline
+{\ttfamily \#include $<$poll.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$ctime$>$}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{class_client_data}{Client\+Data}}
+\begin{DoxyCompactList}\small\item\em Manages individual client connections in the web server, tracking their state and activity. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{_client_data_8hpp_a0424e1ca4741327e4b6cd9e0f15b12d4}{CD\+\_\+\+MODULE}}~"{}Client\+Data"{}
+\item 
+\#define \mbox{\hyperlink{_client_data_8hpp_ad7441441c5ebe8240731647551b2a123}{TIMEOUT\+\_\+\+REQUEST}}~10
+\item 
+\#define \mbox{\hyperlink{_client_data_8hpp_ae6b93a1d4995d59f8c5f6bdd13fcf619}{TIMEOUT\+\_\+\+CLIENT}}~10
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{_client_data_8hpp_a0424e1ca4741327e4b6cd9e0f15b12d4}\index{ClientData.hpp@{ClientData.hpp}!CD\_MODULE@{CD\_MODULE}}
+\index{CD\_MODULE@{CD\_MODULE}!ClientData.hpp@{ClientData.hpp}}
+\doxysubsubsection{\texorpdfstring{CD\_MODULE}{CD\_MODULE}}
+{\footnotesize\ttfamily \label{_client_data_8hpp_a0424e1ca4741327e4b6cd9e0f15b12d4} 
+\#define CD\+\_\+\+MODULE~"{}Client\+Data"{}}
+
+\Hypertarget{_client_data_8hpp_ae6b93a1d4995d59f8c5f6bdd13fcf619}\index{ClientData.hpp@{ClientData.hpp}!TIMEOUT\_CLIENT@{TIMEOUT\_CLIENT}}
+\index{TIMEOUT\_CLIENT@{TIMEOUT\_CLIENT}!ClientData.hpp@{ClientData.hpp}}
+\doxysubsubsection{\texorpdfstring{TIMEOUT\_CLIENT}{TIMEOUT\_CLIENT}}
+{\footnotesize\ttfamily \label{_client_data_8hpp_ae6b93a1d4995d59f8c5f6bdd13fcf619} 
+\#define TIMEOUT\+\_\+\+CLIENT~10}
+
+\Hypertarget{_client_data_8hpp_ad7441441c5ebe8240731647551b2a123}\index{ClientData.hpp@{ClientData.hpp}!TIMEOUT\_REQUEST@{TIMEOUT\_REQUEST}}
+\index{TIMEOUT\_REQUEST@{TIMEOUT\_REQUEST}!ClientData.hpp@{ClientData.hpp}}
+\doxysubsubsection{\texorpdfstring{TIMEOUT\_REQUEST}{TIMEOUT\_REQUEST}}
+{\footnotesize\ttfamily \label{_client_data_8hpp_ad7441441c5ebe8240731647551b2a123} 
+\#define TIMEOUT\+\_\+\+REQUEST~10}
+

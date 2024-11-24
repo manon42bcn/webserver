@@ -1,0 +1,207 @@
+.TH "websrv/srcs/parse/utils.cpp" 3 "WebServer" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+websrv/srcs/parse/utils.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'webserver\&.hpp'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "std::string \fBclean_line\fP (std::string line)"
+.br
+.RI "Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. "
+.ti -1c
+.RI "std::string \fBget_value\fP (std::string line, const std::string &key)"
+.br
+.RI "Extracts the value associated with a key in a given line\&. "
+.ti -1c
+.RI "bool \fBfind_exact_string\fP (const std::string &line, const std::string &str)"
+.br
+.ti -1c
+.RI "std::vector< std::string > \fBget_raw_lines\fP (std::string path)"
+.br
+.RI "Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. "
+.ti -1c
+.RI "std::string \fBdelete_brackets_clean\fP (std::string line)"
+.br
+.RI "Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. "
+.ti -1c
+.RI "std::string \fBdelete_first_slash\fP (std::string path)"
+.br
+.RI "Removes the first slash from a path if it exists\&. "
+.ti -1c
+.RI "std::string \fBget_server_root\fP ()"
+.br
+.ti -1c
+.RI "std::vector< std::string >::iterator \fBskip_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.ti -1c
+.RI "std::vector< std::string >::iterator \fBfind_block_end\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+.br
+.ti -1c
+.RI "\fBt_allowed_methods\fP \fBstring_to_method\fP (std::string method)"
+.br
+.ti -1c
+.RI "std::string \fBdelete_signs\fP (std::string line)"
+.br
+.ti -1c
+.RI "std::string \fBdelete_last_slash\fP (std::string path)"
+.br
+.ti -1c
+.RI "std::string \fBget_location_path\fP (std::string line)"
+.br
+.ti -1c
+.RI "\fBt_mode\fP \fBstring_to_error_mode\fP (std::string error_mode)"
+.br
+.ti -1c
+.RI "std::string \fBjoin_paths\fP (std::string path1, std::string path2)"
+.br
+.ti -1c
+.RI "unsigned char \fBmethod_bitwise\fP (std::string parsed)"
+.br
+.ti -1c
+.RI "std::string \fBget_first_word\fP (const std::string &str)"
+.br
+.ti -1c
+.RI "int \fBget_status_code\fP (std::string status_code, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::string \fBget_redirection_url\fP (std::string redirection, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "std::map< int, std::string > \fBsplit_redirections\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger)"
+.br
+.ti -1c
+.RI "bool \fBcompare_paths\fP (std::string path1, std::string path2)"
+.br
+.ti -1c
+.RI "size_t \fBstring_to_bytes\fP (std::string client_max_body_size)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "std::string clean_line (std::string line)"
+
+.PP
+Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A cleaned version of the line\&. 
+.RE
+.PP
+
+.SS "bool compare_paths (std::string path1, std::string path2)"
+
+.SS "std::string delete_brackets_clean (std::string line)"
+
+.PP
+Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to be cleaned\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned line without braces\&. 
+.RE
+.PP
+
+.SS "std::string delete_first_slash (std::string path)"
+
+.PP
+Removes the first slash from a path if it exists\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to modify\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The path without the leading slash\&. 
+.RE
+.PP
+
+.SS "std::string delete_last_slash (std::string path)"
+
+.SS "std::string delete_signs (std::string line)"
+
+.SS "std::vector< std::string >::iterator find_block_end (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.SS "bool find_exact_string (const std::string & line, const std::string & str)"
+
+.SS "std::string get_first_word (const std::string & str)"
+
+.SS "std::string get_location_path (std::string line)"
+
+.SS "std::vector< std::string > get_raw_lines (std::string path)"
+
+.PP
+Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP The path to the file\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A vector of cleaned, non-empty lines\&. 
+.RE
+.PP
+
+.SS "std::string get_redirection_url (std::string redirection, \fBLogger\fP * logger)"
+
+.SS "std::string get_server_root ()"
+
+.SS "int get_status_code (std::string status_code, \fBLogger\fP * logger)"
+
+.SS "std::string get_value (std::string line, const std::string & key)"
+
+.PP
+Extracts the value associated with a key in a given line\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line containing the key-value pair\&. 
+.br
+\fIkey\fP The key to search for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The value associated with the key, or an empty string if not found\&. 
+.RE
+.PP
+
+.SS "std::string join_paths (std::string path1, std::string path2)"
+
+.SS "unsigned char method_bitwise (std::string parsed)"
+
+.SS "std::vector< std::string >::iterator skip_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.SS "std::map< int, std::string > split_redirections (std::vector< std::string >::iterator & it, \fBLogger\fP * logger)"
+
+.SS "size_t string_to_bytes (std::string client_max_body_size)"
+
+.SS "\fBt_mode\fP string_to_error_mode (std::string error_mode)"
+
+.SS "\fBt_allowed_methods\fP string_to_method (std::string method)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for WebServer from the source code\&.

@@ -1,0 +1,134 @@
+\doxysection{Server\+Manager Class Reference}
+\hypertarget{class_server_manager}{}\label{class_server_manager}\index{ServerManager@{ServerManager}}
+
+
+Manages the operation of web server instances, client connections, and network events.  
+
+
+
+
+{\ttfamily \#include $<$Server\+Manager.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}{Server\+Manager}} (std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&configs, const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{class_server_manager}{Server\+Manager} instance, initializing server configurations and socket handlers. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}{\texorpdfstring{$\sim$}{\string~}\+Server\+Manager}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the \doxylink{class_server_manager}{Server\+Manager} class, responsible for resource cleanup. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_server_manager_aecc313c9b6afcab92c22269b3333c721}{run}} ()
+\begin{DoxyCompactList}\small\item\em Starts and manages the main event loop for the server. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_server_manager_a739e419ac09105174c345c52765d89f4}{turn\+\_\+off\+\_\+server}} ()
+\begin{DoxyCompactList}\small\item\em Turn off server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages the operation of web server instances, client connections, and network events. 
+
+The {\ttfamily \doxylink{class_server_manager}{Server\+Manager}} class is responsible for\+:
+\begin{DoxyItemize}
+\item Initializing and managing multiple server instances ({\ttfamily \doxylink{class_socket_handler}{Socket\+Handler}} objects) based on the provided configuration.
+\item Maintaining active client connections and polling their events.
+\item Handling critical server functions, such as timeouts, connection cleanup, and error handling.
+\end{DoxyItemize}
+
+This class uses a {\ttfamily poll}-\/based event loop in the {\ttfamily run} method to handle incoming connections and requests. It provides a shutdown mechanism in case of unrecoverable errors and is equipped with logging for server status tracking. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}\index{ServerManager@{ServerManager}!ServerManager@{ServerManager}}
+\index{ServerManager@{ServerManager}!ServerManager@{ServerManager}}
+\doxysubsubsection{\texorpdfstring{ServerManager()}{ServerManager()}}
+{\footnotesize\ttfamily \label{class_server_manager_adda4c1b6ef004e73482c28f48fd55773} 
+Server\+Manager\+::\+Server\+Manager (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{configs}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a \doxylink{class_server_manager}{Server\+Manager} instance, initializing server configurations and socket handlers. 
+
+This constructor initializes the \doxylink{class_server_manager}{Server\+Manager} with the provided server configurations, logger, and cache. It creates server instances based on the configurations, setting up socket connections and handling potential exceptions related to socket creation, linking, listening, and non-\/blocking mode.
+
+
+\begin{DoxyParams}{Parameters}
+{\em configs} & Vector of server configurations, each containing port and other server settings. \\
+\hline
+{\em logger} & Pointer to the \doxylink{class_logger}{Logger} instance for logging activities within the \doxylink{class_server_manager}{Server\+Manager}. \\
+\hline
+{\em cache} & Pointer to the \doxylink{class_web_server_cache}{Web\+Server\+Cache} for caching resources.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_1_1_no_logger_pointer}{Logger\+::\+No\+Logger\+Pointer}} & If the logger pointer is null. \\
+\hline
+{\em \doxylink{class_web_server_exception}{Web\+Server\+Exception}} & If no cache pointer is provided, if configs are empty, or if a \doxylink{class_socket_handler}{Socket\+Handler} exception is caught.\\
+\hline
+\end{DoxyExceptions}
+This constructor sets up sockets for each configuration in {\ttfamily configs} using {\ttfamily add\+\_\+server}. If any socket operation fails, it logs the error details and throws a {\ttfamily \doxylink{class_web_server_exception}{Web\+Server\+Exception}}. Once initialized successfully, the instance is marked as healthy and active. \Hypertarget{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}\index{ServerManager@{ServerManager}!````~ServerManager@{\texorpdfstring{$\sim$}{\string~}ServerManager}}
+\index{````~ServerManager@{\texorpdfstring{$\sim$}{\string~}ServerManager}!ServerManager@{ServerManager}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}ServerManager()}{\string~ServerManager()}}
+{\footnotesize\ttfamily \label{class_server_manager_ad3dcb08af530cec26942c2ce0431f625} 
+Server\+Manager\+::\texorpdfstring{$\sim$}{\string~}\+Server\+Manager (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destructor for the \doxylink{class_server_manager}{Server\+Manager} class, responsible for resource cleanup. 
+
+This destructor ensures a proper cleanup of server resources managed by the \doxylink{class_server_manager}{Server\+Manager} instance. It deactivates and clears client connections, server instances, and poll file descriptors, releasing any associated resources.
+
+The destructor also logs the cleanup process, marking the completion of resource cleanup for easier monitoring and debugging. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_server_manager_aecc313c9b6afcab92c22269b3333c721}\index{ServerManager@{ServerManager}!run@{run}}
+\index{run@{run}!ServerManager@{ServerManager}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily \label{class_server_manager_aecc313c9b6afcab92c22269b3333c721} 
+void Server\+Manager\+::run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Starts and manages the main event loop for the server. 
+
+This method runs the server\textquotesingle{}s event loop, continuously monitoring file descriptors for events using {\ttfamily poll()}. It handles incoming connections, client requests, and outgoing responses. The loop also manages timeouts for inactive clients and ensures the server remains operational unless a critical error occurs.
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_web_server_exception}{Web\+Server\+Exception}} & If a fatal error occurs that prevents the server from continuing.\\
+\hline
+\end{DoxyExceptions}
+The main functionalities of the event loop are\+:
+\begin{DoxyItemize}
+\item {\bfseries{Timeout Management\+:}} Inactive clients are detected and removed using {\ttfamily timeout\+\_\+clients}.
+\item {\bfseries{Polling for Events\+:}} The {\ttfamily poll()} function is used to monitor file descriptors for readiness to read ({\ttfamily POLLIN}) or write ({\ttfamily POLLOUT}).
+\item {\bfseries{Handling Events\+:}}
+\begin{DoxyItemize}
+\item For {\ttfamily POLLIN}\+: Accepts new connections or processes incoming client requests.
+\item For {\ttfamily POLLOUT}\+: Sends responses to clients.
+\end{DoxyItemize}
+\item {\bfseries{Error Handling\+:}} Handles errors from {\ttfamily poll()} such as {\ttfamily EINTR} (interrupted by a signal) or {\ttfamily EBADF} (bad file descriptor), logging warnings and cleaning up resources as needed.
+\item {\bfseries{Graceful Shutdown\+:}} The loop exits when {\ttfamily \+\_\+active} is set to {\ttfamily false}, ensuring that resources are properly cleaned up.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+
+\begin{DoxyItemize}
+\item The method ensures robustness by catching and logging exceptions, and by cleaning up invalid file descriptors if detected.
+\item A short sleep ({\ttfamily usleep}) is included to avoid excessive CPU usage during idle periods. 
+\end{DoxyItemize}
+\end{DoxyNote}
+\Hypertarget{class_server_manager_a739e419ac09105174c345c52765d89f4}\index{ServerManager@{ServerManager}!turn\_off\_server@{turn\_off\_server}}
+\index{turn\_off\_server@{turn\_off\_server}!ServerManager@{ServerManager}}
+\doxysubsubsection{\texorpdfstring{turn\_off\_server()}{turn\_off\_server()}}
+{\footnotesize\ttfamily \label{class_server_manager_a739e419ac09105174c345c52765d89f4} 
+void Server\+Manager\+::turn\+\_\+off\+\_\+server (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Turn off server. 
+
+\hypertarget{class_server_manager_Functions}{}\doxysubsection{\texorpdfstring{to Build Server.}{to Build Server.}}\label{class_server_manager_Functions}
+This method is be used by signal handler. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+websrv/inc/\mbox{\hyperlink{_server_manager_8hpp}{Server\+Manager.\+hpp}}\item 
+websrv/srcs/\mbox{\hyperlink{_server_manager_8cpp}{Server\+Manager.\+cpp}}\end{DoxyCompactItemize}
