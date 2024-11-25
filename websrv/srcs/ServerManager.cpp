@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 22:38:41 by mporras-         ###   ########.fr       */
+/*   Created: 2024/11/25 11:28:53 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/25 11:30:55 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@ void ServerManager::run() {
 		while (_active) {
 			timeout_clients();
 			usleep(700);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), -1);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 200);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -319,26 +319,17 @@ void ServerManager::run() {
 				}
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
-				if (poll_count <= 0) {
-					break;
-				}
 				if (_poll_fds[i].revents & POLLOUT) {
 					std::map<int, ClientData*>::iterator client_data = _clients.find(_poll_fds[i].fd);
 					if (client_data != _clients.end()) {
 						process_response(i, client_data);
-						poll_count--;
-						continue;
 					}
 				} else if (_poll_fds[i].revents & POLLIN) {
 					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
 					if (server_it != _servers_map.end()) {
-						while (new_client(server_it->second)) {
-							poll_count--;
-						};
+						while (new_client(server_it->second)) {};
 					} else {
 						process_request(i);
-						poll_count--;
-						continue;
 					}
 				}
 			}
@@ -533,6 +524,7 @@ bool ServerManager::process_response(size_t& poll_index, t_client_it client_it) 
 			response.handle_request();
 		}
 		if (client->is_active() && client->is_alive()) {
+			request.clear_request();
 			_poll_fds[poll_index].events = POLLIN;
 			_poll_fds[poll_index].revents = 0;
 			time_t new_cycle = timeout_timestamp();

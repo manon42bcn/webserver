@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 22:06:01 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/25 10:30:02 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,6 @@ void HttpRequestHandler::read_request_header() {
 		detail << "Error Getting Header Data Request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, detail.str());
 	}
-	std::cout << RED << _request << RESET << std::endl;
 }
 
 /**
@@ -492,7 +491,6 @@ void HttpRequestHandler::load_host_config() {
 						"Host Config Pointer NULL.");
 		return ;
 	}
-	_log->status(RH_NAME, host);
 	_request_data.host = normalize_host(_request_data.host);
 }
 
@@ -659,7 +657,6 @@ void HttpRequestHandler::get_location_config() {
 
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
-	_log->log_error(RH_NAME, _request_data.header);
 
 	_request_data.is_cached = _request_cache.get(_request_data.path, _cache_data);
 	if (HAS_GET(_request_data.method) && _request_data.is_cached && _cache_data.host->server_name == _host_config->server_name) {

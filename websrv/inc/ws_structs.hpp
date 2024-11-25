@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 01:24:07 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/25 09:58:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,22 +234,37 @@ struct s_request {
 			sanity(true),
 			status(HTTP_I_AM_A_TEAPOT),
 			location(NULL),
-			host_config(NULL) {
-//		header.clear();
-//		body.clear();
-//		host.clear();
-//		method_str.clear();
-//		path.clear();
-//		path_request.clear();
-//		normalized_path.clear();
-//		path_info.clear();
-//		query.clear();
-//		referer.clear();
-//		content_type.clear();
-//		cookie.clear();
-//		script.clear();
-//		boundary.clear();
-//		range.clear();
+			host_config(NULL) {}
+
+	void clear_request () {
+		header.clear();
+		body.clear();
+		host.clear();
+		method = 0;
+		method_str.clear();
+		path.clear();
+		path_request.clear();
+		path_type = PATH_REGULAR;
+		normalized_path.clear();
+		path_info.clear();
+		query.clear();
+		referer.clear();
+		content_length = 0;
+		content_type.clear();
+		cookie.clear();
+		script.clear();
+		boundary.clear();
+		range.clear();
+		chunks = false;
+		factory = 0;
+		is_cached = false;
+		autoindex = false;
+		is_redir = false;
+		cgi = false;
+		sanity = true;
+		status = HTTP_I_AM_A_TEAPOT;
+		location = NULL;
+		host_config = NULL;
 	}
 };
 
