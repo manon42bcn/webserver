@@ -374,7 +374,6 @@ bool    ServerManager::new_client(SocketHandler *server) {
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
 	int fd = new_client->get_fd().fd;
-	_log->status(RH_NAME, "TEST.. client..." + int_to_string(fd) + " - " + int_to_string(new_client->get_fd().revents));
 	_clients[fd] = new_client;
 	_poll_fds.push_back(new_client->get_fd());
 	_poll_index[fd] = _poll_fds.size() - 1;
