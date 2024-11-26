@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/25 09:58:41 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:06:00 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,7 @@ struct s_request {
 	e_http_sts              status;
 	const LocationConfig*   location;
 	const ServerConfig*     host_config;
+	bool                    request_ready;
 
 	s_request():
 			header(),
@@ -234,7 +235,8 @@ struct s_request {
 			sanity(true),
 			status(HTTP_I_AM_A_TEAPOT),
 			location(NULL),
-			host_config(NULL) {}
+			host_config(NULL),
+			request_ready(false) {}
 
 	void clear_request () {
 		header.clear();
@@ -265,6 +267,7 @@ struct s_request {
 		status = HTTP_I_AM_A_TEAPOT;
 		location = NULL;
 		host_config = NULL;
+		request_ready = false;
 	}
 };
 

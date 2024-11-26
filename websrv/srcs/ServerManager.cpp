@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:28:53 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 18:10:20 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 22:36:04 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@ void ServerManager::run() {
 		while (_active) {
 			timeout_clients();
 			usleep(200);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 200);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -318,13 +318,15 @@ void ServerManager::run() {
 					break;
 				}
 			}
+			_log->status(SM_NAME, "hello " + int_to_string(poll_count));
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
 				if (_poll_fds[i].revents & (POLLIN | POLLOUT)) {
-					if (i < _servers_map.size() && _poll_fds[i].revents & POLLIN) {
-						std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
-						while (new_client(server_it->second)) {};
-					} else {
+					if (i > _servers_map.size()) {
 						process_request(i);
+						poll_count--;
+					} else {
+						std::map<int, SocketHandler *>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
+						while ((poll_count--) && new_client(server_it->second)) {};
 					}
 				}
 			}
@@ -381,65 +383,81 @@ bool    ServerManager::new_client(SocketHandler *server) {
 }
 
 /**
- * @brief Processes a client request based on the file descriptor at the specified poll index.
+ * @brief Processes a client request based on the state of the poll descriptor.
  *
- * This method checks the `_clients` map for a client associated with the file descriptor at
- * `poll_index` in `_poll_fds`. If the client is found, it instantiates an `HttpRequestHandler` to
- * manage the request workflow.
+ * This method is responsible for managing client interactions within the server.
+ * It checks the readiness of a client socket for reading or writing, processes
+ * the request using a handler, and updates the client state and server timeouts
+ * accordingly. If an error occurs during processing, the server is safely shut down.
  *
- * - If the client is no longer active after processing, the client is removed from `_poll_fds`.
- * - If the client remains active, its timestamp is reset via `chronos_reset`.
- * - Catches various exceptions and logs errors accordingly. If a critical error occurs, it logs
- *   the error message and initiates a safe server shutdown by setting `_healthy` to false.
+ * @param poll_index [in, out] A reference to the index in the `_poll_fds` array.
+ *        This index identifies the client socket to process within the poll descriptors.
  *
- * @param poll_index Index of the file descriptor in `_poll_fds` to process.
- * @return true if the request was successfully processed and the client remains active;
- *         false if the client was not found or removed from the poll list.
+ * @return `true` if the request was successfully processed or the client connection
+ *         was safely removed; otherwise, `false` if no meaningful work was performed.
+ *
+ * @throws WebServerException If an error occurs during the request workflow that
+ *         indicates a critical issue with the request processing.
+ * @throws Logger::NoLoggerPointer If the logging system is unavailable.
+ * @throws std::exception For any other unexpected error that may compromise the server.
+ *
+ * @details
+ * The method performs the following steps:
+ * 1. **Retrieve the Client**:
+ *    - Obtains the file descriptor (fd) from `_poll_fds` at the specified `poll_index`.
+ *    - Looks up the associated `ClientData` object in `_clients`.
+ *
+ * 2. **Validate Client Readiness**:
+ *    - If the client's request is not ready and the poll event is only `POLLOUT`, skips processing.
+ *
+ * 3. **Process the Request**:
+ *    - Updates the client's state based on the poll events.
+ *    - Uses an `HttpRequestHandler` to manage the client's request workflow.
+ *
+ * 4. **Handle Poll Events**:
+ *    - Based on the event (`POLLIN`, `POLLOUT`, or both), adjusts the client's monitored events:
+ *      - For `POLLIN`: Ensures readiness for writing if the client is alive.
+ *      - For `POLLOUT`: Sets the client to monitor both reading and writing.
+ *
+ * 5. **Update Timeouts**:
+ *    - Resets the client's timeout values in `_timeout_index` and `_index_timeout`.
+ *
+ * 6. **Error Handling**:
+ *    - Logs critical errors and shuts down the server safely in case of exceptions.
  */
 bool    ServerManager::process_request(size_t& poll_index) {
 	try {
 		int fd = _poll_fds[poll_index].fd;
 		std::map<int, ClientData*>::iterator it = _clients.find(fd);
 		if (it != _clients.end()) {
+			if (!it->second->client_request().request_ready && _poll_fds[poll_index].revents == POLLOUT) {
+				return (false);
+			}
+			it->second->set_state(_poll_fds[poll_index].revents);
 			HttpRequestHandler request_handler(_log, it->second);
+			request_handler.request_workflow();
 			switch (_poll_fds[poll_index].revents) {
 				case POLLIN:
-					request_handler.request_workflow();
 					if (!it->second->is_alive()) {
 						remove_client_from_poll(it);
 						--poll_index;
 						return (true);
 					}
 					_poll_fds[poll_index].events = POLLOUT;
-					_poll_fds[poll_index].revents = 0;
 					break;
 
 				case POLLOUT:
-					request_handler.handle_request();
-					if (!it->second->is_alive() || !it->second->is_active()) {
-						remove_client_from_poll(it);
-						--poll_index;
-						return (true);
-					}
-					_poll_fds[poll_index].events = POLLIN;
-					_poll_fds[poll_index].revents = 0;
-					it->second->client_request().clear_request();
-					break;
-
 				case POLLIN | POLLOUT:
-					request_handler.request_workflow();
-					request_handler.handle_request();
+					_poll_fds[poll_index].events = POLLIN | POLLOUT;
+				default:
 					if (!it->second->is_alive() || !it->second->is_active()) {
 						remove_client_from_poll(it);
 						--poll_index;
 						return (true);
 					}
-					_poll_fds[poll_index].events = POLLIN | POLLOUT;
-					_poll_fds[poll_index].revents = 0;
 					it->second->client_request().clear_request();
-					break;
 			}
-
+			_poll_fds[poll_index].revents = 0;
 			time_t new_cycle = timeout_timestamp();
 			t_fd_timestamp index_timeout = _index_timeout.find(fd);
 			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);

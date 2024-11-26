@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 00:58:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 22:15:58 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,54 +65,42 @@ HttpRequestHandler::~HttpRequestHandler() {
 }
 
 /**
- * @brief Executes the main workflow for handling an HTTP request.
+ * @brief Executes the workflow for processing and validating an HTTP request.
  *
- * This method defines and executes a series of validation and parsing steps to fully handle an HTTP request.
- * It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler.
+ * This method manages the step-by-step workflow for parsing and validating an HTTP request,
+ * followed by handling the request if it is ready. The workflow is divided into distinct
+ * validation steps, each responsible for a specific part of the HTTP request processing.
  *
  * @details
- * The method performs the following actions:
+ * The method operates as follows:
+ * 1. **Define Steps**:
+ *    - An array of function pointers (`validate_step`) defines the steps for processing:
+ *      - `read_request_header`: Reads the HTTP request header from the client.
+ *      - `parse_header`: Parses the header for key-value pairs.
+ *      - `parse_method_and_path`: Extracts the HTTP method and requested path.
+ *      - `parse_path_type`: Determines the type of resource (e.g., file, directory).
+ *      - `load_header_data`: Loads additional header data needed for processing.
+ *      - `load_host_config`: Maps the request to the correct host configuration.
+ *      - `solver_resource`: Resolves the resource requested by the client.
+ *      - `load_content`: Reads the content of the request, if any.
+ *      - `validate_request`: Performs final validation of the request's integrity.
  *
- * 1. **Define Validation Steps**:
- *    - Defines an array of function pointers (`steps`) representing each step of the request processing workflow:
- *      - `read_request_header()`: Reads the incoming request header.
- *      - `parse_header()`: Parses the request headers.
- *      - `parse_method_and_path()`: Parses the HTTP method and the requested path.
- *      - `parse_path_type()`: Determines the type of path being requested.
- *      - `load_header_data()`: Loads additional header data needed for processing.
- *      - `solver_resource()`: Resolves the requested resource path and validates its location.
- *      - `load_content()`: Loads the content associated with the request (if applicable).
- *      - `validate_request()`: Validates the overall request to ensure it meets server requirements.
- *
- * 2. **Start Request Workflow**:
- *    - Logs the beginning of the request parsing and validation process.
- *    - Calls `_client_data->chronos_reset()` to reset any timers related to the client (e.g., request start time).
+ * 2. **Check Input State**:
+ *    - If the request is not ready and the socket is readable (`POLLIN`), the validation process begins.
  *
  * 3. **Execute Validation Steps**:
- *    - Iterates through the array of validation steps (`steps`) and executes each one in order using function pointers (`(this->*steps[i])()`).
- *    - After executing each step, checks the `_request_data.sanity` flag:
- *      - If the flag is `false`, it indicates an error during processing, and the workflow is terminated.
+ *    - Iterates through the validation steps sequentially:
+ *      - Calls each step using a member function pointer.
+ *      - Stops the process if the `sanity` flag indicates a validation failure.
  *
- * 4. **Handle the Request**:
- *    - After completing the validation and parsing steps, logs the end of the request validation process.
+ * 4. **Mark Request as Ready**:
+ *    - If all steps succeed, the request is marked as ready for further handling.
  *
- * 5. **Log Response Completion**:
- *    - Logs the end of the response handling process.
+ * 5. **Handle Ready Requests**:
+ *    - If the request is ready and the socket is writable (`POLLOUT`), the request is processed.
  *
- * @note
- * - The `_request_data.sanity` flag is used throughout the workflow to indicate whether each step was successful. If an error occurs, the flag is set to `false` and the workflow is halted.
- * - The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly.
- *
- * **Validation Steps**:
- * - `read_request_header()`: Reads the raw HTTP headers from the incoming request.
- * - `parse_header()`: Parses and processes each header to extract key-value pairs.
- * - `parse_method_and_path()`: Identifies the HTTP method (e.g., GET, POST) and the requested path.
- * - `parse_path_type()`: Determines the type of path (e.g., static file, dynamic request).
- * - `load_header_data()`: Loads additional data from headers required for further processing.
- * - `load_host_config()`: Loads host from request, to set its configuration, and update host at ClientData*
- * - `solver_resource()`: Resolves the requested resource path, potentially handling relative paths.
- * - `load_content()`: Loads request body content if applicable (e.g., for POST requests).
- * - `validate_request()`: Final validation to ensure that the request conforms to server policies and rules.
+ * @throws Exceptions may occur within individual steps if errors are encountered,
+ *         such as malformed headers or resource resolution failures.
  */
 void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
@@ -125,16 +113,22 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
-	_log->log_debug( RH_NAME,
-	          "Parse and Validation Request Process. Start");
-	size_t i = 0;
-	_client_data->chronos_reset();
-	while (i < (sizeof(steps) / sizeof(validate_step)))
-	{
-		(this->*steps[i])();
-		if (!_request_data.sanity)
-			break;
-		i++;
+	if (!_request_data.request_ready && _client_data->get_state() & POLLIN) {
+		_log->log_debug( RH_NAME,
+		                 "Parse and Validation Request Process. Start");
+		size_t i = 0;
+		_client_data->chronos_reset();
+		while (i < (sizeof(steps) / sizeof(validate_step)))
+		{
+			(this->*steps[i])();
+			if (!_request_data.sanity)
+				break;
+			i++;
+		}
+		_request_data.request_ready = true;
+	}
+	if (_request_data.request_ready && _client_data->get_state() & POLLOUT) {
+		handle_request();
 	}
 }
 
