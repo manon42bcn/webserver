@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/25 10:30:02 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 00:58:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_log(log),
 	_client_data(client_data),
 	_request_cache(client_data->get_server()->get_request_cache()),
-	_location(NULL),
 	_fd(_client_data->get_fd().fd),
 	_request_data(client_data->client_request()){
 
@@ -44,6 +43,12 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	}
 	if (!client_data) {
 		throw WebServerException("Client Data is not valid. Server health is compromised.");
+	}
+	if (_request_data.location) {
+		_location = _request_data.location;
+	}
+	if (_request_data.host_config) {
+		_host_config = _request_data.host_config;
 	}
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
@@ -90,7 +95,6 @@ HttpRequestHandler::~HttpRequestHandler() {
  *
  * 4. **Handle the Request**:
  *    - After completing the validation and parsing steps, logs the end of the request validation process.
- *    - Calls `handle_request()` to proceed with responding to the client based on the validated request.
  *
  * 5. **Log Response Completion**:
  *    - Logs the end of the response handling process.
@@ -132,11 +136,6 @@ void HttpRequestHandler::request_workflow() {
 			break;
 		i++;
 	}
-	_log->log_debug( RH_NAME,
-	          "Request Validation Process. End. Send to Response Handler.");
-	handle_request();
-	_log->log_debug( RH_NAME,
-	          "Response Process end.");
 }
 
 /**
@@ -1236,74 +1235,75 @@ void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_alive()) {
 		return;
 	}
-//	try {
-//		if (!_request_data.sanity){
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.send_error_response();
-//			return ;
-//		}
-//		if (_factory == 0) {
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			if (_request_data.is_cached) {
-//				if (!_request_data.sanity) {
-//					_request_cache.remove(_request_data.path);
-//					return ;
-//				}
-//				return;
-//			}
-//			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-//				_request_cache.put(_request_data.path,
-//								   CacheRequest(_request_data.path, _host_config,
-//													 _location, _request_data.normalized_path));
-//			}
-//			return;
-//		}
-//		if (_request_data.is_redir) {
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.redirection();
-//			return;
-//		}
-//		if (_request_data.autoindex) {
-//			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return;
-//		}
-//		if (_request_data.cgi) {
-//			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			_client_data->deactivate();
-//			return ;
-//		} else if (!_request_data.range.empty()){
-//			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return ;
-//		} else if (!_request_data.boundary.empty()){
-//			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return ;
-//		}
-//	} catch (WebServerException& e) {
-//		std::ostringstream detail;
-//		detail << "Error Handling response: " << e.what();
-//		_log->log_error( RH_NAME,
-//				  detail.str());
-//		_client_data->deactivate();
-//	} catch (Logger::NoLoggerPointer& e) {
-//		std::ostringstream detail;
-//		detail << "Logger Pointer Error at Response Handler. "
-//			   << "Server Sanity could be compromise.";
-//		_log->log_error( RH_NAME,
-//		          detail.str());
-//		_client_data->deactivate();
-//	} catch (std::exception& e) {
-//		std::ostringstream detail;
-//		detail << "Unknown error handling response: " << e.what();
-//		_log->log_error( RH_NAME,
-//		          detail.str());
-//		_client_data->deactivate();
-//	}
+	try {
+		if (!_request_data.sanity){
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.send_error_response();
+			return ;
+		}
+		if (_request_data.factory == 0) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			if (_request_data.is_cached) {
+				if (!_request_data.sanity) {
+					_request_cache.remove(_request_data.path);
+					return ;
+				}
+				return;
+			}
+			if (_request_data.sanity && HAS_GET(_request_data.method)) {
+				_request_cache.put(_request_data.path,
+								   CacheRequest(_request_data.path, _host_config,
+													 _location, _request_data.normalized_path));
+			}
+			return;
+		}
+		if (_request_data.is_redir) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.redirection();
+			return;
+		}
+		if (_request_data.autoindex) {
+			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return;
+		}
+		if (_request_data.cgi) {
+			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			_client_data->deactivate();
+			return ;
+		} else if (!_request_data.range.empty()){
+			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		} else if (!_request_data.boundary.empty()){
+			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log_error( RH_NAME,
+				  detail.str());
+		_client_data->kill_client();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+			   << "Server Sanity could be compromise.";
+		_log->log_error( RH_NAME,
+		          detail.str());
+		_client_data->kill_client();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		          detail.str());
+		_client_data->kill_client();
+	}
 }
+
 
 /**
  * @brief Disables the request's sanity state and sets an error status.
@@ -1323,4 +1323,5 @@ void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) 
 	_log->log_error( RH_NAME, detail);
 	_request_data.sanity = false;
 	_request_data.status = status;
+	_client_data->kill_client();
 }

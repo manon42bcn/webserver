@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 03:41:48 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 00:15:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,6 @@ class ClientData {
 		bool is_active() const;
 		void keep_active();
 		s_request& client_request();
-		void to_pollout() {
-			_client_fd.revents = POLLOUT;
-		}
-		void to_pollin() {
-			_client_fd.revents = POLLIN;
-		}
 };
 
 #endif

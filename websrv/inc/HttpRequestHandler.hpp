@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 00:04:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 00:58:10 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 #include "http_enum_codes.hpp"
 #include "ClientData.hpp"
 #include "Logger.hpp"
+#include "WebserverCache.hpp"
+#include "HttpRequestHandler.hpp"
+#include "HttpResponseHandler.hpp"
+#include "HttpCGIHandler.hpp"
+#include "HttpRangeHandler.hpp"
+#include "HttpMultipartHandler.hpp"
+#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
 // Libraries
 #include <string>
@@ -99,7 +106,6 @@ class HttpRequestHandler {
 		void load_content_chunks();
 		bool parse_chunks(std::string& chunk_data, long& chunk_size);
 		void validate_request();
-		void handle_request();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
@@ -107,6 +113,7 @@ class HttpRequestHandler {
 						   ClientData* client_data);
 	    ~HttpRequestHandler();
 		void request_workflow();
+		void handle_request();
 };
 
 #endif

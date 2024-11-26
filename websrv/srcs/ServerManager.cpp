@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:28:53 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/25 11:30:55 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:10:20 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,8 +296,8 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			usleep(700);
-			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 200);
+			usleep(200);
+			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 500);
 			if (poll_count == 0) {
 				continue ;
 			}
@@ -312,21 +312,16 @@ void ServerManager::run() {
 					cleanup_invalid_fds();
 					continue ;
 				} else {
-					_log->log_error( RSP_NAME,
+					_log->log_error( SM_NAME,
 					          "Fatal error. Errno : " + int_to_string(errno));
 					_healthy = false;
 					break;
 				}
 			}
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
-				if (_poll_fds[i].revents & POLLOUT) {
-					std::map<int, ClientData*>::iterator client_data = _clients.find(_poll_fds[i].fd);
-					if (client_data != _clients.end()) {
-						process_response(i, client_data);
-					}
-				} else if (_poll_fds[i].revents & POLLIN) {
-					std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
-					if (server_it != _servers_map.end()) {
+				if (_poll_fds[i].revents & (POLLIN | POLLOUT)) {
+					if (i < _servers_map.size() && _poll_fds[i].revents & POLLIN) {
+						std::map<int, SocketHandler*>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
 						while (new_client(server_it->second)) {};
 					} else {
 						process_request(i);
@@ -403,25 +398,54 @@ bool    ServerManager::new_client(SocketHandler *server) {
  */
 bool    ServerManager::process_request(size_t& poll_index) {
 	try {
-		int poll_fd = _poll_fds[poll_index].fd;
-		std::map<int, ClientData*>::iterator it = _clients.find(poll_fd);
+		int fd = _poll_fds[poll_index].fd;
+		std::map<int, ClientData*>::iterator it = _clients.find(fd);
 		if (it != _clients.end()) {
 			HttpRequestHandler request_handler(_log, it->second);
-			request_handler.request_workflow();
-			if (!it->second->is_alive()) {
-				remove_client_from_poll(it);
-				--poll_index;
-			} else {
-				_poll_fds[poll_index].events = POLLOUT;
-				_poll_fds[poll_index].revents = 0;
-				int fd = it->second->get_fd().fd;
-				time_t new_cycle = timeout_timestamp();
-				t_fd_timestamp index_timeout = _index_timeout.find(fd);
-				t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
-				_timeout_index.erase(timeout_index);
-				_timeout_index[new_cycle] = fd;
-				_index_timeout[fd] = new_cycle;
+			switch (_poll_fds[poll_index].revents) {
+				case POLLIN:
+					request_handler.request_workflow();
+					if (!it->second->is_alive()) {
+						remove_client_from_poll(it);
+						--poll_index;
+						return (true);
+					}
+					_poll_fds[poll_index].events = POLLOUT;
+					_poll_fds[poll_index].revents = 0;
+					break;
+
+				case POLLOUT:
+					request_handler.handle_request();
+					if (!it->second->is_alive() || !it->second->is_active()) {
+						remove_client_from_poll(it);
+						--poll_index;
+						return (true);
+					}
+					_poll_fds[poll_index].events = POLLIN;
+					_poll_fds[poll_index].revents = 0;
+					it->second->client_request().clear_request();
+					break;
+
+				case POLLIN | POLLOUT:
+					request_handler.request_workflow();
+					request_handler.handle_request();
+					if (!it->second->is_alive() || !it->second->is_active()) {
+						remove_client_from_poll(it);
+						--poll_index;
+						return (true);
+					}
+					_poll_fds[poll_index].events = POLLIN | POLLOUT;
+					_poll_fds[poll_index].revents = 0;
+					it->second->client_request().clear_request();
+					break;
 			}
+
+			time_t new_cycle = timeout_timestamp();
+			t_fd_timestamp index_timeout = _index_timeout.find(fd);
+			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
+			_timeout_index.erase(timeout_index);
+			_timeout_index[new_cycle] = fd;
+			_index_timeout[fd] = new_cycle;
 			return (true);
 		} else {
 			_log->log_warning( SM_NAME,
@@ -458,105 +482,22 @@ bool    ServerManager::process_request(size_t& poll_index) {
  * @param client_data Iterator pointing to the client’s data in the `_clients` map.
  */
 void    ServerManager::remove_client_from_poll(t_client_it client_data) {
-	if (client_data != _clients.end()) {
-		std::map<int, size_t>::iterator index_it = _poll_index.find(client_data->second->get_fd().fd);
-		size_t index = index_it->second;
-		std::map<int, time_t>::iterator index_to_it = _index_timeout.find(client_data->second->get_fd().fd);
-		std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
+	std::map<int, size_t>::iterator index_it = _poll_index.find(client_data->second->get_fd().fd);
+	size_t index = index_it->second;
+	std::map<int, time_t>::iterator index_to_it = _index_timeout.find(client_data->second->get_fd().fd);
+	std::map<time_t, int>::iterator to_index_it = _timeout_index.find(index_to_it->second);
 
-		if (index < _poll_fds.size() - 1) {
-			std::swap(_poll_fds[index], _poll_fds.back());
-			int swapped_fd = _poll_fds[index].fd;
-			_poll_index[swapped_fd] = index;
-		}
-		_poll_fds.pop_back();
-		delete client_data->second;
-		_clients.erase(client_data);
-		_poll_index.erase(index_it);
-		_timeout_index.erase(to_index_it);
-		_index_timeout.erase(index_to_it);
+	if (index < _poll_fds.size() - 1) {
+		std::swap(_poll_fds[index], _poll_fds.back());
+		int swapped_fd = _poll_fds[index].fd;
+		_poll_index[swapped_fd] = index;
 	}
-}
-
-bool ServerManager::process_response(size_t& poll_index, t_client_it client_it) {
-	int poll_fd = _poll_fds[poll_index].fd;
-	ClientData* client = client_it->second;
-	try {
-		s_request& request = client->client_request();
-		SocketHandler* server = client->get_server();
-		if (!request.sanity){
-			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
-			response.send_error_response();
-		}
-		else if (request.factory == 0) {
-			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
-			response.handle_request();
-			WebServerCache<CacheRequest>& request_cache = server->get_request_cache();
-			if (request.is_cached) {
-				if (!request.sanity) {
-					request_cache.remove(request.path);
-				}
-			}
-			if (request.sanity && HAS_GET(request.method)) {
-				request_cache.put(request.path,
-				                   CacheRequest(request.path, request.host_config,
-				                                request.location, request.normalized_path));
-			}
-		}
-		else if (request.is_redir) {
-			HttpResponseHandler response(request.location, _log, client, request, poll_fd);
-			response.redirection();
-		}
-		else if (request.autoindex) {
-			HttpAutoIndex response(request.location, _log, client, request, poll_fd);
-			response.handle_request();
-		}
-		else if (request.cgi) {
-			HttpCGIHandler response(request.location, _log, client, request, poll_fd);
-			response.handle_request();
-			client->deactivate();
-		} else if (!request.range.empty()){
-			HttpRangeHandler response(request.location, _log, client, request, poll_fd);
-			response.handle_request();
-		} else if (!request.boundary.empty()){
-			HttpMultipartHandler response(request.location, _log, client, request, poll_fd);
-			response.handle_request();
-		}
-		if (client->is_active() && client->is_alive()) {
-			request.clear_request();
-			_poll_fds[poll_index].events = POLLIN;
-			_poll_fds[poll_index].revents = 0;
-			time_t new_cycle = timeout_timestamp();
-			t_fd_timestamp index_timeout = _index_timeout.find(poll_fd);
-			t_timestamp_fd timeout_index = _timeout_index.find(index_timeout->second);
-			_timeout_index.erase(timeout_index);
-			_timeout_index[new_cycle] = poll_fd;
-			_index_timeout[poll_fd] = new_cycle;
-			return (true);
-		}
-	} catch (WebServerException& e) {
-		std::ostringstream detail;
-		detail << "Error Handling response: " << e.what();
-		_log->log_error( RH_NAME,
-		                 detail.str());
-		client->deactivate();
-	} catch (Logger::NoLoggerPointer& e) {
-		std::ostringstream detail;
-		detail << "Logger Pointer Error at Response Handler. "
-		       << "Server Sanity could be compromise.";
-		_log->log_error( RH_NAME,
-		                 detail.str());
-		client->deactivate();
-	} catch (std::exception& e) {
-		std::ostringstream detail;
-		detail << "Unknown error handling response: " << e.what();
-		_log->log_error( RH_NAME,
-		                 detail.str());
-		client->deactivate();
-	}
-	remove_client_from_poll(client_it);
-	--poll_index;
-	return (false);
+	_poll_fds.pop_back();
+	delete client_data->second;
+	_clients.erase(client_data);
+	_poll_index.erase(index_it);
+	_timeout_index.erase(to_index_it);
+	_index_timeout.erase(index_to_it);
 }
 
 /**
