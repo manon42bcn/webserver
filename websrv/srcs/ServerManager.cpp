@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/25 11:28:53 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 22:36:04 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/27 21:21:41 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,8 @@ void ServerManager::run() {
 	try {
 		while (_active) {
 			timeout_clients();
-			usleep(200);
+			usleep(500);
+
 			int poll_count = poll(&_poll_fds[0], _poll_fds.size(), 200);
 			if (poll_count == 0) {
 				continue ;
@@ -318,15 +319,14 @@ void ServerManager::run() {
 					break;
 				}
 			}
-			_log->status(SM_NAME, "hello " + int_to_string(poll_count));
+
 			for (size_t i = 0; i < _poll_fds.size(); ++i) {
 				if (_poll_fds[i].revents & (POLLIN | POLLOUT)) {
-					if (i > _servers_map.size()) {
-						process_request(i);
-						poll_count--;
-					} else {
+					if (i < _servers_map.size()) {
 						std::map<int, SocketHandler *>::iterator server_it = _servers_map.find(_poll_fds[i].fd);
-						while ((poll_count--) && new_client(server_it->second)) {};
+						new_client(server_it->second);
+					} else {
+						process_request(i);
 					}
 				}
 			}
@@ -370,13 +370,12 @@ bool    ServerManager::new_client(SocketHandler *server) {
 		return (false);
 	}
 	ClientData* new_client = new ClientData(server, _log, client_fd);
-	int fd = new_client->get_fd().fd;
-	_clients[fd] = new_client;
+	_clients[client_fd] = new_client;
 	_poll_fds.push_back(new_client->get_fd());
-	_poll_index[fd] = _poll_fds.size() - 1;
+	_poll_index[client_fd] = _poll_fds.size() - 1;
 	time_t timestamp = timeout_timestamp();
-	_timeout_index[timestamp] = fd;
-	_index_timeout[fd] = timestamp;
+	_timeout_index[timestamp] = client_fd;
+	_index_timeout[client_fd] = timestamp;
 	_log->log_debug( SM_NAME,
 	          "New Client accepted on port: " + server->get_port());
 	return (true);
