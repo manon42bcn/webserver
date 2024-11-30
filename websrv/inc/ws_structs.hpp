@@ -6,12 +6,13 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 21:15:39 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 19:06:00 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:19:46 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WS_STRUCTS_HPP
 #define WS_STRUCTS_HPP
+#include "WebserverCache.hpp"
 
 /**
  * @brief Represents different operational modes for processing.
@@ -126,6 +127,8 @@ struct LocationConfig {
 	}
 };
 
+struct CacheRequest;
+
 struct ServerConfig {
 	int                                           port;
 	std::string                                   server_name;
@@ -142,6 +145,7 @@ struct ServerConfig {
 	std::string ws_root;
 	std::string ws_errors_root;
 	t_mode      ws_error_mode;
+	WebServerCache<CacheRequest>                  request_cache;
 
 	ServerConfig()
 			: port(-42),
@@ -157,7 +161,8 @@ struct ServerConfig {
 			  cgi_locations(false),
 			  ws_root(),
 			  ws_errors_root(),
-			  ws_error_mode() {
+			  ws_error_mode(),
+			  request_cache(WebServerCache<CacheRequest>(100)) {
 		error_pages.clear();
 		locations.clear();
 		default_pages.clear();
@@ -204,7 +209,7 @@ struct s_request {
 	bool                    sanity;
 	e_http_sts              status;
 	const LocationConfig*   location;
-	const ServerConfig*     host_config;
+	ServerConfig*           host_config;
 	bool                    request_ready;
 
 	s_request():
@@ -278,11 +283,12 @@ struct s_request {
  * server to quickly respond to requests for cached resources.
  */
 struct CacheEntry {
-	std::string url;
-	std::string content;
+	std::string			url;
+	std::string			content;
 
-	CacheEntry(const std::string &u, const std::string &c)
-			: url(u), content(c) {};
+	CacheEntry(const std::string &u, const std::string &c):
+	    url(u),
+	    content(c) {};
 	CacheEntry(): url(), content(){
 		url.clear();
 		content.clear();

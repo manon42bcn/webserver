@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 00:58:10 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:45:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,17 @@ typedef struct e_chunk {
 class HttpRequestHandler {
 	private:
 	    typedef void (HttpRequestHandler::*validate_step)( );
-		const ServerConfig*             _host_config;
-		const ServerConfig&             _config;
+		ServerConfig*                   _host_config;
+		ServerConfig&                   _config;
 		const Logger*                   _log;
 		ClientData*                     _client_data;
-		WebServerCache<CacheRequest>&   _request_cache;
 		const LocationConfig*           _location;
 		int                             _fd;
 		size_t 					        _max_request;
-	    std::string                     _request;
+		std::string                     _request;
 		s_request&                      _request_data;
 		CacheRequest                    _cache_data;
+		WebServerCache<CacheRequest>*   _cache;
 
 		void read_request_header();
 		void parse_header();

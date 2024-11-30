@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 01:15:40 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:45:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ class SocketHandler {
 		int accept_connection();
 		int get_socket_fd() const;
 		void add_host(ServerConfig& config);
-		const ServerConfig& get_config() const;
-		const ServerConfig* get_config(const std::string& host);
+		ServerConfig& get_config() const;
+		ServerConfig* get_config(const std::string& host);
 		std::string get_port() const;
 		WebServerCache<CacheEntry>&   get_cache();
 		WebServerCache<CacheRequest>& get_request_cache();

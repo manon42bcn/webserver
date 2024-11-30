@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/26 22:15:58 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:44:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
-	_request_cache(client_data->get_server()->get_request_cache()),
 	_fd(_client_data->get_fd().fd),
-	_request_data(client_data->client_request()){
+	_request_data(client_data->client_request()),
+	_cache(&_config.request_cache){
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
@@ -49,6 +49,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	}
 	if (_request_data.host_config) {
 		_host_config = _request_data.host_config;
+		_cache = &_request_data.host_config->request_cache;
 	}
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
@@ -476,9 +477,10 @@ void HttpRequestHandler::load_header_data() {
 }
 
 void HttpRequestHandler::load_host_config() {
-	std::string host = clean_host(_request_data.host);
+	std::string host = to_lowercase(_request_data.host);
 	_host_config = _client_data->get_server()->get_config(host);
 	_request_data.host_config = _host_config;
+	_cache = &_request_data.host_config->request_cache;
 	if (_host_config == NULL) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						"Host Config Pointer NULL.");
@@ -651,8 +653,8 @@ void HttpRequestHandler::get_location_config() {
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
 
-	_request_data.is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (HAS_GET(_request_data.method) && _request_data.is_cached && _cache_data.host->server_name == _host_config->server_name) {
+	_request_data.is_cached = _cache->get(_request_data.path, _cache_data);
+	if (_request_data.is_cached && HAS_GET(_request_data.method)) {
 		_location = _cache_data.location;
 		_request_data.location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
@@ -1240,15 +1242,15 @@ void HttpRequestHandler::handle_request() {
 			response.handle_request();
 			if (_request_data.is_cached) {
 				if (!_request_data.sanity) {
-					_request_cache.remove(_request_data.path);
+					_cache->remove(_request_data.path);
 					return ;
 				}
 				return;
 			}
 			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-				_request_cache.put(_request_data.path,
-								   CacheRequest(_request_data.path, _host_config,
-													 _location, _request_data.normalized_path));
+				_cache->put(_request_data.path,
+							   CacheRequest(_request_data.path, _host_config,
+											_location, _request_data.normalized_path));
 			}
 			return;
 		}
