@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 09:53:58 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/13 00:44:47 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:13:40 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef _WEBSERVER_CACHE_HPP_
@@ -43,6 +43,8 @@ public:
      * @param capacity The maximum number of entries the cache can hold.
      */
 	explicit WebServerCache(size_t capacity) : _capacity(capacity) {}
+
+	explicit WebServerCache(): _capacity(100) {}
 
 	/**
      * @brief Retrieves an entry from the cache.

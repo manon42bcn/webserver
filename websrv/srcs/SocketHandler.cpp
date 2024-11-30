@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 04:29:34 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:45:43 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,14 +215,19 @@ int SocketHandler::get_socket_fd() const {
  *
  * @return A constant reference to the server configuration (ServerConfig).
  */
-const ServerConfig& SocketHandler::get_config() const {
+ServerConfig& SocketHandler::get_config() const {
 	return (_config);
 }
 
-const ServerConfig* SocketHandler::get_config(const std::string &host) {
-	std::map<std::string, ServerConfig*>::iterator it = _hosts.find(to_lowercase(host));
-	if (it != _hosts.end()) {
-		return (it->second);
+ServerConfig* SocketHandler::get_config(const std::string &host) {
+	size_t find_host;
+
+	for (std::map<std::string, ServerConfig*>::iterator it = _hosts.begin();
+												it != _hosts.end(); it++) {
+		find_host = host.find(it->first);
+		if (find_host != std::string::npos) {
+			return (it->second);
+		}
 	}
 	return (&_config);
 }

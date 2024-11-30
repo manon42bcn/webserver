@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 22:06:01 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:44:21 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,22 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 	_config(client_data->get_server()->get_config()),
 	_log(log),
 	_client_data(client_data),
-	_request_cache(client_data->get_server()->get_request_cache()),
-	_location(NULL),
 	_fd(_client_data->get_fd().fd),
-	_request_data(client_data->client_request()){
+	_request_data(client_data->client_request()),
+	_cache(&_config.request_cache){
 
 	if (!log) {
 		throw Logger::NoLoggerPointer();
 	}
 	if (!client_data) {
 		throw WebServerException("Client Data is not valid. Server health is compromised.");
+	}
+	if (_request_data.location) {
+		_location = _request_data.location;
+	}
+	if (_request_data.host_config) {
+		_host_config = _request_data.host_config;
+		_cache = &_request_data.host_config->request_cache;
 	}
 	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
@@ -60,55 +66,42 @@ HttpRequestHandler::~HttpRequestHandler() {
 }
 
 /**
- * @brief Executes the main workflow for handling an HTTP request.
+ * @brief Executes the workflow for processing and validating an HTTP request.
  *
- * This method defines and executes a series of validation and parsing steps to fully handle an HTTP request.
- * It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler.
+ * This method manages the step-by-step workflow for parsing and validating an HTTP request,
+ * followed by handling the request if it is ready. The workflow is divided into distinct
+ * validation steps, each responsible for a specific part of the HTTP request processing.
  *
  * @details
- * The method performs the following actions:
+ * The method operates as follows:
+ * 1. **Define Steps**:
+ *    - An array of function pointers (`validate_step`) defines the steps for processing:
+ *      - `read_request_header`: Reads the HTTP request header from the client.
+ *      - `parse_header`: Parses the header for key-value pairs.
+ *      - `parse_method_and_path`: Extracts the HTTP method and requested path.
+ *      - `parse_path_type`: Determines the type of resource (e.g., file, directory).
+ *      - `load_header_data`: Loads additional header data needed for processing.
+ *      - `load_host_config`: Maps the request to the correct host configuration.
+ *      - `solver_resource`: Resolves the resource requested by the client.
+ *      - `load_content`: Reads the content of the request, if any.
+ *      - `validate_request`: Performs final validation of the request's integrity.
  *
- * 1. **Define Validation Steps**:
- *    - Defines an array of function pointers (`steps`) representing each step of the request processing workflow:
- *      - `read_request_header()`: Reads the incoming request header.
- *      - `parse_header()`: Parses the request headers.
- *      - `parse_method_and_path()`: Parses the HTTP method and the requested path.
- *      - `parse_path_type()`: Determines the type of path being requested.
- *      - `load_header_data()`: Loads additional header data needed for processing.
- *      - `solver_resource()`: Resolves the requested resource path and validates its location.
- *      - `load_content()`: Loads the content associated with the request (if applicable).
- *      - `validate_request()`: Validates the overall request to ensure it meets server requirements.
- *
- * 2. **Start Request Workflow**:
- *    - Logs the beginning of the request parsing and validation process.
- *    - Calls `_client_data->chronos_reset()` to reset any timers related to the client (e.g., request start time).
+ * 2. **Check Input State**:
+ *    - If the request is not ready and the socket is readable (`POLLIN`), the validation process begins.
  *
  * 3. **Execute Validation Steps**:
- *    - Iterates through the array of validation steps (`steps`) and executes each one in order using function pointers (`(this->*steps[i])()`).
- *    - After executing each step, checks the `_request_data.sanity` flag:
- *      - If the flag is `false`, it indicates an error during processing, and the workflow is terminated.
+ *    - Iterates through the validation steps sequentially:
+ *      - Calls each step using a member function pointer.
+ *      - Stops the process if the `sanity` flag indicates a validation failure.
  *
- * 4. **Handle the Request**:
- *    - After completing the validation and parsing steps, logs the end of the request validation process.
- *    - Calls `handle_request()` to proceed with responding to the client based on the validated request.
+ * 4. **Mark Request as Ready**:
+ *    - If all steps succeed, the request is marked as ready for further handling.
  *
- * 5. **Log Response Completion**:
- *    - Logs the end of the response handling process.
+ * 5. **Handle Ready Requests**:
+ *    - If the request is ready and the socket is writable (`POLLOUT`), the request is processed.
  *
- * @note
- * - The `_request_data.sanity` flag is used throughout the workflow to indicate whether each step was successful. If an error occurs, the flag is set to `false` and the workflow is halted.
- * - The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly.
- *
- * **Validation Steps**:
- * - `read_request_header()`: Reads the raw HTTP headers from the incoming request.
- * - `parse_header()`: Parses and processes each header to extract key-value pairs.
- * - `parse_method_and_path()`: Identifies the HTTP method (e.g., GET, POST) and the requested path.
- * - `parse_path_type()`: Determines the type of path (e.g., static file, dynamic request).
- * - `load_header_data()`: Loads additional data from headers required for further processing.
- * - `load_host_config()`: Loads host from request, to set its configuration, and update host at ClientData*
- * - `solver_resource()`: Resolves the requested resource path, potentially handling relative paths.
- * - `load_content()`: Loads request body content if applicable (e.g., for POST requests).
- * - `validate_request()`: Final validation to ensure that the request conforms to server policies and rules.
+ * @throws Exceptions may occur within individual steps if errors are encountered,
+ *         such as malformed headers or resource resolution failures.
  */
 void HttpRequestHandler::request_workflow() {
 	validate_step steps[] = {&HttpRequestHandler::read_request_header,
@@ -121,22 +114,23 @@ void HttpRequestHandler::request_workflow() {
 	                         &HttpRequestHandler::load_content,
 	                         &HttpRequestHandler::validate_request};
 
-	_log->log_debug( RH_NAME,
-	          "Parse and Validation Request Process. Start");
-	size_t i = 0;
-	_client_data->chronos_reset();
-	while (i < (sizeof(steps) / sizeof(validate_step)))
-	{
-		(this->*steps[i])();
-		if (!_request_data.sanity)
-			break;
-		i++;
+	if (!_request_data.request_ready && _client_data->get_state() & POLLIN) {
+		_log->log_debug( RH_NAME,
+		                 "Parse and Validation Request Process. Start");
+		size_t i = 0;
+		_client_data->chronos_reset();
+		while (i < (sizeof(steps) / sizeof(validate_step)))
+		{
+			(this->*steps[i])();
+			if (!_request_data.sanity)
+				break;
+			i++;
+		}
+		_request_data.request_ready = true;
 	}
-	_log->log_debug( RH_NAME,
-	          "Request Validation Process. End. Send to Response Handler.");
-	handle_request();
-	_log->log_debug( RH_NAME,
-	          "Response Process end.");
+	if (_request_data.request_ready && _client_data->get_state() & POLLOUT) {
+		handle_request();
+	}
 }
 
 /**
@@ -215,7 +209,6 @@ void HttpRequestHandler::read_request_header() {
 		detail << "Error Getting Header Data Request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, detail.str());
 	}
-	std::cout << RED << _request << RESET << std::endl;
 }
 
 /**
@@ -484,15 +477,15 @@ void HttpRequestHandler::load_header_data() {
 }
 
 void HttpRequestHandler::load_host_config() {
-	std::string host = clean_host(_request_data.host);
+	std::string host = to_lowercase(_request_data.host);
 	_host_config = _client_data->get_server()->get_config(host);
 	_request_data.host_config = _host_config;
+	_cache = &_request_data.host_config->request_cache;
 	if (_host_config == NULL) {
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						"Host Config Pointer NULL.");
 		return ;
 	}
-	_log->status(RH_NAME, host);
 	_request_data.host = normalize_host(_request_data.host);
 }
 
@@ -659,10 +652,9 @@ void HttpRequestHandler::get_location_config() {
 
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
-	_log->log_error(RH_NAME, _request_data.header);
 
-	_request_data.is_cached = _request_cache.get(_request_data.path, _cache_data);
-	if (HAS_GET(_request_data.method) && _request_data.is_cached && _cache_data.host->server_name == _host_config->server_name) {
+	_request_data.is_cached = _cache->get(_request_data.path, _cache_data);
+	if (_request_data.is_cached && HAS_GET(_request_data.method)) {
 		_location = _cache_data.location;
 		_request_data.location = _cache_data.location;
 		_request_data.normalized_path = _cache_data.normalized_path;
@@ -1239,74 +1231,75 @@ void HttpRequestHandler::handle_request() {
 	if (!_client_data->is_alive()) {
 		return;
 	}
-//	try {
-//		if (!_request_data.sanity){
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.send_error_response();
-//			return ;
-//		}
-//		if (_factory == 0) {
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			if (_request_data.is_cached) {
-//				if (!_request_data.sanity) {
-//					_request_cache.remove(_request_data.path);
-//					return ;
-//				}
-//				return;
-//			}
-//			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-//				_request_cache.put(_request_data.path,
-//								   CacheRequest(_request_data.path, _host_config,
-//													 _location, _request_data.normalized_path));
-//			}
-//			return;
-//		}
-//		if (_request_data.is_redir) {
-//			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.redirection();
-//			return;
-//		}
-//		if (_request_data.autoindex) {
-//			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return;
-//		}
-//		if (_request_data.cgi) {
-//			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			_client_data->deactivate();
-//			return ;
-//		} else if (!_request_data.range.empty()){
-//			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return ;
-//		} else if (!_request_data.boundary.empty()){
-//			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
-//			response.handle_request();
-//			return ;
-//		}
-//	} catch (WebServerException& e) {
-//		std::ostringstream detail;
-//		detail << "Error Handling response: " << e.what();
-//		_log->log_error( RH_NAME,
-//				  detail.str());
-//		_client_data->deactivate();
-//	} catch (Logger::NoLoggerPointer& e) {
-//		std::ostringstream detail;
-//		detail << "Logger Pointer Error at Response Handler. "
-//			   << "Server Sanity could be compromise.";
-//		_log->log_error( RH_NAME,
-//		          detail.str());
-//		_client_data->deactivate();
-//	} catch (std::exception& e) {
-//		std::ostringstream detail;
-//		detail << "Unknown error handling response: " << e.what();
-//		_log->log_error( RH_NAME,
-//		          detail.str());
-//		_client_data->deactivate();
-//	}
+	try {
+		if (!_request_data.sanity){
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.send_error_response();
+			return ;
+		}
+		if (_request_data.factory == 0) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			if (_request_data.is_cached) {
+				if (!_request_data.sanity) {
+					_cache->remove(_request_data.path);
+					return ;
+				}
+				return;
+			}
+			if (_request_data.sanity && HAS_GET(_request_data.method)) {
+				_cache->put(_request_data.path,
+							   CacheRequest(_request_data.path, _host_config,
+											_location, _request_data.normalized_path));
+			}
+			return;
+		}
+		if (_request_data.is_redir) {
+			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.redirection();
+			return;
+		}
+		if (_request_data.autoindex) {
+			HttpAutoIndex response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return;
+		}
+		if (_request_data.cgi) {
+			HttpCGIHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			_client_data->deactivate();
+			return ;
+		} else if (!_request_data.range.empty()){
+			HttpRangeHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		} else if (!_request_data.boundary.empty()){
+			HttpMultipartHandler response(_location, _log, _client_data, _request_data, _fd);
+			response.handle_request();
+			return ;
+		}
+	} catch (WebServerException& e) {
+		std::ostringstream detail;
+		detail << "Error Handling response: " << e.what();
+		_log->log_error( RH_NAME,
+				  detail.str());
+		_client_data->kill_client();
+	} catch (Logger::NoLoggerPointer& e) {
+		std::ostringstream detail;
+		detail << "Logger Pointer Error at Response Handler. "
+			   << "Server Sanity could be compromise.";
+		_log->log_error( RH_NAME,
+		          detail.str());
+		_client_data->kill_client();
+	} catch (std::exception& e) {
+		std::ostringstream detail;
+		detail << "Unknown error handling response: " << e.what();
+		_log->log_error( RH_NAME,
+		          detail.str());
+		_client_data->kill_client();
+	}
 }
+
 
 /**
  * @brief Disables the request's sanity state and sets an error status.
@@ -1326,4 +1319,5 @@ void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) 
 	_log->log_error( RH_NAME, detail);
 	_request_data.sanity = false;
 	_request_data.status = status;
+	_client_data->kill_client();
 }

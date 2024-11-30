@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 08:43:27 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 03:38:59 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/26 22:13:56 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ClientData.hpp"
@@ -28,10 +28,10 @@ ClientData::ClientData(SocketHandler* server,
 					   _log(log),
 					   _active(false),
 					   _alive(true),
-					   _client_fd()
-{
+					   _client_fd() {
+
 	_client_fd.fd = fd;
-	_client_fd.events = POLLIN;
+	_client_fd.events = POLLIN | POLLOUT;
 	_client_fd.revents = 0;
 	_timestamp = std::time(NULL);
 	_log->log_debug( CD_MODULE,
@@ -192,6 +192,29 @@ void ClientData::kill_client() {
 	_alive = false;
 }
 
+/**
+ * @brief Accessor for the client's request data.
+ *
+ * @return Reference to the client's current HTTP request data.
+ */
 s_request& ClientData::client_request() {
 	return (_request);
+}
+
+/**
+ * @brief Updates the client's state based on the given value.
+ *
+ * @param state The new state to set for the client.
+ */
+void ClientData::set_state(short state) {
+	_state = state;
+}
+
+/**
+ * @brief Retrieves the current state of the client.
+ *
+ * @return The client's current state as a short.
+ */
+short ClientData::get_state() const {
+	return (_state);
 }

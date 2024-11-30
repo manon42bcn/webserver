@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 00:04:03 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:45:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 #include "http_enum_codes.hpp"
 #include "ClientData.hpp"
 #include "Logger.hpp"
+#include "WebserverCache.hpp"
+#include "HttpRequestHandler.hpp"
+#include "HttpResponseHandler.hpp"
+#include "HttpCGIHandler.hpp"
+#include "HttpRangeHandler.hpp"
+#include "HttpMultipartHandler.hpp"
+#include "HttpAutoIndex.hpp"
 #include "WebserverCache.hpp"
 // Libraries
 #include <string>
@@ -71,17 +78,17 @@ typedef struct e_chunk {
 class HttpRequestHandler {
 	private:
 	    typedef void (HttpRequestHandler::*validate_step)( );
-		const ServerConfig*             _host_config;
-		const ServerConfig&             _config;
+		ServerConfig*                   _host_config;
+		ServerConfig&                   _config;
 		const Logger*                   _log;
 		ClientData*                     _client_data;
-		WebServerCache<CacheRequest>&   _request_cache;
 		const LocationConfig*           _location;
 		int                             _fd;
 		size_t 					        _max_request;
-	    std::string                     _request;
+		std::string                     _request;
 		s_request&                      _request_data;
 		CacheRequest                    _cache_data;
+		WebServerCache<CacheRequest>*   _cache;
 
 		void read_request_header();
 		void parse_header();
@@ -99,7 +106,6 @@ class HttpRequestHandler {
 		void load_content_chunks();
 		bool parse_chunks(std::string& chunk_data, long& chunk_size);
 		void validate_request();
-		void handle_request();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 
 	public:
@@ -107,6 +113,7 @@ class HttpRequestHandler {
 						   ClientData* client_data);
 	    ~HttpRequestHandler();
 		void request_workflow();
+		void handle_request();
 };
 
 #endif

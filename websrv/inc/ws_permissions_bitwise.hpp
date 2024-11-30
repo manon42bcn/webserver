@@ -3,6 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ws_permissions_bitwise.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+/*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/18 17:59:56 by mporras-          #+#    #+#             */
+/*   Updated: 2024/11/25 22:12:11 by mporras-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ws_permissions_bitwise.hpp                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: vaguilar <vaguilar@student.42barcelona.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 02:11:15 by mporras-          #+#    #+#             */
@@ -60,4 +72,6 @@
                             MASK_METHOD_TRACE | MASK_METHOD_DELETE)
 // ALL PERMISSIONS
 #define GRANT_ALL(permissions) ((permissions) |= MASK_ALL_PERMISSIONS)
+
+#define NEXT_STEP(step) (step << 1)
 #endif
