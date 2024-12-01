@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/30 17:44:21 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/02 00:20:26 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ void HttpRequestHandler::read_request_header() {
 				_client_data->kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
+				_client_data->kill_client();
 				return;
 			} else {
 				retry_count++;
@@ -207,7 +208,9 @@ void HttpRequestHandler::read_request_header() {
 	} catch (std::exception& e) {
 		std::ostringstream detail;
 		detail << "Error Getting Header Data Request: " << e.what();
-		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR, detail.str());
+		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+						detail.str());
+		_client_data->kill_client();
 	}
 }
 
@@ -946,6 +949,7 @@ void HttpRequestHandler::load_content_chunks() {
 				_client_data->kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
+				_client_data->kill_client();
 				return;
 
 			} else {
@@ -964,6 +968,7 @@ void HttpRequestHandler::load_content_chunks() {
 			_client_data->kill_client();
 			turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 							"Client Close Request");
+			_client_data->kill_client();
 			return;
 		}
 
@@ -977,6 +982,7 @@ void HttpRequestHandler::load_content_chunks() {
 		detail << "Error getting chunk data: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						detail.str());
+		_client_data->kill_client();
 	}
 }
 
@@ -1119,6 +1125,7 @@ void HttpRequestHandler::load_content_normal() {
 				_client_data->kill_client();
 				turn_off_sanity(HTTP_CLIENT_CLOSE_REQUEST,
 								"Client Close Request");
+				_client_data->kill_client();
 				return;
 			} else {
 				retry_count++;
@@ -1141,6 +1148,7 @@ void HttpRequestHandler::load_content_normal() {
 		detail << "Error reading request: " << e.what();
 		turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 						detail.str());
+		_client_data->kill_client();
 	}
 }
 
@@ -1319,5 +1327,4 @@ void HttpRequestHandler::turn_off_sanity(e_http_sts status, std::string detail) 
 	_log->log_error( RH_NAME, detail);
 	_request_data.sanity = false;
 	_request_data.status = status;
-	_client_data->kill_client();
 }

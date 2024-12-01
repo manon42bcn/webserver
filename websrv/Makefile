@@ -77,10 +77,10 @@ $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
 
 run: re
-	@./webserver configs/test1.conf
+	@./webserver configs/servers.conf
 
 local: all
-	@./webserver configs/test1.conf
+	@./webserver configs/servers.conf
 
 clean:
 	$(RM) $(OBJS)

@@ -4,7 +4,8 @@ services:
     build:
       dockerfile: ./Dockerfile
     ports:
-      - 8080:8080
+      - "8080:8080"
+      - "9090:9090"
     restart: always
     stdin_open: true  # Mantener el STDIN abierto para bash
     tty: true         # Asignar una terminal para que bash funcione correctamente

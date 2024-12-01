@@ -447,8 +447,8 @@ bool    ServerManager::process_request(size_t& poll_index) {
 
 				case POLLOUT:
 				case POLLIN | POLLOUT:
-					_poll_fds[poll_index].events = POLLIN | POLLOUT;
 				default:
+					_poll_fds[poll_index].events = POLLIN | POLLOUT;
 					if (!it->second->is_alive() || !it->second->is_active()) {
 						remove_client_from_poll(it);
 						--poll_index;
