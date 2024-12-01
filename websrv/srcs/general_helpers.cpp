@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 17:07:04 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/23 23:52:25 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/01 23:56:20 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,6 +347,7 @@ std::map<std::string, std::string> create_mime_types() {
 	std::map<std::string, std::string> mime_types;
 	// Text and Web
 	mime_types[".html"] = "text/html";
+	mime_types[".htm"] = "text/html";
 	mime_types[".css"] = "text/css";
 	mime_types[".js"] = "application/javascript";
 	mime_types[".json"] = "application/json";
