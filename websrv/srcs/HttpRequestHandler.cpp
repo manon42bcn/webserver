@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/02 00:20:26 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/02 22:55:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 		_host_config = _request_data.host_config;
 		_cache = &_request_data.host_config->request_cache;
 	}
-	_max_request = _client_data->get_server()->get_config().client_max_body_size;
+	if ((_max_request = _client_data->get_server()->get_config().client_max_body_size) == 0) {
+		_max_request = 9999999999;
+	}
 }
 
 /**
@@ -1191,6 +1193,7 @@ void HttpRequestHandler::validate_request() {
 	if (!HAS_PERMISSION(_location->loc_allowed_methods, _request_data.method)) {
 		turn_off_sanity(HTTP_METHOD_NOT_ALLOWED,
 						"Method not allowed at location.");
+		return ;
 	}
 	if (!_request_data.body.empty()) {
 		if (HAS_PERMISSION(_request_data.method, MASK_METHOD_GET | MASK_METHOD_HEAD | MASK_METHOD_OPTIONS)) {
