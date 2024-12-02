@@ -11,17 +11,6 @@ Feature: Basic Request Tests
             | 8081  |
             | 9090  |
 
-    Scenario Outline: Request for a non existing resource and get a 404 response
-        Given send a request to "http://localhost:<port>/basic_request/fake_resource" and get code status "404"
-        When I parse html response body
-        Then The response body content includes "<label>" with content "<error_msg>"
-
-        Examples:
-            | port | label | error_msg                  |
-            | 8080 | h1    | Oops! Something went wrong |
-            | 8081 | h2    | 404 - Not Found            |
-            | 9090 | h2    | 404 - Not Found            |
-
     Scenario Outline: Different host to the same port resolve different default pages
         Given set connection and headers for ip "127.0.0.1" port "8181" and domain "<host>"
         And send a "GET" request to "/" using set up domain and headers and status code "200"
@@ -78,3 +67,15 @@ Feature: Basic Request Tests
             | one.com  |
             | two.com  |
             | tree.com |
+
+    Scenario Outline: Using a non existing host is resolved using default one
+        Given set connection and headers for ip "127.0.0.1" port "8181" and domain "<host>"
+        And send a "GET" request to "/" using set up domain and headers and status code "200"
+        When I parse html response body
+        Then The response body content includes "h1" with content "This is a styled homepage to test from port 8181 and host <default>"
+
+        Examples:
+            | host       | default  |
+            | noone.com  | one.com  |
+            | notwo.com  | two.com  |
+            | notree.com | tree.com |

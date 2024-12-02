@@ -10,7 +10,7 @@ def before_all(context):
     logger = logging.getLogger("WEBSERVER")
     logger.setLevel(logging.DEBUG)
 
-    file_handler = logging.FileHandler(log_file, mode='w')
+    file_handler = logging.FileHandler(log_file, mode='a')
     file_handler.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
