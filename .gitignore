@@ -10,3 +10,4 @@ webserver
 .env
 .DS_Store
 .vscode
+_output/
