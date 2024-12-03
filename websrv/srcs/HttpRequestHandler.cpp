@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/02 22:55:44 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/03 14:12:45 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -658,13 +658,13 @@ void HttpRequestHandler::get_location_config() {
 	_log->log_debug( RH_NAME,
 			  "Searching related location.");
 
-	_request_data.is_cached = _cache->get(_request_data.path, _cache_data);
-	if (_request_data.is_cached && HAS_GET(_request_data.method)) {
-		_location = _cache_data.location;
-		_request_data.location = _cache_data.location;
-		_request_data.normalized_path = _cache_data.normalized_path;
-		return ;
-	}
+//	_request_data.is_cached = _cache->get(_request_data.path, _cache_data);
+//	if (_request_data.is_cached && HAS_GET(_request_data.method)) {
+//		_location = _cache_data.location;
+//		_request_data.location = _cache_data.location;
+//		_request_data.normalized_path = _cache_data.normalized_path;
+//		return ;
+//	}
 	for (std::map<std::string, LocationConfig>::const_iterator it = _host_config->locations.begin();
 	     it != _host_config->locations.end(); ++it) {
 		const std::string& key = it->first;
@@ -1251,18 +1251,18 @@ void HttpRequestHandler::handle_request() {
 		if (_request_data.factory == 0) {
 			HttpResponseHandler response(_location, _log, _client_data, _request_data, _fd);
 			response.handle_request();
-			if (_request_data.is_cached) {
-				if (!_request_data.sanity) {
-					_cache->remove(_request_data.path);
-					return ;
-				}
-				return;
-			}
-			if (_request_data.sanity && HAS_GET(_request_data.method)) {
-				_cache->put(_request_data.path,
-							   CacheRequest(_request_data.path, _host_config,
-											_location, _request_data.normalized_path));
-			}
+//			if (_request_data.is_cached) {
+//				if (!_request_data.sanity) {
+//					_cache->remove(_request_data.path);
+//					return ;
+//				}
+//				return;
+//			}
+//			if (_request_data.sanity && HAS_GET(_request_data.method)) {
+//				_cache->put(_request_data.path,
+//							   CacheRequest(_request_data.path, _host_config,
+//											_location, _request_data.normalized_path));
+//			}
 			return;
 		}
 		if (_request_data.is_redir) {
