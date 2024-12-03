@@ -3,10 +3,43 @@ Feature: Post and Delete methods
     Scenario Outline: Post and Delete methods details posting and deleting a test resource
         Given set connection and headers for ip "127.0.0.1" port "8183" and domain "<host>"
         And send a "POST" request to "/" using set up domain and headers and status code "201"
+            | param_name | value             |
+            | file       | party_static.webp |
+        # Try to Post the same file to ensure that was created and get a 409 error
         Then send a "POST" request to "/" using set up domain and headers and status code "409"
+            | param_name | value             |
+            | file       | party_static.webp |
         When I parse html response body
         Then The response body content includes "h2" with content "409 - Conflict"
+        # Delete the resource
         When send a "DELETE" request to "/party_static.webp" using set up domain and headers and status code "204"
+
+        Examples:
+            | host         |
+            | localhost    |
+            | fivehost.com |
+
+    Scenario Outline: Send a multipart post request to a server where is allowed
+        Given set connection and headers for ip "127.0.0.1" port "8183" and domain "<host>"
+        Then send a "POST" request to "/" using set up domain and headers and status code "201"
+            | param_name | value             |
+            | file1      | party_static.webp |
+            | file2      | party.gif         |
+        # Try to Post files separately to ensure that were created
+        And send a "POST" request to "/" using set up domain and headers and status code "409"
+            | param_name | value             |
+            | file       | party_static.webp |
+        And send a "POST" request to "/" using set up domain and headers and status code "409"
+            | param_name | value     |
+            | file       | party.gif |
+        # try to delete the files using multipart post to check its behaviour
+        And send a "POST" request to "/" using set up domain and headers and status code "409"
+            | param_name | value             |
+            | file1      | party_static.webp |
+            | file2      | party.gif         |
+        # Delete resources
+        And send a "DELETE" request to "/party_static.webp" using set up domain and headers and status code "204"
+        And send a "DELETE" request to "/party.gif" using set up domain and headers and status code "204"
 
         Examples:
             | host         |
@@ -16,6 +49,22 @@ Feature: Post and Delete methods
     Scenario Outline: Post over request limit gives a 413 error
         Given set connection and headers for ip "127.0.0.1" port "8182" and domain "<host>"
         And send a "POST" request to "/" using set up domain and headers and status code "413"
+            | param_name | value             |
+            | file       | party_static.webp |
+        When I parse html response body
+        Then The response body content includes "h2" with content "413 - Payload Too Large"
+
+        Examples:
+            | host         |
+            | localhost    |
+            | fivehost.com |
+
+    Scenario Outline: Send a multipart post over payload limit gives a 413 error
+        Given set connection and headers for ip "127.0.0.1" port "8182" and domain "<host>"
+        Then send a "POST" request to "/" using set up domain and headers and status code "413"
+            | param_name | value             |
+            | file1      | party_static.webp |
+            | file2      | party.gif         |
         When I parse html response body
         Then The response body content includes "h2" with content "413 - Payload Too Large"
 
@@ -72,3 +121,7 @@ Feature: Post and Delete methods
             | two.com   | 8181 | /       |
             | tree.com  | 8181 | /       |
             | localhost | 8181 | /       |
+
+
+
+
