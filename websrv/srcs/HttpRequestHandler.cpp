@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/03 22:02:57 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/04 07:52:55 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,7 @@ void HttpRequestHandler::parse_header() {
 		std::string tmp = _request.substr(header_end);
 		_request.clear();
 		_request = tmp;
+		_log->log_error(RH_NAME, _request_data.header);
 		if (_request_data.header.length() > MAX_HEADER) {
 			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
 							"Request Header too large.");

@@ -4,9 +4,9 @@ import string
 import json
 import random
 import os
+import uuid
 from behave import step
 from bs4 import BeautifulSoup
-import http.client
 import warnings
 from urllib3.exceptions import NotOpenSSLWarning
 
@@ -16,11 +16,6 @@ def map_table(table):
         for row in table:
             map_table[row['param_name']] = row['value']
     return map_table
-
-def generate_chunks(file_path, chunk_size=1024):
-    with open(file_path, "rb") as f:
-        while chunk := f.read(chunk_size):
-            yield chunk
 
 @step('set connection and headers for ip "{ip}" port "{port}" and domain "{domain}"')
 def set_headers_before_request(context, ip, port, domain):
@@ -41,6 +36,13 @@ def send_request_using_host(context, method, location, status_code):
         for key, value in params.items():
             files[key] = open(os.path.join(os.path.dirname(__file__), f"../../resources/{value}"), "rb")
         response = context.session.request(method.upper(), url, files=files)
+    elif method == "CHUNKED":
+        params = map_table(context.table)
+        response = context.session.request("POST", url,
+                                 data=generate_chunks(os.path.join(os.path.dirname(__file__),
+                                 f"../../resources/{params['file']}")),
+                                 headers={"Transfer-Encoding": "chunked",
+                                          "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"})
     elif method == "POST_EMPTY":
         method = "POST"
         response = context.session.request(method.upper(), url)
@@ -49,6 +51,41 @@ def send_request_using_host(context, method, location, status_code):
     assert response.status_code == int(status_code), f"Wrong status code: {response.status_code}"
     context.html_content = response.text
     context.logger.debug(f"Response Body: {context.html_content}")
+
+def generate_chunks(file_path, boundary, mimetype="application/octet-stream", chunk_size=1024):
+    file_name = file_path.split("/")[-1]
+
+    yield f"--{boundary}\r\n".encode()
+    yield f"Content-Disposition: form-data; name=\"file\"; filename=\"{file_name}\"\r\n".encode()
+    yield f"Content-Type: {mimetype}\r\n\r\n".encode()
+
+    with open(file_path, "rb") as f:
+        while chunk := f.read(chunk_size):
+            yield chunk
+
+    yield f"\r\n--{boundary}--\r\n".encode()
+
+@step('send a chunked request to "{location}" using set up domain and headers with status code "{status_code}"')
+def send_chunked_file_with_requests(context, location, status_code):
+    url = f"{context.base_url}{location}"
+    params = map_table(context.table)
+    boundary = f"------------------------{uuid.uuid4().hex}"
+    headers = {
+        "Content-Type": f"multipart/form-data; boundary={boundary}",
+        "Transfer-Encoding": "chunked"
+    }
+    response = context.session.request(
+        "POST",
+        url,
+        data=generate_chunks(os.path.join(os.path.dirname(__file__), f"../../resources/{params['file']}"),
+                             boundary,
+                             params['mimetype']),
+        headers=headers
+    )
+
+    print(f"Status Code: {response.status_code}")
+    print(f"Response Body: {response.text}")
+
 
 @step('send a request to "{url}" and get code status "{code_status}"')
 def send_request_to_url(context, url, code_status):

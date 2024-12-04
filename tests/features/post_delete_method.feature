@@ -122,6 +122,11 @@ Feature: Post and Delete methods
             | tree.com  | 8181 | /       |
             | localhost | 8181 | /       |
 
-
+    Scenario: Sakura
+        Given set connection and headers for ip "127.0.0.1" port "8183" and domain "localhost"
+        And send a chunked request to "/" using set up domain and headers with status code "201"
+            | param_name | value           |
+            | file       | lorem_ipsum.txt |
+            | mimetype   | text/plain      |
 
 
