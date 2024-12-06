@@ -21,3 +21,6 @@ def before_all(context):
     logger.addHandler(file_handler)
     context.logger = logger
     logger.info("Logger start.")
+
+def before_scenario(context, scenario):
+    context.storage = {}

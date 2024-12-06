@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/04 07:52:55 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/06 01:10:04 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,7 +255,6 @@ void HttpRequestHandler::parse_header() {
 		std::string tmp = _request.substr(header_end);
 		_request.clear();
 		_request = tmp;
-		_log->log_error(RH_NAME, _request_data.header);
 		if (_request_data.header.length() > MAX_HEADER) {
 			turn_off_sanity(HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE,
 							"Request Header too large.");
@@ -898,30 +897,24 @@ void HttpRequestHandler::load_content() {
 }
 
 /**
- * @brief Loads the HTTP request body content in chunked transfer mode.
+ * @brief Handles the reading and processing of HTTP chunked content from a client connection.
  *
- * This function reads the request body content from the client socket when the transfer encoding is chunked.
- * It processes the incoming chunks until the entire request body is received.
- * The function handles errors, request timeouts, and ensures that the body content does not exceed the allowed size.
+ * This method reads HTTP chunked transfer-encoded content from a client socket. It processes
+ * the content incrementally, detects the end of the chunked body (`\r\n0\r\n\r\n`), and ensures
+ * that the received content adheres to the constraints of the HTTP protocol, such as request
+ * size limits and timeout conditions.
  *
- * The flow of the function is as follows:
- * 1. Begin by attempting to parse any existing chunk data.
- * 2. Continue reading from the socket using `recv()` to gather more chunk data as needed.
- * 3. If `recv()` returns `-1`, retry reading up to a predefined maximum number of times.
- * 4. If `recv()` returns `0`, it indicates that the client has closed the connection, and the connection is marked inactive.
- * 5. Accumulate the chunk data and parse it to extract individual chunks, appending them to the request body.
- * 6. If the chunk size reaches `0`, it indicates the end of the chunked transfer, and the function completes.
- * 7. If the body is successfully read, reset the request timeout and store the final body content.
+ * The method uses retry mechanisms and handles exceptional conditions, including client-initiated
+ * disconnections, excessive retries, and content exceeding predefined limits. It ultimately parses
+ * the chunked data and stores the reconstructed content in the internal request body storage.
  *
- * @see parse_chunks, chronos_request, turn_off_sanity
+ * @see parse_chunks()
+ * @throws std::exception If an error occurs during the socket communication or chunk parsing.
  */
 void HttpRequestHandler::load_content_chunks() {
 	char buffer[BUFFER_REQUEST];
 	int read_byte;
 	size_t size = 0;
-	std::string chunk_data = _request;
-	_request.clear();
-	long chunk_size = 1;
 	int retry_count = 0;
 
 	try {
@@ -930,11 +923,6 @@ void HttpRequestHandler::load_content_chunks() {
 				turn_off_sanity(HTTP_REQUEST_TIMEOUT,
 								"Request Timeout.");
 				return;
-			}
-			parse_chunks(chunk_data, chunk_size);
-			if (chunk_size == 0) {
-				size = _request.length();
-				break;
 			}
 			read_byte = recv(_fd, buffer, sizeof(buffer), 0);
 
@@ -945,7 +933,10 @@ void HttpRequestHandler::load_content_chunks() {
 									"Body Content too Large.");
 					return;
 				}
-				chunk_data.append(buffer, read_byte);
+				_request.append(buffer, read_byte);
+				if (_request.find("\r\n0\r\n\r\n")) {
+					break;
+				}
 				retry_count = 0;
 
 			} else if (read_byte == 0) {
@@ -958,6 +949,9 @@ void HttpRequestHandler::load_content_chunks() {
 			} else {
 				retry_count++;
 				if (retry_count >= WS_MAX_RETRIES) {
+					if (_request.find("\r\n0\r\n\r\n")) {
+						break;
+					}
 					turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
 									"Max retries exceeded while reading from socket.");
 					return;
@@ -974,7 +968,7 @@ void HttpRequestHandler::load_content_chunks() {
 			_client_data->kill_client();
 			return;
 		}
-
+		parse_chunks();
 		_request_data.body = _request;
 		_request_data.content_length = _request_data.body.length();
 		_log->log_debug( RH_NAME,
@@ -988,7 +982,6 @@ void HttpRequestHandler::load_content_chunks() {
 		_client_data->kill_client();
 	}
 }
-
 
 /**
  * @brief Parses the chunked data according to HTTP/1.1 chunked transfer encoding.
@@ -1010,19 +1003,19 @@ void HttpRequestHandler::load_content_chunks() {
  *   cumulative content size exceeds `_max_request`.
  * - **Invalid End of Chunk**: Calls `turn_off_sanity` if the chunk ending is malformed.
  *
- * @param chunk_data The incoming chunked data from the HTTP request body.
- * @param chunk_size A reference to store the size of the current chunk.
  * @return `true` if parsing completes successfully, `false` otherwise.
  */
-bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size) {
+bool HttpRequestHandler::parse_chunks() {
 	size_t pos = 0;
+	std::string chunk_data = _request;
+	_request.clear();
+	long chunk_size = 0;
 
 	while (true) {
 		size_t chunk_size_end = chunk_data.find("\r\n", pos);
 		if (chunk_size_end == std::string::npos) {
 			break ;
 		}
-
 		std::string chunk_size_str = chunk_data.substr(pos, chunk_size_end - pos);
 		char* endptr;
 		errno = 0;
@@ -1041,16 +1034,14 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 			}
 			if (chunk_data.compare(pos, 2, "\r\n") == 0) {
 				chunk_data.erase(0, pos + 2);
-				return (true);
+				break;
 			} else {
 				turn_off_sanity(HTTP_BAD_REQUEST,
 								"Invalid chunk ending.");
 				return (false);
 			}
 		}
-		if (chunk_data.size() < pos + chunk_size + 2) {
-			break ;
-		}
+
 		_request.append(chunk_data, pos, chunk_size);
 		pos += chunk_size + 2;
 		if (_request.size() > _max_request) {
@@ -1059,7 +1050,6 @@ bool HttpRequestHandler::parse_chunks(std::string& chunk_data, long& chunk_size)
 			return (false);
 		}
 	}
-	chunk_data.erase(0, pos);
 	return (true);
 }
 

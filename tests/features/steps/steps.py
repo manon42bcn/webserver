@@ -36,13 +36,6 @@ def send_request_using_host(context, method, location, status_code):
         for key, value in params.items():
             files[key] = open(os.path.join(os.path.dirname(__file__), f"../../resources/{value}"), "rb")
         response = context.session.request(method.upper(), url, files=files)
-    elif method == "CHUNKED":
-        params = map_table(context.table)
-        response = context.session.request("POST", url,
-                                 data=generate_chunks(os.path.join(os.path.dirname(__file__),
-                                 f"../../resources/{params['file']}")),
-                                 headers={"Transfer-Encoding": "chunked",
-                                          "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"})
     elif method == "POST_EMPTY":
         method = "POST"
         response = context.session.request(method.upper(), url)
@@ -51,6 +44,10 @@ def send_request_using_host(context, method, location, status_code):
     assert response.status_code == int(status_code), f"Wrong status code: {response.status_code}"
     context.html_content = response.text
     context.logger.debug(f"Response Body: {context.html_content}")
+
+@step('I save html response as "{key}"')
+def save_html_response(context, key):
+    context.storage[key] = context.html_content
 
 def generate_chunks(file_path, boundary, mimetype="application/octet-stream", chunk_size=1024):
     file_name = file_path.split("/")[-1]
@@ -62,7 +59,6 @@ def generate_chunks(file_path, boundary, mimetype="application/octet-stream", ch
     with open(file_path, "rb") as f:
         while chunk := f.read(chunk_size):
             yield chunk
-
     yield f"\r\n--{boundary}--\r\n".encode()
 
 @step('send a chunked request to "{location}" using set up domain and headers with status code "{status_code}"')
@@ -82,10 +78,8 @@ def send_chunked_file_with_requests(context, location, status_code):
                              params['mimetype']),
         headers=headers
     )
-
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Body: {response.text}")
-
+    assert response.status_code == int(status_code), f"Wrong status code: {response.status_code}"
+    context.html_content = response.text
 
 @step('send a request to "{url}" and get code status "{code_status}"')
 def send_request_to_url(context, url, code_status):
@@ -110,3 +104,21 @@ def assert_element_content_by_label(context, label, content):
             break
     assert found, f"Element {label} with content {content} has been not found."
 
+@step('open "{file_path}" file and save its content in context with key "{key}"')
+def open_and_save_content_file(context, file_path, key):
+    params = map_table(context.table)
+    if params['read_mode'] == 'read':
+        mode = 'r'
+    elif params['read_mode'] == 'binary':
+        mode = 'rb'
+    else:
+        mode = 'r'
+    file_path = os.path.join(os.path.dirname(__file__), f"../../resources/{file_path}")
+    with open(file_path, mode) as f:
+        context.storage[key] = f.read()
+    context.logger.debug("Data from {path} has been save at context.{key}")
+
+@step('the content of "{key1}" and "{key2}" context keys are equal')
+def compare_context_keys(context, key1, key2):
+    assert context.storage[key1].strip() == context.storage[key2].strip(), f"The content of {key1} and {key2} are not equal"
+    context.logger.debug(f"Context keys {key1} and {key2} are equal")
