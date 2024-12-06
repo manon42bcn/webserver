@@ -122,7 +122,7 @@ Feature: Post and Delete methods
             | tree.com  | 8181 | /       |
             | localhost | 8181 | /       |
 
-    Scenario Outline: Post content using chunked body
+    Scenario Outline: Post content using chunked body and compare the content of the resource
         Given set connection and headers for ip "127.0.0.1" port "8183" and domain "<host>"
         When send a chunked request to "/" using set up domain and headers with status code "201"
             | param_name | value           |
@@ -146,6 +146,7 @@ Feature: Post and Delete methods
             | host         |
             | localhost    |
             | fivehost.com |
+
 
 
 
