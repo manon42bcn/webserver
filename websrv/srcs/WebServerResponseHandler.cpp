@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/02 00:14:50 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/02 21:36:01 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -515,6 +515,7 @@ bool WsResponseHandler::send_error_response() {
 	std::string error_file;
 	std::string file_path = ".html";
 	e_http_sts before_file = _request.status;
+	_response_data.content = default_plain_error();
 
 	if (_location) {
 		std::map<int, std::string>::const_iterator it;

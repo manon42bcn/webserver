@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/30 17:45:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/06 00:32:55 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ class HttpRequestHandler {
 		void load_content();
 		void load_content_normal();
 		void load_content_chunks();
-		bool parse_chunks(std::string& chunk_data, long& chunk_size);
+		bool parse_chunks();
 		void validate_request();
 	    void turn_off_sanity(e_http_sts status, std::string detail);
 

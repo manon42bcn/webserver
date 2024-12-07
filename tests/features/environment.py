@@ -10,7 +10,7 @@ def before_all(context):
     logger = logging.getLogger("WEBSERVER")
     logger.setLevel(logging.DEBUG)
 
-    file_handler = logging.FileHandler(log_file, mode='w')
+    file_handler = logging.FileHandler(log_file, mode='a')
     file_handler.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
@@ -21,3 +21,6 @@ def before_all(context):
     logger.addHandler(file_handler)
     context.logger = logger
     logger.info("Logger start.")
+
+def before_scenario(context, scenario):
+    context.storage = {}

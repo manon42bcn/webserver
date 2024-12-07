@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 20:43:26 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/15 14:44:59 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/06 01:05:30 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,11 @@ bool HttpMultipartHandler::validate_payload() {
 	}
 	parse_multipart_data();
 	for (size_t i = 0; i < _multi_content.size(); i++) {
+		if (i == _multi_content.size() - 1) {
+			if (_multi_content[i].data.size() >= 2 && _multi_content[i].data.substr(_multi_content[i].data.size() - 2) == "--") {
+				_multi_content[i].data = _multi_content[i].data.substr(0, _multi_content[i].data.size() - 2);
+			}
+		}
 		if (!_multi_content[i].filename.empty() && black_list_extension(_multi_content[i].filename)) {
 			turn_off_sanity(HTTP_UNSUPPORTED_MEDIA_TYPE,
 			                "File extension is on black-list.");
