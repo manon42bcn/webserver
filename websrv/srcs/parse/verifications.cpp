@@ -48,7 +48,6 @@ bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::s
  * @param filename Path to the file to be checked.
  * @return true if the file can be opened successfully, false otherwise.
  */
-// VERIFY: No estoy seguro de usar esto
 bool can_open_file(const char* filename)
 {
     std::ifstream file(filename);
@@ -163,11 +162,6 @@ bool check_server_name(std::string server_name)
     if (server_name.length() < 1 || server_name.length() > 253) {
         return false;
     }
-    // for (size_t i = 0; i < server_name.length(); i++)
-    // {
-    //     if (!isalnum(server_name[i]))
-    //         return false;
-    // }
     return true;
 }
 
@@ -334,10 +328,29 @@ bool check_obligatory_params(ServerConfig& server, Logger* logger)
             it2 = it1;
             ++it2;
             for (; it2 != server.locations.end(); ++it2)
-            {   // Verifica nuevamente este caso NO OLVIDAR por el .size
-                if (it1->second.loc_root == it2->second.loc_root && it1->second.redirections.size() == 0 && it2->second.redirections.size() == 0)
+            {
+                if (it1->first == it2->first)
                 {
-                    logger->log(LOG_ERROR, "check_obligatory_params", 
+                    logger->fatal_log("check_obligatory_params", 
+                        "Locations duplicated: " + it1->first);
+                    std::cout << RED << "Locations duplicated: " << it1->first << RESET << std::endl;
+                    return true;
+                }
+            }
+        }
+        
+        for (it1 = server.locations.begin(); it1 != server.locations.end(); ++it1)
+        {
+            it2 = it1;
+            ++it2;
+            for (; it2 != server.locations.end(); ++it2)
+            {
+                if (it1->second.loc_root == it2->second.loc_root && 
+                    !it1->second.loc_root.empty() && 
+                    it1->first != "/redir" && 
+                    it2->first != "/redir")
+                {
+                    logger->fatal_log("check_obligatory_params", 
                         "Locations with the same root: " + it1->second.loc_root);
                     return true;
                 }
@@ -382,5 +395,10 @@ bool check_server_brackets(std::string server_name)
         return true;
     }
     return false;
+}
+
+bool check_duplicate_location(const std::string& location_path, const std::map<std::string, LocationConfig>& locations)
+{
+    return locations.find(location_path) != locations.end();
 }
 

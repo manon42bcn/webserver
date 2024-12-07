@@ -34,6 +34,13 @@ void parse_location(std::vector<std::string>::iterator& it, std::vector<std::str
         logger->fatal_log("parse_server_block", "Location path " + location_path + " does not start with /");
     LocationConfig location = parse_location_block(it, find_block_end(it, end), logger);
     
+    if (check_duplicate_location(location_path, server.locations))
+    {
+        logger->fatal_log("parse_server_block", 
+            "Location duplicated: " + location_path);
+        std::cout << RED << "Error: Location duplicated: " << location_path << RESET << std::endl;
+    }
+
     server.locations[location_path] = location;
     it = skip_block(it, find_block_end(it, end));
 }

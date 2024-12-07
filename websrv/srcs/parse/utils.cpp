@@ -417,7 +417,6 @@ std::map<int, std::string> split_redirections(std::vector<std::string>::iterator
     std::string redirection_str = get_value(*it, "redirection");
     logger->log(LOG_DEBUG, "split_redirections", "Splitting redirections");
     
-    // Extraer el código de estado y la URL
     size_t space_pos = redirection_str.find(" ");
     if (space_pos != std::string::npos) {
         std::string status_code_str = redirection_str.substr(0, space_pos);
