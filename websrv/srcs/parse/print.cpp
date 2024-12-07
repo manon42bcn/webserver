@@ -13,9 +13,11 @@
 #include "webserver.hpp"
 
 /**
- * @brief Prints raw lines from a vector of strings.
+ * @brief Prints raw configuration lines for debugging purposes.
  *
- * @param rawLines The vector of strings to print.
+ * Outputs each line from the configuration file with gray coloring for better readability.
+ *
+ * @param rawLines Vector of configuration file lines.
  */
 void print_raw_lines(std::vector<std::string> rawLines) {
     for (std::vector<std::string>::iterator it = rawLines.begin(); it != rawLines.end(); it++) {
@@ -24,9 +26,12 @@ void print_raw_lines(std::vector<std::string> rawLines) {
 }
 
 /**
- * @brief Prints the server configuration.
+ * @brief Prints detailed server configuration information.
  *
- * @param server The server configuration to print.
+ * Displays all server configuration parameters including port, server name,
+ * error pages, client limits, and location blocks.
+ *
+ * @param server ServerConfig object containing server configuration.
  */
 void print_server_config(ServerConfig server)
 {
@@ -69,9 +74,12 @@ void print_server_config(ServerConfig server)
 }
 
 /**
- * @brief Prints the location configuration.
+ * @brief Prints detailed location block configuration information.
  *
- * @param location The location configuration to print.
+ * Displays all location-specific configuration parameters including root path,
+ * default pages, error pages, and allowed methods.
+ *
+ * @param location LocationConfig object containing location configuration.
  */
 void print_location_config(LocationConfig location) {
     std::cout << GRAY << "      Location root: " << location.loc_root << RESET << std::endl;
@@ -121,6 +129,15 @@ void print_location_config(LocationConfig location) {
     std::cout << GRAY << "      Is root: " RESET << (location.is_root ? "true" : "false") << std::endl;
 }
 
+/**
+ * @brief Converts a bitwise method mask to a human-readable string.
+ *
+ * Translates the binary representation of HTTP methods into their corresponding
+ * string names (GET, POST, etc.).
+ *
+ * @param method Unsigned char representing the method bitmask.
+ * @return std::string Space-separated string of HTTP method names.
+ */
 std::string print_bitwise_method(unsigned char method) {
     std::string method_string = "";     
     if (method & MASK_METHOD_GET)
@@ -142,11 +159,17 @@ std::string print_bitwise_method(unsigned char method) {
     return method_string;
 }
 
+/**
+ * @brief Prints configuration information for all servers.
+ *
+ * Iterates through all server configurations and prints their details.
+ *
+ * @param servers Vector of ServerConfig objects to print.
+ */
 void print_servers(std::vector<ServerConfig> servers)
 {
     for (std::vector<ServerConfig>::iterator it = servers.begin(); it != servers.end(); it++)
     {
         print_server_config(*it);
     }
-    // exit(0);
 }

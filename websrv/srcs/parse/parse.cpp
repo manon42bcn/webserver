@@ -12,6 +12,19 @@
 
 #include "webserver.hpp"
 
+/**
+ * @brief Parses a location block configuration from the config file.
+ *
+ * Processes location-specific directives and builds a LocationConfig object.
+ * Handles various location settings including index files, error pages,
+ * root paths, and access controls.
+ *
+ * @param start Iterator to the start of the location block.
+ * @param end Iterator to the end of the configuration file.
+ * @param logger Pointer to the logger instance.
+ * @return LocationConfig Parsed location configuration.
+ * @throw Logger::fatal_log if invalid parameters are encountered.
+ */
 LocationConfig parse_location_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger) {
     LocationConfig location;
 
@@ -58,6 +71,19 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
     return location;
 }
 
+/**
+ * @brief Parses a server block configuration from the config file.
+ *
+ * Processes server-level directives and builds a ServerConfig object.
+ * Handles various server settings including ports, server names,
+ * and location blocks.
+ *
+ * @param start Iterator to the start of the server block.
+ * @param end Iterator to the end of the configuration file.
+ * @param logger Pointer to the logger instance.
+ * @return ServerConfig Parsed server configuration.
+ * @throw Logger::fatal_log if mandatory parameters are missing or invalid.
+ */
 ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end, Logger* logger)
 {
     ServerConfig server;
@@ -137,6 +163,16 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     return server;
 }
 
+/**
+ * @brief Parses all server configurations from the raw configuration lines.
+ *
+ * Processes the entire configuration file and extracts all server blocks.
+ *
+ * @param rawLines Vector of configuration file lines.
+ * @param logger Pointer to the logger instance.
+ * @return std::vector<ServerConfig> Vector of parsed server configurations.
+ * @throw Logger::fatal_log if no valid servers are found or if duplicates exist.
+ */
 std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logger* logger)
 {
     std::vector<std::string>::iterator start;
@@ -167,6 +203,16 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
     return servers;
 }
 
+/**
+ * @brief Parses a configuration file and returns server configurations.
+ *
+ * Entry point for configuration file parsing.
+ *
+ * @param path Path to the configuration file.
+ * @param logger Pointer to the logger instance.
+ * @return std::vector<ServerConfig> Vector of parsed server configurations.
+ * @throw Logger::fatal_log if file cannot be parsed or no servers are found.
+ */
 std::vector<ServerConfig> parse_file(std::string path, Logger* logger)
 {
     logger->log(LOG_DEBUG, "parse_file", "Parsing file: " + path);

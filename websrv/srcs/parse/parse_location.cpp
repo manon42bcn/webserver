@@ -13,6 +13,14 @@
 
 #include "webserver.hpp"
 
+/**
+ * @brief Parses index directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if default page is invalid.
+ */
 void parse_location_index(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_default_page(get_value(*it, "index")))
         location.loc_default_pages = split_default_pages(get_value(*it, "index"));
@@ -20,6 +28,14 @@ void parse_location_index(std::vector<std::string>::iterator& it, Logger* logger
         logger->fatal_log("parse_location_block", "Default page " + get_value(*it, "index") + " is not valid.");
 }
 
+/**
+ * @brief Parses error page directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if error page is invalid or redefined.
+ */
 void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     std::string error_page = get_value(*it, "error_page");
     if (check_error_page(error_page))
@@ -36,6 +52,14 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
         logger->fatal_log("parse_location_block", "Error page " + error_page + " is not valid.");
 }
 
+/**
+ * @brief Parses root directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if root path is invalid.
+ */
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     std::string root = get_value(*it, "root");
     location.path_root = root;
@@ -45,6 +69,14 @@ void parse_root(std::vector<std::string>::iterator& it, Logger* logger, Location
         logger->fatal_log("parse_location_block", "Root " + root + " is not valid.");
 }
 
+/**
+ * @brief Parses autoindex directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if autoindex value is invalid.
+ */
 void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_autoindex(get_value(*it, "autoindex")))
     {
@@ -57,6 +89,14 @@ void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, Loc
         logger->fatal_log("parse_location_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
 }
 
+/**
+ * @brief Parses CGI directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if CGI value is invalid.
+ */
 void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     if (check_cgi(get_value(*it, "cgi")))
     {
@@ -69,6 +109,14 @@ void parse_cgi(std::vector<std::string>::iterator& it, Logger* logger, LocationC
         logger->fatal_log("parse_location_block", "CGI " + get_value(*it, "cgi") + " is not valid.");   
 }
 
+/**
+ * @brief Parses template error page directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @throw Logger::fatal_log if error mode value is invalid.
+ */
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing template error page");
 
@@ -80,6 +128,14 @@ void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* l
         logger->fatal_log("parse_location_block", "Error mode " + get_value(*it, "error_mode") + " is not valid.");
 }
 
+/**
+ * @brief Parses accept only directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @details Sets allowed HTTP methods for the location using bitwise operations.
+ */
 void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     logger->log(LOG_DEBUG, "parse_accept_only", "Parsing accept only block");
 
@@ -94,7 +150,14 @@ void parse_accept_only(std::vector<std::string>::iterator& it, Logger* logger, L
     }
 }
 
-
+/**
+ * @brief Parses redirection directive in a location block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param location Reference to location configuration being built.
+ * @details Processes and stores HTTP redirection configurations.
+ */
 void parse_redirection(std::vector<std::string>::iterator& it, Logger* logger, LocationConfig& location) {
     logger->log(LOG_DEBUG, "parse_redirection", "Parsing redirection block");
     logger->log(LOG_DEBUG, "parse_redirection", "Splitting redirections, it value is " + *it);

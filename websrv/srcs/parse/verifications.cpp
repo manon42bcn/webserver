@@ -18,9 +18,13 @@
 /**
  * @brief Checks if the brackets in the given range are balanced.
  *
- * @param start Iterator to the start of the range.
- * @param end Iterator to the end of the range.
- * @return true if brackets are balanced, false otherwise.
+ * This function iterates through a range of strings and counts opening and closing brackets
+ * to ensure they are properly balanced. It's essential for validating configuration file syntax.
+ *
+ * @param start Iterator to the start of the range to check.
+ * @param end Iterator to the end of the range to check.
+ * @return true if brackets are balanced (equal number of opening and closing brackets),
+ *         false otherwise.
  */
 bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
 {
@@ -36,10 +40,13 @@ bool check_brackets(std::vector<std::string>::iterator start, std::vector<std::s
 }
 
 /**
- * @brief Checks if a file can be opened.
+ * @brief Validates if a file can be opened for reading.
  *
- * @param filename The name of the file to check.
- * @return true if the file can be opened, false otherwise.
+ * Attempts to open the specified file and checks if the operation was successful.
+ * Used primarily for configuration file validation.
+ *
+ * @param filename Path to the file to be checked.
+ * @return true if the file can be opened successfully, false otherwise.
  */
 // VERIFY: No estoy seguro de usar esto
 bool can_open_file(const char* filename)
@@ -49,11 +56,17 @@ bool can_open_file(const char* filename)
 }
 
 /**
- * @brief Validates the command line arguments.
+ * @brief Validates command line arguments for the webserver.
  *
- * @param argc Argument count.
- * @param argv Argument vector.
- * @return true if arguments are valid, false otherwise.
+ * Performs comprehensive validation of command line arguments including:
+ * - Checking for correct number of arguments
+ * - Handling help command
+ * - Validating configuration file existence and format
+ * - Checking file extension (.conf)
+ *
+ * @param argc Number of command line arguments.
+ * @param argv Array of command line argument strings.
+ * @return true if all arguments are valid, false otherwise.
  */
 bool check_args(int argc, char **argv)
 {
@@ -110,10 +123,14 @@ bool check_args(int argc, char **argv)
 }
 
 /**
- * @brief Validates a port number.
+ * @brief Validates a port number string.
  *
- * @param port The port number as a string.
- * @return The port number as an integer if valid, -1 otherwise.
+ * Checks if the provided string represents a valid port number:
+ * - Contains only digits
+ * - Within valid port range (1-65535)
+ *
+ * @param port String containing the port number to validate.
+ * @return The port number as an integer if valid, -1 if invalid.
  */
 int check_port(std::string port)
 {

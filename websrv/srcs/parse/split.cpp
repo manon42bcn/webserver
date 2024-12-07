@@ -13,11 +13,13 @@
 #include "webserver.hpp"
 
 /**
- * @brief Splits a string of error pages into a map associating error codes
- * with file paths, replacing 'x' in the path with the last digit of the error code.
+ * @brief Splits a string of error pages into a map associating error codes with file paths.
  *
- * @param error_pages The string containing error pages.
- * @return A map of error codes to file paths.
+ * This function parses a string containing error page definitions and creates a mapping between
+ * HTTP error codes and their corresponding error page file paths.
+ *
+ * @param error_pages String containing space-separated error codes followed by a file path.
+ * @return std::map<int, std::string> Map of error codes to their corresponding file paths.
  */
 std::map<int, std::string> split_error_pages(std::string error_pages)
 {
@@ -55,11 +57,12 @@ std::map<int, std::string> split_error_pages(std::string error_pages)
 }
 
 /**
- * @brief Splits a string of default pages into a vector of strings,
- * separated by spaces.
+ * @brief Splits a string of default pages into a vector of strings.
  *
- * @param default_pages The string containing default pages.
- * @return A vector of default page strings.
+ * Parses a space-separated string of default page paths into individual components.
+ *
+ * @param default_pages String containing space-separated default page paths.
+ * @return std::vector<std::string> Vector containing individual default page paths.
  */
 std::vector<std::string> split_default_pages(std::string default_pages)
 {
@@ -71,9 +74,12 @@ std::vector<std::string> split_default_pages(std::string default_pages)
     return default_pages_vector;
 }
 
-
-
-
+/**
+ * @brief Splits a string into a vector of substrings based on whitespace.
+ *
+ * @param str Input string to be split.
+ * @return std::vector<std::string> Vector containing individual tokens.
+ */
 std::vector<std::string> split_string(std::string str) {
     std::vector<std::string> result;
     std::istringstream iss(str);

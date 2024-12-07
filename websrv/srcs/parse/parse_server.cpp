@@ -12,6 +12,15 @@
 
 #include "webserver.hpp"
 
+/**
+ * @brief Parses a location directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param end Iterator to end of configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if location path is invalid.
+ */
 void parse_location(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing location block");
     
@@ -29,11 +38,26 @@ void parse_location(std::vector<std::string>::iterator& it, std::vector<std::str
     it = skip_block(it, find_block_end(it, end));
 }
 
+/**
+ * @brief Parses a template error page directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ */
 void parse_template_error_page(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing template error page");
     server.template_error_page = get_value(*it, "template_error_page");
 }
 
+/**
+ * @brief Parses a port directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if port is invalid or already defined.
+ */
 void parse_port(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     if (server.port != -42)
         logger->fatal_log("parse_server_block", "Double port definition");
@@ -45,6 +69,14 @@ void parse_port(std::vector<std::string>::iterator& it, Logger* logger, ServerCo
         logger->fatal_log("parse_server_block", "Port " + get_value(*it, "port") + " is not valid.");
 }
 
+/**
+ * @brief Parses a server name directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if server name is invalid.
+ */
 void parse_server_name(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server name");
     std::string serverName = get_value(*it, "server_name");
@@ -54,6 +86,14 @@ void parse_server_name(std::vector<std::string>::iterator& it, Logger* logger, S
         logger->fatal_log("parse_server_block", "Server name " + serverName + " is not valid.");
 }
 
+/**
+ * @brief Parses a root directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if root is invalid or already defined.
+ */
 void parse_root(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing server root");
     if (server.server_root != "")
@@ -65,6 +105,14 @@ void parse_root(std::vector<std::string>::iterator& it, Logger* logger, ServerCo
         logger->fatal_log("parse_server_block", "Server root " + root + " is not valid.");
 }
 
+/**
+ * @brief Parses an index directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if default page is invalid.
+ */
 void parse_index(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing default pages");
     if (it->find("error_page") != std::string::npos)
@@ -76,6 +124,14 @@ void parse_index(std::vector<std::string>::iterator& it, Logger* logger, ServerC
 
 }
 
+/**
+ * @brief Parses a client max body size directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if client max body size is invalid.
+ */
 void parse_client_max_body_size(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing client max body size");
     std::string client_max_body_size = get_value(*it, "client_max_body_size");
@@ -85,6 +141,14 @@ void parse_client_max_body_size(std::vector<std::string>::iterator& it, Logger* 
         logger->fatal_log("parse_server_block", "Client max body size " + client_max_body_size + " is not valid.");
 }
 
+/**
+ * @brief Parses an error page directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if error page configuration is invalid or duplicated.
+ */
 void parse_error_page(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing error page");
     std::string error_page = get_value(*it, "error_page");
@@ -109,6 +173,14 @@ void parse_error_page(std::vector<std::string>::iterator& it, Logger* logger, Se
         logger->fatal_log("parse_server_block", "Error page " + error_page + " is not valid.");
 }
 
+/**
+ * @brief Parses an autoindex directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if autoindex value is invalid.
+ */
 void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing autoindex");
     if (check_autoindex(get_value(*it, "autoindex")))
@@ -122,6 +194,14 @@ void parse_autoindex(std::vector<std::string>::iterator& it, Logger* logger, Ser
         logger->fatal_log("parse_server_block", "Autoindex " + get_value(*it, "autoindex") + " is not valid.");
 }
 
+/**
+ * @brief Parses an error mode directive within a server block.
+ *
+ * @param it Current iterator position in configuration.
+ * @param logger Pointer to logger instance.
+ * @param server Reference to server configuration being built.
+ * @throw Logger::fatal_log if error mode is invalid.
+ */
 void parse_error_mode(std::vector<std::string>::iterator& it, Logger* logger, ServerConfig& server) {
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing error mode");
     if (check_error_mode(get_value(*it, "error_mode")))

@@ -13,11 +13,15 @@
 #include "webserver.hpp"
 
 /**
- * @brief Cleans a line by trimming whitespace, removing a trailing semicolon,
- * and returning an empty string if the line is empty or starts with '#'.
+ * @brief Cleans a line by removing whitespace and special characters.
  *
- * @param line The line to be cleaned.
- * @return A cleaned version of the line.
+ * This function performs several cleaning operations on a string:
+ * - Removes leading and trailing whitespace
+ * - Removes trailing semicolons
+ * - Handles empty lines and comments
+ *
+ * @param line The input string to be cleaned.
+ * @return The cleaned string, or empty string if the input is a comment or empty.
  */
 std::string clean_line(std::string line)
 {
@@ -40,11 +44,14 @@ std::string clean_line(std::string line)
 }
 
 /**
- * @brief Extracts the value associated with a key in a given line.
+ * @brief Extracts a value associated with a specific key from a line.
+ *
+ * Searches for a key in the given line and extracts the value that follows it.
+ * Handles trailing slashes and whitespace in the extracted value.
  *
  * @param line The line containing the key-value pair.
  * @param key The key to search for.
- * @return The value associated with the key, or an empty string if not found.
+ * @return The extracted value, or empty string if key not found.
  */
 std::string get_value(std::string line, const std::string& key) {
     std::string::size_type keyPos = line.find(key);
@@ -64,11 +71,14 @@ std::string get_value(std::string line, const std::string& key) {
 }
 
 /**
- * @brief Checks if a string exists as an exact word match in the first word of a line.
+ * @brief Checks if a string exists as an exact word match at the start of a line.
+ *
+ * Performs a case-sensitive search for an exact word match, ensuring the string
+ * is not part of a larger word.
  *
  * @param line The line to search in.
  * @param str The string to search for.
- * @return true if the string is found as an exact word match, false otherwise.
+ * @return true if exact match is found, false otherwise.
  */
 bool find_exact_string(const std::string& line, const std::string& str) {
     std::string::size_type end_of_first_word = line.find_first_of(" \t");
@@ -97,11 +107,13 @@ bool find_exact_string(const std::string& line, const std::string& str) {
 }
 
 /**
- * @brief Reads a file line by line, cleaning each line and returning a vector
- * of non-empty lines.
+ * @brief Reads and processes a file line by line.
  *
- * @param path The path to the file.
- * @return A vector of cleaned, non-empty lines.
+ * Opens a file, reads each line, cleans it, and stores non-empty lines
+ * in a vector.
+ *
+ * @param path Path to the file to read.
+ * @return Vector containing all non-empty, cleaned lines from the file.
  */
 std::vector<std::string> get_raw_lines(std::string path)
 {
@@ -121,10 +133,10 @@ std::vector<std::string> get_raw_lines(std::string path)
 }
 
 /**
- * @brief Removes curly braces '{' and '}' from a line and cleans it of whitespace.
+ * @brief Removes curly braces from a line and cleans whitespace.
  *
- * @param line The line to be cleaned.
- * @return The cleaned line without braces.
+ * @param line The line to process.
+ * @return The cleaned line with braces removed.
  */
 std::string delete_brackets_clean(std::string line)
 {
@@ -139,7 +151,7 @@ std::string delete_brackets_clean(std::string line)
 }
 
 /**
- * @brief Removes the first slash from a path if it exists.
+ * @brief Removes the leading slash from a path if present.
  *
  * @param path The path to modify.
  * @return The path without the leading slash.
@@ -151,6 +163,11 @@ std::string delete_first_slash(std::string path)
     return path;
 }
 
+/**
+ * @brief Gets the current working directory of the server.
+ *
+ * @return The current working directory with trailing slash, or empty string on error.
+ */
 std::string get_server_root()
 {
     char buffer[PATH_MAX];
@@ -160,6 +177,13 @@ std::string get_server_root()
     return "";
 }
 
+/**
+ * @brief Skips over a block of code between matching brackets.
+ *
+ * @param start Iterator to the start of the block.
+ * @param end Iterator to the end of the range.
+ * @return Iterator pointing after the closing bracket of the block.
+ */
 std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end)
 {
     int bracketCount = 0;
@@ -181,7 +205,13 @@ std::vector<std::string>::iterator skip_block(std::vector<std::string>::iterator
     return end;
 }
 
-
+/**
+ * @brief Finds the end of a block marked by matching brackets.
+ *
+ * @param start Iterator to the start of the block.
+ * @param end Iterator to the end of the range.
+ * @return Iterator pointing to the closing bracket.
+ */
 std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iterator start, std::vector<std::string>::iterator end) {
     int bracketCount = 0;
     for (std::vector<std::string>::iterator it = start; it != end; ++it) {
@@ -198,6 +228,12 @@ std::vector<std::string>::iterator find_block_end(std::vector<std::string>::iter
     return end;
 }
 
+/**
+ * @brief Converts a string method name to its enumerated type.
+ *
+ * @param method The HTTP method name as string.
+ * @return The corresponding t_allowed_methods enum value.
+ */
 t_allowed_methods string_to_method(std::string method) {
     if (method == "GET")
         return GET;
@@ -208,8 +244,12 @@ t_allowed_methods string_to_method(std::string method) {
     return INVALID_METHOD;
 }
 
-
-// Elimino los signos '=' y '~' y limpia la linea
+/**
+ * @brief Removes '=' and '~' signs from a line and cleans it.
+ *
+ * @param line The line to process.
+ * @return The cleaned line without specified signs.
+ */
 std::string delete_signs(std::string line) {
     std::string result;
     for (std::string::iterator it = line.begin(); it != line.end(); ++it) {
@@ -221,12 +261,26 @@ std::string delete_signs(std::string line) {
     return result;
 }
 
+/**
+ * @brief Removes trailing slash from a path if present.
+ *
+ * @param path The path to modify.
+ * @return The path without trailing slash.
+ */
 std::string delete_last_slash(std::string path) {
     if (path[path.length() - 1] == '/')
         path.erase(path.length() - 1);
     return path;
 }
 
+/**
+ * @brief Extracts the path from a location directive.
+ *
+ * Processes a location directive line to extract and clean the path component.
+ *
+ * @param line The location directive line.
+ * @return The cleaned location path.
+ */
 std::string get_location_path(std::string line) {
     std::string::size_type start_pos = line.find("location");
     std::string location_path;
@@ -246,6 +300,12 @@ std::string get_location_path(std::string line) {
     return location_path;
 }
 
+/**
+ * @brief Converts an error mode string to its enumerated type.
+ *
+ * @param error_mode The error mode as string.
+ * @return The corresponding t_mode enum value.
+ */
 t_mode string_to_error_mode(std::string error_mode) {
     if (error_mode == "literal")
         return LITERAL;
@@ -254,6 +314,13 @@ t_mode string_to_error_mode(std::string error_mode) {
     return INVALID_ERROR_MODE;
 }
 
+/**
+ * @brief Joins two paths together, handling slashes appropriately.
+ *
+ * @param path1 First path component.
+ * @param path2 Second path component.
+ * @return The combined path.
+ */
 std::string join_paths(std::string path1, std::string path2) {
     if (path1[path1.length() - 1] == '/')
         path1.erase(path1.length() - 1);
@@ -262,6 +329,12 @@ std::string join_paths(std::string path1, std::string path2) {
     return path1 + "/" + path2;
 }
 
+/**
+ * @brief Converts HTTP method string to its corresponding bitmask.
+ *
+ * @param parsed The HTTP method as string.
+ * @return The method's bitmask value.
+ */
 unsigned char method_bitwise(std::string parsed) {
     static std::map<std::string, unsigned char> methods;
     if (methods.empty()) {
@@ -282,11 +355,25 @@ unsigned char method_bitwise(std::string parsed) {
     return (0);
 }
 
+/**
+ * @brief Extracts the first word from a string.
+ *
+ * @param str The input string.
+ * @return The first word found in the string.
+ */
 std::string get_first_word(const std::string& str) {
     std::string::size_type pos = str.find_first_of(" \t\n");
     return str.substr(0, pos);
 }
 
+/**
+ * @brief Validates and converts a status code string to integer.
+ *
+ * @param status_code The status code as string.
+ * @param logger Pointer to the logger instance.
+ * @return The validated status code as integer.
+ * @throw Logger::fatal_log if status code is invalid.
+ */
 int get_status_code(std::string status_code, Logger* logger) {
     logger->log(LOG_DEBUG, "get_status_code", "Getting status code");
     if (status_code.find_first_not_of("0123456789") != std::string::npos || status_code.empty() || std::atoi(status_code.c_str()) < 0 || std::atoi(status_code.c_str()) > 599)
@@ -294,6 +381,13 @@ int get_status_code(std::string status_code, Logger* logger) {
     return std::atoi(status_code.c_str());
 }
 
+/**
+ * @brief Processes and validates a redirection URL.
+ *
+ * @param redirection The redirection directive.
+ * @param logger Pointer to the logger instance.
+ * @return The processed redirection URL.
+ */
 std::string get_redirection_url(std::string redirection, Logger* logger) {
     std::string url = get_value(redirection, "redirection");
     logger->log(LOG_DEBUG, "get_redirection_url", "Redirection URL " + url + ".");
@@ -311,6 +405,13 @@ std::string get_redirection_url(std::string redirection, Logger* logger) {
     return url;
 }
 
+/**
+ * @brief Splits redirection directives into status code and URL pairs.
+ *
+ * @param it Iterator to the redirection directive.
+ * @param logger Pointer to the logger instance.
+ * @return Map of status codes to their corresponding redirection URLs.
+ */
 std::map<int, std::string> split_redirections(std::vector<std::string>::iterator& it, Logger* logger) {
     std::map<int, std::string> new_redirections;
     std::string redirection_str = get_value(*it, "redirection");
@@ -339,6 +440,13 @@ std::map<int, std::string> split_redirections(std::vector<std::string>::iterator
     return new_redirections;
 }
 
+/**
+ * @brief Compares two paths for equality, handling special cases.
+ *
+ * @param path1 First path to compare.
+ * @param path2 Second path to compare.
+ * @return true if paths are equivalent, false otherwise.
+ */
 bool compare_paths(std::string path1, std::string path2) {
     if (path1 == "/" && path2 != "/")
         return false;
@@ -356,6 +464,14 @@ bool compare_paths(std::string path1, std::string path2) {
     return last_part1 == last_part2;
 }
 
+/**
+ * @brief Converts a size string with units to bytes.
+ *
+ * Handles size specifications with K/M/G suffixes.
+ *
+ * @param client_max_body_size Size string with optional unit suffix.
+ * @return The size in bytes.
+ */
 size_t string_to_bytes(std::string client_max_body_size)
 {
     size_t bytes = atoi(client_max_body_size.c_str());
