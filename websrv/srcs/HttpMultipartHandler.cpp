@@ -87,7 +87,7 @@ bool HttpMultipartHandler::handle_post() {
 	std::string save_path;
 	for (size_t i = 0; i < _multi_content.size(); i++) {
 		if (_multi_content[i].data_type == CT_FILE) {
-			save_path = _multi_content[1].filename;
+			save_path = _multi_content[i].filename;
 			if (!_request.boundary.empty()) {
 				save_path = _request.normalized_path + _multi_content[i].filename;
 			}
