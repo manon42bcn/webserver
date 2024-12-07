@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/06 01:10:04 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/07 14:43:43 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,7 @@ HttpRequestHandler::HttpRequestHandler(const Logger* log,
 		_host_config = _request_data.host_config;
 		_cache = &_request_data.host_config->request_cache;
 	}
-	if ((_max_request = _client_data->get_server()->get_config().client_max_body_size) == 0) {
-		_max_request = 9999999999;
-	}
+	_max_request = _client_data->get_server()->get_config().client_max_body_size;
 }
 
 /**
