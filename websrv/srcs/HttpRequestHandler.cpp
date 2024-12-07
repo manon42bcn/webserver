@@ -1228,6 +1228,7 @@ void HttpRequestHandler::validate_request() {
  * @exception std::exception Catches unexpected exceptions.
  */
 void HttpRequestHandler::handle_request() {
+	_log->log_debug( RH_NAME, _request_data.body);
 	if (!_client_data->is_alive()) {
 		return;
 	}
