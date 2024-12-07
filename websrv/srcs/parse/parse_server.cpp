@@ -16,6 +16,13 @@ void parse_location(std::vector<std::string>::iterator& it, std::vector<std::str
     logger->log(LOG_DEBUG, "parse_server_block", "Parsing location block");
     
     std::string location_path = get_location_path(*it);
+    if (location_path.find(" ") != std::string::npos
+        || location_path.find("\t") != std::string::npos
+        || location_path.find("\n") != std::string::npos
+        || location_path.find("\r") != std::string::npos)
+        logger->fatal_log("parse_server_block", "Location path " + location_path + " contains spaces");
+    if (location_path[0] != '/')
+        logger->fatal_log("parse_server_block", "Location path " + location_path + " does not start with /");
     LocationConfig location = parse_location_block(it, find_block_end(it, end), logger);
     
     server.locations[location_path] = location;
@@ -86,6 +93,11 @@ void parse_error_page(std::vector<std::string>::iterator& it, Logger* logger, Se
         try {
             logger->log(LOG_DEBUG, "parse_server_block", "Splitting error pages");
             std::map<int, std::string> new_error_pages = split_error_pages(error_page);
+            for (std::map<int, std::string>::iterator it = server.error_pages.begin(); it != server.error_pages.end(); it++)
+            {
+                if (it->first == new_error_pages.begin()->first)
+                    logger->fatal_log("parse_server_block", "Redefinition of error page number in server block");
+            }
             logger->log(LOG_DEBUG, "parse_server_block", "Inserting error pages");
             server.error_pages.insert(new_error_pages.begin(), new_error_pages.end());
             logger->log(LOG_DEBUG, "parse_server_block", "Error pages inserted");

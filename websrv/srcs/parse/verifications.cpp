@@ -250,7 +250,7 @@ bool is_directory(const std::string& path) {
 
 bool check_root(std::string root)
 {
-    if (root.empty())
+    if (root.empty() || root[0] != '/')
         return false;
     return true;
 }
@@ -340,5 +340,30 @@ bool check_obligatory_params(ServerConfig& server, Logger* logger)
     }
 
     return (server.port == -42 || server.server_root == "" || server.default_pages.size() == 0 || server.locations.size() == 0);
+}
+
+/**
+ * @brief Validates the syntax of a server block declaration.
+ *
+ * @details Checks if there are no alphanumeric characters between the "server" keyword
+ * and the opening curly brace "{". This ensures the server block follows the correct
+ * syntax format: "server {" with only whitespace allowed between them.
+ *
+ * @param server_name The string containing the server block declaration to validate.
+ * @return true if the syntax is valid (no alphanumeric characters between "server" and "{"),
+ *         false if invalid or if "server" keyword is not found.
+ */
+bool check_server_brackets(std::string server_name)
+{
+    if (server_name.find("server") != std::string::npos)
+    {
+        for (size_t i = server_name.find("server") + 6; i < server_name.find("{"); i++)
+        {
+            if (isalnum(server_name[i]))
+                return false;
+        }
+        return true;
+    }
+    return false;
 }
 

@@ -169,6 +169,7 @@ bool check_error_mode(std::string error_mode);
 bool check_duplicate_servers(std::vector<ServerConfig> servers);
 bool check_cgi(std::string cgi);
 bool check_obligatory_params(ServerConfig& server, Logger* logger);
+bool check_server_brackets(std::string server_name);
 
 // Parse Server
 void parse_location(std::vector<std::string>::iterator& it, std::vector<std::string>::iterator end, Logger* logger, ServerConfig& server);

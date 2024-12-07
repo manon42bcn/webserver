@@ -47,7 +47,7 @@ LocationConfig parse_location_block(std::vector<std::string>::iterator start, st
 
         if (!found) {
             logger->fatal_log("parse_location_block", 
-                             "Error: [" + first_word + "] no es un parametro valido en el bloque location");
+                             "Error: \"" + first_word + "\" is not a valid parameter in the location block");
         }
     }
 
@@ -88,11 +88,11 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
             parse_error_mode(it, logger, server);
         else if (it->find("}") != std::string::npos)
         {
-            logger->log(LOG_DEBUG, "parse_server_block", "Saliendo porque encontre } en server block");
+            logger->fatal_log("parse_server_block", "Found } in server block");
             break;
         }
         else
-            logger->fatal_log("parse_server_block", "Error: [" + *it + "] is not valid parameter in server block");
+            logger->fatal_log("parse_server_block", "Error: \"" + *it + "\" is not valid parameter in server block");
     }
     
     server.ws_root = get_server_root();
@@ -150,7 +150,8 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
     {
         if (find_exact_string(*it, "server"))
         {
-            logger->log(LOG_DEBUG, "parse_servers", "Server block found");
+            if (!check_server_brackets(*it))
+                logger->fatal_log("parse_servers", "Invalid server definition: " + *it);
             start = it;
             end =   find_block_end(start, rawLines.end());
             servers.push_back(parse_server_block(start, end, logger));
@@ -172,5 +173,7 @@ std::vector<ServerConfig> parse_file(std::string path, Logger* logger)
     std::vector<std::string> rawLines = get_raw_lines(path);
     logger->log(LOG_DEBUG, "parse_file", "Raw lines obtained: " + int_to_string(rawLines.size()));
     std::vector<ServerConfig> servers = parse_servers(rawLines, logger);
+    if (servers.size() == 0)
+        logger->fatal_log("parse_file", "No servers foundss");
     return servers;
 }

@@ -63,6 +63,13 @@ std::string get_value(std::string line, const std::string& key) {
     return "";
 }
 
+/**
+ * @brief Checks if a string exists as an exact word match in the first word of a line.
+ *
+ * @param line The line to search in.
+ * @param str The string to search for.
+ * @return true if the string is found as an exact word match, false otherwise.
+ */
 bool find_exact_string(const std::string& line, const std::string& str) {
     std::string::size_type end_of_first_word = line.find_first_of(" \t");
     std::string first_word = line.substr(0, end_of_first_word);
@@ -70,11 +77,19 @@ bool find_exact_string(const std::string& line, const std::string& str) {
     size_t pos = first_word.find(str);
     
     if (pos != std::string::npos) {
-        if (pos > 0 && std::isalnum(first_word[pos - 1])) {
-            return false;
+        if (pos > 0) {
+            char prevChar = first_word[pos - 1];
+            if (std::isalnum(prevChar) || prevChar == '_') {
+                return false;
+            }
         }
-        if (pos + str.length() < first_word.length() && std::isalnum(first_word[pos + str.length()])) {
-            return false;
+        
+        size_t afterPos = pos + str.length();
+        if (afterPos < first_word.length()) {
+            char nextChar = first_word[afterPos];
+            if (std::isalnum(nextChar) || nextChar == '_') {
+                return false;
+            }
         }
         return true;
     }

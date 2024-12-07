@@ -25,6 +25,11 @@ void parse_location_error_page(std::vector<std::string>::iterator& it, Logger* l
     if (check_error_page(error_page))
     {
         std::map<int, std::string> new_error_pages = split_error_pages(error_page);
+        for (std::map<int, std::string>::iterator it = location.loc_error_pages.begin(); it != location.loc_error_pages.end(); it++)
+        {
+            if (it->first == new_error_pages.begin()->first)
+                logger->fatal_log("parse_location_block", "Redefinition of error page number in location block");
+        }
         location.loc_error_pages.insert(new_error_pages.begin(), new_error_pages.end());
     }
     else
