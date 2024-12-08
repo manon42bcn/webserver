@@ -76,7 +76,7 @@ $(OBJS_DIR):
 	-mkdir $(OBJS_DIR)
 
 run: re
-	@./webserver configs/servers.conf
+	@./webserver configs/main.conf
 
 tests: re
 	@./webserver configs/tests.conf
