@@ -8,8 +8,8 @@ services:
       - "9090:9090"
 
     restart: always
-    stdin_open: true  # Mantener el STDIN abierto para bash
-    tty: true         # Asignar una terminal para que bash funcione correctamente
+    stdin_open: true  # Keep STDIN open to use bash
+    tty: true         # Assing a terminal to bash
 #    volumes:
 #      - .:/ws
     environment:
