@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 04:30:53 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 02:24:30 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:04:27 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void signal_handler(int sig) {
 
 int main(int argc, char **argv) {
 
-	Logger logger(LOG_DEBUG, false);
+	Logger logger(LOG_ERROR, false);
 	std::string base_path = get_server_root();
 	std::vector<ServerConfig> configs;
 	std::map<std::string, LocationConfig> locations;

@@ -79,3 +79,15 @@ Feature: Basic Request Tests
             | noone.com  | one.com  |
             | notwo.com  | two.com  |
             | notree.com | tree.com |
+
+    Scenario Outline: Malformed response from a python CGI returns a bad gateway error
+        Given set connection and headers for ip "127.0.0.1" port "8080" and domain "<host>"
+        And send a "GET" request to "/not_home_new/hello" using set up domain and headers and status code "502"
+        When I parse html response body
+        Then The response body content includes "h2" with content "502 - Bad Gateway"
+
+        Examples:
+            | host        | port | request        |
+            | example.com | 8080 | /              |
+            | locahost    | 8080 | /basic_request |
+

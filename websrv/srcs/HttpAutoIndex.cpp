@@ -152,7 +152,7 @@ void HttpAutoIndex::get_file_content(std::string& path) {
 			std::string base_path = _request.normalized_path + name;
 			struct stat file_stat;
 			if (stat(base_path.c_str(), &file_stat) == -1) {
-				_log->log_error(AI_NAME,
+				_log->log_warning(AI_NAME,
 				                "Error reading file.");
 				continue;
 			}

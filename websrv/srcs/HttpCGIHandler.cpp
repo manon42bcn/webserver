@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 10:39:37 by mporras-          #+#    #+#             */
-/*   Updated: 2024/11/24 02:14:35 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:45:01 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ bool HttpCGIHandler::handle_request() {
 	if (!_response_data.content.empty()) {
 		size_t header_pos = end_of_header_system(_response_data.content);
 		if (header_pos == std::string::npos) {
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			turn_off_sanity(HTTP_BAD_GATEWAY,
 			                "CGI Response does not include a valid header.");
 			send_error_response();
 			return (false);
@@ -92,7 +92,7 @@ bool HttpCGIHandler::handle_request() {
 		_response_data.mime = get_header_value(_response_data.content,
 											   "content-type:");
 		if (_response_data.mime.empty()){
-			turn_off_sanity(HTTP_INTERNAL_SERVER_ERROR,
+			turn_off_sanity(HTTP_BAD_GATEWAY,
 			                "Content-Type not present at CGI response.");
 			send_error_response();
 			return (false);

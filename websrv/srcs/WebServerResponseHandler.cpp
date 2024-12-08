@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 09:37:41 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/02 21:36:01 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:31:44 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -442,11 +442,11 @@ bool WsResponseHandler::sender(const std::string& body) {
 			if (sent_bytes == -1) {
 				retry_count++;
 				if (retry_count >= WS_MAX_RETRIES) {
-					_log->log_error( RSP_NAME,
+					_log->log_warning( RSP_NAME,
 							  "Max retries exceeded while sending response.");
 					return false;
 				}
-				_log->log_debug( RSP_NAME,
+				_log->log_info( RSP_NAME,
 						  "Send failed, retrying...");
 				usleep(WS_RETRY_DELAY_MICROSECONDS);
 				continue;
@@ -525,7 +525,7 @@ bool WsResponseHandler::send_error_response() {
 		} else {
 			it = error_pages->find(_request.status);
 		}
-		if (!error_pages->empty() || it != error_pages->end()) {
+		if (!error_pages->empty() && it != error_pages->end()) {
 			error_file = it->second;
 			get_file_content(error_file);
 			if (!_response_data.status || _request.status != before_file) {
@@ -619,7 +619,7 @@ bool WsResponseHandler::redirection() {
  * @param detail A detailed message describing the reason for marking the request as invalid.
  */
 void WsResponseHandler::turn_off_sanity(e_http_sts status, std::string detail) {
-	_log->log_error( RSP_NAME, detail);
+	_log->log_warning( RSP_NAME, detail);
 	_request.sanity = false;
 	_request.status = status;
 	_response_data.status = false;
