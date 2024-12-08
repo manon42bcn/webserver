@@ -81,7 +81,6 @@ run: re
 tests: re
 	@./webserver configs/tests.conf
 
-
 local: all
 	@./webserver configs/servers.conf
 
