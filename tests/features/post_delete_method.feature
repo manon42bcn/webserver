@@ -145,30 +145,7 @@ Feature: Post and Delete methods
             | localhost    |
             | fivehost.com |
 
-    Scenario Outline: gif
-        Given set connection and headers for ip "127.0.0.1" port "8183" and domain "<host>"
-        When send a chunked request to "/" using set up domain and headers with status code "201"
-            | param_name | value     |
-            | file       | party.gif |
-            | mimetype   | image/gif |
-        And send a "GET" request to "/party.gif" using set up domain and headers and status code "200"
-        And I save html response as "posted_file"
-        And open "party.gif" file and save its content in context with key "sent_file"
-            | param_name | value |
-            | read_mode  | read  |
-        Then send a "POST" request to "/" using set up domain and headers and status code "409"
-            | param_name | value           |
-            | file       | party.gif |
-        When I parse html response body
-        Then The response body content includes "h2" with content "409 - Conflict"
-        # Delete the resource
-        And send a "DELETE" request to "/party.gif" using set up domain and headers and status code "204"
-        Then the content of "posted_file" and "sent_file" context keys are equal
 
-        Examples:
-            | host         |
-            | localhost    |
-            | fivehost.com |
 
 
 

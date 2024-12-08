@@ -13,7 +13,7 @@ print "Content-Type: text/html\r\n\r\n";
 print "<html><body>\n";
 print "<h1>Perl CGI Script - From NO_HOME.pl</h1>\n";
 print "<h1>I'm forced to say:</h1>\n";
-
+print "<div>\n";
 # Procesar PATH_INFO
 if (length($path_says) > 1) {
     my @path = split('/', $path_says);
@@ -21,7 +21,7 @@ if (length($path_says) > 1) {
         print "<h3>$elem</h3>\n";
     }
 }
-
+print "</div>\n";
 print "<h1>Sorry... not my fault, that was path's fault..</h1>\n";
 
 # Imprimir información del entorno

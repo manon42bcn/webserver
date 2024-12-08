@@ -95,13 +95,13 @@ def parse_html_response(context):
 
 @step('The response body content includes "{label}" with content "{content}"')
 @step('The response body content includes "{label}" with content as text')
-@step('The response body content includes "{label}" with content as text')
 def assert_element_content_by_label(context, label, content=None):
     if not content:
         content = context.text
     find_elements = context.soup.find_all(label)
     found = False
     for elements in find_elements:
+        context.logger.debug(f"Element: {elements.text}")
         if elements.text.strip() == content.strip():
             context.logger.debug(f"Element has been found.: {elements.text}")
             found = True
