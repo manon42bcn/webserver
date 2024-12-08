@@ -130,27 +130,64 @@ ServerConfig parse_server_block(std::vector<std::string>::iterator start, std::v
     }
     if (server.locations.size() > 0)
     {
-        for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++)
+        logger->log(LOG_DEBUG, "parse_server_block", "Joining locations");
+        for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); 
+             it != server.locations.end(); ++it)
         {
-            if (it->second.loc_error_pages.size() > 0)
+            if (it->first.empty()) {
+                logger->log(LOG_WARNING, "parse_server_block", "Empty location key found");
+                continue;
+            }            
+            if (!it->first.empty() && it != server.locations.end() && it->second.loc_error_pages.size() > 0)
             {
-                for (std::map<int, std::string>::iterator it2 = it->second.loc_error_pages.begin(); it2 != it->second.loc_error_pages.end(); it2++)
+                for (std::map<int, std::string>::iterator it2 = it->second.loc_error_pages.begin(); 
+                     it2 != it->second.loc_error_pages.end(); ++it2)
                 {
-                    it2->second = join_paths(it->second.loc_root, it2->second);
-                    it2->second = join_paths(server.server_root, it2->second);
+                    if (it2->second.empty() && it2 != it->second.loc_error_pages.end()) {
+                        logger->log(LOG_WARNING, "parse_server_block", "Empty error page path found");
+                        continue;
+                    }
+
+                    std::string temp_path = it2->second;
+                    
+                    if (!it->second.loc_root.empty() && it2 != it->second.loc_error_pages.end()) {
+                        temp_path = join_paths(it->second.loc_root, temp_path);
+                    }
+                    
+                    if (!server.server_root.empty() && it2 != it->second.loc_error_pages.end()) {
+                        temp_path = join_paths(server.server_root, temp_path);
+                    }
+                    it2->second = temp_path;
                 }
             }
         }
     }
     
 
-    for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); it != server.locations.end(); it++) {
-        if (it->second.loc_root != "")
-            it->second.loc_root = join_paths(server.server_root, it->second.loc_root);
-        if (compare_paths(it->first, it->second.loc_root))
-            it->second.is_root = true;
-        if (it->second.loc_error_pages.size() == 0)
-            it->second.loc_error_pages =  server.error_pages;
+    for (std::map<std::string, LocationConfig>::iterator it = server.locations.begin(); 
+         it != server.locations.end(); ++it) {
+        try {
+            if (!it->second.loc_root.empty()) {
+                if (it->second.loc_root.find("..") != std::string::npos) {
+                    logger->fatal_log("parse_server_block", "Path traversal detectado en loc_root");
+                }
+                it->second.loc_root = join_paths(server.server_root, it->second.loc_root);
+            }
+
+            if (!it->first.empty() && !it->second.loc_root.empty()) {
+                if (compare_paths(it->first, it->second.loc_root)) {
+                    it->second.is_root = true;
+                }
+            }
+
+            if (it->second.loc_error_pages.empty() && !server.error_pages.empty()) {
+                it->second.loc_error_pages = server.error_pages;
+            }
+        }
+        catch (const std::exception& e) {
+            logger->fatal_log("parse_server_block", 
+                std::string("Error processing location: ") + e.what());
+        }
     }
 
     if (server.server_name == "")
@@ -199,7 +236,6 @@ std::vector<ServerConfig> parse_servers(std::vector<std::string> rawLines, Logge
     logger->log(LOG_DEBUG, "parse_servers", "Locations found: " + int_to_string(servers.size()));
     if (check_duplicate_servers(servers))
         logger->fatal_log("parse_servers", "Duplicate servers found");
-    print_servers(servers);
     return servers;
 }
 
