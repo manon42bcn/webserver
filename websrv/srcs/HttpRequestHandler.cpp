@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/08 14:22:39 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/08 15:35:51 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1020,39 +1020,37 @@ bool HttpRequestHandler::parse_chunks() {
 		chunk_size = strtol(chunk_size_str.c_str(), &endptr, 16);
 
 		if (errno == ERANGE || chunk_size < 0 || *endptr != '\0') {
-			turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk size format.");
+			turn_off_sanity(HTTP_BAD_REQUEST,
+							"Invalid chunk size format.");
 			return false;
 		}
 
-		pos = chunk_size_end + 2; // Move past chunk size and CRLF
+		pos = chunk_size_end + 2;
 		if (chunk_size == 0) {
 			if (chunk_data.size() < pos + 2) {
 				break;
 			}
 			if (chunk_data.compare(pos, 2, "\r\n") == 0) {
-				chunk_data.erase(0, pos + 2); // Erase the final chunk
+				chunk_data.erase(0, pos + 2);
 				break;
 			} else {
-				turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk ending.");
+				turn_off_sanity(HTTP_BAD_REQUEST,
+								"Invalid chunk ending.");
 				return (false);
 			}
 		}
 
-		if (chunk_data.size() < pos + chunk_size + 2) {
-			break; // Not enough data, wait for more chunks
-		}
-
 		_request.append(chunk_data, pos, chunk_size);
-		pos += chunk_size + 2; // Move past the chunk and its ending CRLF
+		pos += chunk_size + 2;
 
-		// Check if request size exceeds the maximum allowed size
 		if (_request.size() > _max_request) {
-			turn_off_sanity(HTTP_CONTENT_TOO_LARGE, "Body Content too Large.");
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
+							"Body Content too Large.");
 			return (false);
 		}
 
-		chunk_data.erase(0, pos); // Remove processed data
-		pos = 0; // Reset position to start parsing from the beginning of chunk_data
+		chunk_data.erase(0, pos);
+		pos = 0;
 	}
 	return (true);
 }

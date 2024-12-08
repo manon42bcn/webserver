@@ -120,5 +120,6 @@ def open_and_save_content_file(context, file_path, key):
 
 @step('the content of "{key1}" and "{key2}" context keys are equal')
 def compare_context_keys(context, key1, key2):
+    print(f"{context.storage[key1].strip()} \n---\n {context.storage[key2].strip()}")
     assert context.storage[key1].strip() == context.storage[key2].strip(), f"The content of {key1} and {key2} are not equal"
     context.logger.debug(f"Context keys {key1} and {key2} are equal")
