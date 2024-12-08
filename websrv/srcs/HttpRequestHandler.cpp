@@ -6,7 +6,7 @@
 /*   By: mporras- <manon42bcn@yahoo.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:07:12 by mporras-          #+#    #+#             */
-/*   Updated: 2024/12/07 14:43:43 by mporras-         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:22:39 by mporras-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1012,7 +1012,7 @@ bool HttpRequestHandler::parse_chunks() {
 	while (true) {
 		size_t chunk_size_end = chunk_data.find("\r\n", pos);
 		if (chunk_size_end == std::string::npos) {
-			break ;
+			break;
 		}
 		std::string chunk_size_str = chunk_data.substr(pos, chunk_size_end - pos);
 		char* endptr;
@@ -1020,33 +1020,39 @@ bool HttpRequestHandler::parse_chunks() {
 		chunk_size = strtol(chunk_size_str.c_str(), &endptr, 16);
 
 		if (errno == ERANGE || chunk_size < 0 || *endptr != '\0') {
-			turn_off_sanity(HTTP_BAD_REQUEST,
-							"Invalid chunk size format.");
-			return (false);
+			turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk size format.");
+			return false;
 		}
 
-		pos = chunk_size_end + 2;
+		pos = chunk_size_end + 2; // Move past chunk size and CRLF
 		if (chunk_size == 0) {
 			if (chunk_data.size() < pos + 2) {
-				break ;
+				break;
 			}
 			if (chunk_data.compare(pos, 2, "\r\n") == 0) {
-				chunk_data.erase(0, pos + 2);
+				chunk_data.erase(0, pos + 2); // Erase the final chunk
 				break;
 			} else {
-				turn_off_sanity(HTTP_BAD_REQUEST,
-								"Invalid chunk ending.");
+				turn_off_sanity(HTTP_BAD_REQUEST, "Invalid chunk ending.");
 				return (false);
 			}
 		}
 
+		if (chunk_data.size() < pos + chunk_size + 2) {
+			break; // Not enough data, wait for more chunks
+		}
+
 		_request.append(chunk_data, pos, chunk_size);
-		pos += chunk_size + 2;
+		pos += chunk_size + 2; // Move past the chunk and its ending CRLF
+
+		// Check if request size exceeds the maximum allowed size
 		if (_request.size() > _max_request) {
-			turn_off_sanity(HTTP_CONTENT_TOO_LARGE,
-							"Body Content too Large.");
+			turn_off_sanity(HTTP_CONTENT_TOO_LARGE, "Body Content too Large.");
 			return (false);
 		}
+
+		chunk_data.erase(0, pos); // Remove processed data
+		pos = 0; // Reset position to start parsing from the beginning of chunk_data
 	}
 	return (true);
 }
