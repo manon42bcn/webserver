@@ -5,13 +5,10 @@ import cgi
 
 path_says = os.environ.get("PATH_INFO", "")
 
-
 print("Content-Type: text/html\r\n\r\n", end='')
-# print("\r\n")  # Línea en blanco para finalizar las cabeceras
 
-# Imprimir información básica
 print("<html><body>")
-print(f"<h1>Python CGI Script - From not_home.py</h1>")
+print("<h1>Python CGI Script - From path.py</h1>")
 print("<h1>I'm force to say:</h1>")
 print("<div>")
 if len(path_says) > 1:

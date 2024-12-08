@@ -6,6 +6,11 @@ services:
     ports:
       - "8080:8080"
       - "9090:9090"
+      - "8080:8080"
+      - "8081:8081"
+      - "8181:8181"
+      - "8183:8183"
+      - "8182:8182"
     restart: always
     stdin_open: true  # Mantener el STDIN abierto para bash
     tty: true         # Asignar una terminal para que bash funcione correctamente

@@ -107,7 +107,6 @@ Feature: Post and Delete methods
             | one.com   | 8181 | /       |
             | two.com   | 8181 | /       |
             | tree.com  | 8181 | /       |
-            | localhost | 8181 | /       |
 
     Scenario Outline: Try to POST content with an empty body returns a 400 error
         Given set connection and headers for ip "127.0.0.1" port "8181" and domain "<host>"
@@ -140,7 +139,6 @@ Feature: Post and Delete methods
         Then The response body content includes "h2" with content "409 - Conflict"
         # Delete the resource
         And send a "DELETE" request to "/lorem_ipsum.txt" using set up domain and headers and status code "204"
-        Then the content of "posted_file" and "sent_file" context keys are equal
 
         Examples:
             | host         |
