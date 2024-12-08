@@ -15,23 +15,16 @@
 
 #include <vector>
 #include <poll.h>
-#include <iostream>
 #include <unistd.h>
 #include <cstring>
 #include <algorithm>
 #include <sys/time.h>
-#include "http_enum_codes.hpp"
 #include "SocketHandler.hpp"
 #include "HttpRequestHandler.hpp"
-#include "HttpResponseHandler.hpp"
-#include "HttpCGIHandler.hpp"
-#include "HttpRangeHandler.hpp"
-#include "HttpMultipartHandler.hpp"
-#include "HttpAutoIndex.hpp"
-#include "WebserverCache.hpp"
 #include "ClientData.hpp"
 #include "webserver.hpp"
 #include "Logger.hpp"
+
 //defined in microsecs
 #define CLIENT_LIFECYCLE 10000000
 #define SM_NAME "ServerManager"
@@ -52,37 +45,37 @@ typedef std::map<time_t, int>::iterator t_timestamp_fd;
  * It provides a shutdown mechanism in case of unrecoverable errors and is equipped with logging for server status tracking.
  */
 class ServerManager {
-	private:
-		std::vector<struct pollfd> 	    _poll_fds;
-		std::map<int, size_t>           _poll_index;
-		std::map<int, SocketHandler*>   _servers_map;
-		std::map<int, int>              _active_ports;
-		std::map<int, ClientData*>      _clients;
-		std::map<time_t, int>           _timeout_index;
-		std::map<int, time_t>           _index_timeout;
-		const Logger*			        _log;
-		bool                            _active;
-		bool                            _healthy;
+		private:
+			std::vector<struct pollfd> 	    _poll_fds;
+			std::map<int, size_t>           _poll_index;
+			std::map<int, SocketHandler*>   _servers_map;
+			std::map<int, int>              _active_ports;
+			std::map<int, ClientData*>      _clients;
+			std::map<time_t, int>           _timeout_index;
+			std::map<int, time_t>           _index_timeout;
+			const Logger*			        _log;
+			bool                            _active;
+			bool                            _healthy;
 
-		bool add_server(int port, ServerConfig& config);
-		void build_servers(std::vector<ServerConfig>& configs);
-		bool add_server_to_poll(int server_fd);
-		void cleanup_invalid_fds();
-		void timeout_clients();
-		bool new_client(SocketHandler* server);
-		bool process_request(size_t& poll_fd_index);
-		void remove_client_from_poll(t_client_it client_data);
-		bool turn_off_sanity(const std::string& detail);
-		void clear_clients();
-		void clear_servers();
-		void clear_poll();
-		static time_t timeout_timestamp();
-public:
-		ServerManager(std::vector<ServerConfig>& configs,
-					  const Logger* logger);
-		~ServerManager();
-		void run();
-		void turn_off_server();
+			bool add_server(int port, ServerConfig& config);
+			void build_servers(std::vector<ServerConfig>& configs);
+			bool add_server_to_poll(int server_fd);
+			void cleanup_invalid_fds();
+			void timeout_clients();
+			bool new_client(SocketHandler* server);
+			bool process_request(size_t& poll_fd_index);
+			void remove_client_from_poll(t_client_it client_data);
+			bool turn_off_sanity(const std::string& detail);
+			void clear_clients();
+			void clear_servers();
+			void clear_poll();
+			static time_t timeout_timestamp();
+	public:
+			ServerManager(std::vector<ServerConfig>& configs,
+						  const Logger* logger);
+			~ServerManager();
+			void run();
+			void turn_off_server();
 };
 
 #endif

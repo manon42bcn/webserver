@@ -12,64 +12,24 @@
 
 #include <iostream>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <poll.h>
-#include <fcntl.h>
 #include <cstring>
 #include <cstdlib>
-#include <poll.h>
 #include <sys/stat.h>
 #include <map>
-
 #include "webserver.hpp"
-//#include "HttpRequestHandler.hpp"
-//#include "HttpResponseHandler.hpp"
 #include "ServerManager.hpp"
-//#include "SocketHandler.hpp"
-#include <cstdlib>
 #include <signal.h>
-#include "WebserverCache.hpp"
-
-void print_server_config(const ServerConfig& config, std::string location) {
-	std::cout << "FROM: " << location << std::endl;
-	std::cout << "Server Configuration:" << std::endl;
-	std::cout << "  Port: " << config.port << std::endl;
-	std::cout << "  Server Name: " << config.server_name << std::endl;
-	std::cout << "  Document Root: " << config.server_root << std::endl;
-
-	// Imprimir las páginas de error personalizadas
-	std::cout << "  Error Pages: " << std::endl;
-	for (std::map<int, std::string>::const_iterator it = config.error_pages.begin(); it != config.error_pages.end(); ++it) {
-		std::cout << "    Error " << it->first << ": " << it->second << std::endl;
-	}
-
-	// Imprimir las páginas por defecto
-	std::cout << "  Default Pages: " << std::endl;
-	for (std::vector<std::string>::const_iterator it = config.default_pages.begin(); it != config.default_pages.end(); ++it) {
-		std::cout << "    " << *it << std::endl;
-	}
-
-//	// Imprimir las rutas configuradas en 'locations'
-//	std::cout << "  Locations: " << std::endl;
-//	for (std::map<std::string, std::string>::const_iterator it = config.locations.begin(); it != config.locations.end(); ++it) {
-//		std::cout << "    Path: " << it->first << ", Directory: " << it->second << std::endl;
-//	}
-
-	std::cout << "------------------"  << std::endl;
-}
-
-void print_vector_config(const std::vector<ServerConfig> &config, std::string location)
-{
-	for (size_t i = 0; i < config.size(); i++)
-		print_server_config(config[i], location);
-	exit(0);
-}
-
-
 
 ServerManager* running_server = NULL;
 
+/**
+ * @brief Signal handler to end webserver execution
+ *
+ * Due to webserver execution is an endless loop, a handler to close it properly
+ * is needed. SIGINT, SIGTERM and SIGTSTP are allowed.
+ *
+ * @param sig Received signal.
+ */
 void signal_handler(int sig) {
 	if (running_server != NULL) {
 		std::cout << "\nReceived signal " << sig << ". Shutting down server..." << std::endl;
@@ -77,6 +37,14 @@ void signal_handler(int sig) {
 	}
 }
 
+/**
+ * @brief Main function - Entry point.
+ *
+ * @param argc count of arguments.
+ * @param argv arguments of exec.
+ *
+ * @see ServerManager: That control all the workflow.
+ */
 int main(int argc, char **argv) {
 
 	Logger logger(LOG_ERROR, false);
@@ -87,8 +55,6 @@ int main(int argc, char **argv) {
 	if (!check_args(argc, argv))
 		exit(1);
 	configs = parse_file(argv[1], &logger);
-
-	logger.log(LOG_DEBUG, "main_otro", "Configs parsed");
 
 	try {
 		ServerManager server_manager(configs, &logger);
@@ -104,5 +70,5 @@ int main(int argc, char **argv) {
 	} catch (std::exception& e) {
 		std::cerr << "ERROR: " << e.what() << std::endl;
 	}
-	return 0;
+	return (0);
 }

@@ -10,8 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES		=	webserver.cpp \
-					general_helpers.cpp \
+SRCS_FILES		=	general_helpers.cpp \
 					WebServerResponseHandler.cpp \
 					HttpCGIHandler.cpp \
 					HttpRangeHandler.cpp \

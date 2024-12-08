@@ -12,12 +12,7 @@
 
 #ifndef _SOCKETHANDLER_HPP_
 # define _SOCKETHANDLER_HPP_
-#include "WebserverException.hpp"
-#include "WebserverCache.hpp"
-#include "webserver.hpp"
-#include "http_enum_codes.hpp"
-#include "Logger.hpp"
-#include <string>
+// Libraries
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
@@ -26,6 +21,13 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <string>
+// Includes
+#include "WebserverException.hpp"
+#include "WebserverCache.hpp"
+#include "webserver.hpp"
+#include "http_enum_codes.hpp"
+#include "Logger.hpp"
 
 # define SH_NAME "SocketHandler"
 # define SOCKET_BACKLOG_QUEUE 2048
