@@ -319,6 +319,7 @@ server {
 ## Generating Documentation with Doxygen
 
 To generate detailed, and more friendly documentation for this project, follow the steps outlined below:
+Note: If you run the webserver with configs/main.conf, you can go to http://localhost:8080/docs/html/index.html
 
 ### 1. Install Doxygen:
 
