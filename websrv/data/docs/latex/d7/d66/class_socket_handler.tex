@@ -22,9 +22,9 @@ int \mbox{\hyperlink{class_socket_handler_aa0d3fd34630d9ec5b4d96cdf75eef02a}{get
 \begin{DoxyCompactList}\small\item\em Gets the socket file descriptor. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_socket_handler_a37ea5125b4b2a58dfe2c7a2abb0dd4e4}{add\+\_\+host}} (\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&config)
 \begin{DoxyCompactList}\small\item\em Adds a host to the internal map of hosts if it doesn\textquotesingle{}t already exist. \end{DoxyCompactList}\item 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \& \mbox{\hyperlink{class_socket_handler_a63b43ae23ccbddcc4d2679eab75e37ea}{get\+\_\+config}} () const
+\mbox{\hyperlink{struct_server_config}{Server\+Config}} \& \mbox{\hyperlink{class_socket_handler_a22267baa1581543c1eeab133d6b71350}{get\+\_\+config}} () const
 \begin{DoxyCompactList}\small\item\em Gets the server configuration. \end{DoxyCompactList}\item 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_socket_handler_a4469caa961af2e8bcb31130a5cb56665}{get\+\_\+config}} (const std\+::string \&host)
+\mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_socket_handler_ac46f1fd09275af3a2a46a0e3719c5362}{get\+\_\+config}} (const std\+::string \&host)
 \item 
 std\+::string \mbox{\hyperlink{class_socket_handler_ab2c2a0c35e5593ff0371c53044ee0fb3}{get\+\_\+port}} () const
 \begin{DoxyCompactList}\small\item\em Gets the port number as a string. \end{DoxyCompactList}\item 
@@ -57,11 +57,11 @@ The {\ttfamily \doxylink{class_socket_handler}{Socket\+Handler}} class encapsula
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{class_socket_handler_a3b4b8a927ed01df0b6bd301dca84b930}\index{SocketHandler@{SocketHandler}!SocketHandler@{SocketHandler}}
+\Hypertarget{class_socket_handler_a3b4b8a927ed01df0b6bd301dca84b930}\label{class_socket_handler_a3b4b8a927ed01df0b6bd301dca84b930} 
+\index{SocketHandler@{SocketHandler}!SocketHandler@{SocketHandler}}
 \index{SocketHandler@{SocketHandler}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{SocketHandler()}{SocketHandler()}}
-{\footnotesize\ttfamily \label{class_socket_handler_a3b4b8a927ed01df0b6bd301dca84b930} 
-Socket\+Handler\+::\+Socket\+Handler (\begin{DoxyParamCaption}\item[{int}]{port}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Socket\+Handler\+::\+Socket\+Handler (\begin{DoxyParamCaption}\item[{int}]{port,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config,  }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
 
 
@@ -100,11 +100,11 @@ The constructor follows these steps to establish a socket\+:
 \begin{DoxyNote}{Note}
 Throws an exception and properly closes the socket on any failure, preventing resource leaks. 
 \end{DoxyNote}
-\Hypertarget{class_socket_handler_a29d92f596c4bf85d153a665ee700ecb0}\index{SocketHandler@{SocketHandler}!````~SocketHandler@{\texorpdfstring{$\sim$}{\string~}SocketHandler}}
+\Hypertarget{class_socket_handler_a29d92f596c4bf85d153a665ee700ecb0}\label{class_socket_handler_a29d92f596c4bf85d153a665ee700ecb0} 
+\index{SocketHandler@{SocketHandler}!````~SocketHandler@{\texorpdfstring{$\sim$}{\string~}SocketHandler}}
 \index{````~SocketHandler@{\texorpdfstring{$\sim$}{\string~}SocketHandler}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}SocketHandler()}{\string~SocketHandler()}}
-{\footnotesize\ttfamily \label{class_socket_handler_a29d92f596c4bf85d153a665ee700ecb0} 
-Socket\+Handler\+::\texorpdfstring{$\sim$}{\string~}\+Socket\+Handler (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Socket\+Handler\+::\texorpdfstring{$\sim$}{\string~}\+Socket\+Handler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -120,11 +120,11 @@ Ensure that any allocated resources are properly cleaned up to prevent resource 
 
 
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_socket_handler_aac6e8140f78f347633d3885329c8fdd5}\index{SocketHandler@{SocketHandler}!accept\_connection@{accept\_connection}}
+\Hypertarget{class_socket_handler_aac6e8140f78f347633d3885329c8fdd5}\label{class_socket_handler_aac6e8140f78f347633d3885329c8fdd5} 
+\index{SocketHandler@{SocketHandler}!accept\_connection@{accept\_connection}}
 \index{accept\_connection@{accept\_connection}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{accept\_connection()}{accept\_connection()}}
-{\footnotesize\ttfamily \label{class_socket_handler_aac6e8140f78f347633d3885329c8fdd5} 
-int Socket\+Handler\+::accept\+\_\+connection (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int Socket\+Handler\+::accept\+\_\+connection (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -135,11 +135,11 @@ This method accepts an incoming connection on the socket. If a client connection
 \begin{DoxyReturn}{Returns}
 The file descriptor for the accepted client connection, or -\/1 if an error occurs. 
 \end{DoxyReturn}
-\Hypertarget{class_socket_handler_a37ea5125b4b2a58dfe2c7a2abb0dd4e4}\index{SocketHandler@{SocketHandler}!add\_host@{add\_host}}
+\Hypertarget{class_socket_handler_a37ea5125b4b2a58dfe2c7a2abb0dd4e4}\label{class_socket_handler_a37ea5125b4b2a58dfe2c7a2abb0dd4e4} 
+\index{SocketHandler@{SocketHandler}!add\_host@{add\_host}}
 \index{add\_host@{add\_host}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{add\_host()}{add\_host()}}
-{\footnotesize\ttfamily \label{class_socket_handler_a37ea5125b4b2a58dfe2c7a2abb0dd4e4} 
-void Socket\+Handler\+::add\+\_\+host (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Socket\+Handler\+::add\+\_\+host (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config }\end{DoxyParamCaption})}
 
 
 
@@ -166,11 +166,11 @@ The method performs the following steps\+:
 \begin{DoxyNote}{Note}
 This method does not add the host if it already exists in the {\ttfamily \+\_\+hosts} map. 
 \end{DoxyNote}
-\Hypertarget{class_socket_handler_a700095bdc44fad41ca4a147432d42773}\index{SocketHandler@{SocketHandler}!get\_cache@{get\_cache}}
+\Hypertarget{class_socket_handler_a700095bdc44fad41ca4a147432d42773}\label{class_socket_handler_a700095bdc44fad41ca4a147432d42773} 
+\index{SocketHandler@{SocketHandler}!get\_cache@{get\_cache}}
 \index{get\_cache@{get\_cache}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_cache()}{get\_cache()}}
-{\footnotesize\ttfamily \label{class_socket_handler_a700095bdc44fad41ca4a147432d42773} 
-\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ \mbox{\hyperlink{struct_cache_entry}{Cache\+Entry}} $>$ \& Socket\+Handler\+::get\+\_\+cache (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ \mbox{\hyperlink{struct_cache_entry}{Cache\+Entry}} $>$ \& Socket\+Handler\+::get\+\_\+cache (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -181,11 +181,11 @@ This method returns a reference to the general cache used by the \doxylink{class
 \begin{DoxyReturn}{Returns}
 A reference to the {\ttfamily \doxylink{class_web_server_cache}{Web\+Server\+Cache}} object containing {\ttfamily \doxylink{struct_cache_entry}{Cache\+Entry}} elements. 
 \end{DoxyReturn}
-\Hypertarget{class_socket_handler_a63b43ae23ccbddcc4d2679eab75e37ea}\index{SocketHandler@{SocketHandler}!get\_config@{get\_config}}
+\Hypertarget{class_socket_handler_a22267baa1581543c1eeab133d6b71350}\label{class_socket_handler_a22267baa1581543c1eeab133d6b71350} 
+\index{SocketHandler@{SocketHandler}!get\_config@{get\_config}}
 \index{get\_config@{get\_config}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_config()}{get\_config()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{class_socket_handler_a63b43ae23ccbddcc4d2679eab75e37ea} 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \& Socket\+Handler\+::get\+\_\+config (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_server_config}{Server\+Config}} \& Socket\+Handler\+::get\+\_\+config (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
 
 
 
@@ -196,17 +196,17 @@ This method returns a constant reference to the server configuration associated 
 \begin{DoxyReturn}{Returns}
 A constant reference to the server configuration (\doxylink{struct_server_config}{Server\+Config}). 
 \end{DoxyReturn}
-\Hypertarget{class_socket_handler_a4469caa961af2e8bcb31130a5cb56665}\index{SocketHandler@{SocketHandler}!get\_config@{get\_config}}
+\Hypertarget{class_socket_handler_ac46f1fd09275af3a2a46a0e3719c5362}\label{class_socket_handler_ac46f1fd09275af3a2a46a0e3719c5362} 
+\index{SocketHandler@{SocketHandler}!get\_config@{get\_config}}
 \index{get\_config@{get\_config}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_config()}{get\_config()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{class_socket_handler_a4469caa961af2e8bcb31130a5cb56665} 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} Socket\+Handler\+::get\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} Socket\+Handler\+::get\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host }\end{DoxyParamCaption})}
 
-\Hypertarget{class_socket_handler_ab2c2a0c35e5593ff0371c53044ee0fb3}\index{SocketHandler@{SocketHandler}!get\_port@{get\_port}}
+\Hypertarget{class_socket_handler_ab2c2a0c35e5593ff0371c53044ee0fb3}\label{class_socket_handler_ab2c2a0c35e5593ff0371c53044ee0fb3} 
+\index{SocketHandler@{SocketHandler}!get\_port@{get\_port}}
 \index{get\_port@{get\_port}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_port()}{get\_port()}}
-{\footnotesize\ttfamily \label{class_socket_handler_ab2c2a0c35e5593ff0371c53044ee0fb3} 
-std\+::string Socket\+Handler\+::get\+\_\+port (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+{\footnotesize\ttfamily std\+::string Socket\+Handler\+::get\+\_\+port (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
 
 
 
@@ -217,11 +217,11 @@ This method returns the port number to which the socket is bound, represented as
 \begin{DoxyReturn}{Returns}
 A string representing the port number. 
 \end{DoxyReturn}
-\Hypertarget{class_socket_handler_ab388b920f4305dea5ff0efaca8a4b2f8}\index{SocketHandler@{SocketHandler}!get\_request\_cache@{get\_request\_cache}}
+\Hypertarget{class_socket_handler_ab388b920f4305dea5ff0efaca8a4b2f8}\label{class_socket_handler_ab388b920f4305dea5ff0efaca8a4b2f8} 
+\index{SocketHandler@{SocketHandler}!get\_request\_cache@{get\_request\_cache}}
 \index{get\_request\_cache@{get\_request\_cache}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_request\_cache()}{get\_request\_cache()}}
-{\footnotesize\ttfamily \label{class_socket_handler_ab388b920f4305dea5ff0efaca8a4b2f8} 
-\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ \mbox{\hyperlink{struct_cache_request}{Cache\+Request}} $>$ \& Socket\+Handler\+::get\+\_\+request\+\_\+cache (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ \mbox{\hyperlink{struct_cache_request}{Cache\+Request}} $>$ \& Socket\+Handler\+::get\+\_\+request\+\_\+cache (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -232,11 +232,11 @@ This method returns a reference to the request cache used by the \doxylink{class
 \begin{DoxyReturn}{Returns}
 A reference to the {\ttfamily \doxylink{class_web_server_cache}{Web\+Server\+Cache}} object containing {\ttfamily \doxylink{struct_cache_request}{Cache\+Request}} elements. 
 \end{DoxyReturn}
-\Hypertarget{class_socket_handler_aa0d3fd34630d9ec5b4d96cdf75eef02a}\index{SocketHandler@{SocketHandler}!get\_socket\_fd@{get\_socket\_fd}}
+\Hypertarget{class_socket_handler_aa0d3fd34630d9ec5b4d96cdf75eef02a}\label{class_socket_handler_aa0d3fd34630d9ec5b4d96cdf75eef02a} 
+\index{SocketHandler@{SocketHandler}!get\_socket\_fd@{get\_socket\_fd}}
 \index{get\_socket\_fd@{get\_socket\_fd}!SocketHandler@{SocketHandler}}
 \doxysubsubsection{\texorpdfstring{get\_socket\_fd()}{get\_socket\_fd()}}
-{\footnotesize\ttfamily \label{class_socket_handler_aa0d3fd34630d9ec5b4d96cdf75eef02a} 
-int Socket\+Handler\+::get\+\_\+socket\+\_\+fd (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+{\footnotesize\ttfamily int Socket\+Handler\+::get\+\_\+socket\+\_\+fd (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
 
 
 

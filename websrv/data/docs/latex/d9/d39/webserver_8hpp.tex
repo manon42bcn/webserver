@@ -108,7 +108,7 @@ bool \mbox{\hyperlink{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432}{is\+\_\+
 bool \mbox{\hyperlink{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add}{is\+\_\+file}} (const std\+::string \&path)
 \begin{DoxyCompactList}\small\item\em Checks if a given path is a regular file. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc}{starts\+\_\+with}} (const std\+::string \&str, const std\+::string \&prefix)
-\begin{DoxyCompactList}\small\item\em Converts an integer to a string. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\+\_\+trim\+\_\+char}} (char c, const std\+::string \&chars\+\_\+to\+\_\+trim)
 \begin{DoxyCompactList}\small\item\em Checks if a character should be trimmed. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca}{trim}} (const std\+::string \&str, const std\+::string \&chars\+\_\+to\+\_\+trim)
@@ -124,75 +124,75 @@ void \mbox{\hyperlink{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee}{print\+\
 void \mbox{\hyperlink{webserver_8hpp_a2d370221fb0194cd1a79364eece10199}{print\+\_\+vector\+\_\+config}} (const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&config, std\+::string location)
 \item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4}{print\+\_\+bitwise\+\_\+method}} (unsigned char method)
-\item 
+\begin{DoxyCompactList}\small\item\em Converts a bitwise method mask to a human-\/readable string. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103}{html\+\_\+codes}} (int code)
 \item 
 std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8}{parse\+\_\+file}} (std\+::string file, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a configuration file and returns server configurations. \end{DoxyCompactList}\item 
 std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd}{parse\+\_\+servers}} (std\+::vector$<$ std\+::string $>$ raw\+Lines, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses all server configurations from the raw configuration lines. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{struct_location_config}{Location\+Config}} \mbox{\hyperlink{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0}{parse\+\_\+location\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a location block configuration from the config file. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21}{print\+\_\+raw\+\_\+lines}} (std\+::vector$<$ std\+::string $>$ raw\+Lines)
-\begin{DoxyCompactList}\small\item\em Prints raw lines from a vector of strings. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Prints raw configuration lines for debugging purposes. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a45bbf371543a47ca27d2949ebd292f96}{print\+\_\+server\+\_\+config}} (\mbox{\hyperlink{struct_server_config}{Server\+Config}} server)
-\begin{DoxyCompactList}\small\item\em Prints the server configuration. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Prints detailed server configuration information. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a4307030c306da743512e19c778c734d9}{print\+\_\+location\+\_\+config}} (\mbox{\hyperlink{struct_location_config}{Location\+Config}} location)
-\begin{DoxyCompactList}\small\item\em Prints the location configuration. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Prints detailed location block configuration information. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6}{print\+\_\+servers}} (std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ servers)
-\item 
+\begin{DoxyCompactList}\small\item\em Prints configuration information for all servers. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671}{get\+\_\+value}} (std\+::string line, const std\+::string \&key)
-\begin{DoxyCompactList}\small\item\em Extracts the value associated with a key in a given line. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Extracts a value associated with a specific key from a line. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9}{clean\+\_\+line}} (std\+::string line)
-\begin{DoxyCompactList}\small\item\em Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with \textquotesingle{}\#\textquotesingle{}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Cleans a line by removing whitespace and special characters. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_afeadc4781b746478b8137404aaf6597f}{find\+\_\+exact\+\_\+string}} (const std\+::string \&line, const std\+::string \&str)
-\item 
+\begin{DoxyCompactList}\small\item\em Checks if a string exists as an exact word match at the start of a line. \end{DoxyCompactList}\item 
 std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a}{split\+\_\+default\+\_\+pages}} (std\+::string default\+\_\+pages)
-\begin{DoxyCompactList}\small\item\em Splits a string of default pages into a vector of strings, separated by spaces. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Splits a string of default pages into a vector of strings. \end{DoxyCompactList}\item 
 std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9}{split\+\_\+error\+\_\+pages}} (std\+::string error\+\_\+pages)
-\begin{DoxyCompactList}\small\item\em Splits a string of error pages into a map associating error codes with file paths, replacing \textquotesingle{}x\textquotesingle{} in the path with the last digit of the error code. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Splits a string of error pages into a map associating error codes with file paths. \end{DoxyCompactList}\item 
 std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{webserver_8hpp_a450f9c88120dba0a380ac4744569a056}{get\+\_\+raw\+\_\+lines}} (std\+::string file)
-\begin{DoxyCompactList}\small\item\em Reads a file line by line, cleaning each line and returning a vector of non-\/empty lines. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Reads and processes a file line by line. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea}{delete\+\_\+brackets\+\_\+clean}} (std\+::string line)
-\begin{DoxyCompactList}\small\item\em Removes curly braces \textquotesingle{}\{\textquotesingle{} and \textquotesingle{}\}\textquotesingle{} from a line and cleans it of whitespace. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Removes curly braces from a line and cleans whitespace. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7}{delete\+\_\+first\+\_\+slash}} (std\+::string path)
-\begin{DoxyCompactList}\small\item\em Removes the first slash from a path if it exists. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Removes the leading slash from a path if present. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9}{get\+\_\+server\+\_\+root}} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Gets the current working directory of the server. \end{DoxyCompactList}\item 
 std\+::vector$<$ std\+::string $>$\+::iterator \mbox{\hyperlink{webserver_8hpp_aa7aa50634040e3947db40560bb98167d}{skip\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end)
-\item 
+\begin{DoxyCompactList}\small\item\em Skips over a block of code between matching brackets. \end{DoxyCompactList}\item 
 std\+::vector$<$ std\+::string $>$\+::iterator \mbox{\hyperlink{webserver_8hpp_a25878e147619b8924349760761dd3e0b}{find\+\_\+block\+\_\+end}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end)
-\item 
+\begin{DoxyCompactList}\small\item\em Finds the end of a block marked by matching brackets. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54}{get\+\_\+location\+\_\+path}} (std\+::string line)
-\item 
+\begin{DoxyCompactList}\small\item\em Extracts the path from a location directive. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} \mbox{\hyperlink{webserver_8hpp_aa92b30f31083f5408d0951bde2270276}{string\+\_\+to\+\_\+error\+\_\+mode}} (std\+::string error\+\_\+mode)
-\item 
+\begin{DoxyCompactList}\small\item\em Converts an error mode string to its enumerated type. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567}{join\+\_\+paths}} (std\+::string path1, std\+::string path2)
-\item 
+\begin{DoxyCompactList}\small\item\em Joins two paths together, handling slashes appropriately. \end{DoxyCompactList}\item 
 std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc}{split\+\_\+string}} (std\+::string str)
-\item 
+\begin{DoxyCompactList}\small\item\em Splits a string into a vector of substrings based on whitespace. \end{DoxyCompactList}\item 
 unsigned char \mbox{\hyperlink{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6}{method\+\_\+bitwise}} (std\+::string parsed)
-\item 
+\begin{DoxyCompactList}\small\item\em Converts HTTP method string to its corresponding bitmask. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0}{get\+\_\+first\+\_\+word}} (const std\+::string \&str)
-\item 
+\begin{DoxyCompactList}\small\item\em Extracts the first word from a string. \end{DoxyCompactList}\item 
 std\+::map$<$ int, std\+::string $>$ \mbox{\hyperlink{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829}{split\+\_\+redirections}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Splits redirection directives into status code and URL pairs. \end{DoxyCompactList}\item 
 std\+::string \mbox{\hyperlink{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e}{get\+\_\+redirection\+\_\+url}} (std\+::string redirection, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Processes and validates a redirection URL. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e}{get\+\_\+status\+\_\+code}} (std\+::string status\+\_\+code, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Validates and converts a status code string to integer. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f}{compare\+\_\+paths}} (std\+::string path1, std\+::string path2)
-\item 
+\begin{DoxyCompactList}\small\item\em Compares two paths for equality, handling special cases. \end{DoxyCompactList}\item 
 size\+\_\+t \mbox{\hyperlink{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da}{string\+\_\+to\+\_\+bytes}} (std\+::string client\+\_\+max\+\_\+body\+\_\+size)
-\item 
+\begin{DoxyCompactList}\small\item\em Converts a size string with units to bytes. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_a16ef7295adb65127597e839131e68d71}{check\+\_\+args}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
-\begin{DoxyCompactList}\small\item\em Validates the command line arguments. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Validates command line arguments for the webserver. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915}{check\+\_\+root}} (std\+::string root)
 \item 
 bool \mbox{\hyperlink{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70}{check\+\_\+client\+\_\+max\+\_\+body\+\_\+size}} (std\+::string client\+\_\+max\+\_\+body\+\_\+size)
 \item 
 int \mbox{\hyperlink{webserver_8hpp_a199339df1bcf67055ef966d29311ca28}{check\+\_\+port}} (std\+::string port)
-\begin{DoxyCompactList}\small\item\em Validates a port number. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Validates a port number string. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25}{check\+\_\+server\+\_\+name}} (std\+::string server\+\_\+name)
 \begin{DoxyCompactList}\small\item\em Validates a server name. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0}{check\+\_\+error\+\_\+page}} (std\+::string error\+\_\+page)
@@ -206,7 +206,7 @@ bool \mbox{\hyperlink{webserver_8hpp_a8c6e27347968a5abd6f00cf2daddd256}{check\+\
 bool \mbox{\hyperlink{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f}{check\+\_\+autoindex}} (std\+::string autoindex)
 \item 
 \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}} \mbox{\hyperlink{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4}{string\+\_\+to\+\_\+method}} (std\+::string method)
-\item 
+\begin{DoxyCompactList}\small\item\em Converts a string method name to its enumerated type. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79}{check\+\_\+error\+\_\+mode}} (std\+::string error\+\_\+mode)
 \item 
 bool \mbox{\hyperlink{webserver_8hpp_a03289097f527586246ebad563d792a17}{check\+\_\+duplicate\+\_\+servers}} (std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ servers)
@@ -215,185 +215,189 @@ bool \mbox{\hyperlink{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034}{check\+\
 \item 
 bool \mbox{\hyperlink{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7}{check\+\_\+obligatory\+\_\+params}} (\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
 \item 
+bool \mbox{\hyperlink{webserver_8hpp_ac6ca666a0bbaea8f0f710b45bd0e3a0d}{check\+\_\+server\+\_\+brackets}} (std\+::string server\+\_\+name)
+\begin{DoxyCompactList}\small\item\em Validates the syntax of a server block declaration. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{webserver_8hpp_a28ad4c713cc19cbc6631124955bcfd99}{check\+\_\+duplicate\+\_\+location}} (const std\+::string \&location\+\_\+path, const std\+::map$<$ std\+::string, \mbox{\hyperlink{struct_location_config}{Location\+Config}} $>$ \&locations)
+\item 
 void \mbox{\hyperlink{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e}{parse\+\_\+location}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a location directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0}{parse\+\_\+template\+\_\+error\+\_\+page}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a template error page directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1}{parse\+\_\+port}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a port directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9}{parse\+\_\+server\+\_\+name}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a server name directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4}{parse\+\_\+root}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a root directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730}{parse\+\_\+index}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses an index directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e}{parse\+\_\+client\+\_\+max\+\_\+body\+\_\+size}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a client max body size directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984}{parse\+\_\+error\+\_\+page}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses an error page directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda}{parse\+\_\+autoindex}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses an autoindex directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50}{parse\+\_\+error\+\_\+mode}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&server)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses an error mode directive within a server block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba}{parse\+\_\+location\+\_\+index}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses index directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8}{parse\+\_\+location\+\_\+error\+\_\+page}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses error page directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a34d96431ec8cd490cd35e7cfcea78487}{parse\+\_\+root}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses root directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_abe1dfef97e554eeabab2566b689aa1e9}{parse\+\_\+autoindex}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses autoindex directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_af31bd57be892e51ef467fa43780687e5}{parse\+\_\+cgi}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses CGI directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_ac601ac1bbdc45a3c43d80f19825f701a}{parse\+\_\+template\+\_\+error\+\_\+page}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses template error page directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248}{parse\+\_\+accept\+\_\+only}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses accept only directive in a location block. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{webserver_8hpp_a313f72fbd4eee6cea53839586820156e}{parse\+\_\+redirection}} (std\+::vector$<$ std\+::string $>$\+::iterator \&it, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger, \mbox{\hyperlink{struct_location_config}{Location\+Config}} \&location)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Parses redirection directive in a location block. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Macro Definition Documentation}
-\Hypertarget{webserver_8hpp_a7b3b25cba33b07c303f3060fe41887f6}\index{webserver.hpp@{webserver.hpp}!BLACK@{BLACK}}
+\Hypertarget{webserver_8hpp_a7b3b25cba33b07c303f3060fe41887f6}\label{webserver_8hpp_a7b3b25cba33b07c303f3060fe41887f6} 
+\index{webserver.hpp@{webserver.hpp}!BLACK@{BLACK}}
 \index{BLACK@{BLACK}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{BLACK}{BLACK}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7b3b25cba33b07c303f3060fe41887f6} 
-\#define BLACK~"{}\textbackslash{}033\mbox{[}0;99m"{}}
+{\footnotesize\ttfamily \#define BLACK~"{}\textbackslash{}033\mbox{[}0;99m"{}}
 
-\Hypertarget{webserver_8hpp_a79d10e672abb49ad63eeaa8aaef57c38}\index{webserver.hpp@{webserver.hpp}!BLUE@{BLUE}}
+\Hypertarget{webserver_8hpp_a79d10e672abb49ad63eeaa8aaef57c38}\label{webserver_8hpp_a79d10e672abb49ad63eeaa8aaef57c38} 
+\index{webserver.hpp@{webserver.hpp}!BLUE@{BLUE}}
 \index{BLUE@{BLUE}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{BLUE}{BLUE}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a79d10e672abb49ad63eeaa8aaef57c38} 
-\#define BLUE~"{}\textbackslash{}033\mbox{[}0;94m"{}}
+{\footnotesize\ttfamily \#define BLUE~"{}\textbackslash{}033\mbox{[}0;94m"{}}
 
-\Hypertarget{webserver_8hpp_a26cdbb1a00213c810caccf21cd33a631}\index{webserver.hpp@{webserver.hpp}!BOLD@{BOLD}}
+\Hypertarget{webserver_8hpp_a26cdbb1a00213c810caccf21cd33a631}\label{webserver_8hpp_a26cdbb1a00213c810caccf21cd33a631} 
+\index{webserver.hpp@{webserver.hpp}!BOLD@{BOLD}}
 \index{BOLD@{BOLD}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{BOLD}{BOLD}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a26cdbb1a00213c810caccf21cd33a631} 
-\#define BOLD~"{}\textbackslash{}033\mbox{[}1m"{}}
+{\footnotesize\ttfamily \#define BOLD~"{}\textbackslash{}033\mbox{[}1m"{}}
 
-\Hypertarget{webserver_8hpp_ab2baea56ece91306020afd6d77fd19f9}\index{webserver.hpp@{webserver.hpp}!BROWN@{BROWN}}
+\Hypertarget{webserver_8hpp_ab2baea56ece91306020afd6d77fd19f9}\label{webserver_8hpp_ab2baea56ece91306020afd6d77fd19f9} 
+\index{webserver.hpp@{webserver.hpp}!BROWN@{BROWN}}
 \index{BROWN@{BROWN}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{BROWN}{BROWN}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ab2baea56ece91306020afd6d77fd19f9} 
-\#define BROWN~"{}\textbackslash{}033\mbox{[}38;2;184;143;29m"{}}
+{\footnotesize\ttfamily \#define BROWN~"{}\textbackslash{}033\mbox{[}38;2;184;143;29m"{}}
 
-\Hypertarget{webserver_8hpp_ad243f93c16bc4c1d3e0a13b84421d760}\index{webserver.hpp@{webserver.hpp}!CYAN@{CYAN}}
+\Hypertarget{webserver_8hpp_ad243f93c16bc4c1d3e0a13b84421d760}\label{webserver_8hpp_ad243f93c16bc4c1d3e0a13b84421d760} 
+\index{webserver.hpp@{webserver.hpp}!CYAN@{CYAN}}
 \index{CYAN@{CYAN}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{CYAN}{CYAN}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad243f93c16bc4c1d3e0a13b84421d760} 
-\#define CYAN~"{}\textbackslash{}033\mbox{[}0;96m"{}}
+{\footnotesize\ttfamily \#define CYAN~"{}\textbackslash{}033\mbox{[}0;96m"{}}
 
-\Hypertarget{webserver_8hpp_aca56870f2285abae489635f0ee4d65e3}\index{webserver.hpp@{webserver.hpp}!DARK\_GRAY@{DARK\_GRAY}}
+\Hypertarget{webserver_8hpp_aca56870f2285abae489635f0ee4d65e3}\label{webserver_8hpp_aca56870f2285abae489635f0ee4d65e3} 
+\index{webserver.hpp@{webserver.hpp}!DARK\_GRAY@{DARK\_GRAY}}
 \index{DARK\_GRAY@{DARK\_GRAY}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{DARK\_GRAY}{DARK\_GRAY}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aca56870f2285abae489635f0ee4d65e3} 
-\#define DARK\+\_\+\+GRAY~"{}\textbackslash{}033\mbox{[}38;5;234m"{}}
+{\footnotesize\ttfamily \#define DARK\+\_\+\+GRAY~"{}\textbackslash{}033\mbox{[}38;5;234m"{}}
 
-\Hypertarget{webserver_8hpp_a2ebb0bf1d379e615bda6e25cccf0f08f}\index{webserver.hpp@{webserver.hpp}!DARK\_GREEN@{DARK\_GREEN}}
+\Hypertarget{webserver_8hpp_a2ebb0bf1d379e615bda6e25cccf0f08f}\label{webserver_8hpp_a2ebb0bf1d379e615bda6e25cccf0f08f} 
+\index{webserver.hpp@{webserver.hpp}!DARK\_GREEN@{DARK\_GREEN}}
 \index{DARK\_GREEN@{DARK\_GREEN}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{DARK\_GREEN}{DARK\_GREEN}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a2ebb0bf1d379e615bda6e25cccf0f08f} 
-\#define DARK\+\_\+\+GREEN~"{}\textbackslash{}033\mbox{[}38;2;75;179;82m"{}}
+{\footnotesize\ttfamily \#define DARK\+\_\+\+GREEN~"{}\textbackslash{}033\mbox{[}38;2;75;179;82m"{}}
 
-\Hypertarget{webserver_8hpp_a41ade3ead7132da6a21102a09d260e91}\index{webserver.hpp@{webserver.hpp}!DARK\_YELLOW@{DARK\_YELLOW}}
+\Hypertarget{webserver_8hpp_a41ade3ead7132da6a21102a09d260e91}\label{webserver_8hpp_a41ade3ead7132da6a21102a09d260e91} 
+\index{webserver.hpp@{webserver.hpp}!DARK\_YELLOW@{DARK\_YELLOW}}
 \index{DARK\_YELLOW@{DARK\_YELLOW}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{DARK\_YELLOW}{DARK\_YELLOW}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a41ade3ead7132da6a21102a09d260e91} 
-\#define DARK\+\_\+\+YELLOW~"{}\textbackslash{}033\mbox{[}38;5;143m"{}}
+{\footnotesize\ttfamily \#define DARK\+\_\+\+YELLOW~"{}\textbackslash{}033\mbox{[}38;5;143m"{}}
 
-\Hypertarget{webserver_8hpp_aa5522b70f496fc5e0cd4cff1f3314a07}\index{webserver.hpp@{webserver.hpp}!DEL\_LINE@{DEL\_LINE}}
+\Hypertarget{webserver_8hpp_aa5522b70f496fc5e0cd4cff1f3314a07}\label{webserver_8hpp_aa5522b70f496fc5e0cd4cff1f3314a07} 
+\index{webserver.hpp@{webserver.hpp}!DEL\_LINE@{DEL\_LINE}}
 \index{DEL\_LINE@{DEL\_LINE}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{DEL\_LINE}{DEL\_LINE}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aa5522b70f496fc5e0cd4cff1f3314a07} 
-\#define DEL\+\_\+\+LINE~"{}\textbackslash{}033\mbox{[}2K"{}}
+{\footnotesize\ttfamily \#define DEL\+\_\+\+LINE~"{}\textbackslash{}033\mbox{[}2K"{}}
 
-\Hypertarget{webserver_8hpp_ae5f70677050eecd8909e0248e07b9e73}\index{webserver.hpp@{webserver.hpp}!GRAY@{GRAY}}
+\Hypertarget{webserver_8hpp_ae5f70677050eecd8909e0248e07b9e73}\label{webserver_8hpp_ae5f70677050eecd8909e0248e07b9e73} 
+\index{webserver.hpp@{webserver.hpp}!GRAY@{GRAY}}
 \index{GRAY@{GRAY}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{GRAY}{GRAY}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ae5f70677050eecd8909e0248e07b9e73} 
-\#define GRAY~"{}\textbackslash{}033\mbox{[}0;90m"{}}
+{\footnotesize\ttfamily \#define GRAY~"{}\textbackslash{}033\mbox{[}0;90m"{}}
 
-\Hypertarget{webserver_8hpp_acfbc006ea433ad708fdee3e82996e721}\index{webserver.hpp@{webserver.hpp}!GREEN@{GREEN}}
+\Hypertarget{webserver_8hpp_acfbc006ea433ad708fdee3e82996e721}\label{webserver_8hpp_acfbc006ea433ad708fdee3e82996e721} 
+\index{webserver.hpp@{webserver.hpp}!GREEN@{GREEN}}
 \index{GREEN@{GREEN}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{GREEN}{GREEN}}
-{\footnotesize\ttfamily \label{webserver_8hpp_acfbc006ea433ad708fdee3e82996e721} 
-\#define GREEN~"{}\textbackslash{}033\mbox{[}0;92m"{}}
+{\footnotesize\ttfamily \#define GREEN~"{}\textbackslash{}033\mbox{[}0;92m"{}}
 
-\Hypertarget{webserver_8hpp_af706885b9b3eb2821dff28f8e7f7bb3f}\index{webserver.hpp@{webserver.hpp}!ITALIC@{ITALIC}}
+\Hypertarget{webserver_8hpp_af706885b9b3eb2821dff28f8e7f7bb3f}\label{webserver_8hpp_af706885b9b3eb2821dff28f8e7f7bb3f} 
+\index{webserver.hpp@{webserver.hpp}!ITALIC@{ITALIC}}
 \index{ITALIC@{ITALIC}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{ITALIC}{ITALIC}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af706885b9b3eb2821dff28f8e7f7bb3f} 
-\#define ITALIC~"{}\textbackslash{}033\mbox{[}3m"{}}
+{\footnotesize\ttfamily \#define ITALIC~"{}\textbackslash{}033\mbox{[}3m"{}}
 
-\Hypertarget{webserver_8hpp_a6f699060902f800f12aaae150f3a708e}\index{webserver.hpp@{webserver.hpp}!MAGENTA@{MAGENTA}}
+\Hypertarget{webserver_8hpp_a6f699060902f800f12aaae150f3a708e}\label{webserver_8hpp_a6f699060902f800f12aaae150f3a708e} 
+\index{webserver.hpp@{webserver.hpp}!MAGENTA@{MAGENTA}}
 \index{MAGENTA@{MAGENTA}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{MAGENTA}{MAGENTA}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a6f699060902f800f12aaae150f3a708e} 
-\#define MAGENTA~"{}\textbackslash{}033\mbox{[}0;95m"{}}
+{\footnotesize\ttfamily \#define MAGENTA~"{}\textbackslash{}033\mbox{[}0;95m"{}}
 
-\Hypertarget{webserver_8hpp_ae80a7404d9db5dae529017c37a4f430e}\index{webserver.hpp@{webserver.hpp}!MID\_GRAY@{MID\_GRAY}}
+\Hypertarget{webserver_8hpp_ae80a7404d9db5dae529017c37a4f430e}\label{webserver_8hpp_ae80a7404d9db5dae529017c37a4f430e} 
+\index{webserver.hpp@{webserver.hpp}!MID\_GRAY@{MID\_GRAY}}
 \index{MID\_GRAY@{MID\_GRAY}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{MID\_GRAY}{MID\_GRAY}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ae80a7404d9db5dae529017c37a4f430e} 
-\#define MID\+\_\+\+GRAY~"{}\textbackslash{}033\mbox{[}38;5;245m"{}}
+{\footnotesize\ttfamily \#define MID\+\_\+\+GRAY~"{}\textbackslash{}033\mbox{[}38;5;245m"{}}
 
-\Hypertarget{webserver_8hpp_ac5b6e19bf06822021f35602c59658de3}\index{webserver.hpp@{webserver.hpp}!ORANGE@{ORANGE}}
+\Hypertarget{webserver_8hpp_ac5b6e19bf06822021f35602c59658de3}\label{webserver_8hpp_ac5b6e19bf06822021f35602c59658de3} 
+\index{webserver.hpp@{webserver.hpp}!ORANGE@{ORANGE}}
 \index{ORANGE@{ORANGE}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{ORANGE}{ORANGE}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ac5b6e19bf06822021f35602c59658de3} 
-\#define ORANGE~"{}\textbackslash{}033\mbox{[}38;5;209m"{}}
+{\footnotesize\ttfamily \#define ORANGE~"{}\textbackslash{}033\mbox{[}38;5;209m"{}}
 
-\Hypertarget{webserver_8hpp_ae688d728e1acdfe5988c7db45d6f0166}\index{webserver.hpp@{webserver.hpp}!PATH\_MAX@{PATH\_MAX}}
+\Hypertarget{webserver_8hpp_ae688d728e1acdfe5988c7db45d6f0166}\label{webserver_8hpp_ae688d728e1acdfe5988c7db45d6f0166} 
+\index{webserver.hpp@{webserver.hpp}!PATH\_MAX@{PATH\_MAX}}
 \index{PATH\_MAX@{PATH\_MAX}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{PATH\_MAX}{PATH\_MAX}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ae688d728e1acdfe5988c7db45d6f0166} 
-\#define PATH\+\_\+\+MAX~4096}
+{\footnotesize\ttfamily \#define PATH\+\_\+\+MAX~4096}
 
-\Hypertarget{webserver_8hpp_a8d23feea868a983c8c2b661e1e16972f}\index{webserver.hpp@{webserver.hpp}!RED@{RED}}
+\Hypertarget{webserver_8hpp_a8d23feea868a983c8c2b661e1e16972f}\label{webserver_8hpp_a8d23feea868a983c8c2b661e1e16972f} 
+\index{webserver.hpp@{webserver.hpp}!RED@{RED}}
 \index{RED@{RED}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{RED}{RED}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a8d23feea868a983c8c2b661e1e16972f} 
-\#define RED~"{}\textbackslash{}033\mbox{[}0;91m"{}}
+{\footnotesize\ttfamily \#define RED~"{}\textbackslash{}033\mbox{[}0;91m"{}}
 
-\Hypertarget{webserver_8hpp_ab702106cf3b3e96750b6845ded4e0299}\index{webserver.hpp@{webserver.hpp}!RESET@{RESET}}
+\Hypertarget{webserver_8hpp_ab702106cf3b3e96750b6845ded4e0299}\label{webserver_8hpp_ab702106cf3b3e96750b6845ded4e0299} 
+\index{webserver.hpp@{webserver.hpp}!RESET@{RESET}}
 \index{RESET@{RESET}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{RESET}{RESET}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ab702106cf3b3e96750b6845ded4e0299} 
-\#define RESET~"{}\textbackslash{}033\mbox{[}0;39m"{}}
+{\footnotesize\ttfamily \#define RESET~"{}\textbackslash{}033\mbox{[}0;39m"{}}
 
-\Hypertarget{webserver_8hpp_a87b537f5fa5c109d3c05c13d6b18f382}\index{webserver.hpp@{webserver.hpp}!WHITE@{WHITE}}
+\Hypertarget{webserver_8hpp_a87b537f5fa5c109d3c05c13d6b18f382}\label{webserver_8hpp_a87b537f5fa5c109d3c05c13d6b18f382} 
+\index{webserver.hpp@{webserver.hpp}!WHITE@{WHITE}}
 \index{WHITE@{WHITE}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{WHITE}{WHITE}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a87b537f5fa5c109d3c05c13d6b18f382} 
-\#define WHITE~"{}\textbackslash{}033\mbox{[}0;97m"{}}
+{\footnotesize\ttfamily \#define WHITE~"{}\textbackslash{}033\mbox{[}0;97m"{}}
 
-\Hypertarget{webserver_8hpp_a70a2b0243bdae7d23a0b37a7bddd3610}\index{webserver.hpp@{webserver.hpp}!WS\_MAX\_RETRIES@{WS\_MAX\_RETRIES}}
+\Hypertarget{webserver_8hpp_a70a2b0243bdae7d23a0b37a7bddd3610}\label{webserver_8hpp_a70a2b0243bdae7d23a0b37a7bddd3610} 
+\index{webserver.hpp@{webserver.hpp}!WS\_MAX\_RETRIES@{WS\_MAX\_RETRIES}}
 \index{WS\_MAX\_RETRIES@{WS\_MAX\_RETRIES}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{WS\_MAX\_RETRIES}{WS\_MAX\_RETRIES}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a70a2b0243bdae7d23a0b37a7bddd3610} 
-\#define WS\+\_\+\+MAX\+\_\+\+RETRIES~5}
+{\footnotesize\ttfamily \#define WS\+\_\+\+MAX\+\_\+\+RETRIES~5}
 
-\Hypertarget{webserver_8hpp_a97afa6f2f06b7e196906f3439f7c6e50}\index{webserver.hpp@{webserver.hpp}!WS\_RETRY\_DELAY\_MICROSECONDS@{WS\_RETRY\_DELAY\_MICROSECONDS}}
+\Hypertarget{webserver_8hpp_a97afa6f2f06b7e196906f3439f7c6e50}\label{webserver_8hpp_a97afa6f2f06b7e196906f3439f7c6e50} 
+\index{webserver.hpp@{webserver.hpp}!WS\_RETRY\_DELAY\_MICROSECONDS@{WS\_RETRY\_DELAY\_MICROSECONDS}}
 \index{WS\_RETRY\_DELAY\_MICROSECONDS@{WS\_RETRY\_DELAY\_MICROSECONDS}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{WS\_RETRY\_DELAY\_MICROSECONDS}{WS\_RETRY\_DELAY\_MICROSECONDS}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a97afa6f2f06b7e196906f3439f7c6e50} 
-\#define WS\+\_\+\+RETRY\+\_\+\+DELAY\+\_\+\+MICROSECONDS~100000}
+{\footnotesize\ttfamily \#define WS\+\_\+\+RETRY\+\_\+\+DELAY\+\_\+\+MICROSECONDS~100000}
 
-\Hypertarget{webserver_8hpp_abf681265909adf3d3e8116c93c0ba179}\index{webserver.hpp@{webserver.hpp}!YELLOW@{YELLOW}}
+\Hypertarget{webserver_8hpp_abf681265909adf3d3e8116c93c0ba179}\label{webserver_8hpp_abf681265909adf3d3e8116c93c0ba179} 
+\index{webserver.hpp@{webserver.hpp}!YELLOW@{YELLOW}}
 \index{YELLOW@{YELLOW}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{YELLOW}{YELLOW}}
-{\footnotesize\ttfamily \label{webserver_8hpp_abf681265909adf3d3e8116c93c0ba179} 
-\#define YELLOW~"{}\textbackslash{}033\mbox{[}0;93m"{}}
+{\footnotesize\ttfamily \#define YELLOW~"{}\textbackslash{}033\mbox{[}0;93m"{}}
 
 
 
 \doxysubsection{Function Documentation}
-\Hypertarget{webserver_8hpp_a775a50523b2792565271f85e8d63d72b}\index{webserver.hpp@{webserver.hpp}!black\_list\_extension@{black\_list\_extension}}
+\Hypertarget{webserver_8hpp_a775a50523b2792565271f85e8d63d72b}\label{webserver_8hpp_a775a50523b2792565271f85e8d63d72b} 
+\index{webserver.hpp@{webserver.hpp}!black\_list\_extension@{black\_list\_extension}}
 \index{black\_list\_extension@{black\_list\_extension}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{black\_list\_extension()}{black\_list\_extension()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a775a50523b2792565271f85e8d63d72b} 
-bool black\+\_\+list\+\_\+extension (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool black\+\_\+list\+\_\+extension (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -414,75 +418,85 @@ This function determines whether the file extension of the provided path is part
 \item The function uses a static set of disallowed extensions, which is initialized on the first call. The blacklist includes extensions such as {\ttfamily .exe}, {\ttfamily .bat}, {\ttfamily .sh}, {\ttfamily .php}, {\ttfamily .pl}, and {\ttfamily .py}.
 \item The function extracts the file extension by locating the last {\ttfamily .} character in the file path and comparing the substring to the blacklist.
 \item If no {\ttfamily .} character is found in the path, or if the extension is not in the blacklist, the function returns {\ttfamily false}. 
-\end{DoxyItemize}\Hypertarget{webserver_8hpp_a16ef7295adb65127597e839131e68d71}\index{webserver.hpp@{webserver.hpp}!check\_args@{check\_args}}
+\end{DoxyItemize}\Hypertarget{webserver_8hpp_a16ef7295adb65127597e839131e68d71}\label{webserver_8hpp_a16ef7295adb65127597e839131e68d71} 
+\index{webserver.hpp@{webserver.hpp}!check\_args@{check\_args}}
 \index{check\_args@{check\_args}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_args()}{check\_args()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a16ef7295adb65127597e839131e68d71} 
-bool check\+\_\+args (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+args (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv }\end{DoxyParamCaption})}
 
 
 
-Validates the command line arguments. 
+Validates command line arguments for the webserver. 
+
+Performs comprehensive validation of command line arguments including\+:
+\begin{DoxyItemize}
+\item Checking for correct number of arguments
+\item Handling help command
+\item Validating configuration file existence and format
+\item Checking file extension (.conf)
+\end{DoxyItemize}
 
 
 \begin{DoxyParams}{Parameters}
-{\em argc} & Argument count. \\
+{\em argc} & Number of command line arguments. \\
 \hline
-{\em argv} & Argument vector. \\
+{\em argv} & Array of command line argument strings. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-true if arguments are valid, false otherwise. 
+true if all arguments are valid, false otherwise. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f}\index{webserver.hpp@{webserver.hpp}!check\_autoindex@{check\_autoindex}}
+\Hypertarget{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f}\label{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f} 
+\index{webserver.hpp@{webserver.hpp}!check\_autoindex@{check\_autoindex}}
 \index{check\_autoindex@{check\_autoindex}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_autoindex()}{check\_autoindex()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad155d7ddafc833c87f99ac6d63fe9d3f} 
-bool check\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::string}]{autoindex}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::string}]{autoindex }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a9e43646a12942938e3800f867606eaaa}\index{webserver.hpp@{webserver.hpp}!check\_brackets@{check\_brackets}}
+\Hypertarget{webserver_8hpp_a9e43646a12942938e3800f867606eaaa}\label{webserver_8hpp_a9e43646a12942938e3800f867606eaaa} 
+\index{webserver.hpp@{webserver.hpp}!check\_brackets@{check\_brackets}}
 \index{check\_brackets@{check\_brackets}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_brackets()}{check\_brackets()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a9e43646a12942938e3800f867606eaaa} 
-bool check\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a8c6e27347968a5abd6f00cf2daddd256}\index{webserver.hpp@{webserver.hpp}!check\_brackets@{check\_brackets}}
+\Hypertarget{webserver_8hpp_a8c6e27347968a5abd6f00cf2daddd256}\label{webserver_8hpp_a8c6e27347968a5abd6f00cf2daddd256} 
+\index{webserver.hpp@{webserver.hpp}!check\_brackets@{check\_brackets}}
 \index{check\_brackets@{check\_brackets}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_brackets()}{check\_brackets()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a8c6e27347968a5abd6f00cf2daddd256} 
-bool check\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end }\end{DoxyParamCaption})}
 
 
 
 Checks if the brackets in the given range are balanced. 
 
+This function iterates through a range of strings and counts opening and closing brackets to ensure they are properly balanced. It\textquotesingle{}s essential for validating configuration file syntax.
+
 
 \begin{DoxyParams}{Parameters}
-{\em start} & Iterator to the start of the range. \\
+{\em start} & Iterator to the start of the range to check. \\
 \hline
-{\em end} & Iterator to the end of the range. \\
+{\em end} & Iterator to the end of the range to check. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-true if brackets are balanced, false otherwise. 
+true if brackets are balanced (equal number of opening and closing brackets), false otherwise. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034}\index{webserver.hpp@{webserver.hpp}!check\_cgi@{check\_cgi}}
+\Hypertarget{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034}\label{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034} 
+\index{webserver.hpp@{webserver.hpp}!check\_cgi@{check\_cgi}}
 \index{check\_cgi@{check\_cgi}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_cgi()}{check\_cgi()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a3a0cd860c746b94903a9dce7b7051034} 
-bool check\+\_\+cgi (\begin{DoxyParamCaption}\item[{std\+::string}]{cgi}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+cgi (\begin{DoxyParamCaption}\item[{std\+::string}]{cgi }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70}\index{webserver.hpp@{webserver.hpp}!check\_client\_max\_body\_size@{check\_client\_max\_body\_size}}
+\Hypertarget{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70}\label{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70} 
+\index{webserver.hpp@{webserver.hpp}!check\_client\_max\_body\_size@{check\_client\_max\_body\_size}}
 \index{check\_client\_max\_body\_size@{check\_client\_max\_body\_size}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_client\_max\_body\_size()}{check\_client\_max\_body\_size()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a173dff4c5931ba8f5c116f9d5af87f70} 
-bool check\+\_\+client\+\_\+max\+\_\+body\+\_\+size (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+client\+\_\+max\+\_\+body\+\_\+size (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_aed46555e3b91d2beb71b52a794f0ad3b}\index{webserver.hpp@{webserver.hpp}!check\_default\_page@{check\_default\_page}}
+\Hypertarget{webserver_8hpp_aed46555e3b91d2beb71b52a794f0ad3b}\label{webserver_8hpp_aed46555e3b91d2beb71b52a794f0ad3b} 
+\index{webserver.hpp@{webserver.hpp}!check\_default\_page@{check\_default\_page}}
 \index{check\_default\_page@{check\_default\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_default\_page()}{check\_default\_page()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aed46555e3b91d2beb71b52a794f0ad3b} 
-bool check\+\_\+default\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+page}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+default\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+page }\end{DoxyParamCaption})}
 
 
 
@@ -496,59 +510,91 @@ Checks if the default page is valid.
 \begin{DoxyReturn}{Returns}
 true if the default page is valid, false otherwise. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a03289097f527586246ebad563d792a17}\index{webserver.hpp@{webserver.hpp}!check\_duplicate\_servers@{check\_duplicate\_servers}}
+\Hypertarget{webserver_8hpp_a28ad4c713cc19cbc6631124955bcfd99}\label{webserver_8hpp_a28ad4c713cc19cbc6631124955bcfd99} 
+\index{webserver.hpp@{webserver.hpp}!check\_duplicate\_location@{check\_duplicate\_location}}
+\index{check\_duplicate\_location@{check\_duplicate\_location}!webserver.hpp@{webserver.hpp}}
+\doxysubsubsection{\texorpdfstring{check\_duplicate\_location()}{check\_duplicate\_location()}}
+{\footnotesize\ttfamily bool check\+\_\+duplicate\+\_\+location (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{location\+\_\+path,  }\item[{const std\+::map$<$ std\+::string, \mbox{\hyperlink{struct_location_config}{Location\+Config}} $>$ \&}]{locations }\end{DoxyParamCaption})}
+
+\Hypertarget{webserver_8hpp_a03289097f527586246ebad563d792a17}\label{webserver_8hpp_a03289097f527586246ebad563d792a17} 
+\index{webserver.hpp@{webserver.hpp}!check\_duplicate\_servers@{check\_duplicate\_servers}}
 \index{check\_duplicate\_servers@{check\_duplicate\_servers}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_duplicate\_servers()}{check\_duplicate\_servers()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a03289097f527586246ebad563d792a17} 
-bool check\+\_\+duplicate\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$}]{servers}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+duplicate\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$}]{servers }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79}\index{webserver.hpp@{webserver.hpp}!check\_error\_mode@{check\_error\_mode}}
+\Hypertarget{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79}\label{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79} 
+\index{webserver.hpp@{webserver.hpp}!check\_error\_mode@{check\_error\_mode}}
 \index{check\_error\_mode@{check\_error\_mode}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_error\_mode()}{check\_error\_mode()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a292d7a6eeaea4b64f204723ed321bc79} 
-bool check\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0}\index{webserver.hpp@{webserver.hpp}!check\_error\_page@{check\_error\_page}}
+\Hypertarget{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0}\label{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0} 
+\index{webserver.hpp@{webserver.hpp}!check\_error\_page@{check\_error\_page}}
 \index{check\_error\_page@{check\_error\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_error\_page()}{check\_error\_page()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a22e220b703b591eda65a1c76252aa7f0} 
-bool check\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+page}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+page }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7}\index{webserver.hpp@{webserver.hpp}!check\_obligatory\_params@{check\_obligatory\_params}}
+\Hypertarget{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7}\label{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7} 
+\index{webserver.hpp@{webserver.hpp}!check\_obligatory\_params@{check\_obligatory\_params}}
 \index{check\_obligatory\_params@{check\_obligatory\_params}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_obligatory\_params()}{check\_obligatory\_params()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aeae26e77b15520945d5b9a6da6c867d7} 
-bool check\+\_\+obligatory\+\_\+params (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+obligatory\+\_\+params (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a199339df1bcf67055ef966d29311ca28}\index{webserver.hpp@{webserver.hpp}!check\_port@{check\_port}}
+\Hypertarget{webserver_8hpp_a199339df1bcf67055ef966d29311ca28}\label{webserver_8hpp_a199339df1bcf67055ef966d29311ca28} 
+\index{webserver.hpp@{webserver.hpp}!check\_port@{check\_port}}
 \index{check\_port@{check\_port}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_port()}{check\_port()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a199339df1bcf67055ef966d29311ca28} 
-int check\+\_\+port (\begin{DoxyParamCaption}\item[{std\+::string}]{port}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int check\+\_\+port (\begin{DoxyParamCaption}\item[{std\+::string}]{port }\end{DoxyParamCaption})}
 
 
 
-Validates a port number. 
+Validates a port number string. 
+
+Checks if the provided string represents a valid port number\+:
+\begin{DoxyItemize}
+\item Contains only digits
+\item Within valid port range (1-\/65535)
+\end{DoxyItemize}
 
 
 \begin{DoxyParams}{Parameters}
-{\em port} & The port number as a string. \\
+{\em port} & String containing the port number to validate. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-The port number as an integer if valid, -\/1 otherwise. 
+The port number as an integer if valid, -\/1 if invalid. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915}\index{webserver.hpp@{webserver.hpp}!check\_root@{check\_root}}
+\Hypertarget{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915}\label{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915} 
+\index{webserver.hpp@{webserver.hpp}!check\_root@{check\_root}}
 \index{check\_root@{check\_root}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_root()}{check\_root()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ac0fcf41e20a21ca97cc017506e32b915} 
-bool check\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::string}]{root}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::string}]{root }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25}\index{webserver.hpp@{webserver.hpp}!check\_server\_name@{check\_server\_name}}
+\Hypertarget{webserver_8hpp_ac6ca666a0bbaea8f0f710b45bd0e3a0d}\label{webserver_8hpp_ac6ca666a0bbaea8f0f710b45bd0e3a0d} 
+\index{webserver.hpp@{webserver.hpp}!check\_server\_brackets@{check\_server\_brackets}}
+\index{check\_server\_brackets@{check\_server\_brackets}!webserver.hpp@{webserver.hpp}}
+\doxysubsubsection{\texorpdfstring{check\_server\_brackets()}{check\_server\_brackets()}}
+{\footnotesize\ttfamily bool check\+\_\+server\+\_\+brackets (\begin{DoxyParamCaption}\item[{std\+::string}]{server\+\_\+name }\end{DoxyParamCaption})}
+
+
+
+Validates the syntax of a server block declaration. 
+
+Checks if there are no alphanumeric characters between the "{}server"{} keyword and the opening curly brace "{}\{"{}. This ensures the server block follows the correct syntax format\+: "{}server \{"{} with only whitespace allowed between them.
+
+
+\begin{DoxyParams}{Parameters}
+{\em server\+\_\+name} & The string containing the server block declaration to validate. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the syntax is valid (no alphanumeric characters between "{}server"{} and "{}\{"{}), false if invalid or if "{}server"{} keyword is not found. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25}\label{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25} 
+\index{webserver.hpp@{webserver.hpp}!check\_server\_name@{check\_server\_name}}
 \index{check\_server\_name@{check\_server\_name}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{check\_server\_name()}{check\_server\_name()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_afa15dacf86ca47f97c4658dcd3644c25} 
-bool check\+\_\+server\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::string}]{server\+\_\+name}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool check\+\_\+server\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::string}]{server\+\_\+name }\end{DoxyParamCaption})}
 
 
 
@@ -562,11 +608,11 @@ Validates a server name.
 \begin{DoxyReturn}{Returns}
 true if the server name is valid, false otherwise. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a7d8d6608f966337610cf3eaf4b305d7e}\index{webserver.hpp@{webserver.hpp}!clean\_host@{clean\_host}}
+\Hypertarget{webserver_8hpp_a7d8d6608f966337610cf3eaf4b305d7e}\label{webserver_8hpp_a7d8d6608f966337610cf3eaf4b305d7e} 
+\index{webserver.hpp@{webserver.hpp}!clean\_host@{clean\_host}}
 \index{clean\_host@{clean\_host}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{clean\_host()}{clean\_host()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7d8d6608f966337610cf3eaf4b305d7e} 
-std\+::string clean\+\_\+host (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host\+\_\+to\+\_\+clean}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string clean\+\_\+host (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host\+\_\+to\+\_\+clean }\end{DoxyParamCaption})}
 
 
 
@@ -605,35 +651,56 @@ A cleaned host string containing only the hostname without prefixes, ports, or p
 \item The function performs string operations such as {\ttfamily find} and {\ttfamily substr}, which are safe in C++98. 
 \end{DoxyItemize}
 \end{DoxyNote}
-\Hypertarget{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9}\index{webserver.hpp@{webserver.hpp}!clean\_line@{clean\_line}}
+\Hypertarget{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9}\label{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9} 
+\index{webserver.hpp@{webserver.hpp}!clean\_line@{clean\_line}}
 \index{clean\_line@{clean\_line}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{clean\_line()}{clean\_line()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a01d60626f5ea3ae36076573151964dd9} 
-std\+::string clean\+\_\+line (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string clean\+\_\+line (\begin{DoxyParamCaption}\item[{std\+::string}]{line }\end{DoxyParamCaption})}
 
 
 
-Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with \textquotesingle{}\#\textquotesingle{}. 
+Cleans a line by removing whitespace and special characters. 
+
+This function performs several cleaning operations on a string\+:
+\begin{DoxyItemize}
+\item Removes leading and trailing whitespace
+\item Removes trailing semicolons
+\item Handles empty lines and comments
+\end{DoxyItemize}
 
 
 \begin{DoxyParams}{Parameters}
-{\em line} & The line to be cleaned. \\
+{\em line} & The input string to be cleaned. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A cleaned version of the line. 
+The cleaned string, or empty string if the input is a comment or empty. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f}\index{webserver.hpp@{webserver.hpp}!compare\_paths@{compare\_paths}}
+\Hypertarget{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f}\label{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f} 
+\index{webserver.hpp@{webserver.hpp}!compare\_paths@{compare\_paths}}
 \index{compare\_paths@{compare\_paths}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{compare\_paths()}{compare\_paths()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7817e2ae3e79861622d09ff6e803c05f} 
-bool compare\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1}{, }\item[{std\+::string}]{path2}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool compare\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1,  }\item[{std\+::string}]{path2 }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a901157cdb2c9069d0f08cab6b799eb60}\index{webserver.hpp@{webserver.hpp}!create\_mime\_types@{create\_mime\_types}}
+
+
+Compares two paths for equality, handling special cases. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path1} & First path to compare. \\
+\hline
+{\em path2} & Second path to compare. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if paths are equivalent, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a901157cdb2c9069d0f08cab6b799eb60}\label{webserver_8hpp_a901157cdb2c9069d0f08cab6b799eb60} 
+\index{webserver.hpp@{webserver.hpp}!create\_mime\_types@{create\_mime\_types}}
 \index{create\_mime\_types@{create\_mime\_types}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{create\_mime\_types()}{create\_mime\_types()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a901157cdb2c9069d0f08cab6b799eb60} 
-std\+::map$<$ std\+::string, std\+::string $>$ create\+\_\+mime\+\_\+types (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::map$<$ std\+::string, std\+::string $>$ create\+\_\+mime\+\_\+types (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -650,33 +717,33 @@ This method generates a map that associates common file extensions (e.\+g., "{}.
 \begin{DoxyReturn}{Returns}
 std\+::map$<$std\+::string, std\+::string$>$ A map that associates file extensions with their MIME types. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea}\index{webserver.hpp@{webserver.hpp}!delete\_brackets\_clean@{delete\_brackets\_clean}}
+\Hypertarget{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea}\label{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea} 
+\index{webserver.hpp@{webserver.hpp}!delete\_brackets\_clean@{delete\_brackets\_clean}}
 \index{delete\_brackets\_clean@{delete\_brackets\_clean}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{delete\_brackets\_clean()}{delete\_brackets\_clean()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af2d1f45fcc966edfb209ff7938a0bdea} 
-std\+::string delete\+\_\+brackets\+\_\+clean (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string delete\+\_\+brackets\+\_\+clean (\begin{DoxyParamCaption}\item[{std\+::string}]{line }\end{DoxyParamCaption})}
 
 
 
-Removes curly braces \textquotesingle{}\{\textquotesingle{} and \textquotesingle{}\}\textquotesingle{} from a line and cleans it of whitespace. 
+Removes curly braces from a line and cleans whitespace. 
 
 
 \begin{DoxyParams}{Parameters}
-{\em line} & The line to be cleaned. \\
+{\em line} & The line to process. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-The cleaned line without braces. 
+The cleaned line with braces removed. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7}\index{webserver.hpp@{webserver.hpp}!delete\_first\_slash@{delete\_first\_slash}}
+\Hypertarget{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7}\label{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7} 
+\index{webserver.hpp@{webserver.hpp}!delete\_first\_slash@{delete\_first\_slash}}
 \index{delete\_first\_slash@{delete\_first\_slash}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{delete\_first\_slash()}{delete\_first\_slash()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a29fb894d19f57af222447ddd5d53b8d7} 
-std\+::string delete\+\_\+first\+\_\+slash (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string delete\+\_\+first\+\_\+slash (\begin{DoxyParamCaption}\item[{std\+::string}]{path }\end{DoxyParamCaption})}
 
 
 
-Removes the first slash from a path if it exists. 
+Removes the leading slash from a path if present. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -686,11 +753,11 @@ Removes the first slash from a path if it exists.
 \begin{DoxyReturn}{Returns}
 The path without the leading slash. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_add6108cd0eb7f707a1e58ff83b6c8a3a}\index{webserver.hpp@{webserver.hpp}!end\_of\_header\_system@{end\_of\_header\_system}}
+\Hypertarget{webserver_8hpp_add6108cd0eb7f707a1e58ff83b6c8a3a}\label{webserver_8hpp_add6108cd0eb7f707a1e58ff83b6c8a3a} 
+\index{webserver.hpp@{webserver.hpp}!end\_of\_header\_system@{end\_of\_header\_system}}
 \index{end\_of\_header\_system@{end\_of\_header\_system}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{end\_of\_header\_system()}{end\_of\_header\_system()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_add6108cd0eb7f707a1e58ff83b6c8a3a} 
-size\+\_\+t end\+\_\+of\+\_\+header\+\_\+system (\begin{DoxyParamCaption}\item[{std\+::string \&}]{header}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily size\+\_\+t end\+\_\+of\+\_\+header\+\_\+system (\begin{DoxyParamCaption}\item[{std\+::string \&}]{header }\end{DoxyParamCaption})}
 
 
 
@@ -706,29 +773,71 @@ This function locates the end of the HTTP header in the given string by searchin
 \begin{DoxyReturn}{Returns}
 The position where the header ends. If no header end is found, returns {\ttfamily std\+::string\+::npos}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a25878e147619b8924349760761dd3e0b}\index{webserver.hpp@{webserver.hpp}!find\_block\_end@{find\_block\_end}}
+\Hypertarget{webserver_8hpp_a25878e147619b8924349760761dd3e0b}\label{webserver_8hpp_a25878e147619b8924349760761dd3e0b} 
+\index{webserver.hpp@{webserver.hpp}!find\_block\_end@{find\_block\_end}}
 \index{find\_block\_end@{find\_block\_end}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{find\_block\_end()}{find\_block\_end()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a25878e147619b8924349760761dd3e0b} 
-std\+::vector$<$ std\+::string $>$\+::iterator find\+\_\+block\+\_\+end (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$\+::iterator find\+\_\+block\+\_\+end (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_afeadc4781b746478b8137404aaf6597f}\index{webserver.hpp@{webserver.hpp}!find\_exact\_string@{find\_exact\_string}}
+
+
+Finds the end of a block marked by matching brackets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the block. \\
+\hline
+{\em end} & Iterator to the end of the range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Iterator pointing to the closing bracket. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_afeadc4781b746478b8137404aaf6597f}\label{webserver_8hpp_afeadc4781b746478b8137404aaf6597f} 
+\index{webserver.hpp@{webserver.hpp}!find\_exact\_string@{find\_exact\_string}}
 \index{find\_exact\_string@{find\_exact\_string}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{find\_exact\_string()}{find\_exact\_string()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_afeadc4781b746478b8137404aaf6597f} 
-bool find\+\_\+exact\+\_\+string (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{line}{, }\item[{const std\+::string \&}]{str}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool find\+\_\+exact\+\_\+string (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{line,  }\item[{const std\+::string \&}]{str }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0}\index{webserver.hpp@{webserver.hpp}!get\_first\_word@{get\_first\_word}}
+
+
+Checks if a string exists as an exact word match at the start of a line. 
+
+Performs a case-\/sensitive search for an exact word match, ensuring the string is not part of a larger word.
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The line to search in. \\
+\hline
+{\em str} & The string to search for. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if exact match is found, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0}\label{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0} 
+\index{webserver.hpp@{webserver.hpp}!get\_first\_word@{get\_first\_word}}
 \index{get\_first\_word@{get\_first\_word}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_first\_word()}{get\_first\_word()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a5750c1a848d06a6be5499c29bbe4e4c0} 
-std\+::string get\+\_\+first\+\_\+word (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+first\+\_\+word (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a9d9e86e84820087878c229831338b2f0}\index{webserver.hpp@{webserver.hpp}!get\_header\_value@{get\_header\_value}}
+
+
+Extracts the first word from a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & The input string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The first word found in the string. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a9d9e86e84820087878c229831338b2f0}\label{webserver_8hpp_a9d9e86e84820087878c229831338b2f0} 
+\index{webserver.hpp@{webserver.hpp}!get\_header\_value@{get\_header\_value}}
 \index{get\_header\_value@{get\_header\_value}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_header\_value()}{get\_header\_value()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a9d9e86e84820087878c229831338b2f0} 
-std\+::string get\+\_\+header\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string \&}]{haystack}{, }\item[{std\+::string}]{needle}{, }\item[{const std\+::string \&}]{sep}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+header\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string \&}]{haystack,  }\item[{std\+::string}]{needle,  }\item[{const std\+::string \&}]{sep }\end{DoxyParamCaption})}
 
 
 
@@ -753,17 +862,31 @@ This method searches the provided header string for a specific key and returns t
 \begin{DoxyReturn}{Returns}
 std\+::string The value associated with the key, or an empty string if the key is not found. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54}\index{webserver.hpp@{webserver.hpp}!get\_location\_path@{get\_location\_path}}
+\Hypertarget{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54}\label{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54} 
+\index{webserver.hpp@{webserver.hpp}!get\_location\_path@{get\_location\_path}}
 \index{get\_location\_path@{get\_location\_path}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_location\_path()}{get\_location\_path()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a407fefb75aab67aab4be7abe7a8d8c54} 
-std\+::string get\+\_\+location\+\_\+path (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+location\+\_\+path (\begin{DoxyParamCaption}\item[{std\+::string}]{line }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a83e2cc49561a109eab7a3c41845ef0c7}\index{webserver.hpp@{webserver.hpp}!get\_mime\_type@{get\_mime\_type}}
+
+
+Extracts the path from a location directive. 
+
+Processes a location directive line to extract and clean the path component.
+
+
+\begin{DoxyParams}{Parameters}
+{\em line} & The location directive line. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The cleaned location path. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a83e2cc49561a109eab7a3c41845ef0c7}\label{webserver_8hpp_a83e2cc49561a109eab7a3c41845ef0c7} 
+\index{webserver.hpp@{webserver.hpp}!get\_mime\_type@{get\_mime\_type}}
 \index{get\_mime\_type@{get\_mime\_type}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_mime\_type()}{get\_mime\_type()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a83e2cc49561a109eab7a3c41845ef0c7} 
-std\+::string get\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -786,51 +909,95 @@ This method looks up the MIME type corresponding to the file extension in the pr
 \begin{DoxyReturn}{Returns}
 std\+::string The MIME type corresponding to the file extension, or {\ttfamily text/plain} if not found. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a450f9c88120dba0a380ac4744569a056}\index{webserver.hpp@{webserver.hpp}!get\_raw\_lines@{get\_raw\_lines}}
+\Hypertarget{webserver_8hpp_a450f9c88120dba0a380ac4744569a056}\label{webserver_8hpp_a450f9c88120dba0a380ac4744569a056} 
+\index{webserver.hpp@{webserver.hpp}!get\_raw\_lines@{get\_raw\_lines}}
 \index{get\_raw\_lines@{get\_raw\_lines}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_raw\_lines()}{get\_raw\_lines()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a450f9c88120dba0a380ac4744569a056} 
-std\+::vector$<$ std\+::string $>$ get\+\_\+raw\+\_\+lines (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ get\+\_\+raw\+\_\+lines (\begin{DoxyParamCaption}\item[{std\+::string}]{path }\end{DoxyParamCaption})}
 
 
 
-Reads a file line by line, cleaning each line and returning a vector of non-\/empty lines. 
+Reads and processes a file line by line. 
+
+Opens a file, reads each line, cleans it, and stores non-\/empty lines in a vector.
 
 
 \begin{DoxyParams}{Parameters}
-{\em path} & The path to the file. \\
+{\em path} & Path to the file to read. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A vector of cleaned, non-\/empty lines. 
+Vector containing all non-\/empty, cleaned lines from the file. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e}\index{webserver.hpp@{webserver.hpp}!get\_redirection\_url@{get\_redirection\_url}}
+\Hypertarget{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e}\label{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e} 
+\index{webserver.hpp@{webserver.hpp}!get\_redirection\_url@{get\_redirection\_url}}
 \index{get\_redirection\_url@{get\_redirection\_url}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_redirection\_url()}{get\_redirection\_url()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7c4c41c929671f0674bed16273805f9e} 
-std\+::string get\+\_\+redirection\+\_\+url (\begin{DoxyParamCaption}\item[{std\+::string}]{redirection}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+redirection\+\_\+url (\begin{DoxyParamCaption}\item[{std\+::string}]{redirection,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9}\index{webserver.hpp@{webserver.hpp}!get\_server\_root@{get\_server\_root}}
+
+
+Processes and validates a redirection URL. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em redirection} & The redirection directive. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The processed redirection URL. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9}\label{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9} 
+\index{webserver.hpp@{webserver.hpp}!get\_server\_root@{get\_server\_root}}
 \index{get\_server\_root@{get\_server\_root}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_server\_root()}{get\_server\_root()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_afd56fbe152a151a5a05ec51e2ee616b9} 
-std\+::string get\+\_\+server\+\_\+root (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+server\+\_\+root (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e}\index{webserver.hpp@{webserver.hpp}!get\_status\_code@{get\_status\_code}}
+
+
+Gets the current working directory of the server. 
+
+\begin{DoxyReturn}{Returns}
+The current working directory with trailing slash, or empty string on error. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e}\label{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e} 
+\index{webserver.hpp@{webserver.hpp}!get\_status\_code@{get\_status\_code}}
 \index{get\_status\_code@{get\_status\_code}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_status\_code()}{get\_status\_code()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad9c010cbebbb2e1e76217cd2ff43406e} 
-int get\+\_\+status\+\_\+code (\begin{DoxyParamCaption}\item[{std\+::string}]{status\+\_\+code}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily int get\+\_\+status\+\_\+code (\begin{DoxyParamCaption}\item[{std\+::string}]{status\+\_\+code,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671}\index{webserver.hpp@{webserver.hpp}!get\_value@{get\_value}}
+
+
+Validates and converts a status code string to integer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em status\+\_\+code} & The status code as string. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The validated status code as integer. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if status code is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671}\label{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671} 
+\index{webserver.hpp@{webserver.hpp}!get\_value@{get\_value}}
 \index{get\_value@{get\_value}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{get\_value()}{get\_value()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a96e0404cfce2baf061f229a79d9ba671} 
-std\+::string get\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string}]{line}{, }\item[{const std\+::string \&}]{key}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string}]{line,  }\item[{const std\+::string \&}]{key }\end{DoxyParamCaption})}
 
 
 
-Extracts the value associated with a key in a given line. 
+Extracts a value associated with a specific key from a line. 
+
+Searches for a key in the given line and extracts the value that follows it. Handles trailing slashes and whitespace in the extracted value.
 
 
 \begin{DoxyParams}{Parameters}
@@ -840,19 +1007,19 @@ Extracts the value associated with a key in a given line.
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-The value associated with the key, or an empty string if not found. 
+The extracted value, or empty string if key not found. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103}\index{webserver.hpp@{webserver.hpp}!html\_codes@{html\_codes}}
+\Hypertarget{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103}\label{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103} 
+\index{webserver.hpp@{webserver.hpp}!html\_codes@{html\_codes}}
 \index{html\_codes@{html\_codes}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{html\_codes()}{html\_codes()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a40ffd7b9e680095c7bd371bcab62b103} 
-std\+::string html\+\_\+codes (\begin{DoxyParamCaption}\item[{int}]{code}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string html\+\_\+codes (\begin{DoxyParamCaption}\item[{int}]{code }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a411f70b0adb50fb351494b96143fb0ce}\index{webserver.hpp@{webserver.hpp}!http\_status\_description@{http\_status\_description}}
+\Hypertarget{webserver_8hpp_a411f70b0adb50fb351494b96143fb0ce}\label{webserver_8hpp_a411f70b0adb50fb351494b96143fb0ce} 
+\index{webserver.hpp@{webserver.hpp}!http\_status\_description@{http\_status\_description}}
 \index{http\_status\_description@{http\_status\_description}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{http\_status\_description()}{http\_status\_description()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a411f70b0adb50fb351494b96143fb0ce} 
-std\+::string http\+\_\+status\+\_\+description (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}]{code}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string http\+\_\+status\+\_\+description (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}]{code }\end{DoxyParamCaption})}
 
 
 
@@ -875,11 +1042,11 @@ short standard message associated with the http code.
 \begin{DoxyReturn}{Returns}
 short standard message associated with the http code. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ad3165bd822066c8f5e48045057f94913}\index{webserver.hpp@{webserver.hpp}!int\_to\_string@{int\_to\_string}}
+\Hypertarget{webserver_8hpp_ad3165bd822066c8f5e48045057f94913}\label{webserver_8hpp_ad3165bd822066c8f5e48045057f94913} 
+\index{webserver.hpp@{webserver.hpp}!int\_to\_string@{int\_to\_string}}
 \index{int\_to\_string@{int\_to\_string}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{int\_to\_string()}{int\_to\_string()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad3165bd822066c8f5e48045057f94913} 
-std\+::string int\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{int}]{number}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string int\+\_\+to\+\_\+string (\begin{DoxyParamCaption}\item[{int}]{number }\end{DoxyParamCaption})}
 
 
 
@@ -893,21 +1060,13 @@ This function converts an integer to its string representation using a stringstr
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A string representation of the provided integer.
+A string representation of the provided integer. 
 \end{DoxyReturn}
-
-\begin{DoxyParams}{Parameters}
-{\em number} & The integer to convert. \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-A string representation of the integer. 
-\end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ab93fb754820f510dc2d17f64ee15a773}\index{webserver.hpp@{webserver.hpp}!is\_cgi@{is\_cgi}}
+\Hypertarget{webserver_8hpp_ab93fb754820f510dc2d17f64ee15a773}\label{webserver_8hpp_ab93fb754820f510dc2d17f64ee15a773} 
+\index{webserver.hpp@{webserver.hpp}!is\_cgi@{is\_cgi}}
 \index{is\_cgi@{is\_cgi}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{is\_cgi()}{is\_cgi()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ab93fb754820f510dc2d17f64ee15a773} 
-bool is\+\_\+cgi (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool is\+\_\+cgi (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
 
 
 
@@ -923,11 +1082,11 @@ This function checks whether the given filename corresponds to a CGI script by l
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the filename corresponds to a CGI script, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432}\index{webserver.hpp@{webserver.hpp}!is\_dir@{is\_dir}}
+\Hypertarget{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432}\label{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432} 
+\index{webserver.hpp@{webserver.hpp}!is\_dir@{is\_dir}}
 \index{is\_dir@{is\_dir}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{is\_dir()}{is\_dir()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad5849662d9826d4f6ac56a07c6088432} 
-bool is\+\_\+dir (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool is\+\_\+dir (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -943,11 +1102,11 @@ This function checks if the provided path corresponds to a directory by using th
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the path is a directory, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add}\index{webserver.hpp@{webserver.hpp}!is\_file@{is\_file}}
+\Hypertarget{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add}\label{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add} 
+\index{webserver.hpp@{webserver.hpp}!is\_file@{is\_file}}
 \index{is\_file@{is\_file}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{is\_file()}{is\_file()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a30a27fc5392e67f42f348e3ac4e38add} 
-bool is\+\_\+file (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool is\+\_\+file (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -963,11 +1122,11 @@ This function checks if the provided path corresponds to a regular file by using
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the path is a regular file, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ab63ae0dbb73446b4a9d635d45dab4658}\index{webserver.hpp@{webserver.hpp}!is\_valid\_size\_t@{is\_valid\_size\_t}}
+\Hypertarget{webserver_8hpp_ab63ae0dbb73446b4a9d635d45dab4658}\label{webserver_8hpp_ab63ae0dbb73446b4a9d635d45dab4658} 
+\index{webserver.hpp@{webserver.hpp}!is\_valid\_size\_t@{is\_valid\_size\_t}}
 \index{is\_valid\_size\_t@{is\_valid\_size\_t}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{is\_valid\_size\_t()}{is\_valid\_size\_t()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ab63ae0dbb73446b4a9d635d45dab4658} 
-bool is\+\_\+valid\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool is\+\_\+valid\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value }\end{DoxyParamCaption})}
 
 
 
@@ -991,107 +1150,372 @@ This function checks whether the provided string contains only numeric character
 \begin{DoxyReturn}{Returns}
 bool True if the string contains only digits, false otherwise. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567}\index{webserver.hpp@{webserver.hpp}!join\_paths@{join\_paths}}
+\Hypertarget{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567}\label{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567} 
+\index{webserver.hpp@{webserver.hpp}!join\_paths@{join\_paths}}
 \index{join\_paths@{join\_paths}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{join\_paths()}{join\_paths()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af698e5bab14d89c0a089b04d512a1567} 
-std\+::string join\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1}{, }\item[{std\+::string}]{path2}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string join\+\_\+paths (\begin{DoxyParamCaption}\item[{std\+::string}]{path1,  }\item[{std\+::string}]{path2 }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6}\index{webserver.hpp@{webserver.hpp}!method\_bitwise@{method\_bitwise}}
+
+
+Joins two paths together, handling slashes appropriately. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em path1} & First path component. \\
+\hline
+{\em path2} & Second path component. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The combined path. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6}\label{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6} 
+\index{webserver.hpp@{webserver.hpp}!method\_bitwise@{method\_bitwise}}
 \index{method\_bitwise@{method\_bitwise}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{method\_bitwise()}{method\_bitwise()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a0f68294a0532c02abf9bd8a0954c45e6} 
-unsigned char method\+\_\+bitwise (\begin{DoxyParamCaption}\item[{std\+::string}]{parsed}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily unsigned char method\+\_\+bitwise (\begin{DoxyParamCaption}\item[{std\+::string}]{parsed }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a34cd1ba4270d9f786fe644a5ac82ba78}\index{webserver.hpp@{webserver.hpp}!normalize\_host@{normalize\_host}}
+
+
+Converts HTTP method string to its corresponding bitmask. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parsed} & The HTTP method as string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The method\textquotesingle{}s bitmask value. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a34cd1ba4270d9f786fe644a5ac82ba78}\label{webserver_8hpp_a34cd1ba4270d9f786fe644a5ac82ba78} 
+\index{webserver.hpp@{webserver.hpp}!normalize\_host@{normalize\_host}}
 \index{normalize\_host@{normalize\_host}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{normalize\_host()}{normalize\_host()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a34cd1ba4270d9f786fe644a5ac82ba78} 
-std\+::string normalize\+\_\+host (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string normalize\+\_\+host (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248}\index{webserver.hpp@{webserver.hpp}!parse\_accept\_only@{parse\_accept\_only}}
+\Hypertarget{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248}\label{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248} 
+\index{webserver.hpp@{webserver.hpp}!parse\_accept\_only@{parse\_accept\_only}}
 \index{parse\_accept\_only@{parse\_accept\_only}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_accept\_only()}{parse\_accept\_only()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af2c1ea62a1f8ab4b9e4e14e91ae01248} 
-void parse\+\_\+accept\+\_\+only (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+accept\+\_\+only (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_abe1dfef97e554eeabab2566b689aa1e9}\index{webserver.hpp@{webserver.hpp}!parse\_autoindex@{parse\_autoindex}}
+
+
+Parses accept only directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built.\\
+\hline
+\end{DoxyParams}
+Sets allowed HTTP methods for the location using bitwise operations. \Hypertarget{webserver_8hpp_abe1dfef97e554eeabab2566b689aa1e9}\label{webserver_8hpp_abe1dfef97e554eeabab2566b689aa1e9} 
+\index{webserver.hpp@{webserver.hpp}!parse\_autoindex@{parse\_autoindex}}
 \index{parse\_autoindex@{parse\_autoindex}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_autoindex()}{parse\_autoindex()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_abe1dfef97e554eeabab2566b689aa1e9} 
-void parse\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda}\index{webserver.hpp@{webserver.hpp}!parse\_autoindex@{parse\_autoindex}}
+
+
+Parses autoindex directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if autoindex value is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda}\label{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda} 
+\index{webserver.hpp@{webserver.hpp}!parse\_autoindex@{parse\_autoindex}}
 \index{parse\_autoindex@{parse\_autoindex}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_autoindex()}{parse\_autoindex()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a253e2902d95922b5eb13a43f8338dcda} 
-void parse\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+autoindex (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_af31bd57be892e51ef467fa43780687e5}\index{webserver.hpp@{webserver.hpp}!parse\_cgi@{parse\_cgi}}
+
+
+Parses an autoindex directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if autoindex value is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_af31bd57be892e51ef467fa43780687e5}\label{webserver_8hpp_af31bd57be892e51ef467fa43780687e5} 
+\index{webserver.hpp@{webserver.hpp}!parse\_cgi@{parse\_cgi}}
 \index{parse\_cgi@{parse\_cgi}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_cgi()}{parse\_cgi()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af31bd57be892e51ef467fa43780687e5} 
-void parse\+\_\+cgi (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+cgi (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e}\index{webserver.hpp@{webserver.hpp}!parse\_client\_max\_body\_size@{parse\_client\_max\_body\_size}}
+
+
+Parses CGI directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if CGI value is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e}\label{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e} 
+\index{webserver.hpp@{webserver.hpp}!parse\_client\_max\_body\_size@{parse\_client\_max\_body\_size}}
 \index{parse\_client\_max\_body\_size@{parse\_client\_max\_body\_size}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_client\_max\_body\_size()}{parse\_client\_max\_body\_size()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aae3c3a40b5b3fccec35ae9e868612d2e} 
-void parse\+\_\+client\+\_\+max\+\_\+body\+\_\+size (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+client\+\_\+max\+\_\+body\+\_\+size (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50}\index{webserver.hpp@{webserver.hpp}!parse\_error\_mode@{parse\_error\_mode}}
+
+
+Parses a client max body size directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if client max body size is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50}\label{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50} 
+\index{webserver.hpp@{webserver.hpp}!parse\_error\_mode@{parse\_error\_mode}}
 \index{parse\_error\_mode@{parse\_error\_mode}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_error\_mode()}{parse\_error\_mode()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a71f0b414f79fb3d82e1f47831c56bb50} 
-void parse\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984}\index{webserver.hpp@{webserver.hpp}!parse\_error\_page@{parse\_error\_page}}
+
+
+Parses an error mode directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if error mode is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984}\label{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984} 
+\index{webserver.hpp@{webserver.hpp}!parse\_error\_page@{parse\_error\_page}}
 \index{parse\_error\_page@{parse\_error\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_error\_page()}{parse\_error\_page()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a87e9af1fbf643733535a16d3f56c7984} 
-void parse\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8}\index{webserver.hpp@{webserver.hpp}!parse\_file@{parse\_file}}
+
+
+Parses an error page directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if error page configuration is invalid or duplicated. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8}\label{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8} 
+\index{webserver.hpp@{webserver.hpp}!parse\_file@{parse\_file}}
 \index{parse\_file@{parse\_file}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_file()}{parse\_file()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a96fa348049560cb86b0ffedb2019bca8} 
-std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{file}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{path,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730}\index{webserver.hpp@{webserver.hpp}!parse\_index@{parse\_index}}
+
+
+Parses a configuration file and returns server configurations. 
+
+Entry point for configuration file parsing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to the configuration file. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Server\+Config$>$ Vector of parsed server configurations. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if file cannot be parsed or no servers are found. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730}\label{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730} 
+\index{webserver.hpp@{webserver.hpp}!parse\_index@{parse\_index}}
 \index{parse\_index@{parse\_index}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_index()}{parse\_index()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_afe1cf1210fb8b2359a4ba53f2f5f0730} 
-void parse\+\_\+index (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+index (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e}\index{webserver.hpp@{webserver.hpp}!parse\_location@{parse\_location}}
+
+
+Parses an index directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if default page is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e}\label{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e} 
+\index{webserver.hpp@{webserver.hpp}!parse\_location@{parse\_location}}
 \index{parse\_location@{parse\_location}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_location()}{parse\_location()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a3d945aaaf6a2650d9430d18973b8ec7e} 
-void parse\+\_\+location (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+location (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0}\index{webserver.hpp@{webserver.hpp}!parse\_location\_block@{parse\_location\_block}}
+
+
+Parses a location directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em end} & Iterator to end of configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if location path is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0}\label{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0} 
+\index{webserver.hpp@{webserver.hpp}!parse\_location\_block@{parse\_location\_block}}
 \index{parse\_location\_block@{parse\_location\_block}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_location\_block()}{parse\_location\_block()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7512f08f0e76f6ed67abb71c340eb4f0} 
-\mbox{\hyperlink{struct_location_config}{Location\+Config}} parse\+\_\+location\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_location_config}{Location\+Config}} parse\+\_\+location\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8}\index{webserver.hpp@{webserver.hpp}!parse\_location\_error\_page@{parse\_location\_error\_page}}
+
+
+Parses a location block configuration from the config file. 
+
+Processes location-\/specific directives and builds a \doxylink{struct_location_config}{Location\+Config} object. Handles various location settings including index files, error pages, root paths, and access controls.
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the location block. \\
+\hline
+{\em end} & Iterator to the end of the configuration file. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_location_config}{Location\+Config} Parsed location configuration. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if invalid parameters are encountered. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8}\label{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8} 
+\index{webserver.hpp@{webserver.hpp}!parse\_location\_error\_page@{parse\_location\_error\_page}}
 \index{parse\_location\_error\_page@{parse\_location\_error\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_location\_error\_page()}{parse\_location\_error\_page()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7867a2deaf0620d0b77d345981a384a8} 
-void parse\+\_\+location\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+location\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba}\index{webserver.hpp@{webserver.hpp}!parse\_location\_index@{parse\_location\_index}}
+
+
+Parses error page directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if error page is invalid or redefined. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba}\label{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba} 
+\index{webserver.hpp@{webserver.hpp}!parse\_location\_index@{parse\_location\_index}}
 \index{parse\_location\_index@{parse\_location\_index}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_location\_index()}{parse\_location\_index()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a64595f4ad69894a3f706848f643c21ba} 
-void parse\+\_\+location\+\_\+index (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+location\+\_\+index (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}\index{webserver.hpp@{webserver.hpp}!parse\_method@{parse\_method}}
+
+
+Parses index directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if default page is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}\label{webserver_8hpp_ad0ec24b7da0c90f7e3e7a4e4b068a995} 
+\index{webserver.hpp@{webserver.hpp}!parse\_method@{parse\_method}}
 \index{parse\_method@{parse\_method}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_method()}{parse\_method()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad0ec24b7da0c90f7e3e7a4e4b068a995} 
-\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} parse\+\_\+method (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{method}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} parse\+\_\+method (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{method }\end{DoxyParamCaption})}
 
 
 
@@ -1121,128 +1545,296 @@ The corresponding {\ttfamily t\+\_\+methods} mask if the method is recognized; o
 \item This function is case-\/sensitive. Ensure that the input method string matches the expected format (e.\+g., "{}\+GET"{} must be uppercase). 
 \end{DoxyItemize}
 \end{DoxyNote}
-\Hypertarget{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1}\index{webserver.hpp@{webserver.hpp}!parse\_port@{parse\_port}}
+\Hypertarget{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1}\label{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1} 
+\index{webserver.hpp@{webserver.hpp}!parse\_port@{parse\_port}}
 \index{parse\_port@{parse\_port}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_port()}{parse\_port()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a9bbab20af57fbe332ab6f95e0cf400a1} 
-void parse\+\_\+port (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+port (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a313f72fbd4eee6cea53839586820156e}\index{webserver.hpp@{webserver.hpp}!parse\_redirection@{parse\_redirection}}
+
+
+Parses a port directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if port is invalid or already defined. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a313f72fbd4eee6cea53839586820156e}\label{webserver_8hpp_a313f72fbd4eee6cea53839586820156e} 
+\index{webserver.hpp@{webserver.hpp}!parse\_redirection@{parse\_redirection}}
 \index{parse\_redirection@{parse\_redirection}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_redirection()}{parse\_redirection()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a313f72fbd4eee6cea53839586820156e} 
-void parse\+\_\+redirection (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+redirection (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a34d96431ec8cd490cd35e7cfcea78487}\index{webserver.hpp@{webserver.hpp}!parse\_root@{parse\_root}}
+
+
+Parses redirection directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built.\\
+\hline
+\end{DoxyParams}
+Processes and stores HTTP redirection configurations. \Hypertarget{webserver_8hpp_a34d96431ec8cd490cd35e7cfcea78487}\label{webserver_8hpp_a34d96431ec8cd490cd35e7cfcea78487} 
+\index{webserver.hpp@{webserver.hpp}!parse\_root@{parse\_root}}
 \index{parse\_root@{parse\_root}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_root()}{parse\_root()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a34d96431ec8cd490cd35e7cfcea78487} 
-void parse\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4}\index{webserver.hpp@{webserver.hpp}!parse\_root@{parse\_root}}
+
+
+Parses root directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if root path is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4}\label{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4} 
+\index{webserver.hpp@{webserver.hpp}!parse\_root@{parse\_root}}
 \index{parse\_root@{parse\_root}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_root()}{parse\_root()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a8aeea270ec77a5b4d9eeaa6ae225ffe4} 
-void parse\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+root (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9}\index{webserver.hpp@{webserver.hpp}!parse\_server\_name@{parse\_server\_name}}
+
+
+Parses a root directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if root is invalid or already defined. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9}\label{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9} 
+\index{webserver.hpp@{webserver.hpp}!parse\_server\_name@{parse\_server\_name}}
 \index{parse\_server\_name@{parse\_server\_name}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_server\_name()}{parse\_server\_name()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a1c09b016c445cbbf4c5d7b543d2fadf9} 
-void parse\+\_\+server\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+server\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd}\index{webserver.hpp@{webserver.hpp}!parse\_servers@{parse\_servers}}
+
+
+Parses a server name directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if server name is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd}\label{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd} 
+\index{webserver.hpp@{webserver.hpp}!parse\_servers@{parse\_servers}}
 \index{parse\_servers@{parse\_servers}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_servers()}{parse\_servers()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a92cb3d9e96f935ea3e969ce739d1fbfd} 
-std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_ac601ac1bbdc45a3c43d80f19825f701a}\index{webserver.hpp@{webserver.hpp}!parse\_template\_error\_page@{parse\_template\_error\_page}}
+
+
+Parses all server configurations from the raw configuration lines. 
+
+Processes the entire configuration file and extracts all server blocks.
+
+
+\begin{DoxyParams}{Parameters}
+{\em raw\+Lines} & Vector of configuration file lines. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Server\+Config$>$ Vector of parsed server configurations. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if no valid servers are found or if duplicates exist. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_ac601ac1bbdc45a3c43d80f19825f701a}\label{webserver_8hpp_ac601ac1bbdc45a3c43d80f19825f701a} 
+\index{webserver.hpp@{webserver.hpp}!parse\_template\_error\_page@{parse\_template\_error\_page}}
 \index{parse\_template\_error\_page@{parse\_template\_error\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_template\_error\_page()}{parse\_template\_error\_page()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ac601ac1bbdc45a3c43d80f19825f701a} 
-void parse\+\_\+template\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+template\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}} \&}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0}\index{webserver.hpp@{webserver.hpp}!parse\_template\_error\_page@{parse\_template\_error\_page}}
+
+
+Parses template error page directive in a location block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em location} & Reference to location configuration being built. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if error mode value is invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0}\label{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0} 
+\index{webserver.hpp@{webserver.hpp}!parse\_template\_error\_page@{parse\_template\_error\_page}}
 \index{parse\_template\_error\_page@{parse\_template\_error\_page}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{parse\_template\_error\_page()}{parse\_template\_error\_page()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a88ea79ed693a66ee59a7cb8ec3b00cd0} 
-void parse\+\_\+template\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{, }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void parse\+\_\+template\+\_\+error\+\_\+page (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger,  }\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{server }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4}\index{webserver.hpp@{webserver.hpp}!print\_bitwise\_method@{print\_bitwise\_method}}
+
+
+Parses a template error page directive within a server block. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em it} & Current iterator position in configuration. \\
+\hline
+{\em logger} & Pointer to logger instance. \\
+\hline
+{\em server} & Reference to server configuration being built. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4}\label{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4} 
+\index{webserver.hpp@{webserver.hpp}!print\_bitwise\_method@{print\_bitwise\_method}}
 \index{print\_bitwise\_method@{print\_bitwise\_method}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_bitwise\_method()}{print\_bitwise\_method()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aabdf6444c54412c5a7282b21f313ddb4} 
-std\+::string print\+\_\+bitwise\+\_\+method (\begin{DoxyParamCaption}\item[{unsigned char}]{method}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string print\+\_\+bitwise\+\_\+method (\begin{DoxyParamCaption}\item[{unsigned char}]{method }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a4307030c306da743512e19c778c734d9}\index{webserver.hpp@{webserver.hpp}!print\_location\_config@{print\_location\_config}}
+
+
+Converts a bitwise method mask to a human-\/readable string. 
+
+Translates the binary representation of HTTP methods into their corresponding string names (GET, POST, etc.).
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & Unsigned char representing the method bitmask. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::string Space-\/separated string of HTTP method names. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a4307030c306da743512e19c778c734d9}\label{webserver_8hpp_a4307030c306da743512e19c778c734d9} 
+\index{webserver.hpp@{webserver.hpp}!print\_location\_config@{print\_location\_config}}
 \index{print\_location\_config@{print\_location\_config}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_location\_config()}{print\_location\_config()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a4307030c306da743512e19c778c734d9} 
-void print\+\_\+location\+\_\+config (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}}}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+location\+\_\+config (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_location_config}{Location\+Config}}}]{location }\end{DoxyParamCaption})}
 
 
 
-Prints the location configuration. 
+Prints detailed location block configuration information. 
+
+Displays all location-\/specific configuration parameters including root path, default pages, error pages, and allowed methods.
 
 
 \begin{DoxyParams}{Parameters}
-{\em location} & The location configuration to print. \\
+{\em location} & \doxylink{struct_location_config}{Location\+Config} object containing location configuration. \\
 \hline
 \end{DoxyParams}
-\Hypertarget{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21}\index{webserver.hpp@{webserver.hpp}!print\_raw\_lines@{print\_raw\_lines}}
+\Hypertarget{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21}\label{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21} 
+\index{webserver.hpp@{webserver.hpp}!print\_raw\_lines@{print\_raw\_lines}}
 \index{print\_raw\_lines@{print\_raw\_lines}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_raw\_lines()}{print\_raw\_lines()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af493c7195a4d69cc1a874837b9467b21} 
-void print\+\_\+raw\+\_\+lines (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+raw\+\_\+lines (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines }\end{DoxyParamCaption})}
 
 
 
-Prints raw lines from a vector of strings. 
+Prints raw configuration lines for debugging purposes. 
+
+Outputs each line from the configuration file with gray coloring for better readability.
 
 
 \begin{DoxyParams}{Parameters}
-{\em raw\+Lines} & The vector of strings to print. \\
+{\em raw\+Lines} & Vector of configuration file lines. \\
 \hline
 \end{DoxyParams}
-\Hypertarget{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee}\index{webserver.hpp@{webserver.hpp}!print\_server\_config@{print\_server\_config}}
+\Hypertarget{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee}\label{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee} 
+\index{webserver.hpp@{webserver.hpp}!print\_server\_config@{print\_server\_config}}
 \index{print\_server\_config@{print\_server\_config}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_server\_config()}{print\_server\_config()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a7da340630db90f46a57cb6939626e2ee} 
-void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \&}]{config,  }\item[{std\+::string}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a45bbf371543a47ca27d2949ebd292f96}\index{webserver.hpp@{webserver.hpp}!print\_server\_config@{print\_server\_config}}
+\Hypertarget{webserver_8hpp_a45bbf371543a47ca27d2949ebd292f96}\label{webserver_8hpp_a45bbf371543a47ca27d2949ebd292f96} 
+\index{webserver.hpp@{webserver.hpp}!print\_server\_config@{print\_server\_config}}
 \index{print\_server\_config@{print\_server\_config}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_server\_config()}{print\_server\_config()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a45bbf371543a47ca27d2949ebd292f96} 
-void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}}}]{server}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+server\+\_\+config (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{struct_server_config}{Server\+Config}}}]{server }\end{DoxyParamCaption})}
 
 
 
-Prints the server configuration. 
+Prints detailed server configuration information. 
+
+Displays all server configuration parameters including port, server name, error pages, client limits, and location blocks.
 
 
 \begin{DoxyParams}{Parameters}
-{\em server} & The server configuration to print. \\
+{\em server} & \doxylink{struct_server_config}{Server\+Config} object containing server configuration. \\
 \hline
 \end{DoxyParams}
-\Hypertarget{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6}\index{webserver.hpp@{webserver.hpp}!print\_servers@{print\_servers}}
+\Hypertarget{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6}\label{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6} 
+\index{webserver.hpp@{webserver.hpp}!print\_servers@{print\_servers}}
 \index{print\_servers@{print\_servers}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_servers()}{print\_servers()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a1720402fce25e150a2b7ab5baf3131a6} 
-void print\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$}]{servers}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$}]{servers }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a2d370221fb0194cd1a79364eece10199}\index{webserver.hpp@{webserver.hpp}!print\_vector\_config@{print\_vector\_config}}
+
+
+Prints configuration information for all servers. 
+
+Iterates through all server configurations and prints their details.
+
+
+\begin{DoxyParams}{Parameters}
+{\em servers} & Vector of \doxylink{struct_server_config}{Server\+Config} objects to print. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{webserver_8hpp_a2d370221fb0194cd1a79364eece10199}\label{webserver_8hpp_a2d370221fb0194cd1a79364eece10199} 
+\index{webserver.hpp@{webserver.hpp}!print\_vector\_config@{print\_vector\_config}}
 \index{print\_vector\_config@{print\_vector\_config}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{print\_vector\_config()}{print\_vector\_config()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a2d370221fb0194cd1a79364eece10199} 
-void print\+\_\+vector\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{config}{, }\item[{std\+::string}]{location}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void print\+\_\+vector\+\_\+config (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{config,  }\item[{std\+::string}]{location }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a5671fb0d0191f86588463c6e29911fa6}\index{webserver.hpp@{webserver.hpp}!replace\_template@{replace\_template}}
+\Hypertarget{webserver_8hpp_a5671fb0d0191f86588463c6e29911fa6}\label{webserver_8hpp_a5671fb0d0191f86588463c6e29911fa6} 
+\index{webserver.hpp@{webserver.hpp}!replace\_template@{replace\_template}}
 \index{replace\_template@{replace\_template}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{replace\_template()}{replace\_template()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a5671fb0d0191f86588463c6e29911fa6} 
-std\+::string replace\+\_\+template (\begin{DoxyParamCaption}\item[{std\+::string}]{content}{, }\item[{const std\+::string \&}]{key}{, }\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string replace\+\_\+template (\begin{DoxyParamCaption}\item[{std\+::string}]{content,  }\item[{const std\+::string \&}]{key,  }\item[{const std\+::string \&}]{value }\end{DoxyParamCaption})}
 
 
 
@@ -1269,80 +1861,114 @@ This method searches the provided content for all occurrences of the key and rep
 \begin{DoxyReturn}{Returns}
 std\+::string The content with all occurrences of the key replaced by the value. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_aa7aa50634040e3947db40560bb98167d}\index{webserver.hpp@{webserver.hpp}!skip\_block@{skip\_block}}
+\Hypertarget{webserver_8hpp_aa7aa50634040e3947db40560bb98167d}\label{webserver_8hpp_aa7aa50634040e3947db40560bb98167d} 
+\index{webserver.hpp@{webserver.hpp}!skip\_block@{skip\_block}}
 \index{skip\_block@{skip\_block}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{skip\_block()}{skip\_block()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aa7aa50634040e3947db40560bb98167d} 
-std\+::vector$<$ std\+::string $>$\+::iterator skip\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$\+::iterator skip\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a}\index{webserver.hpp@{webserver.hpp}!split\_default\_pages@{split\_default\_pages}}
+
+
+Skips over a block of code between matching brackets. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the block. \\
+\hline
+{\em end} & Iterator to the end of the range. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Iterator pointing after the closing bracket of the block. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a}\label{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a} 
+\index{webserver.hpp@{webserver.hpp}!split\_default\_pages@{split\_default\_pages}}
 \index{split\_default\_pages@{split\_default\_pages}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{split\_default\_pages()}{split\_default\_pages()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a4fb6b94b805be4fb4c654edf65cf208a} 
-std\+::vector$<$ std\+::string $>$ split\+\_\+default\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+pages}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ split\+\_\+default\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{default\+\_\+pages }\end{DoxyParamCaption})}
 
 
 
-Splits a string of default pages into a vector of strings, separated by spaces. 
+Splits a string of default pages into a vector of strings. 
+
+Parses a space-\/separated string of default page paths into individual components.
 
 
 \begin{DoxyParams}{Parameters}
-{\em default\+\_\+pages} & The string containing default pages. \\
+{\em default\+\_\+pages} & String containing space-\/separated default page paths. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A vector of default page strings. 
+std\+::vector$<$std\+::string$>$ Vector containing individual default page paths. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9}\index{webserver.hpp@{webserver.hpp}!split\_error\_pages@{split\_error\_pages}}
+\Hypertarget{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9}\label{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9} 
+\index{webserver.hpp@{webserver.hpp}!split\_error\_pages@{split\_error\_pages}}
 \index{split\_error\_pages@{split\_error\_pages}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{split\_error\_pages()}{split\_error\_pages()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aeec630ecf7a3effb4f99320e5beaacb9} 
-std\+::map$<$ int, std\+::string $>$ split\+\_\+error\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+pages}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::map$<$ int, std\+::string $>$ split\+\_\+error\+\_\+pages (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+pages }\end{DoxyParamCaption})}
 
 
 
-Splits a string of error pages into a map associating error codes with file paths, replacing \textquotesingle{}x\textquotesingle{} in the path with the last digit of the error code. 
+Splits a string of error pages into a map associating error codes with file paths. 
+
+This function parses a string containing error page definitions and creates a mapping between HTTP error codes and their corresponding error page file paths.
 
 
 \begin{DoxyParams}{Parameters}
-{\em error\+\_\+pages} & The string containing error pages. \\
+{\em error\+\_\+pages} & String containing space-\/separated error codes followed by a file path. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A map of error codes to file paths. 
+std\+::map$<$int, std\+::string$>$ Map of error codes to their corresponding file paths. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829}\index{webserver.hpp@{webserver.hpp}!split\_redirections@{split\_redirections}}
+\Hypertarget{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829}\label{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829} 
+\index{webserver.hpp@{webserver.hpp}!split\_redirections@{split\_redirections}}
 \index{split\_redirections@{split\_redirections}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{split\_redirections()}{split\_redirections()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aa5a6fc3157e9044a69b6eff29c0ac829} 
-std\+::map$<$ int, std\+::string $>$ split\+\_\+redirections (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
-
-\Hypertarget{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc}\index{webserver.hpp@{webserver.hpp}!split\_string@{split\_string}}
-\index{split\_string@{split\_string}!webserver.hpp@{webserver.hpp}}
-\doxysubsubsection{\texorpdfstring{split\_string()}{split\_string()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc} 
-std\+::vector$<$ std\+::string $>$ split\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str}{}\end{DoxyParamCaption})}
-
-\Hypertarget{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc}\index{webserver.hpp@{webserver.hpp}!starts\_with@{starts\_with}}
-\index{starts\_with@{starts\_with}!webserver.hpp@{webserver.hpp}}
-\doxysubsubsection{\texorpdfstring{starts\_with()}{starts\_with()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc} 
-bool starts\+\_\+with (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{, }\item[{const std\+::string \&}]{prefix}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::map$<$ int, std\+::string $>$ split\+\_\+redirections (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator \&}]{it,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
 
 
-Converts an integer to a string. 
-
-This function converts an integer to its string representation using a stringstream.
+Splits redirection directives into status code and URL pairs. 
 
 
 \begin{DoxyParams}{Parameters}
-{\em number} & The integer to be converted. \\
+{\em it} & Iterator to the redirection directive. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-A string representation of the provided integer.
+Map of status codes to their corresponding redirection URLs. 
 \end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc}\label{webserver_8hpp_a39f3b9b84dcf2428b60f3c14438ba3fc} 
+\index{webserver.hpp@{webserver.hpp}!split\_string@{split\_string}}
+\index{split\_string@{split\_string}!webserver.hpp@{webserver.hpp}}
+\doxysubsubsection{\texorpdfstring{split\_string()}{split\_string()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ split\+\_\+string (\begin{DoxyParamCaption}\item[{std\+::string}]{str }\end{DoxyParamCaption})}
+
+
+
+Splits a string into a vector of substrings based on whitespace. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em str} & Input string to be split. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$std\+::string$>$ Vector containing individual tokens. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc}\label{webserver_8hpp_a8ddc99f71f3aeb59c1680cc528fe04cc} 
+\index{webserver.hpp@{webserver.hpp}!starts\_with@{starts\_with}}
+\index{starts\_with@{starts\_with}!webserver.hpp@{webserver.hpp}}
+\doxysubsubsection{\texorpdfstring{starts\_with()}{starts\_with()}}
+{\footnotesize\ttfamily bool starts\+\_\+with (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str,  }\item[{const std\+::string \&}]{prefix }\end{DoxyParamCaption})}
+
+
+
+\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} 
+
 Checks if a string starts with a given prefix.
 
 This function checks whether the provided string begins with the specified prefix.
@@ -1357,11 +1983,11 @@ This function checks whether the provided string begins with the specified prefi
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the string starts with the prefix, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_af31c1ae26a81eba0c56016b665ce7a7b}\index{webserver.hpp@{webserver.hpp}!str\_to\_size\_t@{str\_to\_size\_t}}
+\Hypertarget{webserver_8hpp_af31c1ae26a81eba0c56016b665ce7a7b}\label{webserver_8hpp_af31c1ae26a81eba0c56016b665ce7a7b} 
+\index{webserver.hpp@{webserver.hpp}!str\_to\_size\_t@{str\_to\_size\_t}}
 \index{str\_to\_size\_t@{str\_to\_size\_t}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{str\_to\_size\_t()}{str\_to\_size\_t()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_af31c1ae26a81eba0c56016b665ce7a7b} 
-size\+\_\+t str\+\_\+to\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily size\+\_\+t str\+\_\+to\+\_\+size\+\_\+t (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{value }\end{DoxyParamCaption})}
 
 
 
@@ -1377,29 +2003,67 @@ This function converts a valid numeric string (verified externally) to a {\ttfam
 \begin{DoxyReturn}{Returns}
 size\+\_\+t The converted {\ttfamily size\+\_\+t} value. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da}\index{webserver.hpp@{webserver.hpp}!string\_to\_bytes@{string\_to\_bytes}}
+\Hypertarget{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da}\label{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da} 
+\index{webserver.hpp@{webserver.hpp}!string\_to\_bytes@{string\_to\_bytes}}
 \index{string\_to\_bytes@{string\_to\_bytes}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{string\_to\_bytes()}{string\_to\_bytes()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ad5bc53a4c299a7dd5aab52a683fb19da} 
-size\+\_\+t string\+\_\+to\+\_\+bytes (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily size\+\_\+t string\+\_\+to\+\_\+bytes (\begin{DoxyParamCaption}\item[{std\+::string}]{client\+\_\+max\+\_\+body\+\_\+size }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_aa92b30f31083f5408d0951bde2270276}\index{webserver.hpp@{webserver.hpp}!string\_to\_error\_mode@{string\_to\_error\_mode}}
+
+
+Converts a size string with units to bytes. 
+
+Handles size specifications with K/\+M/G suffixes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em client\+\_\+max\+\_\+body\+\_\+size} & Size string with optional unit suffix. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The size in bytes. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_aa92b30f31083f5408d0951bde2270276}\label{webserver_8hpp_aa92b30f31083f5408d0951bde2270276} 
+\index{webserver.hpp@{webserver.hpp}!string\_to\_error\_mode@{string\_to\_error\_mode}}
 \index{string\_to\_error\_mode@{string\_to\_error\_mode}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{string\_to\_error\_mode()}{string\_to\_error\_mode()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aa92b30f31083f5408d0951bde2270276} 
-\mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} string\+\_\+to\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\+\_\+mode}} string\+\_\+to\+\_\+error\+\_\+mode (\begin{DoxyParamCaption}\item[{std\+::string}]{error\+\_\+mode }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4}\index{webserver.hpp@{webserver.hpp}!string\_to\_method@{string\_to\_method}}
+
+
+Converts an error mode string to its enumerated type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error\+\_\+mode} & The error mode as string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The corresponding t\+\_\+mode enum value. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4}\label{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4} 
+\index{webserver.hpp@{webserver.hpp}!string\_to\_method@{string\_to\_method}}
 \index{string\_to\_method@{string\_to\_method}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{string\_to\_method()}{string\_to\_method()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a4feccc3e5b8727b567e0121f989864b4} 
-\mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}} string\+\_\+to\+\_\+method (\begin{DoxyParamCaption}\item[{std\+::string}]{method}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\+\_\+allowed\+\_\+methods}} string\+\_\+to\+\_\+method (\begin{DoxyParamCaption}\item[{std\+::string}]{method }\end{DoxyParamCaption})}
 
-\Hypertarget{webserver_8hpp_ab0e7abb140f3aefb2efa0a59374bf97d}\index{webserver.hpp@{webserver.hpp}!to\_lowercase@{to\_lowercase}}
+
+
+Converts a string method name to its enumerated type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em method} & The HTTP method name as string. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The corresponding t\+\_\+allowed\+\_\+methods enum value. 
+\end{DoxyReturn}
+\Hypertarget{webserver_8hpp_ab0e7abb140f3aefb2efa0a59374bf97d}\label{webserver_8hpp_ab0e7abb140f3aefb2efa0a59374bf97d} 
+\index{webserver.hpp@{webserver.hpp}!to\_lowercase@{to\_lowercase}}
 \index{to\_lowercase@{to\_lowercase}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{to\_lowercase()}{to\_lowercase()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_ab0e7abb140f3aefb2efa0a59374bf97d} 
-std\+::string to\+\_\+lowercase (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{input}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string to\+\_\+lowercase (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{input }\end{DoxyParamCaption})}
 
 
 
@@ -1415,11 +2079,11 @@ This function iterates through each character in the input string and converts i
 \begin{DoxyReturn}{Returns}
 std\+::string A new string where all characters are lowercase. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}\index{webserver.hpp@{webserver.hpp}!to\_trim\_char@{to\_trim\_char}}
+\Hypertarget{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}\label{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd} 
+\index{webserver.hpp@{webserver.hpp}!to\_trim\_char@{to\_trim\_char}}
 \index{to\_trim\_char@{to\_trim\_char}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{to\_trim\_char()}{to\_trim\_char()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_abeae1ad22ec2ebf5dd48be5bc6b030dd} 
-bool to\+\_\+trim\+\_\+char (\begin{DoxyParamCaption}\item[{char}]{c}{, }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool to\+\_\+trim\+\_\+char (\begin{DoxyParamCaption}\item[{char}]{c,  }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim }\end{DoxyParamCaption})}
 
 
 
@@ -1437,11 +2101,11 @@ This function checks if the provided character exists within a set of characters
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the character should be trimmed, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca}\index{webserver.hpp@{webserver.hpp}!trim@{trim}}
+\Hypertarget{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca}\label{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca} 
+\index{webserver.hpp@{webserver.hpp}!trim@{trim}}
 \index{trim@{trim}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{trim()}{trim()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_a92821d96e02da6feff8e0d7299687eca} 
-std\+::string trim (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str}{, }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim}{ = {\ttfamily "{}~\textbackslash{}t\textbackslash{}n\textbackslash{}r\textbackslash{}f\textbackslash{}v"{}}}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string trim (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str,  }\item[{const std\+::string \&}]{chars\+\_\+to\+\_\+trim = {\ttfamily "{}~\textbackslash{}t\textbackslash{}n\textbackslash{}r\textbackslash{}f\textbackslash{}v"{}} }\end{DoxyParamCaption})}
 
 
 
@@ -1459,11 +2123,11 @@ This function removes any characters found in {\ttfamily chars\+\_\+to\+\_\+trim
 \begin{DoxyReturn}{Returns}
 A new string with the specified characters trimmed from both ends. 
 \end{DoxyReturn}
-\Hypertarget{webserver_8hpp_aac27fe9a0fc4b3f5222a36edb6b54dae}\index{webserver.hpp@{webserver.hpp}!valid\_mime\_type@{valid\_mime\_type}}
+\Hypertarget{webserver_8hpp_aac27fe9a0fc4b3f5222a36edb6b54dae}\label{webserver_8hpp_aac27fe9a0fc4b3f5222a36edb6b54dae} 
+\index{webserver.hpp@{webserver.hpp}!valid\_mime\_type@{valid\_mime\_type}}
 \index{valid\_mime\_type@{valid\_mime\_type}!webserver.hpp@{webserver.hpp}}
 \doxysubsubsection{\texorpdfstring{valid\_mime\_type()}{valid\_mime\_type()}}
-{\footnotesize\ttfamily \label{webserver_8hpp_aac27fe9a0fc4b3f5222a36edb6b54dae} 
-bool valid\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool valid\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 

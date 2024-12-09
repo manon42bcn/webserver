@@ -10,7 +10,7 @@
 \DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/10/14\ 11:07:12\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
-\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/23\ 16:00:37\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/26\ 22:04:48\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
 \DoxyCodeLine{00012\ }
@@ -19,65 +19,57 @@
 \DoxyCodeLine{00015\ }
 \DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <vector>}}
 \DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <poll.h>}}
-\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <iostream>}}
-\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
-\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <cstring>}}
-\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <algorithm>}}
-\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <sys/time.h>}}
-\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{http__enum__codes_8hpp}{http\_enum\_codes.hpp}}"{}}}
-\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_socket_handler_8hpp}{SocketHandler.hpp}}"{}}}
-\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_request_handler_8hpp}{HttpRequestHandler.hpp}}"{}}}
-\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_response_handler_8hpp}{HttpResponseHandler.hpp}}"{}}}
-\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_c_g_i_handler_8hpp}{HttpCGIHandler.hpp}}"{}}}
-\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_range_handler_8hpp}{HttpRangeHandler.hpp}}"{}}}
-\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_multipart_handler_8hpp}{HttpMultipartHandler.hpp}}"{}}}
-\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_auto_index_8hpp}{HttpAutoIndex.hpp}}"{}}}
-\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_webserver_cache_8hpp}{WebserverCache.hpp}}"{}}}
-\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_client_data_8hpp}{ClientData.hpp}}"{}}}
-\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{webserver_8hpp}{webserver.hpp}}"{}}}
-\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_logger_8hpp}{Logger.hpp}}"{}}}
-\DoxyCodeLine{00035\ \textcolor{comment}{//defined\ in\ microsecs}}
-\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#define\ CLIENT\_LIFECYCLE\ 10000000}}
-\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#define\ SM\_NAME\ "{}ServerManager"{}}}
-\DoxyCodeLine{00038\ \textcolor{keyword}{typedef}\ std::map<int,\ ClientData*>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\_client\_it}};}
-\DoxyCodeLine{00039\ \textcolor{keyword}{typedef}\ std::map<int,\ time\_t>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102}{t\_fd\_timestamp}};}
-\DoxyCodeLine{00040\ \textcolor{keyword}{typedef}\ std::map<time\_t,\ int>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9}{t\_timestamp\_fd}};}
-\DoxyCodeLine{00041\ }
-\DoxyCodeLine{00054\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_server_manager}{ServerManager}}\ \{}
-\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ std::vector<struct\ pollfd>\ \ \ \ \ \ \_poll\_fds;}
-\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ std::map<int,\ size\_t>\ \ \ \ \ \ \ \ \ \ \ \_poll\_index;}
-\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ std::map<int,\ SocketHandler*>\ \ \ \_servers\_map;}
-\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ std::map<int,\ int>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_active\_ports;}
-\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ std::map<int,\ ClientData*>\ \ \ \ \ \ \_clients;}
-\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ std::map<time\_t,\ int>\ \ \ \ \ \ \ \ \ \ \ \_timeout\_index;}
-\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ std::map<int,\ time\_t>\ \ \ \ \ \ \ \ \ \ \ \_index\_timeout;}
-\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_log;}
-\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_active;}
-\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_healthy;}
-\DoxyCodeLine{00066\ }
-\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{bool}\ add\_server(\textcolor{keywordtype}{int}\ port,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ config);}
-\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{void}\ build\_servers(std::vector<ServerConfig>\&\ configs);}
-\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{bool}\ add\_server\_to\_poll(\textcolor{keywordtype}{int}\ server\_fd);}
-\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ cleanup\_invalid\_fds();}
-\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ timeout\_clients();}
-\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{bool}\ new\_client(\mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ server);}
-\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{bool}\ process\_request(\textcolor{keywordtype}{size\_t}\&\ poll\_fd\_index);}
-\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{bool}\ process\_response(\textcolor{keywordtype}{size\_t}\&\ poll\_fd\_index);}
-\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ remove\_client\_from\_poll(\mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\_client\_it}}\ client\_data);}
-\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{bool}\ turn\_off\_sanity(\textcolor{keyword}{const}\ std::string\&\ detail);}
-\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_clients();}
-\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_servers();}
-\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_poll();}
-\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{static}\ time\_t\ timeout\_timestamp();}
-\DoxyCodeLine{00081\ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}{ServerManager}}(std::vector<ServerConfig>\&\ configs,}
-\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
-\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}{\string~ServerManager}}();}
-\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_server_manager_aecc313c9b6afcab92c22269b3333c721}{run}}();}
-\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_server_manager_a739e419ac09105174c345c52765d89f4}{turn\_off\_server}}();}
-\DoxyCodeLine{00087\ \};}
-\DoxyCodeLine{00088\ }
-\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <unistd.h>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <sys/time.h>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_socket_handler_8hpp}{SocketHandler.hpp}}"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_http_request_handler_8hpp}{HttpRequestHandler.hpp}}"{}}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_client_data_8hpp}{ClientData.hpp}}"{}}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{webserver_8hpp}{webserver.hpp}}"{}}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_logger_8hpp}{Logger.hpp}}"{}}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{comment}{//defined\ in\ microsecs}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ CLIENT\_LIFECYCLE\ 10000000}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ SM\_NAME\ "{}ServerManager"{}}}
+\DoxyCodeLine{00031\ \textcolor{keyword}{typedef}\ std::map<int,\ ClientData*>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\_client\_it}};}
+\DoxyCodeLine{00032\ \textcolor{keyword}{typedef}\ std::map<int,\ time\_t>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_ade15a04598c42e4d685ae2e9d0c3e102}{t\_fd\_timestamp}};}
+\DoxyCodeLine{00033\ \textcolor{keyword}{typedef}\ std::map<time\_t,\ int>::iterator\ \mbox{\hyperlink{_server_manager_8hpp_acdc43bc436f5e0057af1bd0bea0f2cd9}{t\_timestamp\_fd}};}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_server_manager}{ServerManager}}\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<struct\ pollfd>\ \ \ \ \ \ \_poll\_fds;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ size\_t>\ \ \ \ \ \ \ \ \ \ \ \_poll\_index;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ SocketHandler*>\ \ \ \_servers\_map;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ int>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_active\_ports;}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ ClientData*>\ \ \ \ \ \ \_clients;}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<time\_t,\ int>\ \ \ \ \ \ \ \ \ \ \ \_timeout\_index;}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ time\_t>\ \ \ \ \ \ \ \ \ \ \ \_index\_timeout;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_log;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_active;}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_healthy;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ add\_server(\textcolor{keywordtype}{int}\ port,\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}\&\ config);}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ build\_servers(std::vector<ServerConfig>\&\ configs);}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ add\_server\_to\_poll(\textcolor{keywordtype}{int}\ server\_fd);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ cleanup\_invalid\_fds();}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ timeout\_clients();}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ new\_client(\mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ server);}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ process\_request(\textcolor{keywordtype}{size\_t}\&\ poll\_fd\_index);}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ remove\_client\_from\_poll(\mbox{\hyperlink{_server_manager_8hpp_a0c56c72a5a6e62a786530d93eac612fd}{t\_client\_it}}\ client\_data);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ turn\_off\_sanity(\textcolor{keyword}{const}\ std::string\&\ detail);}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_clients();}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_servers();}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ clear\_poll();}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ time\_t\ timeout\_timestamp();}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}{ServerManager}}(std::vector<ServerConfig>\&\ configs,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ logger);}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}{\string~ServerManager}}();}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_server_manager_aecc313c9b6afcab92c22269b3333c721}{run}}();}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_server_manager_a739e419ac09105174c345c52765d89f4}{turn\_off\_server}}();}
+\DoxyCodeLine{00079\ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

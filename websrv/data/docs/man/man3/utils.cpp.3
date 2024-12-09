@@ -15,115 +15,155 @@ websrv/srcs/parse/utils.cpp
 .ti -1c
 .RI "std::string \fBclean_line\fP (std::string line)"
 .br
-.RI "Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. "
+.RI "Cleans a line by removing whitespace and special characters\&. "
 .ti -1c
 .RI "std::string \fBget_value\fP (std::string line, const std::string &key)"
 .br
-.RI "Extracts the value associated with a key in a given line\&. "
+.RI "Extracts a value associated with a specific key from a line\&. "
 .ti -1c
 .RI "bool \fBfind_exact_string\fP (const std::string &line, const std::string &str)"
 .br
+.RI "Checks if a string exists as an exact word match at the start of a line\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBget_raw_lines\fP (std::string path)"
 .br
-.RI "Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. "
+.RI "Reads and processes a file line by line\&. "
 .ti -1c
 .RI "std::string \fBdelete_brackets_clean\fP (std::string line)"
 .br
-.RI "Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. "
+.RI "Removes curly braces from a line and cleans whitespace\&. "
 .ti -1c
 .RI "std::string \fBdelete_first_slash\fP (std::string path)"
 .br
-.RI "Removes the first slash from a path if it exists\&. "
+.RI "Removes the leading slash from a path if present\&. "
 .ti -1c
 .RI "std::string \fBget_server_root\fP ()"
 .br
+.RI "Gets the current working directory of the server\&. "
 .ti -1c
 .RI "std::vector< std::string >::iterator \fBskip_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 .br
+.RI "Skips over a block of code between matching brackets\&. "
 .ti -1c
 .RI "std::vector< std::string >::iterator \fBfind_block_end\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 .br
+.RI "Finds the end of a block marked by matching brackets\&. "
 .ti -1c
 .RI "\fBt_allowed_methods\fP \fBstring_to_method\fP (std::string method)"
 .br
+.RI "Converts a string method name to its enumerated type\&. "
 .ti -1c
 .RI "std::string \fBdelete_signs\fP (std::string line)"
 .br
+.RI "Removes '=' and '~' signs from a line and cleans it\&. "
 .ti -1c
 .RI "std::string \fBdelete_last_slash\fP (std::string path)"
 .br
+.RI "Removes trailing slash from a path if present\&. "
 .ti -1c
 .RI "std::string \fBget_location_path\fP (std::string line)"
 .br
+.RI "Extracts the path from a location directive\&. "
 .ti -1c
 .RI "\fBt_mode\fP \fBstring_to_error_mode\fP (std::string error_mode)"
 .br
+.RI "Converts an error mode string to its enumerated type\&. "
 .ti -1c
 .RI "std::string \fBjoin_paths\fP (std::string path1, std::string path2)"
 .br
+.RI "Joins two paths together, handling slashes appropriately\&. "
 .ti -1c
 .RI "unsigned char \fBmethod_bitwise\fP (std::string parsed)"
 .br
+.RI "Converts HTTP method string to its corresponding bitmask\&. "
 .ti -1c
 .RI "std::string \fBget_first_word\fP (const std::string &str)"
 .br
+.RI "Extracts the first word from a string\&. "
 .ti -1c
 .RI "int \fBget_status_code\fP (std::string status_code, \fBLogger\fP *logger)"
 .br
+.RI "Validates and converts a status code string to integer\&. "
 .ti -1c
 .RI "std::string \fBget_redirection_url\fP (std::string redirection, \fBLogger\fP *logger)"
 .br
+.RI "Processes and validates a redirection URL\&. "
 .ti -1c
 .RI "std::map< int, std::string > \fBsplit_redirections\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger)"
 .br
+.RI "Splits redirection directives into status code and URL pairs\&. "
 .ti -1c
 .RI "bool \fBcompare_paths\fP (std::string path1, std::string path2)"
 .br
+.RI "Compares two paths for equality, handling special cases\&. "
 .ti -1c
 .RI "size_t \fBstring_to_bytes\fP (std::string client_max_body_size)"
 .br
+.RI "Converts a size string with units to bytes\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "std::string clean_line (std::string line)"
 
 .PP
-Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. 
+Cleans a line by removing whitespace and special characters\&. This function performs several cleaning operations on a string:
+.IP "\(bu" 2
+Removes leading and trailing whitespace
+.IP "\(bu" 2
+Removes trailing semicolons
+.IP "\(bu" 2
+Handles empty lines and comments
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIline\fP The line to be cleaned\&. 
+\fIline\fP The input string to be cleaned\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A cleaned version of the line\&. 
+The cleaned string, or empty string if the input is a comment or empty\&. 
 .RE
 .PP
 
 .SS "bool compare_paths (std::string path1, std::string path2)"
 
-.SS "std::string delete_brackets_clean (std::string line)"
-
 .PP
-Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. 
+Compares two paths for equality, handling special cases\&. 
 .PP
 \fBParameters\fP
 .RS 4
-\fIline\fP The line to be cleaned\&. 
+\fIpath1\fP First path to compare\&. 
+.br
+\fIpath2\fP Second path to compare\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-The cleaned line without braces\&. 
+true if paths are equivalent, false otherwise\&. 
+.RE
+.PP
+
+.SS "std::string delete_brackets_clean (std::string line)"
+
+.PP
+Removes curly braces from a line and cleans whitespace\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to process\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned line with braces removed\&. 
 .RE
 .PP
 
 .SS "std::string delete_first_slash (std::string path)"
 
 .PP
-Removes the first slash from a path if it exists\&. 
+Removes the leading slash from a path if present\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -138,42 +178,176 @@ The path without the leading slash\&.
 
 .SS "std::string delete_last_slash (std::string path)"
 
-.SS "std::string delete_signs (std::string line)"
-
-.SS "std::vector< std::string >::iterator find_block_end (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
-
-.SS "bool find_exact_string (const std::string & line, const std::string & str)"
-
-.SS "std::string get_first_word (const std::string & str)"
-
-.SS "std::string get_location_path (std::string line)"
-
-.SS "std::vector< std::string > get_raw_lines (std::string path)"
-
 .PP
-Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. 
+Removes trailing slash from a path if present\&. 
 .PP
 \fBParameters\fP
 .RS 4
-\fIpath\fP The path to the file\&. 
+\fIpath\fP The path to modify\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A vector of cleaned, non-empty lines\&. 
+The path without trailing slash\&. 
+.RE
+.PP
+
+.SS "std::string delete_signs (std::string line)"
+
+.PP
+Removes '=' and '~' signs from a line and cleans it\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to process\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned line without specified signs\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string >::iterator find_block_end (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
+
+.PP
+Finds the end of a block marked by matching brackets\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the block\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Iterator pointing to the closing bracket\&. 
+.RE
+.PP
+
+.SS "bool find_exact_string (const std::string & line, const std::string & str)"
+
+.PP
+Checks if a string exists as an exact word match at the start of a line\&. Performs a case-sensitive search for an exact word match, ensuring the string is not part of a larger word\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to search in\&. 
+.br
+\fIstr\fP The string to search for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if exact match is found, false otherwise\&. 
+.RE
+.PP
+
+.SS "std::string get_first_word (const std::string & str)"
+
+.PP
+Extracts the first word from a string\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP The input string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The first word found in the string\&. 
+.RE
+.PP
+
+.SS "std::string get_location_path (std::string line)"
+
+.PP
+Extracts the path from a location directive\&. Processes a location directive line to extract and clean the path component\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The location directive line\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned location path\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string > get_raw_lines (std::string path)"
+
+.PP
+Reads and processes a file line by line\&. Opens a file, reads each line, cleans it, and stores non-empty lines in a vector\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Path to the file to read\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Vector containing all non-empty, cleaned lines from the file\&. 
 .RE
 .PP
 
 .SS "std::string get_redirection_url (std::string redirection, \fBLogger\fP * logger)"
 
+.PP
+Processes and validates a redirection URL\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIredirection\fP The redirection directive\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The processed redirection URL\&. 
+.RE
+.PP
+
 .SS "std::string get_server_root ()"
 
+.PP
+Gets the current working directory of the server\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current working directory with trailing slash, or empty string on error\&. 
+.RE
+.PP
+
 .SS "int get_status_code (std::string status_code, \fBLogger\fP * logger)"
+
+.PP
+Validates and converts a status code string to integer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstatus_code\fP The status code as string\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The validated status code as integer\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if status code is invalid\&. 
+.RE
+.PP
 
 .SS "std::string get_value (std::string line, const std::string & key)"
 
 .PP
-Extracts the value associated with a key in a given line\&. 
+Extracts a value associated with a specific key from a line\&. Searches for a key in the given line and extracts the value that follows it\&. Handles trailing slashes and whitespace in the extracted value\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -184,23 +358,127 @@ Extracts the value associated with a key in a given line\&.
 .PP
 \fBReturns\fP
 .RS 4
-The value associated with the key, or an empty string if not found\&. 
+The extracted value, or empty string if key not found\&. 
 .RE
 .PP
 
 .SS "std::string join_paths (std::string path1, std::string path2)"
 
+.PP
+Joins two paths together, handling slashes appropriately\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath1\fP First path component\&. 
+.br
+\fIpath2\fP Second path component\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The combined path\&. 
+.RE
+.PP
+
 .SS "unsigned char method_bitwise (std::string parsed)"
+
+.PP
+Converts HTTP method string to its corresponding bitmask\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparsed\fP The HTTP method as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The method's bitmask value\&. 
+.RE
+.PP
 
 .SS "std::vector< std::string >::iterator skip_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 
+.PP
+Skips over a block of code between matching brackets\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the block\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Iterator pointing after the closing bracket of the block\&. 
+.RE
+.PP
+
 .SS "std::map< int, std::string > split_redirections (std::vector< std::string >::iterator & it, \fBLogger\fP * logger)"
+
+.PP
+Splits redirection directives into status code and URL pairs\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Iterator to the redirection directive\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Map of status codes to their corresponding redirection URLs\&. 
+.RE
+.PP
 
 .SS "size_t string_to_bytes (std::string client_max_body_size)"
 
+.PP
+Converts a size string with units to bytes\&. Handles size specifications with K/M/G suffixes\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIclient_max_body_size\fP Size string with optional unit suffix\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The size in bytes\&. 
+.RE
+.PP
+
 .SS "\fBt_mode\fP string_to_error_mode (std::string error_mode)"
 
+.PP
+Converts an error mode string to its enumerated type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror_mode\fP The error mode as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding t_mode enum value\&. 
+.RE
+.PP
+
 .SS "\fBt_allowed_methods\fP string_to_method (std::string method)"
+
+.PP
+Converts a string method name to its enumerated type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP The HTTP method name as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding t_allowed_methods enum value\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 

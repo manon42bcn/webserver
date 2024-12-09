@@ -34,11 +34,11 @@ size\+\_\+t \mbox{\hyperlink{http__request__helper_8cpp_add6108cd0eb7f707a1e58ff
 
 
 \doxysubsection{Function Documentation}
-\Hypertarget{http__request__helper_8cpp_a775a50523b2792565271f85e8d63d72b}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!black\_list\_extension@{black\_list\_extension}}
+\Hypertarget{http__request__helper_8cpp_a775a50523b2792565271f85e8d63d72b}\label{http__request__helper_8cpp_a775a50523b2792565271f85e8d63d72b} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!black\_list\_extension@{black\_list\_extension}}
 \index{black\_list\_extension@{black\_list\_extension}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{black\_list\_extension()}{black\_list\_extension()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a775a50523b2792565271f85e8d63d72b} 
-bool black\+\_\+list\+\_\+extension (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool black\+\_\+list\+\_\+extension (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -59,11 +59,11 @@ This function determines whether the file extension of the provided path is part
 \item The function uses a static set of disallowed extensions, which is initialized on the first call. The blacklist includes extensions such as {\ttfamily .exe}, {\ttfamily .bat}, {\ttfamily .sh}, {\ttfamily .php}, {\ttfamily .pl}, and {\ttfamily .py}.
 \item The function extracts the file extension by locating the last {\ttfamily .} character in the file path and comparing the substring to the blacklist.
 \item If no {\ttfamily .} character is found in the path, or if the extension is not in the blacklist, the function returns {\ttfamily false}. 
-\end{DoxyItemize}\Hypertarget{http__request__helper_8cpp_a7d8d6608f966337610cf3eaf4b305d7e}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!clean\_host@{clean\_host}}
+\end{DoxyItemize}\Hypertarget{http__request__helper_8cpp_a7d8d6608f966337610cf3eaf4b305d7e}\label{http__request__helper_8cpp_a7d8d6608f966337610cf3eaf4b305d7e} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!clean\_host@{clean\_host}}
 \index{clean\_host@{clean\_host}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{clean\_host()}{clean\_host()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a7d8d6608f966337610cf3eaf4b305d7e} 
-std\+::string clean\+\_\+host (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host\+\_\+to\+\_\+clean}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string clean\+\_\+host (\begin{DoxyParamCaption}\item[{std\+::string \&}]{host\+\_\+to\+\_\+clean }\end{DoxyParamCaption})}
 
 
 
@@ -102,11 +102,11 @@ A cleaned host string containing only the hostname without prefixes, ports, or p
 \item The function performs string operations such as {\ttfamily find} and {\ttfamily substr}, which are safe in C++98. 
 \end{DoxyItemize}
 \end{DoxyNote}
-\Hypertarget{http__request__helper_8cpp_a901157cdb2c9069d0f08cab6b799eb60}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!create\_mime\_types@{create\_mime\_types}}
+\Hypertarget{http__request__helper_8cpp_a901157cdb2c9069d0f08cab6b799eb60}\label{http__request__helper_8cpp_a901157cdb2c9069d0f08cab6b799eb60} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!create\_mime\_types@{create\_mime\_types}}
 \index{create\_mime\_types@{create\_mime\_types}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{create\_mime\_types()}{create\_mime\_types()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a901157cdb2c9069d0f08cab6b799eb60} 
-std\+::map$<$ std\+::string, std\+::string $>$ create\+\_\+mime\+\_\+types (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::map$<$ std\+::string, std\+::string $>$ create\+\_\+mime\+\_\+types (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -123,11 +123,11 @@ This method generates a map that associates common file extensions (e.\+g., "{}.
 \begin{DoxyReturn}{Returns}
 std\+::map$<$std\+::string, std\+::string$>$ A map that associates file extensions with their MIME types. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!end\_of\_header\_system@{end\_of\_header\_system}}
+\Hypertarget{http__request__helper_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a}\label{http__request__helper_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!end\_of\_header\_system@{end\_of\_header\_system}}
 \index{end\_of\_header\_system@{end\_of\_header\_system}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{end\_of\_header\_system()}{end\_of\_header\_system()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_add6108cd0eb7f707a1e58ff83b6c8a3a} 
-size\+\_\+t end\+\_\+of\+\_\+header\+\_\+system (\begin{DoxyParamCaption}\item[{std\+::string \&}]{header}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily size\+\_\+t end\+\_\+of\+\_\+header\+\_\+system (\begin{DoxyParamCaption}\item[{std\+::string \&}]{header }\end{DoxyParamCaption})}
 
 
 
@@ -143,11 +143,11 @@ This function locates the end of the HTTP header in the given string by searchin
 \begin{DoxyReturn}{Returns}
 The position where the header ends. If no header end is found, returns {\ttfamily std\+::string\+::npos}. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_a1405af62ae4c7c679726a051ba7bc3a0}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!get\_header\_value@{get\_header\_value}}
+\Hypertarget{http__request__helper_8cpp_a1405af62ae4c7c679726a051ba7bc3a0}\label{http__request__helper_8cpp_a1405af62ae4c7c679726a051ba7bc3a0} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!get\_header\_value@{get\_header\_value}}
 \index{get\_header\_value@{get\_header\_value}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{get\_header\_value()}{get\_header\_value()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a1405af62ae4c7c679726a051ba7bc3a0} 
-std\+::string get\+\_\+header\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string \&}]{haystack}{, }\item[{std\+::string}]{needle}{, }\item[{const std\+::string \&}]{sep}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+header\+\_\+value (\begin{DoxyParamCaption}\item[{std\+::string \&}]{haystack,  }\item[{std\+::string}]{needle,  }\item[{const std\+::string \&}]{sep }\end{DoxyParamCaption})}
 
 
 
@@ -172,11 +172,11 @@ This method searches the provided header string for a specific key and returns t
 \begin{DoxyReturn}{Returns}
 std\+::string The value associated with the key, or an empty string if the key is not found. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_a83e2cc49561a109eab7a3c41845ef0c7}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!get\_mime\_type@{get\_mime\_type}}
+\Hypertarget{http__request__helper_8cpp_a83e2cc49561a109eab7a3c41845ef0c7}\label{http__request__helper_8cpp_a83e2cc49561a109eab7a3c41845ef0c7} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!get\_mime\_type@{get\_mime\_type}}
 \index{get\_mime\_type@{get\_mime\_type}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{get\_mime\_type()}{get\_mime\_type()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a83e2cc49561a109eab7a3c41845ef0c7} 
-std\+::string get\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string get\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 
@@ -199,11 +199,11 @@ This method looks up the MIME type corresponding to the file extension in the pr
 \begin{DoxyReturn}{Returns}
 std\+::string The MIME type corresponding to the file extension, or {\ttfamily text/plain} if not found. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_a411f70b0adb50fb351494b96143fb0ce}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!http\_status\_description@{http\_status\_description}}
+\Hypertarget{http__request__helper_8cpp_a411f70b0adb50fb351494b96143fb0ce}\label{http__request__helper_8cpp_a411f70b0adb50fb351494b96143fb0ce} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!http\_status\_description@{http\_status\_description}}
 \index{http\_status\_description@{http\_status\_description}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{http\_status\_description()}{http\_status\_description()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a411f70b0adb50fb351494b96143fb0ce} 
-std\+::string http\+\_\+status\+\_\+description (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}]{code}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string http\+\_\+status\+\_\+description (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}}}]{code }\end{DoxyParamCaption})}
 
 
 
@@ -217,11 +217,11 @@ Get a standard message for a http code.
 \begin{DoxyReturn}{Returns}
 short standard message associated with the http code. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_ab93fb754820f510dc2d17f64ee15a773}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!is\_cgi@{is\_cgi}}
+\Hypertarget{http__request__helper_8cpp_ab93fb754820f510dc2d17f64ee15a773}\label{http__request__helper_8cpp_ab93fb754820f510dc2d17f64ee15a773} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!is\_cgi@{is\_cgi}}
 \index{is\_cgi@{is\_cgi}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{is\_cgi()}{is\_cgi()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_ab93fb754820f510dc2d17f64ee15a773} 
-bool is\+\_\+cgi (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool is\+\_\+cgi (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{filename }\end{DoxyParamCaption})}
 
 
 
@@ -237,17 +237,17 @@ This function checks whether the given filename corresponds to a CGI script by l
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the filename corresponds to a CGI script, otherwise {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!normalize\_host@{normalize\_host}}
+\Hypertarget{http__request__helper_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78}\label{http__request__helper_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!normalize\_host@{normalize\_host}}
 \index{normalize\_host@{normalize\_host}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{normalize\_host()}{normalize\_host()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a34cd1ba4270d9f786fe644a5ac82ba78} 
-std\+::string normalize\+\_\+host (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string normalize\+\_\+host (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{host }\end{DoxyParamCaption})}
 
-\Hypertarget{http__request__helper_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!parse\_method@{parse\_method}}
+\Hypertarget{http__request__helper_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995}\label{http__request__helper_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!parse\_method@{parse\_method}}
 \index{parse\_method@{parse\_method}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{parse\_method()}{parse\_method()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_ad0ec24b7da0c90f7e3e7a4e4b068a995} 
-\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} parse\+\_\+method (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{method}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} parse\+\_\+method (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{method }\end{DoxyParamCaption})}
 
 
 
@@ -277,11 +277,11 @@ The corresponding {\ttfamily t\+\_\+methods} mask if the method is recognized; o
 \item This function is case-\/sensitive. Ensure that the input method string matches the expected format (e.\+g., "{}\+GET"{} must be uppercase). 
 \end{DoxyItemize}
 \end{DoxyNote}
-\Hypertarget{http__request__helper_8cpp_a5671fb0d0191f86588463c6e29911fa6}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!replace\_template@{replace\_template}}
+\Hypertarget{http__request__helper_8cpp_a5671fb0d0191f86588463c6e29911fa6}\label{http__request__helper_8cpp_a5671fb0d0191f86588463c6e29911fa6} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!replace\_template@{replace\_template}}
 \index{replace\_template@{replace\_template}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{replace\_template()}{replace\_template()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_a5671fb0d0191f86588463c6e29911fa6} 
-std\+::string replace\+\_\+template (\begin{DoxyParamCaption}\item[{std\+::string}]{content}{, }\item[{const std\+::string \&}]{key}{, }\item[{const std\+::string \&}]{value}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::string replace\+\_\+template (\begin{DoxyParamCaption}\item[{std\+::string}]{content,  }\item[{const std\+::string \&}]{key,  }\item[{const std\+::string \&}]{value }\end{DoxyParamCaption})}
 
 
 
@@ -308,11 +308,11 @@ This method searches the provided content for all occurrences of the key and rep
 \begin{DoxyReturn}{Returns}
 std\+::string The content with all occurrences of the key replaced by the value. 
 \end{DoxyReturn}
-\Hypertarget{http__request__helper_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae}\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!valid\_mime\_type@{valid\_mime\_type}}
+\Hypertarget{http__request__helper_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae}\label{http__request__helper_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae} 
+\index{http\_request\_helper.cpp@{http\_request\_helper.cpp}!valid\_mime\_type@{valid\_mime\_type}}
 \index{valid\_mime\_type@{valid\_mime\_type}!http\_request\_helper.cpp@{http\_request\_helper.cpp}}
 \doxysubsubsection{\texorpdfstring{valid\_mime\_type()}{valid\_mime\_type()}}
-{\footnotesize\ttfamily \label{http__request__helper_8cpp_aac27fe9a0fc4b3f5222a36edb6b54dae} 
-bool valid\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily bool valid\+\_\+mime\+\_\+type (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path }\end{DoxyParamCaption})}
 
 
 

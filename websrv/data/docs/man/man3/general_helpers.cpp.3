@@ -41,7 +41,7 @@ websrv/srcs/general_helpers.cpp
 .ti -1c
 .RI "bool \fBstarts_with\fP (const std::string &str, const std::string &prefix)"
 .br
-.RI "Converts an integer to a string\&. "
+.RI "** "
 .ti -1c
 .RI "bool \fBto_trim_char\fP (char c, const std::string &chars_to_trim)"
 .br
@@ -116,7 +116,6 @@ websrv/srcs/general_helpers.cpp
 
 .PP
 Checks if a given file path has a disallowed extension\&. This function determines whether the file extension of the provided path is part of a predefined blacklist of disallowed extensions\&. If the extension is blacklisted, the function returns \fRtrue\fP; otherwise, it returns \fRfalse\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -139,7 +138,7 @@ If no \fR\&.\fP character is found in the path, or if the extension is not in th
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string clean_host (std::string & host_to_clean)"
 
 .PP
@@ -151,7 +150,6 @@ Stripping port numbers appended with a colon (e\&.g\&., ':8080')\&.
 .IP "3." 4
 Removing any path segments following the hostname (e\&.g\&., '/path/to/resource')\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -176,7 +174,6 @@ Iteratively removes any leading \fR/\fP characters and paths\&.
 .IP "\(bu" 2
 If the input string does not contain these patterns, it is returned as-is\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -191,19 +188,17 @@ The function performs string operations such as \fRfind\fP and \fRsubstr\fP, whi
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::map< std::string, std::string > create_mime_types ()"
 
 .PP
 Creates and returns a map of file extensions to MIME types\&. This method generates a map that associates common file extensions (e\&.g\&., '\&.html', '\&.jpg') with their corresponding MIME types (e\&.g\&., 'text/html', 'image/jpeg')\&. The map is used to determine the \fRContent-Type\fP header when serving files\&.
-
 .PP
 .IP "\(bu" 2
 The method ensures that the map is initialized only once, using a static map to avoid recreating the map on each call\&. If additional MIME types are required, they can be added to the map\&.
 .IP "\(bu" 2
 Common MIME types such as \fRtext/html\fP, \fRapplication/javascript\fP, and \fRimage/jpeg\fP are included\&.
 .PP
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -214,12 +209,11 @@ std::map<std::string, std::string> A map that associates file extensions with th
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "size_t end_of_header_system (std::string & header)"
 
 .PP
 Finds the end of the HTTP header in a string\&. This function locates the end of the HTTP header in the given string by searching for the sequence \fR\\\\r\\\\n\\\\r\\\\n\fP or \fR\\\\n\\\\n\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -235,12 +229,11 @@ The position where the header ends\&. If no header end is found, returns \fRstd:
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string get_header_value (std::string & haystack, std::string needle, const std::string & sep)"
 
 .PP
 Extracts the value of a specific HTTP header field\&. This method searches the provided header string for a specific key and returns the associated value\&. The search is case-insensitive, and it assumes the format \fRkey: value\fP\&.
-
 .PP
 .IP "\(bu" 2
 The method first converts the key and the header string to lowercase for a case-insensitive search\&.
@@ -249,7 +242,6 @@ The value is extracted by searching for the next occurrence of \fR\\r\\n\fP, whi
 .IP "\(bu" 2
 If the key is not found, the method returns an empty string\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -267,12 +259,11 @@ std::string The value associated with the key, or an empty string if the key is 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string get_mime_type (const std::string & path)"
 
 .PP
 Retrieves the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, the associated MIME type is returned\&. If the extension is not recognized, it defaults to \fRtext/plain\fP\&.
-
 .PP
 .IP "\(bu" 2
 The method extracts the file extension by searching for the last '\&.' character in the path\&.
@@ -281,7 +272,6 @@ If the extension is found in the \fRmime_types\fP map, the corresponding MIME ty
 .IP "\(bu" 2
 If no recognized extension is found, the default MIME type \fRtext/plain\fP is returned\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -297,7 +287,7 @@ std::string The MIME type corresponding to the file extension, or \fRtext/plain\
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string http_status_description (\fBe_http_sts\fP code)"
 
 .PP
@@ -318,12 +308,11 @@ short standard message associated with the http code\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string int_to_string (int number)"
 
 .PP
 Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -339,12 +328,11 @@ A string representation of the provided integer\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "bool is_cgi (const std::string & filename)"
 
 .PP
 Checks if a file is a CGI script based on its extension\&. This function checks whether the given filename corresponds to a CGI script by looking at its extension\&. It checks for extensions such as \fR\&.py\fP and \fR\&.php\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -360,12 +348,11 @@ Checks if a file is a CGI script based on its extension\&. This function checks 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "bool is_dir (const std::string & path)"
 
 .PP
 Checks if a given path is a directory\&. This function checks if the provided path corresponds to a directory by using the \fRstat()\fP system call\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -381,12 +368,11 @@ Checks if a given path is a directory\&. This function checks if the provided pa
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "bool is_file (const std::string & path)"
 
 .PP
 Checks if a given path is a regular file\&. This function checks if the provided path corresponds to a regular file by using the \fRstat()\fP system call\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -402,12 +388,11 @@ Checks if a given path is a regular file\&. This function checks if the provided
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "bool is_valid_size_t (const std::string & value)"
 
 .PP
 Validates if a string represents a valid \fRsize_t\fP value\&. This function checks whether the provided string contains only numeric characters (digits), which would make it a valid positive integer for conversion to \fRsize_t\fP\&.
-
 .PP
 .IP "\(bu" 2
 The function first checks if the string is empty\&. An empty string is not considered valid\&.
@@ -418,7 +403,6 @@ If all characters are digits and the string is not empty, the function returns \
 .IP "\(bu" 2
 Otherwise, it returns \fRfalse\fP\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -434,18 +418,17 @@ bool True if the string contains only digits, false otherwise\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "std::string normalize_host (const std::string & host)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "\fBt_methods\fP parse_method (const std::string & method)"
 
 .PP
 Parses an HTTP method string and returns the corresponding method mask\&. This function maps a given HTTP method string (e\&.g\&., 'GET', 'POST') to its corresponding predefined method mask (\fRt_methods\fP)\&. If the method is not recognized, it returns 0\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -464,7 +447,6 @@ The map is initialized only once, ensuring efficiency for subsequent calls\&.
 .IP "\(bu" 2
 If the provided method string is not found in the map, the function returns 0, indicating an unrecognized or unsupported method\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -479,12 +461,11 @@ This function is case-sensitive\&. Ensure that the input method string matches t
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "std::string replace_template (std::string content, const std::string & key, const std::string & value)"
 
 .PP
 Replaces all occurrences of a key in the content with a given value\&. This method searches the provided content for all occurrences of the key and replaces each one with the specified value\&. It returns the modified content with all replacements made\&.
-
 .PP
 .IP "\(bu" 2
 The method iterates through the content, finding each occurrence of the key using \fRstd::string::find()\fP\&.
@@ -493,7 +474,6 @@ For each occurrence, it replaces the key with the value using \fRstd::string::re
 .IP "\(bu" 2
 If the value contains the key (which could cause an infinite loop), the method does not perform any replacements\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -513,28 +493,13 @@ std::string The content with all occurrences of the key replaced by the value\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "bool starts_with (const std::string & str, const std::string & prefix)"
 
 .PP
-Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
-
-.PP
-\fBParameters\fP
-.RS 4
-\fInumber\fP The integer to be converted\&. 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-A string representation of the provided integer\&.
-.RE
-.PP
-Checks if a string starts with a given prefix\&.
-
+** Checks if a string starts with a given prefix\&.
 .PP
 This function checks whether the provided string begins with the specified prefix\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -552,12 +517,11 @@ This function checks whether the provided string begins with the specified prefi
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "size_t str_to_size_t (const std::string & value)"
 
 .PP
 Converts a valid numeric string to \fRsize_t\fP\&. This function converts a valid numeric string (verified externally) to a \fRsize_t\fP value\&. It assumes that the input string contains only digits, as it should be validated by \fR\fBis_valid_size_t()\fP\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -573,12 +537,11 @@ size_t The converted \fRsize_t\fP value\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "std::string to_lowercase (const std::string & input)"
 
 .PP
 Converts a string to lowercase\&. This function iterates through each character in the input string and converts it to lowercase using \fRstd::tolower()\fP\&. It handles characters safely by casting them to \fRunsigned char\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -594,12 +557,11 @@ std::string A new string where all characters are lowercase\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "bool to_trim_char (char c, const std::string & chars_to_trim)"
 
 .PP
 Checks if a character should be trimmed\&. This function checks if the provided character exists within a set of characters designated for trimming\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -617,12 +579,11 @@ Checks if a character should be trimmed\&. This function checks if the provided 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "std::string trim (const std::string & str, const std::string & chars_to_trim = \fR' \\t\\n\\r\\f\\v'\fP)"
 
 .PP
 Trims characters from both ends of a string\&. This function removes any characters found in \fRchars_to_trim\fP from the beginning and end of the input string\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -640,17 +601,15 @@ A new string with the specified characters trimmed from both ends\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP\&.
 .SS "bool valid_mime_type (const std::string & path)"
 
 .PP
 Validate the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, true is returned\&. If the extension is not recognized, false
-
 .PP
 .IP "\(bu" 2
 The method extracts the file extension by searching for the last '\&.' character in the path\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -666,7 +625,7 @@ bool true if a MIME type is recognized, false otherwise\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for WebServer from the source code\&.

@@ -15,25 +15,117 @@ websrv/srcs/parse/parse.cpp
 .ti -1c
 .RI "\fBLocationConfig\fP \fBparse_location_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
 .br
+.RI "Parses a location block configuration from the config file\&. "
 .ti -1c
 .RI "\fBServerConfig\fP \fBparse_server_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
 .br
+.RI "Parses a server block configuration from the config file\&. "
 .ti -1c
 .RI "std::vector< \fBServerConfig\fP > \fBparse_servers\fP (std::vector< std::string > rawLines, \fBLogger\fP *logger)"
 .br
+.RI "Parses all server configurations from the raw configuration lines\&. "
 .ti -1c
 .RI "std::vector< \fBServerConfig\fP > \fBparse_file\fP (std::string path, \fBLogger\fP *logger)"
 .br
+.RI "Parses a configuration file and returns server configurations\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "std::vector< \fBServerConfig\fP > parse_file (std::string path, \fBLogger\fP * logger)"
 
+.PP
+Parses a configuration file and returns server configurations\&. Entry point for configuration file parsing\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Path to the configuration file\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<ServerConfig> Vector of parsed server configurations\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if file cannot be parsed or no servers are found\&. 
+.RE
+.PP
+
 .SS "\fBLocationConfig\fP parse_location_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
+
+.PP
+Parses a location block configuration from the config file\&. Processes location-specific directives and builds a \fBLocationConfig\fP object\&. Handles various location settings including index files, error pages, root paths, and access controls\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the location block\&. 
+.br
+\fIend\fP Iterator to the end of the configuration file\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBLocationConfig\fP Parsed location configuration\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if invalid parameters are encountered\&. 
+.RE
+.PP
 
 .SS "\fBServerConfig\fP parse_server_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
 
+.PP
+Parses a server block configuration from the config file\&. Processes server-level directives and builds a \fBServerConfig\fP object\&. Handles various server settings including ports, server names, and location blocks\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the server block\&. 
+.br
+\fIend\fP Iterator to the end of the configuration file\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBServerConfig\fP Parsed server configuration\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if mandatory parameters are missing or invalid\&. 
+.RE
+.PP
+
 .SS "std::vector< \fBServerConfig\fP > parse_servers (std::vector< std::string > rawLines, \fBLogger\fP * logger)"
+
+.PP
+Parses all server configurations from the raw configuration lines\&. Processes the entire configuration file and extracts all server blocks\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIrawLines\fP Vector of configuration file lines\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<ServerConfig> Vector of parsed server configurations\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if no valid servers are found or if duplicates exist\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 

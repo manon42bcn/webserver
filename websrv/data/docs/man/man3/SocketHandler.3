@@ -33,11 +33,11 @@ SocketHandler \- Manages socket operations and configurations for a server\&.
 .br
 .RI "Adds a host to the internal map of hosts if it doesn't already exist\&. "
 .ti -1c
-.RI "const \fBServerConfig\fP & \fBget_config\fP () const"
+.RI "\fBServerConfig\fP & \fBget_config\fP () const"
 .br
 .RI "Gets the server configuration\&. "
 .ti -1c
-.RI "const \fBServerConfig\fP * \fBget_config\fP (const std::string &host)"
+.RI "\fBServerConfig\fP * \fBget_config\fP (const std::string &host)"
 .br
 .ti -1c
 .RI "std::string \fBget_port\fP () const"
@@ -57,7 +57,6 @@ SocketHandler \- Manages socket operations and configurations for a server\&.
 Manages socket operations and configurations for a server\&. 
 
 The \fR\fBSocketHandler\fP\fP class encapsulates the logic for handling a single server socket, including accepting client connections, managing host-specific configurations, and handling auxiliary features like caching and CGI mapping\&.
-
 .PP
 .IP "\(bu" 2
 This class is responsible for initializing and configuring a socket for the server, including setting it to non-blocking mode and ensuring proper cleanup upon destruction\&.
@@ -68,7 +67,6 @@ The class also provides caching functionality using \fR\fBWebServerCache\fP\fP t
 .IP "\(bu" 2
 Auxiliary methods handle CGI file mapping, redirection configuration, and path validation within a specific location\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -86,7 +84,6 @@ Proper error handling and logging are integrated to ensure robustness in socket 
 
 .PP
 Constructs a new \fBSocketHandler\fP object\&. This constructor initializes a socket, sets its options, binds it to a specific port, and sets it in listening mode\&. Additionally, it configures the logger, manages server configurations, and performs initialization for cache instances\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -122,7 +119,6 @@ Logs relevant information at various stages to provide detailed flow insights\&.
 .IP "8." 4
 Maps CGI extensions (\&.py, \&.pl) to handle dynamic requests as part of initialization\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -134,10 +130,8 @@ Throws an exception and properly closes the socket on any failure, preventing re
 
 .PP
 Destroys the \fBSocketHandler\fP object\&. This destructor cleans up resources by closing the socket and logs the cleanup process\&.
-
 .PP
 The destructor calls \fRclose_socket()\fP to properly close the socket and release any associated resources\&. It then logs a debug message indicating that the \fBSocketHandler\fP resources have been cleaned up\&.
-
 .PP
 \fBNote\fP
 .RS 4
@@ -151,7 +145,6 @@ Ensure that any allocated resources are properly cleaned up to prevent resource 
 
 .PP
 Accepts a new incoming connection\&. This method accepts an incoming connection on the socket\&. If a client connection is accepted successfully, the client socket is set to non-blocking mode\&. If there is an error while accepting the connection, a warning is logged\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -163,7 +156,6 @@ The file descriptor for the accepted client connection, or -1 if an error occurs
 
 .PP
 Adds a host to the internal map of hosts if it doesn't already exist\&. This method takes a reference to a \fR\fBServerConfig\fP\fP object and adds it to the internal map of hosts (\fR_hosts\fP) managed by \fR\fBSocketHandler\fP\fP\&. If the host (identified by \fRserver_name\fP in the \fR\fBServerConfig\fP\fP) does not already exist in \fR_hosts\fP, it is added to the map and additional configurations such as redirections and CGI mappings are performed\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -184,7 +176,6 @@ Calls \fRmapping_cgi_locations(config, '\&.py')\fP and \fRmapping_cgi_locations(
 .PP
 
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -196,7 +187,6 @@ This method does not add the host if it already exists in the \fR_hosts\fP map\&
 
 .PP
 Gets the general cache\&. This method returns a reference to the general cache used by the \fBSocketHandler\fP\&. The cache stores \fR\fBCacheEntry\fP\fP objects for managing web server data\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -204,11 +194,10 @@ A reference to the \fR\fBWebServerCache\fP\fP object containing \fR\fBCacheEntry
 .RE
 .PP
 
-.SS "const \fBServerConfig\fP & SocketHandler::get_config () const"
+.SS "\fBServerConfig\fP & SocketHandler::get_config () const"
 
 .PP
 Gets the server configuration\&. This method returns a constant reference to the server configuration associated with the \fBSocketHandler\fP\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -216,13 +205,12 @@ A constant reference to the server configuration (\fBServerConfig\fP)\&.
 .RE
 .PP
 
-.SS "const \fBServerConfig\fP * SocketHandler::get_config (const std::string & host)"
+.SS "\fBServerConfig\fP * SocketHandler::get_config (const std::string & host)"
 
 .SS "std::string SocketHandler::get_port () const"
 
 .PP
 Gets the port number as a string\&. This method returns the port number to which the socket is bound, represented as a string\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -234,7 +222,6 @@ A string representing the port number\&.
 
 .PP
 Gets the request cache\&. This method returns a reference to the request cache used by the \fBSocketHandler\fP\&. The cache stores \fR\fBCacheRequest\fP\fP objects for managing requests to the server\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -246,7 +233,6 @@ A reference to the \fR\fBWebServerCache\fP\fP object containing \fR\fBCacheReque
 
 .PP
 Gets the socket file descriptor\&. This method returns the file descriptor for the socket associated with the \fBSocketHandler\fP\&.
-
 .PP
 \fBReturns\fP
 .RS 4

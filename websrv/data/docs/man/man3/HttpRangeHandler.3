@@ -112,7 +112,6 @@ Protected Attributes inherited from \fBWsResponseHandler\fP
 Manages HTTP requests that include range-specific content, such as partial file downloads\&. 
 
 This class extends \fR\fBWsResponseHandler\fP\fP to handle HTTP requests with a range header, enabling partial content retrieval for efficient file handling and data streaming\&.
-
 .PP
 .IP "\(bu" 2
 \fR\fBHttpRangeHandler\fP\fP processes requests with range headers, validates content range, and reads file content based on the specified range\&.
@@ -148,7 +147,6 @@ Relies on configuration from \fR\fBLocationConfig\fP\fP and logs actions via \fR
 
 .PP
 Constructs an \fR\fBHttpRangeHandler\fP\fP for handling HTTP range requests\&. Initializes the \fR\fBHttpRangeHandler\fP\fP by passing the location configuration, logger, client data, request structure, and file descriptor to the base class, \fR\fBWsResponseHandler\fP\fP\&. Logs the initialization process to facilitate tracing\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -175,7 +173,6 @@ Assumes that \fRlocation\fP, \fRlog\fP, and \fRclient_data\fP are valid pointers
 
 .PP
 Processes the HTTP range request, allowing only GET requests\&. This method handles HTTP range requests, verifying that the request method is \fRGET\fP\&. If the method is \fRGET\fP, it proceeds with \fRhandle_get()\fP to manage the range response\&. For any other method, it disables sanity, logs an error, and sends an HTTP bad request response\&.
-
 .PP
 \fBReturns\fP
 .RS 4

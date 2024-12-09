@@ -38,6 +38,8 @@ Feel free to write!
 
 This project implements a custom web server written in C++98, inspired by Nginx. It features the use of sockets, multiplexing, and several HTTP request handlers for a range of functionalities including static file serving, CGI execution, multipart handling, and more.
 
+Note: This version has small differences with the full-subject version, to include some improvements that just have more sense. Keep that in mind ;-D
+
 ## Table of Contents
 - [Introduction to Sockets and Multiplexing](#introduction-to-sockets-and-multiplexing)
 - [Project Overview](#project-overview)

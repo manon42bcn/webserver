@@ -10,251 +10,275 @@
 \DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/17\ 21:15:39\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
-\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/24\ 01:24:07\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/30\ 17:19:46\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
 \DoxyCodeLine{00012\ }
 \DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ WS\_STRUCTS\_HPP}}
 \DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ WS\_STRUCTS\_HPP}}
-\DoxyCodeLine{00015\ }
-\DoxyCodeLine{00021\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\_mode}}\ \{}
-\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aa8784a60589c30a252c265b610d2e0a9}{TEMPLATE}}=0,}
-\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}{LITERAL}}=1,}
-\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aaa8f0b9fd723ffc157027631757d7b87}{INVALID\_ERROR\_MODE}}=-\/42}
-\DoxyCodeLine{00025\ \}\ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}};}
-\DoxyCodeLine{00026\ }
-\DoxyCodeLine{00033\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\_path\_type}}\ \{}
-\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\_REGULAR}}\ =\ 0,}
-\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6bd306231858f6f6b77c5751e07e3e35}{PATH\_QUERY}}\ =\ 1,}
-\DoxyCodeLine{00036\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058ac0109377fb88d53d8a3b9c8e98787dfb}{PATH\_ENCODED}}\ =\ 2,}
-\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058aabb24f0087b7a7e94492af3dc62c0b69}{PATH\_RELATIVE}}\ =\ 3}
-\DoxyCodeLine{00038\ \};}
-\DoxyCodeLine{00039\ }
-\DoxyCodeLine{00046\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structs__cgi}{s\_cgi}}\ \{}
-\DoxyCodeLine{00047\ \ \ \ \ std::string\ \mbox{\hyperlink{structs__cgi_a5c96dcf599401cc65224954ab0296534}{cgi\_path}};}
-\DoxyCodeLine{00048\ \ \ \ \ std::string\ \mbox{\hyperlink{structs__cgi_a1f7885b38739d72626941961ebe36d2a}{script}};}
-\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{structs__cgi_a5b1611c40a56702472a797c7e6a77b31}{s\_cgi}}(std::string\ cp,\ std::string\ s):\ \mbox{\hyperlink{structs__cgi_a5c96dcf599401cc65224954ab0296534}{cgi\_path}}(cp),\ \mbox{\hyperlink{structs__cgi_a1f7885b38739d72626941961ebe36d2a}{script}}(s)\ \{\};}
-\DoxyCodeLine{00050\ \}\ \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\_cgi}};}
-\DoxyCodeLine{00051\ }
-\DoxyCodeLine{00059\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\_allowed\_methods}}\ \{}
-\DoxyCodeLine{00060\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a12a8dcf59c16b5aadfda3a08ba67d529}{GET}}=0,}
-\DoxyCodeLine{00061\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a368c5bc07109370b819193871352b926}{POST}}=1,}
-\DoxyCodeLine{00062\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a9d61e82a9a12752f10aece1b22183913}{DELETE}}=2,}
-\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04afec39d40e8bc9e12afa614df5ddb9fa9}{PUT}}=3,}
-\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04ad226abaf0bd38444586a018dad8d0674}{INVALID\_METHOD}}=-\/42}
-\DoxyCodeLine{00065\ \}\ \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\_allowed\_methods}};}
-\DoxyCodeLine{00066\ }
-\DoxyCodeLine{00075\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_location_config}{LocationConfig}}\ \{}
-\DoxyCodeLine{00076\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}};}
-\DoxyCodeLine{00077\ \ \ \ \ std::vector<std::string>\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}};}
-\DoxyCodeLine{00078\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}};}
-\DoxyCodeLine{00079\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}};}
-\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}};}
-\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}};}
-\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}};}
-\DoxyCodeLine{00083\ \ \ \ \ std::map<std::string,\ t\_cgi>\ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}};}
-\DoxyCodeLine{00084\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}};}
-\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}};}
-\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}};}
-\DoxyCodeLine{00087\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}};}
-\DoxyCodeLine{00088\ \ \ \ \ \mbox{\hyperlink{struct_location_config_a4d9d9ff50c98b379a1cbcc834abc115e}{LocationConfig}}():}
-\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}(),}
-\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}(),}
-\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}}(\mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}{LITERAL}}),}
-\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}(),}
-\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}}(0),}
-\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}}(false),}
-\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}}(false),}
-\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}(),}
-\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}(),}
-\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}}(false),}
-\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}}(false),}
-\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}}()\ \{}
-\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}.clear();}
-\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}\ =\ std::vector<std::string>();}
-\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}\ =\ std::map<int,\ std::string>();}
-\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}\ =\ std::map<std::string,\ t\_cgi>();}
-\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}\ =\ std::map<int,\ std::string>();}
-\DoxyCodeLine{00106\ \ \ \ \ \};}
-\DoxyCodeLine{00107\ }
-\DoxyCodeLine{00108\ \ \ \ \ \mbox{\hyperlink{struct_location_config_a3edea4a0fcafaea9a2d059e70539ac14}{LocationConfig}}(std::string\ r,}
-\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::string>\&\ dp,}
-\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ em,}
-\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ std::string>\&\ ep)\ :}
-\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}(r),}
-\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}(dp),}
-\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}}(em),}
-\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}(ep),}
-\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}}(0),}
-\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}}(false),}
-\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}}(false),}
-\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}(),}
-\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}(),}
-\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}}(false),}
-\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}}(false),}
-\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}}()\ \{}
-\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}\ =\ std::map<std::string,\ t\_cgi>();}
-\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}\ =\ std::map<int,\ std::string>();}
-\DoxyCodeLine{00126\ \ \ \ \ \}}
-\DoxyCodeLine{00127\ \};}
-\DoxyCodeLine{00128\ }
-\DoxyCodeLine{00129\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_server_config}{ServerConfig}}\ \{}
-\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_ae459946703124ef5a1d98dba38a8b493}{port}};}
-\DoxyCodeLine{00131\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}};}
-\DoxyCodeLine{00132\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}};}
-\DoxyCodeLine{00133\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a73b9eda6e787a6cf78e5c79e8186cb6b}{error\_mode}};}
-\DoxyCodeLine{00134\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}};}
-\DoxyCodeLine{00135\ \ \ \ \ std::map<std::string,\ struct\ LocationConfig>\ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}};}
-\DoxyCodeLine{00136\ \ \ \ \ std::vector<std::string>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}};}
-\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a74286f864d61d9d047d2c0d1524b196d}{client\_max\_body\_size}};}
-\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a78dfb3e729ba44ea169768000c14d0d1}{autoindex}};}
-\DoxyCodeLine{00139\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}};}
-\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a8ec5c49f88274efc4b09179f83f30d40}{cgi\_locations}};}
-\DoxyCodeLine{00141\ \ \ \ \ \textcolor{comment}{//\ \ -\/-\/-\/-\/-\/-\/>>>\ General\ config,\ apply\ to\ all\ servers.\ Here\ to\ make\ it\ faster\ at\ exec}}
-\DoxyCodeLine{00142\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}};}
-\DoxyCodeLine{00143\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}};}
-\DoxyCodeLine{00144\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a84535c40a13702220f4598322e9a66ab}{ws\_error\_mode}};}
-\DoxyCodeLine{00145\ }
-\DoxyCodeLine{00146\ \ \ \ \ \mbox{\hyperlink{struct_server_config_af61bcd662c3be06dd4219770350e65e6}{ServerConfig}}()}
-\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{struct_server_config_ae459946703124ef5a1d98dba38a8b493}{port}}(-\/42),}
-\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}}(),}
-\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}}(),}
-\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a73b9eda6e787a6cf78e5c79e8186cb6b}{error\_mode}}(),}
-\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}}(),}
-\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}}(),}
-\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}}(),}
-\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a74286f864d61d9d047d2c0d1524b196d}{client\_max\_body\_size}}(0),}
-\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a78dfb3e729ba44ea169768000c14d0d1}{autoindex}}(false),}
-\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}}(),}
-\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a8ec5c49f88274efc4b09179f83f30d40}{cgi\_locations}}(false),}
-\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}}(),}
-\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}}(),}
-\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a84535c40a13702220f4598322e9a66ab}{ws\_error\_mode}}()\ \{}
-\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}}.clear();}
-\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}}.clear();}
-\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}}.clear();}
-\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}}.clear();}
-\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}}.clear();}
-\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}}.clear();}
-\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}}.clear();}
-\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}}.clear();}
-\DoxyCodeLine{00169\ \ \ \ \ \}}
-\DoxyCodeLine{00170\ \};}
-\DoxyCodeLine{00171\ }
-\DoxyCodeLine{00179\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structs__request}{s\_request}}\ \{}
-\DoxyCodeLine{00180\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae259b87b05057211d3372326293be63a}{header}};}
-\DoxyCodeLine{00181\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa305e35ac77554933c3590ce0b667fa6}{body}};}
-\DoxyCodeLine{00182\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1c70a09aafe63af42cbdfedabb862f41}{host}};}
-\DoxyCodeLine{00183\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\_methods}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acf95efa3c0bb3ef794c63249eac40efa}{method}};}
-\DoxyCodeLine{00184\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}{method\_str}};}
-\DoxyCodeLine{00185\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}{path}};}
-\DoxyCodeLine{00186\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f0d006b79da85b38c3537c3c436baa7}{path\_request}};}
-\DoxyCodeLine{00187\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\_path\_type}}\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}{path\_type}};}
-\DoxyCodeLine{00188\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f17cbc8659022ad1ee950265bf4b454}{normalized\_path}};}
-\DoxyCodeLine{00189\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6ff9529af5cb6381c45168542ea18ee1}{path\_info}};}
-\DoxyCodeLine{00190\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa5c263627e8839b833082eb665335b7c}{query}};}
-\DoxyCodeLine{00191\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}{referer}};}
-\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af3d99495884a932146c31567d7fe7fba}{content\_length}};}
-\DoxyCodeLine{00193\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}{content\_type}};}
-\DoxyCodeLine{00194\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac6001a9e770ca283b82aa97b554d025a}{cookie}};}
-\DoxyCodeLine{00195\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a552b13f96d8285147b13d2cddf45136f}{script}};}
-\DoxyCodeLine{00196\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a19019e9e93056541ac2298e01c4c8fd3}{boundary}};}
-\DoxyCodeLine{00197\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}{range}};}
-\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acb7485a30304cdcb460d791702164b6f}{chunks}};}
-\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a5ec6bbec01eb329632171dbe201e5432}{factory}};}
-\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6d12636046ad9f859aec1a4d03dca910}{is\_cached}};}
-\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}{autoindex}};}
-\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a4e945b12c269262a4c352c39345a33f3}{is\_redir}};}
-\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a182647adb5229cc56e34b06f5a368f35}{cgi}};}
-\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity}};}
-\DoxyCodeLine{00205\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af678655594ab0f02e411a01238b79cf0}{status}};}
-\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ \ \ \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}};}
-\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ \ \ \ \ \mbox{\hyperlink{structs__request_a52508e47b1ed2263300265c4a7be9bf6}{host\_config}};}
-\DoxyCodeLine{00208\ }
-\DoxyCodeLine{00209\ \ \ \ \ \mbox{\hyperlink{structs__request_a057308bd1c73ef0db1ff0cc03563cd30}{s\_request}}():}
-\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae259b87b05057211d3372326293be63a}{header}}(),}
-\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa305e35ac77554933c3590ce0b667fa6}{body}}(),}
-\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1c70a09aafe63af42cbdfedabb862f41}{host}}(),}
-\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acf95efa3c0bb3ef794c63249eac40efa}{method}}(0),}
-\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}{method\_str}}(),}
-\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}{path}}(),}
-\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f0d006b79da85b38c3537c3c436baa7}{path\_request}}(),}
-\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}{path\_type}}(\mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\_REGULAR}}),}
-\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f17cbc8659022ad1ee950265bf4b454}{normalized\_path}}(),}
-\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6ff9529af5cb6381c45168542ea18ee1}{path\_info}}(),}
-\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa5c263627e8839b833082eb665335b7c}{query}}(),}
-\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}{referer}}(),}
-\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af3d99495884a932146c31567d7fe7fba}{content\_length}}(0),}
-\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}{content\_type}}(),}
-\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac6001a9e770ca283b82aa97b554d025a}{cookie}}(),}
-\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a552b13f96d8285147b13d2cddf45136f}{script}}(),}
-\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a19019e9e93056541ac2298e01c4c8fd3}{boundary}}(),}
-\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}{range}}(),}
-\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acb7485a30304cdcb460d791702164b6f}{chunks}}(false),}
-\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a5ec6bbec01eb329632171dbe201e5432}{factory}}(0),}
-\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6d12636046ad9f859aec1a4d03dca910}{is\_cached}}(false),}
-\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}{autoindex}}(false),}
-\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a4e945b12c269262a4c352c39345a33f3}{is\_redir}}(false),}
-\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a182647adb5229cc56e34b06f5a368f35}{cgi}}(false),}
-\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity}}(true),}
-\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af678655594ab0f02e411a01238b79cf0}{status}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\_I\_AM\_A\_TEAPOT}}),}
-\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}}(NULL),}
-\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a52508e47b1ed2263300265c4a7be9bf6}{host\_config}}(NULL)\ \{}
-\DoxyCodeLine{00238\ \textcolor{comment}{//\ \ \ \ \ \ header.clear();}}
-\DoxyCodeLine{00239\ \textcolor{comment}{//\ \ \ \ \ \ body.clear();}}
-\DoxyCodeLine{00240\ \textcolor{comment}{//\ \ \ \ \ \ host.clear();}}
-\DoxyCodeLine{00241\ \textcolor{comment}{//\ \ \ \ \ \ method\_str.clear();}}
-\DoxyCodeLine{00242\ \textcolor{comment}{//\ \ \ \ \ \ path.clear();}}
-\DoxyCodeLine{00243\ \textcolor{comment}{//\ \ \ \ \ \ path\_request.clear();}}
-\DoxyCodeLine{00244\ \textcolor{comment}{//\ \ \ \ \ \ normalized\_path.clear();}}
-\DoxyCodeLine{00245\ \textcolor{comment}{//\ \ \ \ \ \ path\_info.clear();}}
-\DoxyCodeLine{00246\ \textcolor{comment}{//\ \ \ \ \ \ query.clear();}}
-\DoxyCodeLine{00247\ \textcolor{comment}{//\ \ \ \ \ \ referer.clear();}}
-\DoxyCodeLine{00248\ \textcolor{comment}{//\ \ \ \ \ \ content\_type.clear();}}
-\DoxyCodeLine{00249\ \textcolor{comment}{//\ \ \ \ \ \ cookie.clear();}}
-\DoxyCodeLine{00250\ \textcolor{comment}{//\ \ \ \ \ \ script.clear();}}
-\DoxyCodeLine{00251\ \textcolor{comment}{//\ \ \ \ \ \ boundary.clear();}}
-\DoxyCodeLine{00252\ \textcolor{comment}{//\ \ \ \ \ \ range.clear();}}
-\DoxyCodeLine{00253\ \ \ \ \ \}}
-\DoxyCodeLine{00254\ \};}
-\DoxyCodeLine{00255\ }
-\DoxyCodeLine{00262\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_cache_entry}{CacheEntry}}\ \{}
-\DoxyCodeLine{00263\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}};}
-\DoxyCodeLine{00264\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}};}
-\DoxyCodeLine{00265\ }
-\DoxyCodeLine{00266\ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a914ac656640083a21b39c5039f3e5de5}{CacheEntry}}(\textcolor{keyword}{const}\ std::string\ \&u,\ \textcolor{keyword}{const}\ std::string\ \&c)}
-\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}(u),\ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}(c)\ \{\};}
-\DoxyCodeLine{00268\ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a6f286c2445da07c9b65b0ed9c369aea5}{CacheEntry}}():\ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}(),\ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}()\{}
-\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}.clear();}
-\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}.clear();}
-\DoxyCodeLine{00271\ \ \ \ \ \};}
-\DoxyCodeLine{00272\ \};}
-\DoxyCodeLine{00273\ }
-\DoxyCodeLine{00280\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_cache_request}{CacheRequest}}\ \{}
-\DoxyCodeLine{00281\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}};}
-\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}};}
-\DoxyCodeLine{00283\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}};}
-\DoxyCodeLine{00284\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}};}
-\DoxyCodeLine{00285\ }
-\DoxyCodeLine{00286\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a71810eef10010b609d909c8d04339f98}{CacheRequest}}(\textcolor{keyword}{const}\ std::string\&\ u,}
-\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ h,}
-\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ loc,}
-\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ np):}
-\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}(u),}
-\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}}(h),}
-\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}}(loc),}
-\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}(np)\ \{\};}
-\DoxyCodeLine{00294\ }
-\DoxyCodeLine{00295\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a6e5552b0fd732d2169df0dbce1690533}{CacheRequest}}():}
-\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}(),}
-\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}}(NULL),}
-\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}}(NULL),}
-\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}()\ \{}
-\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}.clear();}
-\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}.clear();}
-\DoxyCodeLine{00302\ \ \ \ \ \};}
-\DoxyCodeLine{00303\ \};}
-\DoxyCodeLine{00304\ }
-\DoxyCodeLine{00305\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_webserver_cache_8hpp}{WebserverCache.hpp}}"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937}{e\_mode}}\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aa8784a60589c30a252c265b610d2e0a9}{TEMPLATE}}=0,}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}{LITERAL}}=1,}
+\DoxyCodeLine{00025\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937aaa8f0b9fd723ffc157027631757d7b87}{INVALID\_ERROR\_MODE}}=-\/42}
+\DoxyCodeLine{00026\ \}\ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\_path\_type}}\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\_REGULAR}}\ =\ 0,}
+\DoxyCodeLine{00036\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6bd306231858f6f6b77c5751e07e3e35}{PATH\_QUERY}}\ =\ 1,}
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058ac0109377fb88d53d8a3b9c8e98787dfb}{PATH\_ENCODED}}\ =\ 2,}
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058aabb24f0087b7a7e94492af3dc62c0b69}{PATH\_RELATIVE}}\ =\ 3}
+\DoxyCodeLine{00039\ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structs__cgi}{s\_cgi}}\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ std::string\ \mbox{\hyperlink{structs__cgi_a5c96dcf599401cc65224954ab0296534}{cgi\_path}};}
+\DoxyCodeLine{00049\ \ \ \ \ std::string\ \mbox{\hyperlink{structs__cgi_a1f7885b38739d72626941961ebe36d2a}{script}};}
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{structs__cgi_a5b1611c40a56702472a797c7e6a77b31}{s\_cgi}}(std::string\ cp,\ std::string\ s):\ \mbox{\hyperlink{structs__cgi_a5c96dcf599401cc65224954ab0296534}{cgi\_path}}(cp),\ \mbox{\hyperlink{structs__cgi_a1f7885b38739d72626941961ebe36d2a}{script}}(s)\ \{\};}
+\DoxyCodeLine{00051\ \}\ \mbox{\hyperlink{ws__structs_8hpp_ad2eb8bfdaeac1421c806975f55d41979}{t\_cgi}};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04}{e\_allowed\_methods}}\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a12a8dcf59c16b5aadfda3a08ba67d529}{GET}}=0,}
+\DoxyCodeLine{00062\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a368c5bc07109370b819193871352b926}{POST}}=1,}
+\DoxyCodeLine{00063\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04a9d61e82a9a12752f10aece1b22183913}{DELETE}}=2,}
+\DoxyCodeLine{00064\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04afec39d40e8bc9e12afa614df5ddb9fa9}{PUT}}=3,}
+\DoxyCodeLine{00065\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_ae48994cf19aadf966f9bc962726e3d04ad226abaf0bd38444586a018dad8d0674}{INVALID\_METHOD}}=-\/42}
+\DoxyCodeLine{00066\ \}\ \mbox{\hyperlink{ws__structs_8hpp_a9b78038847d0f760e1db6037d104daf1}{t\_allowed\_methods}};}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_location_config}{LocationConfig}}\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}};}
+\DoxyCodeLine{00078\ \ \ \ \ std::vector<std::string>\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}};}
+\DoxyCodeLine{00079\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}};}
+\DoxyCodeLine{00080\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}};}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}};}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}};}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}};}
+\DoxyCodeLine{00084\ \ \ \ \ std::map<std::string,\ t\_cgi>\ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}};}
+\DoxyCodeLine{00085\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}};}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}};}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}};}
+\DoxyCodeLine{00088\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}};}
+\DoxyCodeLine{00089\ \ \ \ \ \mbox{\hyperlink{struct_location_config_a4d9d9ff50c98b379a1cbcc834abc115e}{LocationConfig}}():}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}(),}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}(),}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}}(\mbox{\hyperlink{ws__structs_8hpp_abef803757dd9b7a2b0dc5056d76d7937a01168ce90eea67d7bb43776fb0c139e5}{LITERAL}}),}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}(),}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}}(0),}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}}(false),}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}}(false),}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}(),}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}(),}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}}(false),}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}}(false),}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}}()\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}.clear();}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}\ =\ std::vector<std::string>();}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}\ =\ std::map<int,\ std::string>();}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}\ =\ std::map<std::string,\ t\_cgi>();}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}\ =\ std::map<int,\ std::string>();}
+\DoxyCodeLine{00107\ \ \ \ \ \};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \mbox{\hyperlink{struct_location_config_a3edea4a0fcafaea9a2d059e70539ac14}{LocationConfig}}(std::string\ r,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::string>\&\ dp,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ em,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::map<int,\ std::string>\&\ ep)\ :}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ac491f691a5205041cc7998745ca77e7e}{loc\_root}}(r),}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a10d82014e26eda8490b372ab525f229d}{loc\_default\_pages}}(dp),}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a575f1eb25902aee238e1890b0475b2fc}{loc\_error\_mode}}(em),}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a8e65310785507dab7b87257f40a6761d}{loc\_error\_pages}}(ep),}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_af1bb7fed770070d6ff51eee821d50580}{loc\_allowed\_methods}}(0),}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aecc4c6576c1d28d177b4bd9371777d93}{autoindex}}(false),}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a45e5ca086985cc9bef9fcfa34b21aacc}{cgi\_file}}(false),}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}(),}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}(),}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_acb89c5d9c7cbf95dedea3b694e8a8d02}{is\_root}}(false),}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ad6e79637727e73bb2b03ed29e907ef34}{is\_redir}}(false),}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_aa378e5d522be444e29f7e8dc9ea30fe0}{path\_root}}()\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_ada81ab1d2d40b5a1965104cda5468834}{cgi\_locations}}\ =\ std::map<std::string,\ t\_cgi>();}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_location_config_a603f09fa6ae2d229f35a14a8d36681aa}{redirections}}\ =\ std::map<int,\ std::string>();}
+\DoxyCodeLine{00127\ \ \ \ \ \}}
+\DoxyCodeLine{00128\ \};}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_cache_request}{CacheRequest}};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_server_config}{ServerConfig}}\ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_ae459946703124ef5a1d98dba38a8b493}{port}};}
+\DoxyCodeLine{00134\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}};}
+\DoxyCodeLine{00135\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}};}
+\DoxyCodeLine{00136\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a73b9eda6e787a6cf78e5c79e8186cb6b}{error\_mode}};}
+\DoxyCodeLine{00137\ \ \ \ \ std::map<int,\ std::string>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}};}
+\DoxyCodeLine{00138\ \ \ \ \ std::map<std::string,\ struct\ LocationConfig>\ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}};}
+\DoxyCodeLine{00139\ \ \ \ \ std::vector<std::string>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}};}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a74286f864d61d9d047d2c0d1524b196d}{client\_max\_body\_size}};}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a78dfb3e729ba44ea169768000c14d0d1}{autoindex}};}
+\DoxyCodeLine{00142\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}};}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a8ec5c49f88274efc4b09179f83f30d40}{cgi\_locations}};}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//\ \ -\/-\/-\/-\/-\/-\/>>>\ General\ config,\ apply\ to\ all\ servers.\ Here\ to\ make\ it\ faster\ at\ exec}}
+\DoxyCodeLine{00145\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}};}
+\DoxyCodeLine{00146\ \ \ \ \ std::string\ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}};}
+\DoxyCodeLine{00147\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a7ec97a462399f9878870a784ac273cc0}{t\_mode}}\ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a84535c40a13702220f4598322e9a66ab}{ws\_error\_mode}};}
+\DoxyCodeLine{00148\ \ \ \ \ \mbox{\hyperlink{class_web_server_cache}{WebServerCache<CacheRequest>}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a3f00360b3764546f04ea3c95ea27853a}{request\_cache}};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \mbox{\hyperlink{struct_server_config_af61bcd662c3be06dd4219770350e65e6}{ServerConfig}}()}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ :\ \mbox{\hyperlink{struct_server_config_ae459946703124ef5a1d98dba38a8b493}{port}}(-\/42),}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}}(),}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}}(),}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a73b9eda6e787a6cf78e5c79e8186cb6b}{error\_mode}}(),}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}}(),}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}}(),}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}}(),}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a74286f864d61d9d047d2c0d1524b196d}{client\_max\_body\_size}}(0),}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a78dfb3e729ba44ea169768000c14d0d1}{autoindex}}(false),}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}}(),}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a8ec5c49f88274efc4b09179f83f30d40}{cgi\_locations}}(false),}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}}(),}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}}(),}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a84535c40a13702220f4598322e9a66ab}{ws\_error\_mode}}(),}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a3f00360b3764546f04ea3c95ea27853a}{request\_cache}}(\mbox{\hyperlink{class_web_server_cache}{WebServerCache}}<\mbox{\hyperlink{struct_cache_request}{CacheRequest}}>(100))\ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a213a4f6e009eea56a0883ee86eedb1a3}{error\_pages}}.clear();}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_abc703cb0e204f1e5e92f5ba03fb5a640}{locations}}.clear();}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a6d543bedb721df355475a100f4a223db}{default\_pages}}.clear();}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a51daa4f82ff8f4cdd734f9ed6a75788c}{server\_name}}.clear();}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a7c84bb062e33c0f61e617b15e2e9a46b}{server\_root}}.clear();}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_adbb373dffa22cc411dd22a07087fc9d0}{template\_error\_page}}.clear();}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a1e1f76d68a298498bda617f25dfa6626}{ws\_root}}.clear();}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_server_config_a469e10a90ad611bfd750952ff31ab924}{ws\_errors\_root}}.clear();}
+\DoxyCodeLine{00174\ \ \ \ \ \}}
+\DoxyCodeLine{00175\ \};}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00184\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structs__request}{s\_request}}\ \{}
+\DoxyCodeLine{00185\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae259b87b05057211d3372326293be63a}{header}};}
+\DoxyCodeLine{00186\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa305e35ac77554933c3590ce0b667fa6}{body}};}
+\DoxyCodeLine{00187\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1c70a09aafe63af42cbdfedabb862f41}{host}};}
+\DoxyCodeLine{00188\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\_methods}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acf95efa3c0bb3ef794c63249eac40efa}{method}};}
+\DoxyCodeLine{00189\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}{method\_str}};}
+\DoxyCodeLine{00190\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}{path}};}
+\DoxyCodeLine{00191\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f0d006b79da85b38c3537c3c436baa7}{path\_request}};}
+\DoxyCodeLine{00192\ \ \ \ \ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\_path\_type}}\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}{path\_type}};}
+\DoxyCodeLine{00193\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f17cbc8659022ad1ee950265bf4b454}{normalized\_path}};}
+\DoxyCodeLine{00194\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6ff9529af5cb6381c45168542ea18ee1}{path\_info}};}
+\DoxyCodeLine{00195\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa5c263627e8839b833082eb665335b7c}{query}};}
+\DoxyCodeLine{00196\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}{referer}};}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af3d99495884a932146c31567d7fe7fba}{content\_length}};}
+\DoxyCodeLine{00198\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}{content\_type}};}
+\DoxyCodeLine{00199\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac6001a9e770ca283b82aa97b554d025a}{cookie}};}
+\DoxyCodeLine{00200\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a552b13f96d8285147b13d2cddf45136f}{script}};}
+\DoxyCodeLine{00201\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a19019e9e93056541ac2298e01c4c8fd3}{boundary}};}
+\DoxyCodeLine{00202\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}{range}};}
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acb7485a30304cdcb460d791702164b6f}{chunks}};}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a5ec6bbec01eb329632171dbe201e5432}{factory}};}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6d12636046ad9f859aec1a4d03dca910}{is\_cached}};}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}{autoindex}};}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a4e945b12c269262a4c352c39345a33f3}{is\_redir}};}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a182647adb5229cc56e34b06f5a368f35}{cgi}};}
+\DoxyCodeLine{00209\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity}};}
+\DoxyCodeLine{00210\ \ \ \ \ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af678655594ab0f02e411a01238b79cf0}{status}};}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ \ \ \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}};}
+\DoxyCodeLine{00212\ \ \ \ \ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa6a0d10697446ec229d540eec43bb43a}{host\_config}};}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae94859abf7e5ef23473b55355f954453}{request\_ready}};}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \mbox{\hyperlink{structs__request_a057308bd1c73ef0db1ff0cc03563cd30}{s\_request}}():}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae259b87b05057211d3372326293be63a}{header}}(),}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa305e35ac77554933c3590ce0b667fa6}{body}}(),}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1c70a09aafe63af42cbdfedabb862f41}{host}}(),}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acf95efa3c0bb3ef794c63249eac40efa}{method}}(0),}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}{method\_str}}(),}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}{path}}(),}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f0d006b79da85b38c3537c3c436baa7}{path\_request}}(),}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}{path\_type}}(\mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\_REGULAR}}),}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f17cbc8659022ad1ee950265bf4b454}{normalized\_path}}(),}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6ff9529af5cb6381c45168542ea18ee1}{path\_info}}(),}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa5c263627e8839b833082eb665335b7c}{query}}(),}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}{referer}}(),}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af3d99495884a932146c31567d7fe7fba}{content\_length}}(0),}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}{content\_type}}(),}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac6001a9e770ca283b82aa97b554d025a}{cookie}}(),}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a552b13f96d8285147b13d2cddf45136f}{script}}(),}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a19019e9e93056541ac2298e01c4c8fd3}{boundary}}(),}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}{range}}(),}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acb7485a30304cdcb460d791702164b6f}{chunks}}(false),}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a5ec6bbec01eb329632171dbe201e5432}{factory}}(0),}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6d12636046ad9f859aec1a4d03dca910}{is\_cached}}(false),}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}{autoindex}}(false),}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a4e945b12c269262a4c352c39345a33f3}{is\_redir}}(false),}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a182647adb5229cc56e34b06f5a368f35}{cgi}}(false),}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity}}(true),}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af678655594ab0f02e411a01238b79cf0}{status}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\_I\_AM\_A\_TEAPOT}}),}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}}(NULL),}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa6a0d10697446ec229d540eec43bb43a}{host\_config}}(NULL),}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae94859abf7e5ef23473b55355f954453}{request\_ready}}(false)\ \{\}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{structs__request_acaffc56771e92d3175877094feb06132}{clear\_request}}\ ()\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae259b87b05057211d3372326293be63a}{header}}.clear();}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa305e35ac77554933c3590ce0b667fa6}{body}}.clear();}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1c70a09aafe63af42cbdfedabb862f41}{host}}.clear();}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acf95efa3c0bb3ef794c63249eac40efa}{method}}\ =\ 0;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}{method\_str}}.clear();}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}{path}}.clear();}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f0d006b79da85b38c3537c3c436baa7}{path\_request}}.clear();}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}{path\_type}}\ =\ \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058a6b94664d7413abe2a3532b5cfc422cdd}{PATH\_REGULAR}};}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a7f17cbc8659022ad1ee950265bf4b454}{normalized\_path}}.clear();}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6ff9529af5cb6381c45168542ea18ee1}{path\_info}}.clear();}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa5c263627e8839b833082eb665335b7c}{query}}.clear();}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}{referer}}.clear();}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af3d99495884a932146c31567d7fe7fba}{content\_length}}\ =\ 0;}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}{content\_type}}.clear();}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac6001a9e770ca283b82aa97b554d025a}{cookie}}.clear();}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a552b13f96d8285147b13d2cddf45136f}{script}}.clear();}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a19019e9e93056541ac2298e01c4c8fd3}{boundary}}.clear();}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}{range}}.clear();}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_acb7485a30304cdcb460d791702164b6f}{chunks}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a5ec6bbec01eb329632171dbe201e5432}{factory}}\ =\ 0;}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a6d12636046ad9f859aec1a4d03dca910}{is\_cached}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}{autoindex}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a4e945b12c269262a4c352c39345a33f3}{is\_redir}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a182647adb5229cc56e34b06f5a368f35}{cgi}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_af678655594ab0f02e411a01238b79cf0}{status}}\ =\ \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390a31eb56c855e9a0a4d2df8d40d3cc270e}{HTTP\_I\_AM\_A\_TEAPOT}};}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}}\ =\ NULL;}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_aa6a0d10697446ec229d540eec43bb43a}{host\_config}}\ =\ NULL;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request_ae94859abf7e5ef23473b55355f954453}{request\_ready}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00276\ \ \ \ \ \}}
+\DoxyCodeLine{00277\ \};}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00285\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_cache_entry}{CacheEntry}}\ \{}
+\DoxyCodeLine{00286\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}};}
+\DoxyCodeLine{00287\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}};}
+\DoxyCodeLine{00288\ }
+\DoxyCodeLine{00289\ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a914ac656640083a21b39c5039f3e5de5}{CacheEntry}}(\textcolor{keyword}{const}\ std::string\ \&u,\ \textcolor{keyword}{const}\ std::string\ \&c):}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}(u),}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}(c)\ \{\};}
+\DoxyCodeLine{00292\ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a6f286c2445da07c9b65b0ed9c369aea5}{CacheEntry}}():\ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}(),\ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}()\{}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_ae544fb7be8e65bafa91c4b61ff115a86}{url}}.clear();}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_entry_a9f9b2ade52b0e9dc7d334efddfe17be7}{content}}.clear();}
+\DoxyCodeLine{00295\ \ \ \ \ \};}
+\DoxyCodeLine{00296\ \};}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00304\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_cache_request}{CacheRequest}}\ \{}
+\DoxyCodeLine{00305\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}};}
+\DoxyCodeLine{00306\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}};}
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}};}
+\DoxyCodeLine{00308\ \ \ \ \ std::string\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}};}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00310\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a71810eef10010b609d909c8d04339f98}{CacheRequest}}(\textcolor{keyword}{const}\ std::string\&\ u,}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_server_config}{ServerConfig}}*\ h,}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{struct_location_config}{LocationConfig}}*\ loc,}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ np):}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}(u),}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}}(h),}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}}(loc),}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}(np)\ \{\};}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a6e5552b0fd732d2169df0dbce1690533}{CacheRequest}}():}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}(),}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a823987315457621a335f12e9495d9949}{host}}(NULL),}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a3f4e080557673ad1c603d8931805a0a5}{location}}(NULL),}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}()\ \{}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_a049403f78e19de7bd56764ea90f40ae8}{url}}.clear();}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_cache_request_abf9a78b5d9ce556cbffa7fe3acc58684}{normalized\_path}}.clear();}
+\DoxyCodeLine{00326\ \ \ \ \ \};}
+\DoxyCodeLine{00327\ \};}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

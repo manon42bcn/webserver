@@ -34,85 +34,85 @@ websrv/inc/ws_permissions_bitwise.hpp
 .RI "#define \fBMASK_METHOD_DELETE\fP   (1 << 7)"
 .br
 .ti -1c
-.RI "#define \fBHAS_GET\fP(permissions)"
+.RI "#define \fBHAS_GET\fP(permissions)   ((permissions) & \fBMASK_METHOD_GET\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_OPTIONS\fP(permissions)"
+.RI "#define \fBHAS_OPTIONS\fP(permissions)   ((permissions) & \fBMASK_METHOD_OPTIONS\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_HEAD\fP(permissions)"
+.RI "#define \fBHAS_HEAD\fP(permissions)   ((permissions) & \fBMASK_METHOD_HEAD\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_POST\fP(permissions)"
+.RI "#define \fBHAS_POST\fP(permissions)   ((permissions) & \fBMASK_METHOD_POST\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_PUT\fP(permissions)"
+.RI "#define \fBHAS_PUT\fP(permissions)   ((permissions) & \fBMASK_METHOD_PUT\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_PATCH\fP(permissions)"
+.RI "#define \fBHAS_PATCH\fP(permissions)   ((permissions) & \fBMASK_METHOD_PATCH\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_TRACE\fP(permissions)"
+.RI "#define \fBHAS_TRACE\fP(permissions)   ((permissions) & \fBMASK_METHOD_TRACE\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_DELETE\fP(permissions)"
+.RI "#define \fBHAS_DELETE\fP(permissions)   ((permissions) & \fBMASK_METHOD_DELETE\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_GET\fP(permissions)"
+.RI "#define \fBGRANT_GET\fP(permissions)   ((permissions) |= \fBMASK_METHOD_GET\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_OPTIONS\fP(permissions)"
+.RI "#define \fBGRANT_OPTIONS\fP(permissions)   ((permissions) |= \fBMASK_METHOD_OPTIONS\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_HEAD\fP(permissions)"
+.RI "#define \fBGRANT_HEAD\fP(permissions)   ((permissions) |= \fBMASK_METHOD_HEAD\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_POST\fP(permissions)"
+.RI "#define \fBGRANT_POST\fP(permissions)   ((permissions) |= \fBMASK_METHOD_POST\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_PUT\fP(permissions)"
+.RI "#define \fBGRANT_PUT\fP(permissions)   ((permissions) |= \fBMASK_METHOD_PUT\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_PATCH\fP(permissions)"
+.RI "#define \fBGRANT_PATCH\fP(permissions)   ((permissions) |= \fBMASK_METHOD_PATCH\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_TRACE\fP(permissions)"
+.RI "#define \fBGRANT_TRACE\fP(permissions)   ((permissions) |= \fBMASK_METHOD_TRACE\fP)"
 .br
 .ti -1c
-.RI "#define \fBGRANT_DELETE\fP(permissions)"
+.RI "#define \fBGRANT_DELETE\fP(permissions)   ((permissions) |= \fBMASK_METHOD_DELETE\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_GET\fP(permissions)"
+.RI "#define \fBREVOKE_GET\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_GET\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_OPTIONS\fP(permissions)"
+.RI "#define \fBREVOKE_OPTIONS\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_OPTIONS\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_HEAD\fP(permissions)"
+.RI "#define \fBREVOKE_HEAD\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_HEAD\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_POST\fP(permissions)"
+.RI "#define \fBREVOKE_POST\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_POST\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_PUT\fP(permissions)"
+.RI "#define \fBREVOKE_PUT\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_PUT\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_PATCH\fP(permissions)"
+.RI "#define \fBREVOKE_PATCH\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_PATCH\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_TRACE\fP(permissions)"
+.RI "#define \fBREVOKE_TRACE\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_TRACE\fP)"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_DELETE\fP(permissions)"
+.RI "#define \fBREVOKE_DELETE\fP(permissions)   ((permissions) &= ~\fBMASK_METHOD_DELETE\fP)"
 .br
 .ti -1c
-.RI "#define \fBHAS_PERMISSION\fP(permissions,  mask)"
+.RI "#define \fBHAS_PERMISSION\fP(permissions,  mask)   ((permissions) & (mask))"
 .br
 .ti -1c
-.RI "#define \fBGRANT_PERMISSIONS\fP(permissions,  mask)"
+.RI "#define \fBGRANT_PERMISSIONS\fP(permissions,  mask)   ((permissions) |= (mask))"
 .br
 .ti -1c
-.RI "#define \fBREVOKE_PERMISSIONS\fP(permissions,  mask)"
+.RI "#define \fBREVOKE_PERMISSIONS\fP(permissions,  mask)   ((permissions) &= ~(mask))"
 .br
 .ti -1c
 .RI "#define \fBMASK_READ\fP   (\fBMASK_METHOD_GET\fP | \fBMASK_METHOD_HEAD\fP | \fBMASK_METHOD_OPTIONS\fP)"
@@ -124,151 +124,58 @@ websrv/inc/ws_permissions_bitwise.hpp
 .RI "#define \fBMASK_ALL_PERMISSIONS\fP"
 .br
 .ti -1c
-.RI "#define \fBGRANT_ALL\fP(permissions)"
+.RI "#define \fBGRANT_ALL\fP(permissions)   ((permissions) |= \fBMASK_ALL_PERMISSIONS\fP)"
+.br
+.ti -1c
+.RI "#define \fBNEXT_STEP\fP(step)   (step << 1)"
 .br
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
-.SS "#define GRANT_ALL( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_ALL_PERMISSIONS)
-.PP
-.fi
+.SS "#define GRANT_ALL(permissions)   ((permissions) |= \fBMASK_ALL_PERMISSIONS\fP)"
 
-.SS "#define GRANT_DELETE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_DELETE)
-.PP
-.fi
+.SS "#define GRANT_DELETE(permissions)   ((permissions) |= \fBMASK_METHOD_DELETE\fP)"
 
-.SS "#define GRANT_GET( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_GET)
-.PP
-.fi
+.SS "#define GRANT_GET(permissions)   ((permissions) |= \fBMASK_METHOD_GET\fP)"
 
-.SS "#define GRANT_HEAD( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_HEAD)
-.PP
-.fi
+.SS "#define GRANT_HEAD(permissions)   ((permissions) |= \fBMASK_METHOD_HEAD\fP)"
 
-.SS "#define GRANT_OPTIONS( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_OPTIONS)
-.PP
-.fi
+.SS "#define GRANT_OPTIONS(permissions)   ((permissions) |= \fBMASK_METHOD_OPTIONS\fP)"
 
-.SS "#define GRANT_PATCH( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_PATCH)
-.PP
-.fi
+.SS "#define GRANT_PATCH(permissions)   ((permissions) |= \fBMASK_METHOD_PATCH\fP)"
 
-.SS "#define GRANT_PERMISSIONS( permissions,  mask)"
-\fBValue:\fP
-.nf
-((permissions) |= (mask))
-.PP
-.fi
+.SS "#define GRANT_PERMISSIONS(permissions, mask)   ((permissions) |= (mask))"
 
-.SS "#define GRANT_POST( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_POST)
-.PP
-.fi
+.SS "#define GRANT_POST(permissions)   ((permissions) |= \fBMASK_METHOD_POST\fP)"
 
-.SS "#define GRANT_PUT( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_PUT)
-.PP
-.fi
+.SS "#define GRANT_PUT(permissions)   ((permissions) |= \fBMASK_METHOD_PUT\fP)"
 
-.SS "#define GRANT_TRACE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) |= MASK_METHOD_TRACE)
-.PP
-.fi
+.SS "#define GRANT_TRACE(permissions)   ((permissions) |= \fBMASK_METHOD_TRACE\fP)"
 
-.SS "#define HAS_DELETE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_DELETE)
-.PP
-.fi
+.SS "#define HAS_DELETE(permissions)   ((permissions) & \fBMASK_METHOD_DELETE\fP)"
 
-.SS "#define HAS_GET( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_GET)
-.PP
-.fi
+.SS "#define HAS_GET(permissions)   ((permissions) & \fBMASK_METHOD_GET\fP)"
 
-.SS "#define HAS_HEAD( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_HEAD)
-.PP
-.fi
+.SS "#define HAS_HEAD(permissions)   ((permissions) & \fBMASK_METHOD_HEAD\fP)"
 
-.SS "#define HAS_OPTIONS( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_OPTIONS)
-.PP
-.fi
+.SS "#define HAS_OPTIONS(permissions)   ((permissions) & \fBMASK_METHOD_OPTIONS\fP)"
 
-.SS "#define HAS_PATCH( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_PATCH)
-.PP
-.fi
+.SS "#define HAS_PATCH(permissions)   ((permissions) & \fBMASK_METHOD_PATCH\fP)"
 
-.SS "#define HAS_PERMISSION( permissions,  mask)"
-\fBValue:\fP
-.nf
-((permissions) & (mask))
-.PP
-.fi
+.SS "#define HAS_PERMISSION(permissions, mask)   ((permissions) & (mask))"
 
-.SS "#define HAS_POST( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_POST)
-.PP
-.fi
+.SS "#define HAS_POST(permissions)   ((permissions) & \fBMASK_METHOD_POST\fP)"
 
-.SS "#define HAS_PUT( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_PUT)
-.PP
-.fi
+.SS "#define HAS_PUT(permissions)   ((permissions) & \fBMASK_METHOD_PUT\fP)"
 
-.SS "#define HAS_TRACE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) & MASK_METHOD_TRACE)
-.PP
-.fi
+.SS "#define HAS_TRACE(permissions)   ((permissions) & \fBMASK_METHOD_TRACE\fP)"
 
 .SS "#define MASK_ALL_PERMISSIONS"
-\fBValue:\fP
+\fBValue:\fP.PP
 .nf
                             (MASK_METHOD_GET | MASK_METHOD_OPTIONS | MASK_METHOD_HEAD | \\
                             MASK_METHOD_POST | MASK_METHOD_PUT | MASK_METHOD_PATCH | \\
                             MASK_METHOD_TRACE | MASK_METHOD_DELETE)
-.PP
 .fi
 
 .SS "#define MASK_METHOD_DELETE   (1 << 7)"
@@ -276,111 +183,68 @@ websrv/inc/ws_permissions_bitwise.hpp
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_GET   (1 << 0)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_HEAD   (1 << 2)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_OPTIONS   (1 << 1)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_PATCH   (1 << 5)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_POST   (1 << 3)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_PUT   (1 << 4)"
 
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/mac/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/general_helpers\&.cpp\fP, and \fB/Users/cx03019/Documents/Cursus/webserver/websrv/srcs/http_request_helper\&.cpp\fP\&.
 .SS "#define MASK_METHOD_TRACE   (1 << 6)"
 
 .SS "#define MASK_READ   (\fBMASK_METHOD_GET\fP | \fBMASK_METHOD_HEAD\fP | \fBMASK_METHOD_OPTIONS\fP)"
 
 .SS "#define MASK_READ_WRITE   (\fBMASK_READ\fP | \fBMASK_METHOD_POST\fP)"
 
-.SS "#define REVOKE_DELETE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_DELETE)
-.PP
-.fi
+.SS "#define NEXT_STEP(step)   (step << 1)"
 
-.SS "#define REVOKE_GET( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_GET)
-.PP
-.fi
+.SS "#define REVOKE_DELETE(permissions)   ((permissions) &= ~\fBMASK_METHOD_DELETE\fP)"
 
-.SS "#define REVOKE_HEAD( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_HEAD)
-.PP
-.fi
+.SS "#define REVOKE_GET(permissions)   ((permissions) &= ~\fBMASK_METHOD_GET\fP)"
 
-.SS "#define REVOKE_OPTIONS( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_OPTIONS)
-.PP
-.fi
+.SS "#define REVOKE_HEAD(permissions)   ((permissions) &= ~\fBMASK_METHOD_HEAD\fP)"
 
-.SS "#define REVOKE_PATCH( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_PATCH)
-.PP
-.fi
+.SS "#define REVOKE_OPTIONS(permissions)   ((permissions) &= ~\fBMASK_METHOD_OPTIONS\fP)"
 
-.SS "#define REVOKE_PERMISSIONS( permissions,  mask)"
-\fBValue:\fP
-.nf
-((permissions) &= ~(mask))
-.PP
-.fi
+.SS "#define REVOKE_PATCH(permissions)   ((permissions) &= ~\fBMASK_METHOD_PATCH\fP)"
 
-.SS "#define REVOKE_POST( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_POST)
-.PP
-.fi
+.SS "#define REVOKE_PERMISSIONS(permissions, mask)   ((permissions) &= ~(mask))"
 
-.SS "#define REVOKE_PUT( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_PUT)
-.PP
-.fi
+.SS "#define REVOKE_POST(permissions)   ((permissions) &= ~\fBMASK_METHOD_POST\fP)"
 
-.SS "#define REVOKE_TRACE( permissions)"
-\fBValue:\fP
-.nf
-((permissions) &= ~MASK_METHOD_TRACE)
-.PP
-.fi
+.SS "#define REVOKE_PUT(permissions)   ((permissions) &= ~\fBMASK_METHOD_PUT\fP)"
+
+.SS "#define REVOKE_TRACE(permissions)   ((permissions) &= ~\fBMASK_METHOD_TRACE\fP)"
 
 .SH "Author"
 .PP 

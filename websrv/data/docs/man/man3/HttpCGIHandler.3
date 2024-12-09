@@ -120,7 +120,6 @@ Protected Attributes inherited from \fBWsResponseHandler\fP
 Handles HTTP requests that require CGI script execution\&. 
 
 The \fR\fBHttpCGIHandler\fP\fP class is responsible for executing CGI scripts in response to HTTP requests, capturing their output, and sending the appropriate HTTP responses back to the client\&. It manages environment setup, process execution, inter-process communication via pipes, and error handling throughout the CGI execution lifecycle\&.
-
 .PP
 .IP "\(bu" 2
 \fBCGI Execution\fP: Executes external scripts or programs as per the CGI specification\&.
@@ -153,7 +152,6 @@ The \fR\fBHttpCGIHandler\fP\fP class is responsible for executing CGI scripts in
 .IP "\(bu" 2
 \fRbool send_response(const std::string &body, const std::string &path)\fP: Sends the response to the client\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -167,7 +165,6 @@ This class is implemented as part of WebServer Project\&. Some errors controls a
 
 .PP
 Constructs an \fR\fBHttpCGIHandler\fP\fP for processing CGI requests\&. Initializes the CGI handler with the given location configuration, logger, client data, request details, and file descriptor\&. It logs the initialization process and ensures that critical pointers are valid\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -193,7 +190,6 @@ Destructor for \fR\fBHttpCGIHandler\fP\fP, responsible for cleaning up resources
 
 .PP
 Handles the CGI request by executing the CGI script and sending the response\&. This method executes the CGI script, processes its output, and constructs an HTTP response to be sent back to the client\&. It performs validation on the CGI output, ensuring that necessary headers like \fRContent-Type\fP are present\&.
-
 .PP
 \fBReturns\fP
 .RS 4

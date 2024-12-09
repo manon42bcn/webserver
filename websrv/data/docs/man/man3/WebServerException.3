@@ -38,7 +38,6 @@ Inherits std::exception\&.
 Custom exception class for handling errors within the web server project\&. 
 
 This exception class provides a standard way to handle errors by allowing custom messages\&. It inherits from \fRstd::exception\fP and overrides the \fR\fBwhat()\fP\fP method to return a message\&.
-
 .PP
 .IP "\(bu" 2
 Can be initialized with either \fRstd::string\fP or \fRconst char*\fP for message flexibility\&.
@@ -53,7 +52,6 @@ The destructor is \fRnoexcept\fP, ensuring that it does not throw exceptions dur
 .IP "\(bu" 2
 \fRconst char* \fBwhat() const \fPthrow()\fP: Returns the error message\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -64,7 +62,7 @@ Use this exception throughout the project to ensure consistent error handling\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "WebServerException::WebServerException (const std::string & message)\fR [inline]\fP, \fR [explicit]\fP"
@@ -76,7 +74,7 @@ Use this exception throughout the project to ensure consistent error handling\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
 .SS "WebServerException::WebServerException (const \fBWebServerException\fP & other)\fR [inline]\fP"
 
 .SS "virtual WebServerException::~WebServerException ()\fR [inline]\fP, \fR [virtual]\fP"
@@ -84,7 +82,7 @@ Use this exception throughout the project to ensure consistent error handling\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
 .SH "Member Function Documentation"
 .PP 
 .SS "virtual const char * WebServerException::what () const\fR [inline]\fP, \fR [virtual]\fP"
@@ -92,7 +90,7 @@ Use this exception throughout the project to ensure consistent error handling\&.
 .PP
 \fBExamples\fP
 .in +1c
-\fB/Users/mac/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
+\fB/Users/cx03019/Documents/Cursus/webserver/websrv/inc/WebserverException\&.hpp\fP\&.
 
 .SH "Author"
 .PP 

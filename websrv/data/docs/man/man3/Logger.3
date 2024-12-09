@@ -71,7 +71,6 @@ This class provides methods for logging messages with different severity levels,
 
 .PP
 Constructs a \fBLogger\fP object with a specified log level and optional file logging\&. This constructor initializes the logger with a specific log level, determining the minimum level of messages that will be logged\&. If file logging is enabled, the logger attempts to open a log file; if the file cannot be opened, logging defaults to the console\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -96,7 +95,6 @@ Destructor for the \fBLogger\fP object\&. Closes the log file if it is open and 
 
 .PP
 Logs a fatal error message and terminates the program\&. This function logs a fatal error message, prints it to the standard error output, and then terminates the program\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -110,7 +108,6 @@ Logs a fatal error message and terminates the program\&. This function logs a fa
 
 .PP
 Logs a message with a specified log level\&. This function logs a message if the provided log level is equal to or higher than the configured log level for the logger\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -126,7 +123,6 @@ Logs a message with a specified log level\&. This function logs a message if the
 
 .PP
 Logs a debug-level message\&. This function logs a message with DEBUG severity if the current log level permits it\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -140,7 +136,6 @@ Logs a debug-level message\&. This function logs a message with DEBUG severity i
 
 .PP
 Logs an error-level message\&. This function logs a message with ERROR severity\&. Error messages are always logged regardless of the configured log level\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -154,7 +149,6 @@ Logs an error-level message\&. This function logs a message with ERROR severity\
 
 .PP
 Logs an info-level message\&. This function logs a message with INFO severity if the current log level permits it\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -168,7 +162,6 @@ Logs an info-level message\&. This function logs a message with INFO severity if
 
 .PP
 Logs a warning-level message\&. This function logs a message with WARNING severity if the current log level permits it\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -184,7 +177,6 @@ Logs a warning-level message\&. This function logs a message with WARNING severi
 
 .PP
 Logs a status message to the standard output\&. This function logs a status message, typically used for indicating non-error status updates\&.
-
 .PP
 \fBParameters\fP
 .RS 4

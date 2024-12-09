@@ -23,7 +23,11 @@ HttpRequestHandler \- Handles HTTP requests by parsing, validating, and dispatch
 .ti -1c
 .RI "void \fBrequest_workflow\fP ()"
 .br
-.RI "Executes the main workflow for handling an HTTP request\&. "
+.RI "Executes the workflow for processing and validating an HTTP request\&. "
+.ti -1c
+.RI "void \fBhandle_request\fP ()"
+.br
+.RI "Processes the HTTP request and initiates the appropriate response handler\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -39,7 +43,6 @@ Determining the appropriate handler based on request type (e\&.g\&., standard, C
 .IP "\(bu" 2
 Generating an error response if the request is invalid or malformed\&.
 .PP
-
 .PP
 The class utilizes a series of private validation and parsing steps, executed in sequence through \fRrequest_workflow\fP\&. If any step detects an invalid state, it halts the process and sends an error response\&.
 .SS "Attributes"
@@ -64,10 +67,8 @@ The class utilizes a series of private validation and parsing steps, executed in
 .IP "\(bu" 2
 \fR_request_data\fP: Stores parsed request details, including headers, method, path, and body\&.
 .PP
-
 .PP
 The class supports CGI requests, ranged requests, multipart uploads, and standard HTTP methods, using helper classes (\fR\fBHttpResponseHandler\fP\fP, \fR\fBHttpCGIHandler\fP\fP, \fR\fBHttpRangeHandler\fP\fP, and \fR\fBHttpMultipartHandler\fP\fP) to handle each type\&.
-
 .PP
 \fBExceptions\fP
 .RS 4
@@ -86,7 +87,6 @@ The class supports CGI requests, ranged requests, multipart uploads, and standar
 
 .PP
 Constructs an \fBHttpRequestHandler\fP instance to process and manage HTTP requests\&. This constructor initializes the handler with essential pointers and settings for processing HTTP requests\&. It retrieves configuration details from the associated client data, initializes logging and caching resources, and verifies the validity of the essential components\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -123,104 +123,125 @@ This destructor does not perform specific memory deallocation as most resources 
 
 .SH "Member Function Documentation"
 .PP 
+.SS "void HttpRequestHandler::handle_request ()"
+
+.PP
+Processes the HTTP request and initiates the appropriate response handler\&. Based on the request's state and attributes, this function initializes and dispatches a suitable response handler:
+.IP "\(bu" 2
+\fR\fBHttpResponseHandler\fP\fP: Handles standard HTTP requests\&.
+.IP "\(bu" 2
+\fR\fBHttpCGIHandler\fP\fP: Handles CGI requests\&.
+.IP "\(bu" 2
+\fR\fBHttpRangeHandler\fP\fP: Manages ranged requests\&.
+.IP "\(bu" 2
+\fR\fBHttpMultipartHandler\fP\fP: Handles multipart data uploads\&.
+.PP
+.PP
+Workflow:
+.IP "1." 4
+\fBSanity Check\fP: If \fR_request_data\&.sanity\fP is false, a generic error response is sent via \fR\fBHttpResponseHandler\fP\fP\&.
+.IP "2." 4
+\fBRequest Type Decision\fP:
+.IP "  \(bu" 4
+If \fR_request_data\&.factory\fP is 0, uses \fR\fBHttpResponseHandler\fP\fP\&.
+.IP "  \(bu" 4
+If \fR_request_data\&.cgi\fP is true, uses \fR\fBHttpCGIHandler\fP\fP\&.
+.IP "  \(bu" 4
+If \fR_request_data\&.range\fP is non-empty, uses \fR\fBHttpRangeHandler\fP\fP\&.
+.IP "  \(bu" 4
+If \fR_request_data\&.boundary\fP is non-empty, uses \fR\fBHttpMultipartHandler\fP\fP\&. 
+.PP
+\fBNote\fP
+.RS 4
+: This method will cache request related info if it was not cached yet, if everything went ok, and if method is get\&.
+.RE
+.PP
+\fBException Handling\fP:
+.PP
+
+.PP
+.IP "\(bu" 2
+Catches \fR\fBWebServerException\fP\fP, \fR\fBLogger::NoLoggerPointer\fP\fP, and \fRstd::exception\fP to log errors and deactivate the client connection\&.
+.PP
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBWebServerException\fP\fP Catches errors from WebServer-specific issues\&. 
+.br
+\fI\fBLogger::NoLoggerPointer\fP\fP Catches logging pointer errors\&. 
+.br
+\fIstd::exception\fP Catches unexpected exceptions\&. 
+.RE
+.PP
+
 .SS "void HttpRequestHandler::request_workflow ()"
 
 .PP
-Executes the main workflow for handling an HTTP request\&. This method defines and executes a series of validation and parsing steps to fully handle an HTTP request\&. It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler\&.
-
+Executes the workflow for processing and validating an HTTP request\&. This method manages the step-by-step workflow for parsing and validating an HTTP request, followed by handling the request if it is ready\&. The workflow is divided into distinct validation steps, each responsible for a specific part of the HTTP request processing\&.
 .PP
-The method performs the following actions:
-
-.PP
+The method operates as follows:
 .IP "1." 4
-\fBDefine Validation Steps\fP:
+\fBDefine Steps\fP:
 .IP "  \(bu" 4
-Defines an array of function pointers (\fRsteps\fP) representing each step of the request processing workflow:
+An array of function pointers (\fRvalidate_step\fP) defines the steps for processing:
 .IP "    \(bu" 6
-\fRread_request_header()\fP: Reads the incoming request header\&.
+\fRread_request_header\fP: Reads the HTTP request header from the client\&.
 .IP "    \(bu" 6
-\fRparse_header()\fP: Parses the request headers\&.
+\fRparse_header\fP: Parses the header for key-value pairs\&.
 .IP "    \(bu" 6
-\fRparse_method_and_path()\fP: Parses the HTTP method and the requested path\&.
+\fRparse_method_and_path\fP: Extracts the HTTP method and requested path\&.
 .IP "    \(bu" 6
-\fRparse_path_type()\fP: Determines the type of path being requested\&.
+\fRparse_path_type\fP: Determines the type of resource (e\&.g\&., file, directory)\&.
 .IP "    \(bu" 6
-\fRload_header_data()\fP: Loads additional header data needed for processing\&.
+\fRload_header_data\fP: Loads additional header data needed for processing\&.
 .IP "    \(bu" 6
-\fRsolver_resource()\fP: Resolves the requested resource path and validates its location\&.
+\fRload_host_config\fP: Maps the request to the correct host configuration\&.
 .IP "    \(bu" 6
-\fRload_content()\fP: Loads the content associated with the request (if applicable)\&.
+\fRsolver_resource\fP: Resolves the resource requested by the client\&.
 .IP "    \(bu" 6
-\fRvalidate_request()\fP: Validates the overall request to ensure it meets server requirements\&.
+\fRload_content\fP: Reads the content of the request, if any\&.
+.IP "    \(bu" 6
+\fRvalidate_request\fP: Performs final validation of the request's integrity\&.
 .PP
 
 .PP
 
 .IP "2." 4
-\fBStart Request Workflow\fP:
+\fBCheck Input State\fP:
 .IP "  \(bu" 4
-Logs the beginning of the request parsing and validation process\&.
-.IP "  \(bu" 4
-Calls \fR_client_data->chronos_reset()\fP to reset any timers related to the client (e\&.g\&., request start time)\&.
+If the request is not ready and the socket is readable (\fRPOLLIN\fP), the validation process begins\&.
 .PP
 
 .IP "3." 4
 \fBExecute Validation Steps\fP:
 .IP "  \(bu" 4
-Iterates through the array of validation steps (\fRsteps\fP) and executes each one in order using function pointers (\fR(this->*steps[i])()\fP)\&.
-.IP "  \(bu" 4
-After executing each step, checks the \fR_request_data\&.sanity\fP flag:
+Iterates through the validation steps sequentially:
 .IP "    \(bu" 6
-If the flag is \fRfalse\fP, it indicates an error during processing, and the workflow is terminated\&.
+Calls each step using a member function pointer\&.
+.IP "    \(bu" 6
+Stops the process if the \fRsanity\fP flag indicates a validation failure\&.
 .PP
 
 .PP
 
 .IP "4." 4
-\fBHandle the Request\fP:
+\fBMark Request as Ready\fP:
 .IP "  \(bu" 4
-After completing the validation and parsing steps, logs the end of the request validation process\&.
-.IP "  \(bu" 4
-Calls \fRhandle_request()\fP to proceed with responding to the client based on the validated request\&.
+If all steps succeed, the request is marked as ready for further handling\&.
 .PP
 
 .IP "5." 4
-\fBLog Response Completion\fP:
+\fBHandle Ready Requests\fP:
 .IP "  \(bu" 4
-Logs the end of the response handling process\&.
+If the request is ready and the socket is writable (\fRPOLLOUT\fP), the request is processed\&.
 .PP
 
 .PP
-
 .PP
-\fBNote\fP
+\fBExceptions\fP
 .RS 4
-.IP "\(bu" 2
-The \fR_request_data\&.sanity\fP flag is used throughout the workflow to indicate whether each step was successful\&. If an error occurs, the flag is set to \fRfalse\fP and the workflow is halted\&.
-.IP "\(bu" 2
-The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly\&.
-.PP
+\fIExceptions\fP may occur within individual steps if errors are encountered, such as malformed headers or resource resolution failures\&. 
 .RE
-.PP
-\fBValidation Steps\fP:
-.IP "\(bu" 2
-\fRread_request_header()\fP: Reads the raw HTTP headers from the incoming request\&.
-.IP "\(bu" 2
-\fRparse_header()\fP: Parses and processes each header to extract key-value pairs\&.
-.IP "\(bu" 2
-\fRparse_method_and_path()\fP: Identifies the HTTP method (e\&.g\&., GET, POST) and the requested path\&.
-.IP "\(bu" 2
-\fRparse_path_type()\fP: Determines the type of path (e\&.g\&., static file, dynamic request)\&.
-.IP "\(bu" 2
-\fRload_header_data()\fP: Loads additional data from headers required for further processing\&.
-.IP "\(bu" 2
-\fRload_host_config()\fP: Loads host from request, to set its configuration, and update host at ClientData*
-.IP "\(bu" 2
-\fRsolver_resource()\fP: Resolves the requested resource path, potentially handling relative paths\&.
-.IP "\(bu" 2
-\fRload_content()\fP: Loads request body content if applicable (e\&.g\&., for POST requests)\&.
-.IP "\(bu" 2
-\fRvalidate_request()\fP: Final validation to ensure that the request conforms to server policies and rules\&. 
 .PP
 
 

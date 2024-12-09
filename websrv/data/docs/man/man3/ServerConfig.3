@@ -60,6 +60,9 @@ ServerConfig
 .ti -1c
 .RI "\fBt_mode\fP \fBws_error_mode\fP"
 .br
+.ti -1c
+.RI "\fBWebServerCache\fP< \fBCacheRequest\fP > \fBrequest_cache\fP"
+.br
 .in -1c
 .SH "Constructor & Destructor Documentation"
 .PP 
@@ -82,6 +85,8 @@ ServerConfig
 .SS "std::map<std::string, struct \fBLocationConfig\fP> ServerConfig::locations"
 
 .SS "int ServerConfig::port"
+
+.SS "\fBWebServerCache\fP<\fBCacheRequest\fP> ServerConfig::request_cache"
 
 .SS "std::string ServerConfig::server_name"
 

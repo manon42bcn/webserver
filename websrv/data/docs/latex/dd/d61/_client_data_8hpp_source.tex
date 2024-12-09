@@ -10,7 +10,7 @@
 \DoxyCodeLine{00006\ \textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00007\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00008\ \textcolor{comment}{/*\ \ \ Created:\ 2024/11/06\ 08:43:27\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
-\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/23\ 03:41:48\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{00009\ \textcolor{comment}{/*\ \ \ Updated:\ 2024/11/26\ 22:04:29\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00010\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{00011\ \textcolor{comment}{/*\ **************************************************************************\ */}}
 \DoxyCodeLine{00012\ }
@@ -36,30 +36,27 @@
 \DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }pollfd\ \ \ \ \ \ \ \ \ \ \ \_client\_fd;}
 \DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ std::time\_t\ \ \ \ \ \ \ \ \ \ \ \ \ \_timestamp;}
 \DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request}{s\_request}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_request;}
-\DoxyCodeLine{00045\ }
-\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_client_data_ace64209b0eb0ecf17b839c04e9800f38}{ClientData}}(\mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ server,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ log,\ \textcolor{keywordtype}{int}\ fd);}
-\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_client_data_a722d09ec49cd3e0f33c1394a78441070}{\string~ClientData}}();}
-\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_aa5eb5efbe94407c96d370c36b1847610}{close\_fd}}();}
-\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ \mbox{\hyperlink{class_client_data_a72d1aba7c8b240eb3859762d076f77fe}{get\_server}}();}
-\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }pollfd\ \mbox{\hyperlink{class_client_data_ac23ae0bd953e3bfd68bbbc72e2ba0895}{get\_fd}}();}
-\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9}{chronos\_request}}();}
-\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a926a452ea3e46acfe12db36737bfffe7}{chronos\_reset}}();}
-\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_a1996039013d4a9fb82c2e9859ff405b2}{chronos\_connection}}();}
-\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a21120ede60438ddc6947ebdf74259268}{deactivate}}();}
-\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a11bd829d13b5b868f2c30469484b4e75}{kill\_client}}();}
-\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_a3280a4659590dcf30568d3ab2effc346}{is\_alive}}()\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_af0767f15de3c837f6e977a5aef8c1e87}{is\_active}}()\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a5ae6121bc925284da977c3eaebe12222}{keep\_active}}();}
-\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request}{s\_request}}\&\ \mbox{\hyperlink{class_client_data_a9f63bd0b5139b2d76a656342b6c26075}{client\_request}}();}
-\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_aaf2c37cb4c585c6b0c36eed1bd937c01}{to\_pollout}}()\ \{}
-\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \_client\_fd.revents\ =\ POLLOUT;}
-\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_aa93eda5e44b2ce98fa0e4807d0b889fd}{to\_pollin}}()\ \{}
-\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \_client\_fd.revents\ =\ POLLIN;}
-\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \}}
-\DoxyCodeLine{00067\ \};}
-\DoxyCodeLine{00068\ }
-\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{short}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_state;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_client_data_ace64209b0eb0ecf17b839c04e9800f38}{ClientData}}(\mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ server,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_logger}{Logger}}*\ log,\ \textcolor{keywordtype}{int}\ fd);}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_client_data_a722d09ec49cd3e0f33c1394a78441070}{\string~ClientData}}();}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_aa5eb5efbe94407c96d370c36b1847610}{close\_fd}}();}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_socket_handler}{SocketHandler}}*\ \mbox{\hyperlink{class_client_data_a72d1aba7c8b240eb3859762d076f77fe}{get\_server}}();}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }pollfd\ \mbox{\hyperlink{class_client_data_ac23ae0bd953e3bfd68bbbc72e2ba0895}{get\_fd}}();}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_aad28a2f07d9ff1a091755802a75fc3b9}{chronos\_request}}();}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a926a452ea3e46acfe12db36737bfffe7}{chronos\_reset}}();}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_a1996039013d4a9fb82c2e9859ff405b2}{chronos\_connection}}();}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a21120ede60438ddc6947ebdf74259268}{deactivate}}();}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a11bd829d13b5b868f2c30469484b4e75}{kill\_client}}();}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_a3280a4659590dcf30568d3ab2effc346}{is\_alive}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_client_data_af0767f15de3c837f6e977a5aef8c1e87}{is\_active}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a5ae6121bc925284da977c3eaebe12222}{keep\_active}}();}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structs__request}{s\_request}}\&\ \mbox{\hyperlink{class_client_data_a9f63bd0b5139b2d76a656342b6c26075}{client\_request}}();}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_client_data_a1a0cfff04c8b6a4304aa3570879a2fc1}{set\_state}}(\textcolor{keywordtype}{short}\ state);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{short}\ \mbox{\hyperlink{class_client_data_a4d30d31e4f5b96b0f6b3b9e48b3c93dd}{get\_state}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00064\ \};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

@@ -5,37 +5,125 @@
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{struct_location_config}{Location\+Config}} \mbox{\hyperlink{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0}{parse\+\_\+location\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a location block configuration from the config file. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{struct_server_config}{Server\+Config}} \mbox{\hyperlink{parse_8cpp_acf955813bbc6c90fa65069a1230db05c}{parse\+\_\+server\+\_\+block}} (std\+::vector$<$ std\+::string $>$\+::iterator start, std\+::vector$<$ std\+::string $>$\+::iterator end, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses a server block configuration from the config file. \end{DoxyCompactList}\item 
 std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd}{parse\+\_\+servers}} (std\+::vector$<$ std\+::string $>$ raw\+Lines, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\item 
+\begin{DoxyCompactList}\small\item\em Parses all server configurations from the raw configuration lines. \end{DoxyCompactList}\item 
 std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \mbox{\hyperlink{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798}{parse\+\_\+file}} (std\+::string path, \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}logger)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Parses a configuration file and returns server configurations. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\Hypertarget{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798}\index{parse.cpp@{parse.cpp}!parse\_file@{parse\_file}}
+\Hypertarget{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798}\label{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798} 
+\index{parse.cpp@{parse.cpp}!parse\_file@{parse\_file}}
 \index{parse\_file@{parse\_file}!parse.cpp@{parse.cpp}}
 \doxysubsubsection{\texorpdfstring{parse\_file()}{parse\_file()}}
-{\footnotesize\ttfamily \label{parse_8cpp_ae3d7797b6dadaf3f6503f39a44b9f798} 
-std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{path}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+file (\begin{DoxyParamCaption}\item[{std\+::string}]{path,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0}\index{parse.cpp@{parse.cpp}!parse\_location\_block@{parse\_location\_block}}
+
+
+Parses a configuration file and returns server configurations. 
+
+Entry point for configuration file parsing.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & Path to the configuration file. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Server\+Config$>$ Vector of parsed server configurations. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if file cannot be parsed or no servers are found. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0}\label{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0} 
+\index{parse.cpp@{parse.cpp}!parse\_location\_block@{parse\_location\_block}}
 \index{parse\_location\_block@{parse\_location\_block}!parse.cpp@{parse.cpp}}
 \doxysubsubsection{\texorpdfstring{parse\_location\_block()}{parse\_location\_block()}}
-{\footnotesize\ttfamily \label{parse_8cpp_a7512f08f0e76f6ed67abb71c340eb4f0} 
-\mbox{\hyperlink{struct_location_config}{Location\+Config}} parse\+\_\+location\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_location_config}{Location\+Config}} parse\+\_\+location\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{parse_8cpp_acf955813bbc6c90fa65069a1230db05c}\index{parse.cpp@{parse.cpp}!parse\_server\_block@{parse\_server\_block}}
+
+
+Parses a location block configuration from the config file. 
+
+Processes location-\/specific directives and builds a \doxylink{struct_location_config}{Location\+Config} object. Handles various location settings including index files, error pages, root paths, and access controls.
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the location block. \\
+\hline
+{\em end} & Iterator to the end of the configuration file. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_location_config}{Location\+Config} Parsed location configuration. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if invalid parameters are encountered. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{parse_8cpp_acf955813bbc6c90fa65069a1230db05c}\label{parse_8cpp_acf955813bbc6c90fa65069a1230db05c} 
+\index{parse.cpp@{parse.cpp}!parse\_server\_block@{parse\_server\_block}}
 \index{parse\_server\_block@{parse\_server\_block}!parse.cpp@{parse.cpp}}
 \doxysubsubsection{\texorpdfstring{parse\_server\_block()}{parse\_server\_block()}}
-{\footnotesize\ttfamily \label{parse_8cpp_acf955813bbc6c90fa65069a1230db05c} 
-\mbox{\hyperlink{struct_server_config}{Server\+Config}} parse\+\_\+server\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start}{, }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_server_config}{Server\+Config}} parse\+\_\+server\+\_\+block (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{start,  }\item[{std\+::vector$<$ std\+::string $>$\+::iterator}]{end,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
-\Hypertarget{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd}\index{parse.cpp@{parse.cpp}!parse\_servers@{parse\_servers}}
+
+
+Parses a server block configuration from the config file. 
+
+Processes server-\/level directives and builds a \doxylink{struct_server_config}{Server\+Config} object. Handles various server settings including ports, server names, and location blocks.
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Iterator to the start of the server block. \\
+\hline
+{\em end} & Iterator to the end of the configuration file. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{struct_server_config}{Server\+Config} Parsed server configuration. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if mandatory parameters are missing or invalid. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd}\label{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd} 
+\index{parse.cpp@{parse.cpp}!parse\_servers@{parse\_servers}}
 \index{parse\_servers@{parse\_servers}!parse.cpp@{parse.cpp}}
 \doxysubsubsection{\texorpdfstring{parse\_servers()}{parse\_servers()}}
-{\footnotesize\ttfamily \label{parse_8cpp_a92cb3d9e96f935ea3e969ce739d1fbfd} 
-std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines}{, }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ parse\+\_\+servers (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::string $>$}]{raw\+Lines,  }\item[{\mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
+
+
+Parses all server configurations from the raw configuration lines. 
+
+Processes the entire configuration file and extracts all server blocks.
+
+
+\begin{DoxyParams}{Parameters}
+{\em raw\+Lines} & Vector of configuration file lines. \\
+\hline
+{\em logger} & Pointer to the logger instance. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$\+Server\+Config$>$ Vector of parsed server configurations. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_logger_a5f9bc5d5b2a40eddcdeafac07e96d190}{Logger\+::fatal\+\_\+log}} & if no valid servers are found or if duplicates exist. \\
+\hline
+\end{DoxyExceptions}

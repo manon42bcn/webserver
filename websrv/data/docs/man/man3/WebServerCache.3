@@ -17,6 +17,9 @@ WebServerCache< T > \- A simple, in-memory Least Recently Used (LRU) cache\&.
 .br
 .RI "Constructs a cache with a specified maximum capacity\&. "
 .ti -1c
+.RI "\fBWebServerCache\fP ()"
+.br
+.ti -1c
 .RI "bool \fBget\fP (const std::string &key, T &entry)"
 .br
 .RI "Retrieves an entry from the cache\&. "
@@ -37,7 +40,6 @@ WebServerCache< T > \- A simple, in-memory Least Recently Used (LRU) cache\&.
 class WebServerCache< T >"A simple, in-memory Least Recently Used (LRU) cache\&. 
 
 The \fR\fBWebServerCache\fP\fP class is designed to manage a fixed-size cache for storing frequently accessed items in a web server context\&. It utilizes a Least Recently Used (LRU) eviction policy, where the least recently accessed entry is removed when the cache reaches its maximum capacity\&.
-
 .PP
 \fBTemplate Parameters\fP
 .RS 4
@@ -58,13 +60,14 @@ Constructs a cache with a specified maximum capacity\&.
 .RE
 .PP
 
+.SS "template<typename T > \fBWebServerCache\fP< T >\fB::WebServerCache\fP ()\fR [inline]\fP, \fR [explicit]\fP"
+
 .SH "Member Function Documentation"
 .PP 
 .SS "template<typename T > bool \fBWebServerCache\fP< T >::get (const std::string & key, T & entry)\fR [inline]\fP"
 
 .PP
 Retrieves an entry from the cache\&. This method searches the cache for an entry with the specified key\&. If the entry is found, it is moved to the front of the LRU list\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -83,7 +86,6 @@ Retrieves an entry from the cache\&. This method searches the cache for an entry
 
 .PP
 Adds or updates an entry in the cache\&. If an entry with the specified key already exists, it is updated and moved to the front of the LRU list\&. If the cache is at capacity, the least recently used entry is removed to make space for the new entry\&.
-
 .PP
 \fBParameters\fP
 .RS 4

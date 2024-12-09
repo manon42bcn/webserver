@@ -48,7 +48,7 @@ websrv/inc/WebServerResponseHandler.hpp
 .RI "#define \fBRSP_NAME\fP   'HttpResponseHandler'"
 .br
 .ti -1c
-.RI "#define \fBUNUSED\fP(x)"
+.RI "#define \fBUNUSED\fP(x)   (void)(x)"
 .br
 .ti -1c
 .RI "#define \fBDEFAULT_RANGE_BYTES\fP   65536"
@@ -72,12 +72,7 @@ websrv/inc/WebServerResponseHandler.hpp
 
 .SS "#define RSP_NAME   'HttpResponseHandler'"
 
-.SS "#define UNUSED( x)"
-\fBValue:\fP
-.nf
-(void)(x)
-.PP
-.fi
+.SS "#define UNUSED(x)   (void)(x)"
 
 .SH "Enumeration Type Documentation"
 .PP 
@@ -89,11 +84,11 @@ Defines types of content handled in HTTP responses\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BICT_UNKNOWN \fP
+\fB\fICT_UNKNOWN \fP\fP
 .TP
-\f(BICT_FILE \fP
+\fB\fICT_FILE \fP\fP
 .TP
-\f(BICT_JSON \fP
+\fB\fICT_JSON \fP\fP
 .SS "enum \fBe_range_scenario\fP"
 
 .PP
@@ -102,11 +97,11 @@ Describes different scenarios for handling byte range requests\&.
 \fBEnumerator\fP
 .in +1c
 .TP
-\f(BICR_INIT \fP
+\fB\fICR_INIT \fP\fP
 .TP
-\f(BICR_RANGE \fP
+\fB\fICR_RANGE \fP\fP
 .TP
-\f(BICR_LAST \fP
+\fB\fICR_LAST \fP\fP
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for WebServer from the source code\&.

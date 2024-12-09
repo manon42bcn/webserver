@@ -10,14 +10,6 @@ websrv/srcs/main.cpp
 .br
 \fR#include <sys/socket\&.h>\fP
 .br
-\fR#include <netinet/in\&.h>\fP
-.br
-\fR#include <unistd\&.h>\fP
-.br
-\fR#include <poll\&.h>\fP
-.br
-\fR#include <fcntl\&.h>\fP
-.br
 \fR#include <cstring>\fP
 .br
 \fR#include <cstdlib>\fP
@@ -32,24 +24,18 @@ websrv/srcs/main.cpp
 .br
 \fR#include <signal\&.h>\fP
 .br
-\fR#include 'WebserverCache\&.hpp'\fP
-.br
 
 .SS "Functions"
 
 .in +1c
 .ti -1c
-.RI "void \fBprint_server_config\fP (const \fBServerConfig\fP &config, std::string location)"
-.br
-.ti -1c
-.RI "void \fBprint_vector_config\fP (const std::vector< \fBServerConfig\fP > &config, std::string location)"
-.br
-.ti -1c
 .RI "void \fBsignal_handler\fP (int sig)"
 .br
+.RI "Signal handler to end webserver execution\&. "
 .ti -1c
 .RI "int \fBmain\fP (int argc, char **argv)"
 .br
+.RI "Main function - Entry point\&. "
 .in -1c
 .SS "Variables"
 
@@ -62,11 +48,32 @@ websrv/srcs/main.cpp
 .PP 
 .SS "int main (int argc, char ** argv)"
 
-.SS "void print_server_config (const \fBServerConfig\fP & config, std::string location)"
-
-.SS "void print_vector_config (const std::vector< \fBServerConfig\fP > & config, std::string location)"
+.PP
+Main function - Entry point\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIargc\fP count of arguments\&. 
+.br
+\fIargv\fP arguments of exec\&.
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBServerManager\fP: That control all the workflow\&. 
+.RE
+.PP
 
 .SS "void signal_handler (int sig)"
+
+.PP
+Signal handler to end webserver execution\&. Due to webserver execution is an endless loop, a handler to close it properly is needed\&. SIGINT, SIGTERM and SIGTSTP are allowed\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIsig\fP Received signal\&. 
+.RE
+.PP
 
 .SH "Variable Documentation"
 .PP 

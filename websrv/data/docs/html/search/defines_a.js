@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orange_0',['ORANGE',['../d9/d39/webserver_8hpp.html#ac5b6e19bf06822021f35602c59658de3',1,'webserver.hpp']]]
+  ['next_5fstep_0',['NEXT_STEP',['../df/ddd/ws__permissions__bitwise_8hpp.html#a11f621cd8d910e9c4d13cfd84156ba27',1,'ws_permissions_bitwise.hpp']]]
 ];

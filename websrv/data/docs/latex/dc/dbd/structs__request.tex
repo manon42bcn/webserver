@@ -13,6 +13,8 @@ Represents an HTTP request and its associated metadata.
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{structs__request_a057308bd1c73ef0db1ff0cc03563cd30}{s\+\_\+request}} ()
+\item 
+void \mbox{\hyperlink{structs__request_acaffc56771e92d3175877094feb06132}{clear\+\_\+request}} ()
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Data Fields}
 \begin{DoxyCompactItemize}
@@ -71,7 +73,9 @@ bool \mbox{\hyperlink{structs__request_a03dd6b3f9e775998774e381202627d64}{sanity
 \item 
 const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structs__request_ac66fec6afc1af7d099b4c36be893cad6}{location}}
 \item 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structs__request_a52508e47b1ed2263300265c4a7be9bf6}{host\+\_\+config}}
+\mbox{\hyperlink{struct_server_config}{Server\+Config}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structs__request_aa6a0d10697446ec229d540eec43bb43a}{host\+\_\+config}}
+\item 
+bool \mbox{\hyperlink{structs__request_ae94859abf7e5ef23473b55355f954453}{request\+\_\+ready}}
 \end{DoxyCompactItemize}
 
 
@@ -81,182 +85,197 @@ Represents an HTTP request and its associated metadata.
 This structure holds all relevant data extracted from an HTTP request, including headers, body, method, path, and other attributes required for processing the request. 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{structs__request_a057308bd1c73ef0db1ff0cc03563cd30}\index{s\_request@{s\_request}!s\_request@{s\_request}}
+\Hypertarget{structs__request_a057308bd1c73ef0db1ff0cc03563cd30}\label{structs__request_a057308bd1c73ef0db1ff0cc03563cd30} 
+\index{s\_request@{s\_request}!s\_request@{s\_request}}
 \index{s\_request@{s\_request}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{s\_request()}{s\_request()}}
-{\footnotesize\ttfamily \label{structs__request_a057308bd1c73ef0db1ff0cc03563cd30} 
-s\+\_\+request\+::s\+\_\+request (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily s\+\_\+request\+::s\+\_\+request (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structs__request_acaffc56771e92d3175877094feb06132}\label{structs__request_acaffc56771e92d3175877094feb06132} 
+\index{s\_request@{s\_request}!clear\_request@{clear\_request}}
+\index{clear\_request@{clear\_request}!s\_request@{s\_request}}
+\doxysubsubsection{\texorpdfstring{clear\_request()}{clear\_request()}}
+{\footnotesize\ttfamily void s\+\_\+request\+::clear\+\_\+request (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 
 \doxysubsection{Field Documentation}
-\Hypertarget{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}\index{s\_request@{s\_request}!autoindex@{autoindex}}
+\Hypertarget{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff}\label{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff} 
+\index{s\_request@{s\_request}!autoindex@{autoindex}}
 \index{autoindex@{autoindex}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{autoindex}{autoindex}}
-{\footnotesize\ttfamily \label{structs__request_afc061fb2934f1bf0f57a6aebb552c0ff} 
-bool s\+\_\+request\+::autoindex}
+{\footnotesize\ttfamily bool s\+\_\+request\+::autoindex}
 
-\Hypertarget{structs__request_aa305e35ac77554933c3590ce0b667fa6}\index{s\_request@{s\_request}!body@{body}}
+\Hypertarget{structs__request_aa305e35ac77554933c3590ce0b667fa6}\label{structs__request_aa305e35ac77554933c3590ce0b667fa6} 
+\index{s\_request@{s\_request}!body@{body}}
 \index{body@{body}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{body}{body}}
-{\footnotesize\ttfamily \label{structs__request_aa305e35ac77554933c3590ce0b667fa6} 
-std\+::string s\+\_\+request\+::body}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::body}
 
-\Hypertarget{structs__request_a19019e9e93056541ac2298e01c4c8fd3}\index{s\_request@{s\_request}!boundary@{boundary}}
+\Hypertarget{structs__request_a19019e9e93056541ac2298e01c4c8fd3}\label{structs__request_a19019e9e93056541ac2298e01c4c8fd3} 
+\index{s\_request@{s\_request}!boundary@{boundary}}
 \index{boundary@{boundary}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{boundary}{boundary}}
-{\footnotesize\ttfamily \label{structs__request_a19019e9e93056541ac2298e01c4c8fd3} 
-std\+::string s\+\_\+request\+::boundary}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::boundary}
 
-\Hypertarget{structs__request_a182647adb5229cc56e34b06f5a368f35}\index{s\_request@{s\_request}!cgi@{cgi}}
+\Hypertarget{structs__request_a182647adb5229cc56e34b06f5a368f35}\label{structs__request_a182647adb5229cc56e34b06f5a368f35} 
+\index{s\_request@{s\_request}!cgi@{cgi}}
 \index{cgi@{cgi}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{cgi}{cgi}}
-{\footnotesize\ttfamily \label{structs__request_a182647adb5229cc56e34b06f5a368f35} 
-bool s\+\_\+request\+::cgi}
+{\footnotesize\ttfamily bool s\+\_\+request\+::cgi}
 
-\Hypertarget{structs__request_acb7485a30304cdcb460d791702164b6f}\index{s\_request@{s\_request}!chunks@{chunks}}
+\Hypertarget{structs__request_acb7485a30304cdcb460d791702164b6f}\label{structs__request_acb7485a30304cdcb460d791702164b6f} 
+\index{s\_request@{s\_request}!chunks@{chunks}}
 \index{chunks@{chunks}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{chunks}{chunks}}
-{\footnotesize\ttfamily \label{structs__request_acb7485a30304cdcb460d791702164b6f} 
-bool s\+\_\+request\+::chunks}
+{\footnotesize\ttfamily bool s\+\_\+request\+::chunks}
 
-\Hypertarget{structs__request_af3d99495884a932146c31567d7fe7fba}\index{s\_request@{s\_request}!content\_length@{content\_length}}
+\Hypertarget{structs__request_af3d99495884a932146c31567d7fe7fba}\label{structs__request_af3d99495884a932146c31567d7fe7fba} 
+\index{s\_request@{s\_request}!content\_length@{content\_length}}
 \index{content\_length@{content\_length}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{content\_length}{content\_length}}
-{\footnotesize\ttfamily \label{structs__request_af3d99495884a932146c31567d7fe7fba} 
-size\+\_\+t s\+\_\+request\+::content\+\_\+length}
+{\footnotesize\ttfamily size\+\_\+t s\+\_\+request\+::content\+\_\+length}
 
-\Hypertarget{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}\index{s\_request@{s\_request}!content\_type@{content\_type}}
+\Hypertarget{structs__request_a1fa52c932ca90b14dcd43bdb130c4981}\label{structs__request_a1fa52c932ca90b14dcd43bdb130c4981} 
+\index{s\_request@{s\_request}!content\_type@{content\_type}}
 \index{content\_type@{content\_type}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{content\_type}{content\_type}}
-{\footnotesize\ttfamily \label{structs__request_a1fa52c932ca90b14dcd43bdb130c4981} 
-std\+::string s\+\_\+request\+::content\+\_\+type}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::content\+\_\+type}
 
-\Hypertarget{structs__request_ac6001a9e770ca283b82aa97b554d025a}\index{s\_request@{s\_request}!cookie@{cookie}}
+\Hypertarget{structs__request_ac6001a9e770ca283b82aa97b554d025a}\label{structs__request_ac6001a9e770ca283b82aa97b554d025a} 
+\index{s\_request@{s\_request}!cookie@{cookie}}
 \index{cookie@{cookie}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{cookie}{cookie}}
-{\footnotesize\ttfamily \label{structs__request_ac6001a9e770ca283b82aa97b554d025a} 
-std\+::string s\+\_\+request\+::cookie}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::cookie}
 
-\Hypertarget{structs__request_a5ec6bbec01eb329632171dbe201e5432}\index{s\_request@{s\_request}!factory@{factory}}
+\Hypertarget{structs__request_a5ec6bbec01eb329632171dbe201e5432}\label{structs__request_a5ec6bbec01eb329632171dbe201e5432} 
+\index{s\_request@{s\_request}!factory@{factory}}
 \index{factory@{factory}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{factory}{factory}}
-{\footnotesize\ttfamily \label{structs__request_a5ec6bbec01eb329632171dbe201e5432} 
-int s\+\_\+request\+::factory}
+{\footnotesize\ttfamily int s\+\_\+request\+::factory}
 
-\Hypertarget{structs__request_ae259b87b05057211d3372326293be63a}\index{s\_request@{s\_request}!header@{header}}
+\Hypertarget{structs__request_ae259b87b05057211d3372326293be63a}\label{structs__request_ae259b87b05057211d3372326293be63a} 
+\index{s\_request@{s\_request}!header@{header}}
 \index{header@{header}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{header}{header}}
-{\footnotesize\ttfamily \label{structs__request_ae259b87b05057211d3372326293be63a} 
-std\+::string s\+\_\+request\+::header}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::header}
 
-\Hypertarget{structs__request_a1c70a09aafe63af42cbdfedabb862f41}\index{s\_request@{s\_request}!host@{host}}
+\Hypertarget{structs__request_a1c70a09aafe63af42cbdfedabb862f41}\label{structs__request_a1c70a09aafe63af42cbdfedabb862f41} 
+\index{s\_request@{s\_request}!host@{host}}
 \index{host@{host}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{host}{host}}
-{\footnotesize\ttfamily \label{structs__request_a1c70a09aafe63af42cbdfedabb862f41} 
-std\+::string s\+\_\+request\+::host}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::host}
 
-\Hypertarget{structs__request_a52508e47b1ed2263300265c4a7be9bf6}\index{s\_request@{s\_request}!host\_config@{host\_config}}
+\Hypertarget{structs__request_aa6a0d10697446ec229d540eec43bb43a}\label{structs__request_aa6a0d10697446ec229d540eec43bb43a} 
+\index{s\_request@{s\_request}!host\_config@{host\_config}}
 \index{host\_config@{host\_config}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{host\_config}{host\_config}}
-{\footnotesize\ttfamily \label{structs__request_a52508e47b1ed2263300265c4a7be9bf6} 
-const \mbox{\hyperlink{struct_server_config}{Server\+Config}}\texorpdfstring{$\ast$}{*} s\+\_\+request\+::host\+\_\+config}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_server_config}{Server\+Config}}\texorpdfstring{$\ast$}{*} s\+\_\+request\+::host\+\_\+config}
 
-\Hypertarget{structs__request_a6d12636046ad9f859aec1a4d03dca910}\index{s\_request@{s\_request}!is\_cached@{is\_cached}}
+\Hypertarget{structs__request_a6d12636046ad9f859aec1a4d03dca910}\label{structs__request_a6d12636046ad9f859aec1a4d03dca910} 
+\index{s\_request@{s\_request}!is\_cached@{is\_cached}}
 \index{is\_cached@{is\_cached}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{is\_cached}{is\_cached}}
-{\footnotesize\ttfamily \label{structs__request_a6d12636046ad9f859aec1a4d03dca910} 
-bool s\+\_\+request\+::is\+\_\+cached}
+{\footnotesize\ttfamily bool s\+\_\+request\+::is\+\_\+cached}
 
-\Hypertarget{structs__request_a4e945b12c269262a4c352c39345a33f3}\index{s\_request@{s\_request}!is\_redir@{is\_redir}}
+\Hypertarget{structs__request_a4e945b12c269262a4c352c39345a33f3}\label{structs__request_a4e945b12c269262a4c352c39345a33f3} 
+\index{s\_request@{s\_request}!is\_redir@{is\_redir}}
 \index{is\_redir@{is\_redir}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{is\_redir}{is\_redir}}
-{\footnotesize\ttfamily \label{structs__request_a4e945b12c269262a4c352c39345a33f3} 
-bool s\+\_\+request\+::is\+\_\+redir}
+{\footnotesize\ttfamily bool s\+\_\+request\+::is\+\_\+redir}
 
-\Hypertarget{structs__request_ac66fec6afc1af7d099b4c36be893cad6}\index{s\_request@{s\_request}!location@{location}}
+\Hypertarget{structs__request_ac66fec6afc1af7d099b4c36be893cad6}\label{structs__request_ac66fec6afc1af7d099b4c36be893cad6} 
+\index{s\_request@{s\_request}!location@{location}}
 \index{location@{location}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{location}{location}}
-{\footnotesize\ttfamily \label{structs__request_ac66fec6afc1af7d099b4c36be893cad6} 
-const \mbox{\hyperlink{struct_location_config}{Location\+Config}}\texorpdfstring{$\ast$}{*} s\+\_\+request\+::location}
+{\footnotesize\ttfamily const \mbox{\hyperlink{struct_location_config}{Location\+Config}}\texorpdfstring{$\ast$}{*} s\+\_\+request\+::location}
 
-\Hypertarget{structs__request_acf95efa3c0bb3ef794c63249eac40efa}\index{s\_request@{s\_request}!method@{method}}
+\Hypertarget{structs__request_acf95efa3c0bb3ef794c63249eac40efa}\label{structs__request_acf95efa3c0bb3ef794c63249eac40efa} 
+\index{s\_request@{s\_request}!method@{method}}
 \index{method@{method}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{method}{method}}
-{\footnotesize\ttfamily \label{structs__request_acf95efa3c0bb3ef794c63249eac40efa} 
-\mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} s\+\_\+request\+::method}
+{\footnotesize\ttfamily \mbox{\hyperlink{http__enum__codes_8hpp_a40092c1e03ca1f11758a2ddb4708958a}{t\+\_\+methods}} s\+\_\+request\+::method}
 
-\Hypertarget{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}\index{s\_request@{s\_request}!method\_str@{method\_str}}
+\Hypertarget{structs__request_a83d0fdc1c791f2980e812cbd86b4a708}\label{structs__request_a83d0fdc1c791f2980e812cbd86b4a708} 
+\index{s\_request@{s\_request}!method\_str@{method\_str}}
 \index{method\_str@{method\_str}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{method\_str}{method\_str}}
-{\footnotesize\ttfamily \label{structs__request_a83d0fdc1c791f2980e812cbd86b4a708} 
-std\+::string s\+\_\+request\+::method\+\_\+str}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::method\+\_\+str}
 
-\Hypertarget{structs__request_a7f17cbc8659022ad1ee950265bf4b454}\index{s\_request@{s\_request}!normalized\_path@{normalized\_path}}
+\Hypertarget{structs__request_a7f17cbc8659022ad1ee950265bf4b454}\label{structs__request_a7f17cbc8659022ad1ee950265bf4b454} 
+\index{s\_request@{s\_request}!normalized\_path@{normalized\_path}}
 \index{normalized\_path@{normalized\_path}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{normalized\_path}{normalized\_path}}
-{\footnotesize\ttfamily \label{structs__request_a7f17cbc8659022ad1ee950265bf4b454} 
-std\+::string s\+\_\+request\+::normalized\+\_\+path}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::normalized\+\_\+path}
 
-\Hypertarget{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}\index{s\_request@{s\_request}!path@{path}}
+\Hypertarget{structs__request_ad48aa23455df5cd524cd37dc0f9118f4}\label{structs__request_ad48aa23455df5cd524cd37dc0f9118f4} 
+\index{s\_request@{s\_request}!path@{path}}
 \index{path@{path}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{path}{path}}
-{\footnotesize\ttfamily \label{structs__request_ad48aa23455df5cd524cd37dc0f9118f4} 
-std\+::string s\+\_\+request\+::path}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::path}
 
-\Hypertarget{structs__request_a6ff9529af5cb6381c45168542ea18ee1}\index{s\_request@{s\_request}!path\_info@{path\_info}}
+\Hypertarget{structs__request_a6ff9529af5cb6381c45168542ea18ee1}\label{structs__request_a6ff9529af5cb6381c45168542ea18ee1} 
+\index{s\_request@{s\_request}!path\_info@{path\_info}}
 \index{path\_info@{path\_info}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{path\_info}{path\_info}}
-{\footnotesize\ttfamily \label{structs__request_a6ff9529af5cb6381c45168542ea18ee1} 
-std\+::string s\+\_\+request\+::path\+\_\+info}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::path\+\_\+info}
 
-\Hypertarget{structs__request_a7f0d006b79da85b38c3537c3c436baa7}\index{s\_request@{s\_request}!path\_request@{path\_request}}
+\Hypertarget{structs__request_a7f0d006b79da85b38c3537c3c436baa7}\label{structs__request_a7f0d006b79da85b38c3537c3c436baa7} 
+\index{s\_request@{s\_request}!path\_request@{path\_request}}
 \index{path\_request@{path\_request}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{path\_request}{path\_request}}
-{\footnotesize\ttfamily \label{structs__request_a7f0d006b79da85b38c3537c3c436baa7} 
-std\+::string s\+\_\+request\+::path\+\_\+request}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::path\+\_\+request}
 
-\Hypertarget{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}\index{s\_request@{s\_request}!path\_type@{path\_type}}
+\Hypertarget{structs__request_aefa61de115e551e5eb01452a6ab8cdb9}\label{structs__request_aefa61de115e551e5eb01452a6ab8cdb9} 
+\index{s\_request@{s\_request}!path\_type@{path\_type}}
 \index{path\_type@{path\_type}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{path\_type}{path\_type}}
-{\footnotesize\ttfamily \label{structs__request_aefa61de115e551e5eb01452a6ab8cdb9} 
-\mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\+\_\+path\+\_\+type}} s\+\_\+request\+::path\+\_\+type}
+{\footnotesize\ttfamily \mbox{\hyperlink{ws__structs_8hpp_a16cf4a333496bebe7def55dcd8b93058}{e\+\_\+path\+\_\+type}} s\+\_\+request\+::path\+\_\+type}
 
-\Hypertarget{structs__request_aa5c263627e8839b833082eb665335b7c}\index{s\_request@{s\_request}!query@{query}}
+\Hypertarget{structs__request_aa5c263627e8839b833082eb665335b7c}\label{structs__request_aa5c263627e8839b833082eb665335b7c} 
+\index{s\_request@{s\_request}!query@{query}}
 \index{query@{query}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{query}{query}}
-{\footnotesize\ttfamily \label{structs__request_aa5c263627e8839b833082eb665335b7c} 
-std\+::string s\+\_\+request\+::query}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::query}
 
-\Hypertarget{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}\index{s\_request@{s\_request}!range@{range}}
+\Hypertarget{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c}\label{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c} 
+\index{s\_request@{s\_request}!range@{range}}
 \index{range@{range}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{range}{range}}
-{\footnotesize\ttfamily \label{structs__request_a33a502b2e53e5a8fa5a5d2f11ec7ce7c} 
-std\+::string s\+\_\+request\+::range}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::range}
 
-\Hypertarget{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}\index{s\_request@{s\_request}!referer@{referer}}
+\Hypertarget{structs__request_a689a9ee8deea26aab44d7b76b1eb6189}\label{structs__request_a689a9ee8deea26aab44d7b76b1eb6189} 
+\index{s\_request@{s\_request}!referer@{referer}}
 \index{referer@{referer}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{referer}{referer}}
-{\footnotesize\ttfamily \label{structs__request_a689a9ee8deea26aab44d7b76b1eb6189} 
-std\+::string s\+\_\+request\+::referer}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::referer}
 
-\Hypertarget{structs__request_a03dd6b3f9e775998774e381202627d64}\index{s\_request@{s\_request}!sanity@{sanity}}
+\Hypertarget{structs__request_ae94859abf7e5ef23473b55355f954453}\label{structs__request_ae94859abf7e5ef23473b55355f954453} 
+\index{s\_request@{s\_request}!request\_ready@{request\_ready}}
+\index{request\_ready@{request\_ready}!s\_request@{s\_request}}
+\doxysubsubsection{\texorpdfstring{request\_ready}{request\_ready}}
+{\footnotesize\ttfamily bool s\+\_\+request\+::request\+\_\+ready}
+
+\Hypertarget{structs__request_a03dd6b3f9e775998774e381202627d64}\label{structs__request_a03dd6b3f9e775998774e381202627d64} 
+\index{s\_request@{s\_request}!sanity@{sanity}}
 \index{sanity@{sanity}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{sanity}{sanity}}
-{\footnotesize\ttfamily \label{structs__request_a03dd6b3f9e775998774e381202627d64} 
-bool s\+\_\+request\+::sanity}
+{\footnotesize\ttfamily bool s\+\_\+request\+::sanity}
 
-\Hypertarget{structs__request_a552b13f96d8285147b13d2cddf45136f}\index{s\_request@{s\_request}!script@{script}}
+\Hypertarget{structs__request_a552b13f96d8285147b13d2cddf45136f}\label{structs__request_a552b13f96d8285147b13d2cddf45136f} 
+\index{s\_request@{s\_request}!script@{script}}
 \index{script@{script}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{script}{script}}
-{\footnotesize\ttfamily \label{structs__request_a552b13f96d8285147b13d2cddf45136f} 
-std\+::string s\+\_\+request\+::script}
+{\footnotesize\ttfamily std\+::string s\+\_\+request\+::script}
 
-\Hypertarget{structs__request_af678655594ab0f02e411a01238b79cf0}\index{s\_request@{s\_request}!status@{status}}
+\Hypertarget{structs__request_af678655594ab0f02e411a01238b79cf0}\label{structs__request_af678655594ab0f02e411a01238b79cf0} 
+\index{s\_request@{s\_request}!status@{status}}
 \index{status@{status}!s\_request@{s\_request}}
 \doxysubsubsection{\texorpdfstring{status}{status}}
-{\footnotesize\ttfamily \label{structs__request_af678655594ab0f02e411a01238b79cf0} 
-\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} s\+\_\+request\+::status}
+{\footnotesize\ttfamily \mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\+\_\+http\+\_\+sts}} s\+\_\+request\+::status}
 
 
 

@@ -15,45 +15,187 @@ websrv/srcs/parse/parse_location.cpp
 .ti -1c
 .RI "void \fBparse_location_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses index directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_location_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses error page directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses root directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses autoindex directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_cgi\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses CGI directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses template error page directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_accept_only\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses accept only directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_redirection\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses redirection directive in a location block\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "void parse_accept_only (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses accept only directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&.
+.RE
+.PP
+Sets allowed HTTP methods for the location using bitwise operations\&. 
 .SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses autoindex directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if autoindex value is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_cgi (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses CGI directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if CGI value is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_location_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses error page directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error page is invalid or redefined\&. 
+.RE
+.PP
 
 .SS "void parse_location_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses index directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if default page is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_redirection (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses redirection directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&.
+.RE
+.PP
+Processes and stores HTTP redirection configurations\&. 
 .SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses root directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if root path is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses template error page directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error mode value is invalid\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 

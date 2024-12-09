@@ -122,7 +122,6 @@ This class inherits from \fR\fBWsResponseHandler\fP\fP and is responsible for pr
 
 .PP
 Constructs a new \fR\fBHttpAutoIndex\fP\fP object\&. This constructor initializes an \fR\fBHttpAutoIndex\fP\fP instance to handle auto-indexing of directory requests\&. It calls the base class \fR\fBWsResponseHandler\fP\fP constructor to initialize common attributes, and then logs the initialization of the \fR\fBHttpAutoIndex\fP\fP handler\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -150,7 +149,6 @@ Logs a debug message indicating the successful initialization of the \fR\fBHttpA
 
 .PP
 Handles an HTTP GET request for auto-generating a directory index\&. This method processes an HTTP GET request to generate an automatic index page for a directory\&. It first checks if the GET method is allowed on the requested resource\&. If not allowed, it sends an HTTP 403 Forbidden response\&. If GET is allowed, it attempts to load the content of the directory by calling \fRget_file_content()\fP\&. Depending on the success of the file content loading, it either sends the generated HTML response or returns an error response\&.
-
 .PP
 \fBReturns\fP
 .RS 4

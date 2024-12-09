@@ -1,11 +1,5 @@
 \doxysection{websrv/inc/\+Socket\+Handler.hpp File Reference}
 \hypertarget{_socket_handler_8hpp}{}\label{_socket_handler_8hpp}\index{websrv/inc/SocketHandler.hpp@{websrv/inc/SocketHandler.hpp}}
-{\ttfamily \#include "{}Webserver\+Exception.\+hpp"{}}\newline
-{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
-{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
-{\ttfamily \#include "{}http\+\_\+enum\+\_\+codes.\+hpp"{}}\newline
-{\ttfamily \#include "{}Logger.\+hpp"{}}\newline
-{\ttfamily \#include $<$string$>$}\newline
 {\ttfamily \#include $<$sys/socket.\+h$>$}\newline
 {\ttfamily \#include $<$netinet/in.\+h$>$}\newline
 {\ttfamily \#include $<$fcntl.\+h$>$}\newline
@@ -14,6 +8,12 @@
 {\ttfamily \#include $<$sys/types.\+h$>$}\newline
 {\ttfamily \#include $<$dirent.\+h$>$}\newline
 {\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include "{}Webserver\+Exception.\+hpp"{}}\newline
+{\ttfamily \#include "{}Webserver\+Cache.\+hpp"{}}\newline
+{\ttfamily \#include "{}webserver.\+hpp"{}}\newline
+{\ttfamily \#include "{}http\+\_\+enum\+\_\+codes.\+hpp"{}}\newline
+{\ttfamily \#include "{}Logger.\+hpp"{}}\newline
 \doxysubsubsection*{Data Structures}
 \begin{DoxyCompactItemize}
 \item 
@@ -29,15 +29,15 @@ class \mbox{\hyperlink{class_socket_handler}{Socket\+Handler}}
 
 
 \doxysubsection{Macro Definition Documentation}
-\Hypertarget{_socket_handler_8hpp_a68916e3fea2f7a109a4dd2360c2616b9}\index{SocketHandler.hpp@{SocketHandler.hpp}!SH\_NAME@{SH\_NAME}}
+\Hypertarget{_socket_handler_8hpp_a68916e3fea2f7a109a4dd2360c2616b9}\label{_socket_handler_8hpp_a68916e3fea2f7a109a4dd2360c2616b9} 
+\index{SocketHandler.hpp@{SocketHandler.hpp}!SH\_NAME@{SH\_NAME}}
 \index{SH\_NAME@{SH\_NAME}!SocketHandler.hpp@{SocketHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{SH\_NAME}{SH\_NAME}}
-{\footnotesize\ttfamily \label{_socket_handler_8hpp_a68916e3fea2f7a109a4dd2360c2616b9} 
-\#define SH\+\_\+\+NAME~"{}Socket\+Handler"{}}
+{\footnotesize\ttfamily \#define SH\+\_\+\+NAME~"{}Socket\+Handler"{}}
 
-\Hypertarget{_socket_handler_8hpp_aa2a01638ce45d2c6cf894a77c17c5eb6}\index{SocketHandler.hpp@{SocketHandler.hpp}!SOCKET\_BACKLOG\_QUEUE@{SOCKET\_BACKLOG\_QUEUE}}
+\Hypertarget{_socket_handler_8hpp_aa2a01638ce45d2c6cf894a77c17c5eb6}\label{_socket_handler_8hpp_aa2a01638ce45d2c6cf894a77c17c5eb6} 
+\index{SocketHandler.hpp@{SocketHandler.hpp}!SOCKET\_BACKLOG\_QUEUE@{SOCKET\_BACKLOG\_QUEUE}}
 \index{SOCKET\_BACKLOG\_QUEUE@{SOCKET\_BACKLOG\_QUEUE}!SocketHandler.hpp@{SocketHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{SOCKET\_BACKLOG\_QUEUE}{SOCKET\_BACKLOG\_QUEUE}}
-{\footnotesize\ttfamily \label{_socket_handler_8hpp_aa2a01638ce45d2c6cf894a77c17c5eb6} 
-\#define SOCKET\+\_\+\+BACKLOG\+\_\+\+QUEUE~2048}
+{\footnotesize\ttfamily \#define SOCKET\+\_\+\+BACKLOG\+\_\+\+QUEUE~2048}
 

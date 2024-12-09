@@ -84,11 +84,11 @@ Manages HTTP responses, with support for caching static file content.
 The {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}} class extends {\ttfamily \doxylink{class_ws_response_handler}{Ws\+Response\+Handler}} to handle HTTP responses, utilizing a caching mechanism to optimize retrieval of static files. It checks for content in the cache before loading from disk, reducing redundant I/O operations and improving response times for frequently requested resources. 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94}\index{HttpResponseHandler@{HttpResponseHandler}!HttpResponseHandler@{HttpResponseHandler}}
+\Hypertarget{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94}\label{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94} 
+\index{HttpResponseHandler@{HttpResponseHandler}!HttpResponseHandler@{HttpResponseHandler}}
 \index{HttpResponseHandler@{HttpResponseHandler}!HttpResponseHandler@{HttpResponseHandler}}
 \doxysubsubsection{\texorpdfstring{HttpResponseHandler()}{HttpResponseHandler()}}
-{\footnotesize\ttfamily \label{class_http_response_handler_a89539040d7cec94512e54b05dbb2bd94} 
-Http\+Response\+Handler\+::\+Http\+Response\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{, }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request}{, }\item[{int}]{fd}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Http\+Response\+Handler\+::\+Http\+Response\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{struct_location_config}{Location\+Config}} \texorpdfstring{$\ast$}{*}}]{location,  }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log,  }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data,  }\item[{\mbox{\hyperlink{structs__request}{s\+\_\+request}} \&}]{request,  }\item[{int}]{fd }\end{DoxyParamCaption})}
 
 
 
@@ -114,11 +114,11 @@ Initializes the response handler with configuration, logging, client data, and t
 
 
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb}\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
+\Hypertarget{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb}\label{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb} 
+\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
 \index{get\_file\_content@{get\_file\_content}!HttpResponseHandler@{HttpResponseHandler}}
 \doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily \label{class_http_response_handler_a90ad9e56b3260f3e1b6cd0fbc7dc44fb} 
-void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{int}]{pid}{, }\item[{int(\&)}]{fd}{\mbox{[}2\mbox{]}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+{\footnotesize\ttfamily void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{int}]{pid,  }\item[{int(\&)}]{fd\mbox{[}2\mbox{]} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
 
 
 
@@ -131,11 +131,11 @@ Unused function
 
 Implements \mbox{\hyperlink{class_ws_response_handler_a13110e781354f17e2628be2c9a5c89ae}{Ws\+Response\+Handler}}.
 
-\Hypertarget{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025}\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
+\Hypertarget{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025}\label{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025} 
+\index{HttpResponseHandler@{HttpResponseHandler}!get\_file\_content@{get\_file\_content}}
 \index{get\_file\_content@{get\_file\_content}!HttpResponseHandler@{HttpResponseHandler}}
 \doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily \label{class_http_response_handler_ab4032ef8152f75d17e3b6add8a86f025} 
-void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{std\+::string \&}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+{\footnotesize\ttfamily void Http\+Response\+Handler\+::get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{std\+::string \&}]{path }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
 
 
 

@@ -14,6 +14,8 @@ A simple, in-\/memory Least Recently Used (LRU) cache.
 \item 
 \mbox{\hyperlink{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c}{Web\+Server\+Cache}} (size\+\_\+t capacity)
 \begin{DoxyCompactList}\small\item\em Constructs a cache with a specified maximum capacity. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_web_server_cache_a93fb79273f19a4069ff84e11b7348e70}{Web\+Server\+Cache}} ()
+\item 
 bool \mbox{\hyperlink{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae}{get}} (const std\+::string \&key, T \&entry)
 \begin{DoxyCompactList}\small\item\em Retrieves an entry from the cache. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0}{put}} (const std\+::string \&key, const T \&entry)
@@ -37,12 +39,12 @@ The {\ttfamily \doxylink{class_web_server_cache}{Web\+Server\+Cache}} class is d
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!WebServerCache@{WebServerCache}}
+\Hypertarget{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c}\label{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c} 
+\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!WebServerCache@{WebServerCache}}
 \index{WebServerCache@{WebServerCache}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
-\doxysubsubsection{\texorpdfstring{WebServerCache()}{WebServerCache()}}
-{\footnotesize\ttfamily \label{class_web_server_cache_ad42a553d9475ec29f3bd307c9f4ef12c} 
-template$<$typename T $>$ \\
-\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\mbox{\hyperlink{class_web_server_cache}{\+::\+Web\+Server\+Cache}} (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{capacity}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+\doxysubsubsection{\texorpdfstring{WebServerCache()}{WebServerCache()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\mbox{\hyperlink{class_web_server_cache}{\+::\+Web\+Server\+Cache}} (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{capacity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
 
 
 
@@ -53,15 +55,22 @@ Constructs a cache with a specified maximum capacity.
 {\em capacity} & The maximum number of entries the cache can hold. \\
 \hline
 \end{DoxyParams}
+\Hypertarget{class_web_server_cache_a93fb79273f19a4069ff84e11b7348e70}\label{class_web_server_cache_a93fb79273f19a4069ff84e11b7348e70} 
+\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!WebServerCache@{WebServerCache}}
+\index{WebServerCache@{WebServerCache}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{WebServerCache()}{WebServerCache()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\mbox{\hyperlink{class_web_server_cache}{\+::\+Web\+Server\+Cache}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
 
 
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!get@{get}}
+\Hypertarget{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae}\label{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae} 
+\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!get@{get}}
 \index{get@{get}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
 \doxysubsubsection{\texorpdfstring{get()}{get()}}
-{\footnotesize\ttfamily \label{class_web_server_cache_ae41f0a5cdfe9abf794733c5d372720ae} 
-template$<$typename T $>$ \\
-bool \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{, }\item[{T \&}]{entry}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+bool \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::get (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key,  }\item[{T \&}]{entry }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 
@@ -79,12 +88,12 @@ This method searches the cache for an entry with the specified key. If the entry
 \begin{DoxyReturn}{Returns}
 {\ttfamily true} if the entry was found and {\ttfamily entry} was updated; otherwise, {\ttfamily false}. 
 \end{DoxyReturn}
-\Hypertarget{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!put@{put}}
+\Hypertarget{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0}\label{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0} 
+\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!put@{put}}
 \index{put@{put}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
 \doxysubsubsection{\texorpdfstring{put()}{put()}}
-{\footnotesize\ttfamily \label{class_web_server_cache_a5c6f7178305a52e9aa43f36d5e8051c0} 
-template$<$typename T $>$ \\
-void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::put (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{, }\item[{const T \&}]{entry}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::put (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key,  }\item[{const T \&}]{entry }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 
@@ -99,12 +108,12 @@ If an entry with the specified key already exists, it is updated and moved to th
 {\em entry} & The entry to be added or updated in the cache. \\
 \hline
 \end{DoxyParams}
-\Hypertarget{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9}\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!remove@{remove}}
+\Hypertarget{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9}\label{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9} 
+\index{WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}!remove@{remove}}
 \index{remove@{remove}!WebServerCache$<$ T $>$@{WebServerCache$<$ T $>$}}
 \doxysubsubsection{\texorpdfstring{remove()}{remove()}}
-{\footnotesize\ttfamily \label{class_web_server_cache_a55c2a4ce60bb376dc23b0067d7fa26a9} 
-template$<$typename T $>$ \\
-void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::remove (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \mbox{\hyperlink{class_web_server_cache}{Web\+Server\+Cache}}$<$ T $>$\+::remove (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 

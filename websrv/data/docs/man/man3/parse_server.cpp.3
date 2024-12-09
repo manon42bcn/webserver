@@ -15,55 +15,242 @@ websrv/srcs/parse/parse_server.cpp
 .ti -1c
 .RI "void \fBparse_location\fP (std::vector< std::string >::iterator &it, std::vector< std::string >::iterator end, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a location directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a template error page directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_port\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a port directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_server_name\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a server name directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a root directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an index directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_client_max_body_size\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a client max body size directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an error page directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an autoindex directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_error_mode\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an error mode directive within a server block\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses an autoindex directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if autoindex value is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_client_max_body_size (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a client max body size directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if client max body size is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_error_mode (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses an error mode directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error mode is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses an error page directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error page configuration is invalid or duplicated\&. 
+.RE
+.PP
 
 .SS "void parse_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses an index directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if default page is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_location (std::vector< std::string >::iterator & it, std::vector< std::string >::iterator end, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a location directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIend\fP Iterator to end of configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if location path is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_port (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a port directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if port is invalid or already defined\&. 
+.RE
+.PP
+
 .SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a root directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if root is invalid or already defined\&. 
+.RE
+.PP
 
 .SS "void parse_server_name (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a server name directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if server name is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a template error page directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 

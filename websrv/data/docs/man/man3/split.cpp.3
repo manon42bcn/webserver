@@ -15,50 +15,65 @@ websrv/srcs/parse/split.cpp
 .ti -1c
 .RI "std::map< int, std::string > \fBsplit_error_pages\fP (std::string error_pages)"
 .br
-.RI "Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. "
+.RI "Splits a string of error pages into a map associating error codes with file paths\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBsplit_default_pages\fP (std::string default_pages)"
 .br
-.RI "Splits a string of default pages into a vector of strings, separated by spaces\&. "
+.RI "Splits a string of default pages into a vector of strings\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBsplit_string\fP (std::string str)"
 .br
+.RI "Splits a string into a vector of substrings based on whitespace\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "std::vector< std::string > split_default_pages (std::string default_pages)"
 
 .PP
-Splits a string of default pages into a vector of strings, separated by spaces\&. 
+Splits a string of default pages into a vector of strings\&. Parses a space-separated string of default page paths into individual components\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIdefault_pages\fP The string containing default pages\&. 
+\fIdefault_pages\fP String containing space-separated default page paths\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A vector of default page strings\&. 
+std::vector<std::string> Vector containing individual default page paths\&. 
 .RE
 .PP
 
 .SS "std::map< int, std::string > split_error_pages (std::string error_pages)"
 
 .PP
-Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. 
+Splits a string of error pages into a map associating error codes with file paths\&. This function parses a string containing error page definitions and creates a mapping between HTTP error codes and their corresponding error page file paths\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIerror_pages\fP The string containing error pages\&. 
+\fIerror_pages\fP String containing space-separated error codes followed by a file path\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A map of error codes to file paths\&. 
+std::map<int, std::string> Map of error codes to their corresponding file paths\&. 
 .RE
 .PP
 
 .SS "std::vector< std::string > split_string (std::string str)"
+
+.PP
+Splits a string into a vector of substrings based on whitespace\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP Input string to be split\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<std::string> Vector containing individual tokens\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 

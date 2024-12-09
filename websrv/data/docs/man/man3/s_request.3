@@ -15,6 +15,9 @@ s_request \- Represents an HTTP request and its associated metadata\&.
 .ti -1c
 .RI "\fBs_request\fP ()"
 .br
+.ti -1c
+.RI "void \fBclear_request\fP ()"
+.br
 .in -1c
 .SS "Data Fields"
 
@@ -101,7 +104,10 @@ s_request \- Represents an HTTP request and its associated metadata\&.
 .RI "const \fBLocationConfig\fP * \fBlocation\fP"
 .br
 .ti -1c
-.RI "const \fBServerConfig\fP * \fBhost_config\fP"
+.RI "\fBServerConfig\fP * \fBhost_config\fP"
+.br
+.ti -1c
+.RI "bool \fBrequest_ready\fP"
 .br
 .in -1c
 .SH "Detailed Description"
@@ -112,6 +118,10 @@ This structure holds all relevant data extracted from an HTTP request, including
 .SH "Constructor & Destructor Documentation"
 .PP 
 .SS "s_request::s_request ()\fR [inline]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void s_request::clear_request ()\fR [inline]\fP"
 
 .SH "Field Documentation"
 .PP 
@@ -137,7 +147,7 @@ This structure holds all relevant data extracted from an HTTP request, including
 
 .SS "std::string s_request::host"
 
-.SS "const \fBServerConfig\fP* s_request::host_config"
+.SS "\fBServerConfig\fP* s_request::host_config"
 
 .SS "bool s_request::is_cached"
 
@@ -164,6 +174,8 @@ This structure holds all relevant data extracted from an HTTP request, including
 .SS "std::string s_request::range"
 
 .SS "std::string s_request::referer"
+
+.SS "bool s_request::request_ready"
 
 .SS "bool s_request::sanity"
 

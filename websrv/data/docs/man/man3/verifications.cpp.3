@@ -23,15 +23,15 @@ websrv/srcs/parse/verifications.cpp
 .ti -1c
 .RI "bool \fBcan_open_file\fP (const char *filename)"
 .br
-.RI "Checks if a file can be opened\&. "
+.RI "Validates if a file can be opened for reading\&. "
 .ti -1c
 .RI "bool \fBcheck_args\fP (int argc, char **argv)"
 .br
-.RI "Validates the command line arguments\&. "
+.RI "Validates command line arguments for the webserver\&. "
 .ti -1c
 .RI "int \fBcheck_port\fP (std::string port)"
 .br
-.RI "Validates a port number\&. "
+.RI "Validates a port number string\&. "
 .ti -1c
 .RI "bool \fBcheck_server_name\fP (std::string server_name)"
 .br
@@ -75,40 +75,56 @@ websrv/srcs/parse/verifications.cpp
 .ti -1c
 .RI "bool \fBcheck_obligatory_params\fP (\fBServerConfig\fP &server, \fBLogger\fP *logger)"
 .br
+.ti -1c
+.RI "bool \fBcheck_server_brackets\fP (std::string server_name)"
+.br
+.RI "Validates the syntax of a server block declaration\&. "
+.ti -1c
+.RI "bool \fBcheck_duplicate_location\fP (const std::string &location_path, const std::map< std::string, \fBLocationConfig\fP > &locations)"
+.br
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "bool can_open_file (const char * filename)"
 
 .PP
-Checks if a file can be opened\&. 
+Validates if a file can be opened for reading\&. Attempts to open the specified file and checks if the operation was successful\&. Used primarily for configuration file validation\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIfilename\fP The name of the file to check\&. 
+\fIfilename\fP Path to the file to be checked\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-true if the file can be opened, false otherwise\&. 
+true if the file can be opened successfully, false otherwise\&. 
 .RE
 .PP
 
 .SS "bool check_args (int argc, char ** argv)"
 
 .PP
-Validates the command line arguments\&. 
+Validates command line arguments for the webserver\&. Performs comprehensive validation of command line arguments including:
+.IP "\(bu" 2
+Checking for correct number of arguments
+.IP "\(bu" 2
+Handling help command
+.IP "\(bu" 2
+Validating configuration file existence and format
+.IP "\(bu" 2
+Checking file extension (\&.conf)
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIargc\fP Argument count\&. 
+\fIargc\fP Number of command line arguments\&. 
 .br
-\fIargv\fP Argument vector\&. 
+\fIargv\fP Array of command line argument strings\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-true if arguments are valid, false otherwise\&. 
+true if all arguments are valid, false otherwise\&. 
 .RE
 .PP
 
@@ -117,18 +133,18 @@ true if arguments are valid, false otherwise\&.
 .SS "bool check_brackets (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 
 .PP
-Checks if the brackets in the given range are balanced\&. 
+Checks if the brackets in the given range are balanced\&. This function iterates through a range of strings and counts opening and closing brackets to ensure they are properly balanced\&. It's essential for validating configuration file syntax\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIstart\fP Iterator to the start of the range\&. 
+\fIstart\fP Iterator to the start of the range to check\&. 
 .br
-\fIend\fP Iterator to the end of the range\&. 
+\fIend\fP Iterator to the end of the range to check\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-true if brackets are balanced, false otherwise\&. 
+true if brackets are balanced (equal number of opening and closing brackets), false otherwise\&. 
 .RE
 .PP
 
@@ -152,6 +168,8 @@ true if the default page is valid, false otherwise\&.
 .RE
 .PP
 
+.SS "bool check_duplicate_location (const std::string & location_path, const std::map< std::string, \fBLocationConfig\fP > & locations)"
+
 .SS "bool check_duplicate_servers (std::vector< \fBServerConfig\fP > servers)"
 
 .SS "bool check_error_mode (std::string error_mode)"
@@ -163,20 +181,41 @@ true if the default page is valid, false otherwise\&.
 .SS "int check_port (std::string port)"
 
 .PP
-Validates a port number\&. 
+Validates a port number string\&. Checks if the provided string represents a valid port number:
+.IP "\(bu" 2
+Contains only digits
+.IP "\(bu" 2
+Within valid port range (1-65535)
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIport\fP The port number as a string\&. 
+\fIport\fP String containing the port number to validate\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-The port number as an integer if valid, -1 otherwise\&. 
+The port number as an integer if valid, -1 if invalid\&. 
 .RE
 .PP
 
 .SS "bool check_root (std::string root)"
+
+.SS "bool check_server_brackets (std::string server_name)"
+
+.PP
+Validates the syntax of a server block declaration\&. Checks if there are no alphanumeric characters between the 'server' keyword and the opening curly brace '{'\&. This ensures the server block follows the correct syntax format: 'server {' with only whitespace allowed between them\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver_name\fP The string containing the server block declaration to validate\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the syntax is valid (no alphanumeric characters between 'server' and '{'), false if invalid or if 'server' keyword is not found\&. 
+.RE
+.PP
 
 .SS "bool check_server_name (std::string server_name)"
 

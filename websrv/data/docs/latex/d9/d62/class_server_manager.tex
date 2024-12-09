@@ -35,11 +35,11 @@ The {\ttfamily \doxylink{class_server_manager}{Server\+Manager}} class is respon
 This class uses a {\ttfamily poll}-\/based event loop in the {\ttfamily run} method to handle incoming connections and requests. It provides a shutdown mechanism in case of unrecoverable errors and is equipped with logging for server status tracking. 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}\index{ServerManager@{ServerManager}!ServerManager@{ServerManager}}
+\Hypertarget{class_server_manager_adda4c1b6ef004e73482c28f48fd55773}\label{class_server_manager_adda4c1b6ef004e73482c28f48fd55773} 
+\index{ServerManager@{ServerManager}!ServerManager@{ServerManager}}
 \index{ServerManager@{ServerManager}!ServerManager@{ServerManager}}
 \doxysubsubsection{\texorpdfstring{ServerManager()}{ServerManager()}}
-{\footnotesize\ttfamily \label{class_server_manager_adda4c1b6ef004e73482c28f48fd55773} 
-Server\+Manager\+::\+Server\+Manager (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{configs}{, }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Server\+Manager\+::\+Server\+Manager (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{struct_server_config}{Server\+Config}} $>$ \&}]{configs,  }\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{logger }\end{DoxyParamCaption})}
 
 
 
@@ -63,11 +63,11 @@ This constructor initializes the \doxylink{class_server_manager}{Server\+Manager
 {\em \doxylink{class_web_server_exception}{Web\+Server\+Exception}} & If no cache pointer is provided, if configs are empty, or if a \doxylink{class_socket_handler}{Socket\+Handler} exception is caught.\\
 \hline
 \end{DoxyExceptions}
-This constructor sets up sockets for each configuration in {\ttfamily configs} using {\ttfamily add\+\_\+server}. If any socket operation fails, it logs the error details and throws a {\ttfamily \doxylink{class_web_server_exception}{Web\+Server\+Exception}}. Once initialized successfully, the instance is marked as healthy and active. \Hypertarget{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}\index{ServerManager@{ServerManager}!````~ServerManager@{\texorpdfstring{$\sim$}{\string~}ServerManager}}
+This constructor sets up sockets for each configuration in {\ttfamily configs} using {\ttfamily add\+\_\+server}. If any socket operation fails, it logs the error details and throws a {\ttfamily \doxylink{class_web_server_exception}{Web\+Server\+Exception}}. Once initialized successfully, the instance is marked as healthy and active. \Hypertarget{class_server_manager_ad3dcb08af530cec26942c2ce0431f625}\label{class_server_manager_ad3dcb08af530cec26942c2ce0431f625} 
+\index{ServerManager@{ServerManager}!````~ServerManager@{\texorpdfstring{$\sim$}{\string~}ServerManager}}
 \index{````~ServerManager@{\texorpdfstring{$\sim$}{\string~}ServerManager}!ServerManager@{ServerManager}}
 \doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}ServerManager()}{\string~ServerManager()}}
-{\footnotesize\ttfamily \label{class_server_manager_ad3dcb08af530cec26942c2ce0431f625} 
-Server\+Manager\+::\texorpdfstring{$\sim$}{\string~}\+Server\+Manager (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Server\+Manager\+::\texorpdfstring{$\sim$}{\string~}\+Server\+Manager (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -78,11 +78,11 @@ This destructor ensures a proper cleanup of server resources managed by the \dox
 The destructor also logs the cleanup process, marking the completion of resource cleanup for easier monitoring and debugging. 
 
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_server_manager_aecc313c9b6afcab92c22269b3333c721}\index{ServerManager@{ServerManager}!run@{run}}
+\Hypertarget{class_server_manager_aecc313c9b6afcab92c22269b3333c721}\label{class_server_manager_aecc313c9b6afcab92c22269b3333c721} 
+\index{ServerManager@{ServerManager}!run@{run}}
 \index{run@{run}!ServerManager@{ServerManager}}
 \doxysubsubsection{\texorpdfstring{run()}{run()}}
-{\footnotesize\ttfamily \label{class_server_manager_aecc313c9b6afcab92c22269b3333c721} 
-void Server\+Manager\+::run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Server\+Manager\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -115,11 +115,11 @@ The main functionalities of the event loop are\+:
 \item A short sleep ({\ttfamily usleep}) is included to avoid excessive CPU usage during idle periods. 
 \end{DoxyItemize}
 \end{DoxyNote}
-\Hypertarget{class_server_manager_a739e419ac09105174c345c52765d89f4}\index{ServerManager@{ServerManager}!turn\_off\_server@{turn\_off\_server}}
+\Hypertarget{class_server_manager_a739e419ac09105174c345c52765d89f4}\label{class_server_manager_a739e419ac09105174c345c52765d89f4} 
+\index{ServerManager@{ServerManager}!turn\_off\_server@{turn\_off\_server}}
 \index{turn\_off\_server@{turn\_off\_server}!ServerManager@{ServerManager}}
 \doxysubsubsection{\texorpdfstring{turn\_off\_server()}{turn\_off\_server()}}
-{\footnotesize\ttfamily \label{class_server_manager_a739e419ac09105174c345c52765d89f4} 
-void Server\+Manager\+::turn\+\_\+off\+\_\+server (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Server\+Manager\+::turn\+\_\+off\+\_\+server (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 

@@ -17,7 +17,9 @@ Handles HTTP requests by parsing, validating, and dispatching them to appropriat
 \mbox{\hyperlink{class_http_request_handler_a32bf6b0e36dbdb4cd0525d2c4b54fdec}{\texorpdfstring{$\sim$}{\string~}\+Http\+Request\+Handler}} ()
 \begin{DoxyCompactList}\small\item\em Destructor for \doxylink{class_http_request_handler}{Http\+Request\+Handler}. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_http_request_handler_a97cbf6e2584f097d88cbd5e50ccb22dd}{request\+\_\+workflow}} ()
-\begin{DoxyCompactList}\small\item\em Executes the main workflow for handling an HTTP request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Executes the workflow for processing and validating an HTTP request. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_http_request_handler_a275d47883da70a7466b0ea314d1d31ec}{handle\+\_\+request}} ()
+\begin{DoxyCompactList}\small\item\em Processes the HTTP request and initiates the appropriate response handler. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -59,11 +61,11 @@ The class supports CGI requests, ranged requests, multipart uploads, and standar
 
 
 \doxysubsection{Constructor \& Destructor Documentation}
-\Hypertarget{class_http_request_handler_a852858343a48d668f0ecdfc495fc0002}\index{HttpRequestHandler@{HttpRequestHandler}!HttpRequestHandler@{HttpRequestHandler}}
+\Hypertarget{class_http_request_handler_a852858343a48d668f0ecdfc495fc0002}\label{class_http_request_handler_a852858343a48d668f0ecdfc495fc0002} 
+\index{HttpRequestHandler@{HttpRequestHandler}!HttpRequestHandler@{HttpRequestHandler}}
 \index{HttpRequestHandler@{HttpRequestHandler}!HttpRequestHandler@{HttpRequestHandler}}
 \doxysubsubsection{\texorpdfstring{HttpRequestHandler()}{HttpRequestHandler()}}
-{\footnotesize\ttfamily \label{class_http_request_handler_a852858343a48d668f0ecdfc495fc0002} 
-Http\+Request\+Handler\+::\+Http\+Request\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log}{, }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Http\+Request\+Handler\+::\+Http\+Request\+Handler (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{class_logger}{Logger}} \texorpdfstring{$\ast$}{*}}]{log,  }\item[{\mbox{\hyperlink{class_client_data}{Client\+Data}} \texorpdfstring{$\ast$}{*}}]{client\+\_\+data }\end{DoxyParamCaption})}
 
 
 
@@ -90,11 +92,11 @@ This constructor initializes the handler with essential pointers and settings fo
 \begin{DoxyWarning}{Warning}
 Throws exceptions if essential components (logger, client\+\_\+data, or cache) are not available, which compromises server functionality. 
 \end{DoxyWarning}
-\Hypertarget{class_http_request_handler_a32bf6b0e36dbdb4cd0525d2c4b54fdec}\index{HttpRequestHandler@{HttpRequestHandler}!````~HttpRequestHandler@{\texorpdfstring{$\sim$}{\string~}HttpRequestHandler}}
+\Hypertarget{class_http_request_handler_a32bf6b0e36dbdb4cd0525d2c4b54fdec}\label{class_http_request_handler_a32bf6b0e36dbdb4cd0525d2c4b54fdec} 
+\index{HttpRequestHandler@{HttpRequestHandler}!````~HttpRequestHandler@{\texorpdfstring{$\sim$}{\string~}HttpRequestHandler}}
 \index{````~HttpRequestHandler@{\texorpdfstring{$\sim$}{\string~}HttpRequestHandler}!HttpRequestHandler@{HttpRequestHandler}}
 \doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}HttpRequestHandler()}{\string~HttpRequestHandler()}}
-{\footnotesize\ttfamily \label{class_http_request_handler_a32bf6b0e36dbdb4cd0525d2c4b54fdec} 
-Http\+Request\+Handler\+::\texorpdfstring{$\sim$}{\string~}\+Http\+Request\+Handler (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily Http\+Request\+Handler\+::\texorpdfstring{$\sim$}{\string~}\+Http\+Request\+Handler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -106,79 +108,108 @@ This destructor does not perform specific memory deallocation as most resources 
 
 
 \doxysubsection{Member Function Documentation}
-\Hypertarget{class_http_request_handler_a97cbf6e2584f097d88cbd5e50ccb22dd}\index{HttpRequestHandler@{HttpRequestHandler}!request\_workflow@{request\_workflow}}
+\Hypertarget{class_http_request_handler_a275d47883da70a7466b0ea314d1d31ec}\label{class_http_request_handler_a275d47883da70a7466b0ea314d1d31ec} 
+\index{HttpRequestHandler@{HttpRequestHandler}!handle\_request@{handle\_request}}
+\index{handle\_request@{handle\_request}!HttpRequestHandler@{HttpRequestHandler}}
+\doxysubsubsection{\texorpdfstring{handle\_request()}{handle\_request()}}
+{\footnotesize\ttfamily void Http\+Request\+Handler\+::handle\+\_\+request (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Processes the HTTP request and initiates the appropriate response handler. 
+
+Based on the request\textquotesingle{}s state and attributes, this function initializes and dispatches a suitable response handler\+:
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}}\+: Handles standard HTTP requests.
+\item {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}}\+: Handles CGI requests.
+\item {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}}\+: Manages ranged requests.
+\item {\ttfamily \doxylink{class_http_multipart_handler}{Http\+Multipart\+Handler}}\+: Handles multipart data uploads.
+\end{DoxyItemize}
+
+Workflow\+:
+\begin{DoxyEnumerate}
+\item {\bfseries{Sanity Check}}\+: If {\ttfamily \+\_\+request\+\_\+data.\+sanity} is false, a generic error response is sent via {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}}.
+\item {\bfseries{Request Type Decision}}\+:
+\begin{DoxyItemize}
+\item If {\ttfamily \+\_\+request\+\_\+data.\+factory} is 0, uses {\ttfamily \doxylink{class_http_response_handler}{Http\+Response\+Handler}}.
+\item If {\ttfamily \+\_\+request\+\_\+data.\+cgi} is true, uses {\ttfamily \doxylink{class_http_c_g_i_handler}{Http\+CGIHandler}}.
+\item If {\ttfamily \+\_\+request\+\_\+data.\+range} is non-\/empty, uses {\ttfamily \doxylink{class_http_range_handler}{Http\+Range\+Handler}}.
+\item If {\ttfamily \+\_\+request\+\_\+data.\+boundary} is non-\/empty, uses {\ttfamily \doxylink{class_http_multipart_handler}{Http\+Multipart\+Handler}}. \begin{DoxyNote}{Note}
+\+: This method will cache request related info if it was not cached yet, if everything went ok, and if method is get.
+\end{DoxyNote}
+{\bfseries{Exception Handling}}\+:
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+\begin{DoxyItemize}
+\item Catches {\ttfamily \doxylink{class_web_server_exception}{Web\+Server\+Exception}}, {\ttfamily \doxylink{class_logger_1_1_no_logger_pointer}{Logger\+::\+No\+Logger\+Pointer}}, and {\ttfamily std\+::exception} to log errors and deactivate the client connection.
+\end{DoxyItemize}
+
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{class_web_server_exception}{Web\+Server\+Exception}} & Catches errors from Web\+Server-\/specific issues. \\
+\hline
+{\em \doxylink{class_logger_1_1_no_logger_pointer}{Logger\+::\+No\+Logger\+Pointer}} & Catches logging pointer errors. \\
+\hline
+{\em std\+::exception} & Catches unexpected exceptions. \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{class_http_request_handler_a97cbf6e2584f097d88cbd5e50ccb22dd}\label{class_http_request_handler_a97cbf6e2584f097d88cbd5e50ccb22dd} 
+\index{HttpRequestHandler@{HttpRequestHandler}!request\_workflow@{request\_workflow}}
 \index{request\_workflow@{request\_workflow}!HttpRequestHandler@{HttpRequestHandler}}
 \doxysubsubsection{\texorpdfstring{request\_workflow()}{request\_workflow()}}
-{\footnotesize\ttfamily \label{class_http_request_handler_a97cbf6e2584f097d88cbd5e50ccb22dd} 
-void Http\+Request\+Handler\+::request\+\_\+workflow (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Http\+Request\+Handler\+::request\+\_\+workflow (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
-Executes the main workflow for handling an HTTP request. 
+Executes the workflow for processing and validating an HTTP request. 
 
-This method defines and executes a series of validation and parsing steps to fully handle an HTTP request. It performs tasks such as reading headers, parsing the request, normalizing the path, validating the request, and eventually passing the request to the response handler.
+This method manages the step-\/by-\/step workflow for parsing and validating an HTTP request, followed by handling the request if it is ready. The workflow is divided into distinct validation steps, each responsible for a specific part of the HTTP request processing.
 
-The method performs the following actions\+:
-
-
+The method operates as follows\+:
 \begin{DoxyEnumerate}
-\item {\bfseries{Define Validation Steps}}\+:
+\item {\bfseries{Define Steps}}\+:
 \begin{DoxyItemize}
-\item Defines an array of function pointers ({\ttfamily steps}) representing each step of the request processing workflow\+:
+\item An array of function pointers ({\ttfamily validate\+\_\+step}) defines the steps for processing\+:
 \begin{DoxyItemize}
-\item {\ttfamily read\+\_\+request\+\_\+header()}\+: Reads the incoming request header.
-\item {\ttfamily parse\+\_\+header()}\+: Parses the request headers.
-\item {\ttfamily parse\+\_\+method\+\_\+and\+\_\+path()}\+: Parses the HTTP method and the requested path.
-\item {\ttfamily parse\+\_\+path\+\_\+type()}\+: Determines the type of path being requested.
-\item {\ttfamily load\+\_\+header\+\_\+data()}\+: Loads additional header data needed for processing.
-\item {\ttfamily solver\+\_\+resource()}\+: Resolves the requested resource path and validates its location.
-\item {\ttfamily load\+\_\+content()}\+: Loads the content associated with the request (if applicable).
-\item {\ttfamily validate\+\_\+request()}\+: Validates the overall request to ensure it meets server requirements.
+\item {\ttfamily read\+\_\+request\+\_\+header}\+: Reads the HTTP request header from the client.
+\item {\ttfamily parse\+\_\+header}\+: Parses the header for key-\/value pairs.
+\item {\ttfamily parse\+\_\+method\+\_\+and\+\_\+path}\+: Extracts the HTTP method and requested path.
+\item {\ttfamily parse\+\_\+path\+\_\+type}\+: Determines the type of resource (e.\+g., file, directory).
+\item {\ttfamily load\+\_\+header\+\_\+data}\+: Loads additional header data needed for processing.
+\item {\ttfamily load\+\_\+host\+\_\+config}\+: Maps the request to the correct host configuration.
+\item {\ttfamily solver\+\_\+resource}\+: Resolves the resource requested by the client.
+\item {\ttfamily load\+\_\+content}\+: Reads the content of the request, if any.
+\item {\ttfamily validate\+\_\+request}\+: Performs final validation of the request\textquotesingle{}s integrity.
 \end{DoxyItemize}
 \end{DoxyItemize}
-\item {\bfseries{Start Request Workflow}}\+:
+\item {\bfseries{Check Input State}}\+:
 \begin{DoxyItemize}
-\item Logs the beginning of the request parsing and validation process.
-\item Calls {\ttfamily \+\_\+client\+\_\+data-\/\texorpdfstring{$>$}{>}chronos\+\_\+reset()} to reset any timers related to the client (e.\+g., request start time).
+\item If the request is not ready and the socket is readable ({\ttfamily POLLIN}), the validation process begins.
 \end{DoxyItemize}
 \item {\bfseries{Execute Validation Steps}}\+:
 \begin{DoxyItemize}
-\item Iterates through the array of validation steps ({\ttfamily steps}) and executes each one in order using function pointers ({\ttfamily (this-\/\texorpdfstring{$>$}{>}\texorpdfstring{$\ast$}{*}steps\mbox{[}i\mbox{]})()}).
-\item After executing each step, checks the {\ttfamily \+\_\+request\+\_\+data.\+sanity} flag\+:
+\item Iterates through the validation steps sequentially\+:
 \begin{DoxyItemize}
-\item If the flag is {\ttfamily false}, it indicates an error during processing, and the workflow is terminated.
+\item Calls each step using a member function pointer.
+\item Stops the process if the {\ttfamily sanity} flag indicates a validation failure.
 \end{DoxyItemize}
 \end{DoxyItemize}
-\item {\bfseries{Handle the Request}}\+:
+\item {\bfseries{Mark Request as Ready}}\+:
 \begin{DoxyItemize}
-\item After completing the validation and parsing steps, logs the end of the request validation process.
-\item Calls {\ttfamily handle\+\_\+request()} to proceed with responding to the client based on the validated request.
+\item If all steps succeed, the request is marked as ready for further handling.
 \end{DoxyItemize}
-\item {\bfseries{Log Response Completion}}\+:
+\item {\bfseries{Handle Ready Requests}}\+:
 \begin{DoxyItemize}
-\item Logs the end of the response handling process.
+\item If the request is ready and the socket is writable ({\ttfamily POLLOUT}), the request is processed.
 \end{DoxyItemize}
 \end{DoxyEnumerate}
 
-\begin{DoxyNote}{Note}
 
-\begin{DoxyItemize}
-\item The {\ttfamily \+\_\+request\+\_\+data.\+sanity} flag is used throughout the workflow to indicate whether each step was successful. If an error occurs, the flag is set to {\ttfamily false} and the workflow is halted.
-\item The workflow consists of multiple steps that handle reading the request, parsing its components, and validating them to ensure the request can be processed correctly.
-\end{DoxyItemize}
-\end{DoxyNote}
-{\bfseries{Validation Steps}}\+:
-\begin{DoxyItemize}
-\item {\ttfamily read\+\_\+request\+\_\+header()}\+: Reads the raw HTTP headers from the incoming request.
-\item {\ttfamily parse\+\_\+header()}\+: Parses and processes each header to extract key-\/value pairs.
-\item {\ttfamily parse\+\_\+method\+\_\+and\+\_\+path()}\+: Identifies the HTTP method (e.\+g., GET, POST) and the requested path.
-\item {\ttfamily parse\+\_\+path\+\_\+type()}\+: Determines the type of path (e.\+g., static file, dynamic request).
-\item {\ttfamily load\+\_\+header\+\_\+data()}\+: Loads additional data from headers required for further processing.
-\item {\ttfamily load\+\_\+host\+\_\+config()}\+: Loads host from request, to set its configuration, and update host at Client\+Data\texorpdfstring{$\ast$}{*}
-\item {\ttfamily solver\+\_\+resource()}\+: Resolves the requested resource path, potentially handling relative paths.
-\item {\ttfamily load\+\_\+content()}\+: Loads request body content if applicable (e.\+g., for POST requests).
-\item {\ttfamily validate\+\_\+request()}\+: Final validation to ensure that the request conforms to server policies and rules. 
-\end{DoxyItemize}
+\begin{DoxyExceptions}{Exceptions}
+{\em Exceptions} & may occur within individual steps if errors are encountered, such as malformed headers or resource resolution failures. \\
+\hline
+\end{DoxyExceptions}
+
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 

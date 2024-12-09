@@ -67,12 +67,15 @@ ClientData \- Manages individual client connections in the web server, tracking 
 .ti -1c
 .RI "\fBs_request\fP & \fBclient_request\fP ()"
 .br
+.RI "Accessor for the client's request data\&. "
 .ti -1c
-.RI "void \fBto_pollout\fP ()"
+.RI "void \fBset_state\fP (short state)"
 .br
+.RI "Updates the client's state based on the given value\&. "
 .ti -1c
-.RI "void \fBto_pollin\fP ()"
+.RI "short \fBget_state\fP () const"
 .br
+.RI "Retrieves the current state of the client\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -85,7 +88,6 @@ The \fR\fBClientData\fP\fP class encapsulates client connection data and provide
 
 .PP
 Constructs a \fR\fBClientData\fP\fP instance for a client connection\&. Initializes the client data with the provided server socket handler, logger, and client file descriptor\&. Sets initial connection state to active and timestamps the connection for monitoring\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -130,7 +132,6 @@ This method controls only request related timeout\&.
 .RE
 .PP
 Compares the current time with the last recorded activity timestamp\&. If the difference exceeds \fRTIMEOUT_REQUEST\fP, marks the client as inactive\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -144,11 +145,19 @@ True if the client connection is still within the timeout period, false otherwis
 Resets the client activity timestamp to the current time\&. Updates \fR_timestamp\fP with the current time, effectively marking recent activity and resetting the timeout period for the client\&. 
 .SS "\fBs_request\fP & ClientData::client_request ()"
 
+.PP
+Accessor for the client's request data\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Reference to the client's current HTTP request data\&. 
+.RE
+.PP
+
 .SS "void ClientData::close_fd ()"
 
 .PP
 Closes the client's socket file descriptor and marks it as inactive\&. Attempts to close the client's file descriptor (\fRfd\fP) and set \fR_active\fP to \fRfalse\fP\&. Logs the closure process and any issues that arise\&. If the \fRfd\fP is already inactive or invalid, it logs a warning message instead\&.
-
 .PP
 \fBNote\fP
 .RS 4
@@ -164,7 +173,6 @@ Marks the client connection as inactive\&. Sets \fR_active\fP to \fRfalse\fP, in
 
 .PP
 Retrieves the client's poll file descriptor structure\&. Provides access to the \fRpollfd\fP structure, which contains the client's file descriptor and event monitoring settings (e\&.g\&., \fRPOLLIN\fP for incoming data)\&.
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -180,6 +188,17 @@ Retrieves the server's socket handler associated with this client\&.
 \fBReturns\fP
 .RS 4
 Pointer to the \fR\fBSocketHandler\fP\fP instance managing the server connection for this client\&. 
+.RE
+.PP
+
+.SS "short ClientData::get_state () const"
+
+.PP
+Retrieves the current state of the client\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The client's current state as a short\&. 
 .RE
 .PP
 
@@ -213,9 +232,16 @@ Sets the client connection as active\&. Updates the \fR_active\fP flag to \fRtru
 
 .PP
 Sets the client life cycle to false\&. Updates the \fR_alive\fP flag to \fRfalse\fP, indicating that the client connection Process should end\&. 
-.SS "void ClientData::to_pollin ()\fR [inline]\fP"
+.SS "void ClientData::set_state (short state)"
 
-.SS "void ClientData::to_pollout ()\fR [inline]\fP"
+.PP
+Updates the client's state based on the given value\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstate\fP The new state to set for the client\&. 
+.RE
+.PP
 
 
 .SH "Author"

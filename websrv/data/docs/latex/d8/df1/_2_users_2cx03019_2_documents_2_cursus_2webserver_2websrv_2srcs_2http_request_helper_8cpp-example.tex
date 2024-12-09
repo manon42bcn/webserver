@@ -1,5 +1,5 @@
-\doxysection{/\+Users/mac/\+Documents/\+Cursus/webserver/websrv/srcs/general\+\_\+helpers.\+cpp}
-\hypertarget{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}{}\label{_2_users_2mac_2_documents_2_cursus_2webserver_2websrv_2srcs_2general_helpers_8cpp-example}Normalizes a host string by collapsing consecutive slashes into a single slash.
+\doxysection{/\+Users/cx03019/\+Documents/\+Cursus/webserver/websrv/srcs/http\+\_\+request\+\_\+helper.\+cpp}
+\hypertarget{_2_users_2cx03019_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}{}\label{_2_users_2cx03019_2_documents_2_cursus_2webserver_2websrv_2srcs_2http_request_helper_8cpp-example}Normalizes a host string by collapsing consecutive slashes into a single slash.
 
 Normalizes a host string by collapsing consecutive slashes into a single slash.\+This function processes a host string and ensures that sequences of consecutive slashes ({\ttfamily /}) are reduced to a single slash. The resulting string maintains the original order of characters but removes unnecessary redundancy caused by multiple slashes.
 
@@ -25,118 +25,19 @@ std\+::string raw\+\_\+host = "{}example.\+com////path//to//resource"{}; std\+::
 \DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :::\ \ \ \ \ \ ::::::::\ \ \ */}}
-\DoxyCodeLine{\textcolor{comment}{/*\ \ \ general\_helpers.cpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ http\_request\_helper.cpp\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :+:\ \ \ \ \ \ :+:\ \ \ \ :+:\ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +:+\ +:+\ \ \ \ \ \ \ \ \ +:+\ \ \ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ By:\ mporras-\/\ <manon42bcn@yahoo.com>\ \ \ \ \ \ \ \ \ \ \ \ +\#+\ \ +:+\ \ \ \ \ \ \ +\#+\ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ +\#+\#+\#+\#+\#+\ \ \ +\#+\ \ \ \ \ \ \ \ \ \ \ */}}
-\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Created:\ 2024/11/14\ 17:07:04\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
-\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Updated:\ 2024/11/23\ 23:52:25\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Created:\ 2024/11/23\ 22:49:58\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \ \#+\#\ \ \ \ \#+\#\ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\textcolor{comment}{/*\ \ \ Updated:\ 2024/11/23\ 23:39:14\ by\ mporras-\/\ \ \ \ \ \ \ \ \ \#\#\#\ \ \ \#\#\#\#\#\#\#\#.fr\ \ \ \ \ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
 \DoxyCodeLine{\textcolor{comment}{/*\ **************************************************************************\ */}}
 \DoxyCodeLine{}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{http__enum__codes_8hpp}{http\_enum\_codes.hpp}}"{}}}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{ws__permissions__bitwise_8hpp}{ws\_permissions\_bitwise.hpp}}"{}}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include\ <map>}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include\ <iostream>}}
 \DoxyCodeLine{\textcolor{preprocessor}{\#include\ <set>}}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <sstream>}}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <sys/stat.h>}}
-\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <cstring>}}
-\DoxyCodeLine{}
-\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_ad3165bd822066c8f5e48045057f94913}{int\_to\_string}}(\textcolor{keywordtype}{int}\ number)\ \{}
-\DoxyCodeLine{\ \ \ \ std::stringstream\ ss;}
-\DoxyCodeLine{\ \ \ \ ss\ <<\ number;}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (ss.str());}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_ad5849662d9826d4f6ac56a07c6088432}{is\_dir}}(\textcolor{keyword}{const}\ std::string\&\ path)}
-\DoxyCodeLine{\{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }stat\ s;}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (stat(path.c\_str(),\ \&s)\ ==\ 0)\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ S\_ISDIR(s.st\_mode);}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_a30a27fc5392e67f42f348e3ac4e38add}{is\_file}}(\textcolor{keyword}{const}\ std::string\&\ path)\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }stat\ s;}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (stat(path.c\_str(),\ \&s)\ ==\ 0)\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (S\_ISREG(s.st\_mode));}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{comment}{//\ *\ @brief\ Converts\ an\ integer\ to\ a\ string.}}
-\DoxyCodeLine{\textcolor{comment}{//\ *}}
-\DoxyCodeLine{\textcolor{comment}{//\ *\ This\ function\ converts\ an\ integer\ to\ its\ string\ representation\ using\ a\ stringstream.}}
-\DoxyCodeLine{\textcolor{comment}{//\ *}}
-\DoxyCodeLine{\textcolor{comment}{//\ *\ @param\ number\ The\ integer\ to\ be\ converted.}}
-\DoxyCodeLine{\textcolor{comment}{//\ *\ @return\ A\ string\ representation\ of\ the\ provided\ integer.}}
-\DoxyCodeLine{\textcolor{comment}{//\ */}}
-\DoxyCodeLine{\textcolor{comment}{//std::string\ int\_to\_string(int\ number)\ \{}}
-\DoxyCodeLine{\textcolor{comment}{//\ \ std::stringstream\ ss;}}
-\DoxyCodeLine{\textcolor{comment}{//\ \ ss\ <<\ number;}}
-\DoxyCodeLine{\textcolor{comment}{//\ \ return\ (ss.str());}}
-\DoxyCodeLine{\textcolor{comment}{//\}}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_a8ddc99f71f3aeb59c1680cc528fe04cc}{starts\_with}}(\textcolor{keyword}{const}\ std::string\&\ str,\ \textcolor{keyword}{const}\ std::string\&\ prefix)\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (str.size()\ <\ prefix.size())\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (str.compare(0,\ prefix.size(),\ prefix)\ ==\ 0);}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\_trim\_char}}(\textcolor{keywordtype}{char}\ c,\ \textcolor{keyword}{const}\ std::string\&\ chars\_to\_trim)\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (chars\_to\_trim.find(c)\ !=\ std::string::npos);}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_afb6cea8bf286eae7a246422b3ac5751d}{trim}}(\textcolor{keyword}{const}\ std::string\&\ str,\ \textcolor{keyword}{const}\ std::string\&\ chars\_to\_trim\ =\ \textcolor{stringliteral}{"{}\ \(\backslash\)t\(\backslash\)n\(\backslash\)r\(\backslash\)f\(\backslash\)v"{}})\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0;}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ (start\ <\ str.size()\ \&\&\ \mbox{\hyperlink{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\_trim\_char}}(str[start],\ chars\_to\_trim))\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ ++start;}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ end\ =\ str.size();}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ (end\ >\ start\ \&\&\ \mbox{\hyperlink{general__helpers_8cpp_abeae1ad22ec2ebf5dd48be5bc6b030dd}{to\_trim\_char}}(str[end\ -\/\ 1],\ chars\_to\_trim))\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ -\/-\/end;}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ str.substr(start,\ end\ -\/\ start);}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_ab0e7abb140f3aefb2efa0a59374bf97d}{to\_lowercase}}(\textcolor{keyword}{const}\ std::string\&\ input)\ \{}
-\DoxyCodeLine{\ \ \ \ std::string\ result\ =\ input;}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (std::size\_t\ i\ =\ 0;\ i\ <\ result.size();\ ++i)\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ result[i]\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(std::tolower(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\textcolor{keyword}{>}(result[i])));}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (result);}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{bool}\ \mbox{\hyperlink{general__helpers_8cpp_ab63ae0dbb73446b4a9d635d45dab4658}{is\_valid\_size\_t}}(\textcolor{keyword}{const}\ std::string\&\ value)\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (value.empty())\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (std::string::const\_iterator\ it\ =\ value.begin();\ it\ !=\ value.end();\ ++it)\ \{}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (*it\ ==\ \textcolor{charliteral}{'\ '})}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ continue\ ;}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::isdigit(*it))}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{false});}
-\DoxyCodeLine{\ \ \ \ \}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (\textcolor{keyword}{true});}
-\DoxyCodeLine{\}}
-\DoxyCodeLine{}
-\DoxyCodeLine{\textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{general__helpers_8cpp_af31c1ae26a81eba0c56016b665ce7a7b}{str\_to\_size\_t}}(\textcolor{keyword}{const}\ std::string\&\ value)\ \{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ result;}
-\DoxyCodeLine{\ \ \ \ std::stringstream\ ss(value);}
-\DoxyCodeLine{}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (ss\ >>\ result)}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (result);}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ (0);}
-\DoxyCodeLine{\}}
 \DoxyCodeLine{}
 \DoxyCodeLine{std::string\ \mbox{\hyperlink{general__helpers_8cpp_a411f70b0adb50fb351494b96143fb0ce}{http\_status\_description}}(\mbox{\hyperlink{http__enum__codes_8hpp_a991546140b16a555c1d90caffcb0e390}{e\_http\_sts}}\ code)}
 \DoxyCodeLine{\{}

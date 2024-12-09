@@ -41,7 +41,6 @@ Maintaining active client connections and polling their events\&.
 .IP "\(bu" 2
 Handling critical server functions, such as timeouts, connection cleanup, and error handling\&.
 .PP
-
 .PP
 This class uses a \fRpoll\fP-based event loop in the \fRrun\fP method to handle incoming connections and requests\&. It provides a shutdown mechanism in case of unrecoverable errors and is equipped with logging for server status tracking\&. 
 .SH "Constructor & Destructor Documentation"
@@ -50,7 +49,6 @@ This class uses a \fRpoll\fP-based event loop in the \fRrun\fP method to handle 
 
 .PP
 Constructs a \fBServerManager\fP instance, initializing server configurations and socket handlers\&. This constructor initializes the \fBServerManager\fP with the provided server configurations, logger, and cache\&. It creates server instances based on the configurations, setting up socket connections and handling potential exceptions related to socket creation, linking, listening, and non-blocking mode\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -73,7 +71,6 @@ This constructor sets up sockets for each configuration in \fRconfigs\fP using \
 
 .PP
 Destructor for the \fBServerManager\fP class, responsible for resource cleanup\&. This destructor ensures a proper cleanup of server resources managed by the \fBServerManager\fP instance\&. It deactivates and clears client connections, server instances, and poll file descriptors, releasing any associated resources\&.
-
 .PP
 The destructor also logs the cleanup process, marking the completion of resource cleanup for easier monitoring and debugging\&. 
 .SH "Member Function Documentation"
@@ -82,7 +79,6 @@ The destructor also logs the cleanup process, marking the completion of resource
 
 .PP
 Starts and manages the main event loop for the server\&. This method runs the server's event loop, continuously monitoring file descriptors for events using \fRpoll()\fP\&. It handles incoming connections, client requests, and outgoing responses\&. The loop also manages timeouts for inactive clients and ensures the server remains operational unless a critical error occurs\&.
-
 .PP
 \fBExceptions\fP
 .RS 4
@@ -107,7 +103,6 @@ For \fRPOLLOUT\fP: Sends responses to clients\&.
 .IP "\(bu" 2
 \fBGraceful Shutdown:\fP The loop exits when \fR_active\fP is set to \fRfalse\fP, ensuring that resources are properly cleaned up\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4

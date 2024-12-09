@@ -23,7 +23,7 @@ class \mbox{\hyperlink{class_ws_response_handler}{Ws\+Response\+Handler}}
 \item 
 \#define \mbox{\hyperlink{_web_server_response_handler_8hpp_a412da9da60558b4334a1c018c5b3edcd}{RSP\+\_\+\+NAME}}~"{}Http\+Response\+Handler"{}
 \item 
-\#define \mbox{\hyperlink{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3}{UNUSED}}(x)
+\#define \mbox{\hyperlink{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3}{UNUSED}}(x)~(void)(x)
 \item 
 \#define \mbox{\hyperlink{_web_server_response_handler_8hpp_a3087f98d411f4b15c967339807cf27d5}{DEFAULT\+\_\+\+RANGE\+\_\+\+BYTES}}~65536
 \end{DoxyCompactItemize}
@@ -43,76 +43,71 @@ enum \mbox{\hyperlink{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22a
 
 
 \doxysubsection{Macro Definition Documentation}
-\Hypertarget{_web_server_response_handler_8hpp_a3087f98d411f4b15c967339807cf27d5}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!DEFAULT\_RANGE\_BYTES@{DEFAULT\_RANGE\_BYTES}}
+\Hypertarget{_web_server_response_handler_8hpp_a3087f98d411f4b15c967339807cf27d5}\label{_web_server_response_handler_8hpp_a3087f98d411f4b15c967339807cf27d5} 
+\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!DEFAULT\_RANGE\_BYTES@{DEFAULT\_RANGE\_BYTES}}
 \index{DEFAULT\_RANGE\_BYTES@{DEFAULT\_RANGE\_BYTES}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{DEFAULT\_RANGE\_BYTES}{DEFAULT\_RANGE\_BYTES}}
-{\footnotesize\ttfamily \label{_web_server_response_handler_8hpp_a3087f98d411f4b15c967339807cf27d5} 
-\#define DEFAULT\+\_\+\+RANGE\+\_\+\+BYTES~65536}
+{\footnotesize\ttfamily \#define DEFAULT\+\_\+\+RANGE\+\_\+\+BYTES~65536}
 
-\Hypertarget{_web_server_response_handler_8hpp_a412da9da60558b4334a1c018c5b3edcd}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!RSP\_NAME@{RSP\_NAME}}
+\Hypertarget{_web_server_response_handler_8hpp_a412da9da60558b4334a1c018c5b3edcd}\label{_web_server_response_handler_8hpp_a412da9da60558b4334a1c018c5b3edcd} 
+\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!RSP\_NAME@{RSP\_NAME}}
 \index{RSP\_NAME@{RSP\_NAME}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{RSP\_NAME}{RSP\_NAME}}
-{\footnotesize\ttfamily \label{_web_server_response_handler_8hpp_a412da9da60558b4334a1c018c5b3edcd} 
-\#define RSP\+\_\+\+NAME~"{}Http\+Response\+Handler"{}}
+{\footnotesize\ttfamily \#define RSP\+\_\+\+NAME~"{}Http\+Response\+Handler"{}}
 
-\Hypertarget{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!UNUSED@{UNUSED}}
+\Hypertarget{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3}\label{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3} 
+\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!UNUSED@{UNUSED}}
 \index{UNUSED@{UNUSED}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{UNUSED}{UNUSED}}
-{\footnotesize\ttfamily \label{_web_server_response_handler_8hpp_a86d500a34c624c2cae56bc25a31b12f3} 
-\#define UNUSED(\begin{DoxyParamCaption}\item[{}]{x}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \#define UNUSED(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})~(void)(x)}
 
-{\bfseries Value\+:}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{(void)(x)}
-
-\end{DoxyCode}
 
 
 \doxysubsection{Enumeration Type Documentation}
-\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!e\_content\_type@{e\_content\_type}}
+\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6} 
+\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!e\_content\_type@{e\_content\_type}}
 \index{e\_content\_type@{e\_content\_type}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{e\_content\_type}{e\_content\_type}}
-{\footnotesize\ttfamily \label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6} 
-enum \mbox{\hyperlink{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}{e\+\_\+content\+\_\+type}}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6}{e\+\_\+content\+\_\+type}}}
 
 
 
 Defines types of content handled in HTTP responses. 
 
-\begin{DoxyEnumFields}[2]{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_UNKNOWN@{CT\_UNKNOWN}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_UNKNOWN@{CT\_UNKNOWN}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a00b319f0b6cef4945f06a86d2443cefc}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6} 
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_UNKNOWN@{CT\_UNKNOWN}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_UNKNOWN@{CT\_UNKNOWN}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a00b319f0b6cef4945f06a86d2443cefc}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a00b319f0b6cef4945f06a86d2443cefc} 
 CT\+\_\+\+UNKNOWN&\\
 \hline
 
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_FILE@{CT\_FILE}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_FILE@{CT\_FILE}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a27759b496b82a0e6d680cec7cdb87b30}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6} 
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_FILE@{CT\_FILE}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_FILE@{CT\_FILE}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a27759b496b82a0e6d680cec7cdb87b30}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a27759b496b82a0e6d680cec7cdb87b30} 
 CT\+\_\+\+FILE&\\
 \hline
 
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_JSON@{CT\_JSON}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_JSON@{CT\_JSON}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a75e91fa349a38fe3a504617d57841b1f}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6} 
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CT\_JSON@{CT\_JSON}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CT\_JSON@{CT\_JSON}}}\Hypertarget{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a75e91fa349a38fe3a504617d57841b1f}\label{_web_server_response_handler_8hpp_af1bc15d048b1e171d3e0fa3aba0ba5c6a75e91fa349a38fe3a504617d57841b1f} 
 CT\+\_\+\+JSON&\\
 \hline
 
 \end{DoxyEnumFields}
-\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!e\_range\_scenario@{e\_range\_scenario}}
+\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588} 
+\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!e\_range\_scenario@{e\_range\_scenario}}
 \index{e\_range\_scenario@{e\_range\_scenario}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}
 \doxysubsubsection{\texorpdfstring{e\_range\_scenario}{e\_range\_scenario}}
-{\footnotesize\ttfamily \label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588} 
-enum \mbox{\hyperlink{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}{e\+\_\+range\+\_\+scenario}}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588}{e\+\_\+range\+\_\+scenario}}}
 
 
 
 Describes different scenarios for handling byte range requests. 
 
-\begin{DoxyEnumFields}[2]{Enumerator}
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_INIT@{CR\_INIT}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_INIT@{CR\_INIT}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a04618755cc5228704c4822f7a1beef6a}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588} 
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_INIT@{CR\_INIT}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_INIT@{CR\_INIT}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a04618755cc5228704c4822f7a1beef6a}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a04618755cc5228704c4822f7a1beef6a} 
 CR\+\_\+\+INIT&\\
 \hline
 
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_RANGE@{CR\_RANGE}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_RANGE@{CR\_RANGE}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a345b40a5f170eb815dd1cff9d53413ab}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588} 
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_RANGE@{CR\_RANGE}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_RANGE@{CR\_RANGE}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a345b40a5f170eb815dd1cff9d53413ab}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588a345b40a5f170eb815dd1cff9d53413ab} 
 CR\+\_\+\+RANGE&\\
 \hline
 
-\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_LAST@{CR\_LAST}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_LAST@{CR\_LAST}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588ae2b4a4d023d5a308460aaed91dae05da}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588} 
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CR\_LAST@{CR\_LAST}!WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}}\index{WebServerResponseHandler.hpp@{WebServerResponseHandler.hpp}!CR\_LAST@{CR\_LAST}}}\Hypertarget{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588ae2b4a4d023d5a308460aaed91dae05da}\label{_web_server_response_handler_8hpp_a4ffa84ecd92336e9cf4d22abe286e588ae2b4a4d023d5a308460aaed91dae05da} 
 CR\+\_\+\+LAST&\\
 \hline
 

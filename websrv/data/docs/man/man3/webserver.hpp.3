@@ -193,7 +193,7 @@ websrv/inc/webserver.hpp
 .ti -1c
 .RI "bool \fBstarts_with\fP (const std::string &str, const std::string &prefix)"
 .br
-.RI "Converts an integer to a string\&. "
+.RI "** "
 .ti -1c
 .RI "bool \fBto_trim_char\fP (char c, const std::string &chars_to_trim)"
 .br
@@ -223,110 +223,130 @@ websrv/inc/webserver.hpp
 .ti -1c
 .RI "std::string \fBprint_bitwise_method\fP (unsigned char method)"
 .br
+.RI "Converts a bitwise method mask to a human-readable string\&. "
 .ti -1c
 .RI "std::string \fBhtml_codes\fP (int code)"
 .br
 .ti -1c
 .RI "std::vector< \fBServerConfig\fP > \fBparse_file\fP (std::string file, \fBLogger\fP *logger)"
 .br
+.RI "Parses a configuration file and returns server configurations\&. "
 .ti -1c
 .RI "std::vector< \fBServerConfig\fP > \fBparse_servers\fP (std::vector< std::string > rawLines, \fBLogger\fP *logger)"
 .br
+.RI "Parses all server configurations from the raw configuration lines\&. "
 .ti -1c
 .RI "\fBLocationConfig\fP \fBparse_location_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP *logger)"
 .br
+.RI "Parses a location block configuration from the config file\&. "
 .ti -1c
 .RI "void \fBprint_raw_lines\fP (std::vector< std::string > rawLines)"
 .br
-.RI "Prints raw lines from a vector of strings\&. "
+.RI "Prints raw configuration lines for debugging purposes\&. "
 .ti -1c
 .RI "void \fBprint_server_config\fP (\fBServerConfig\fP server)"
 .br
-.RI "Prints the server configuration\&. "
+.RI "Prints detailed server configuration information\&. "
 .ti -1c
 .RI "void \fBprint_location_config\fP (\fBLocationConfig\fP location)"
 .br
-.RI "Prints the location configuration\&. "
+.RI "Prints detailed location block configuration information\&. "
 .ti -1c
 .RI "void \fBprint_servers\fP (std::vector< \fBServerConfig\fP > servers)"
 .br
+.RI "Prints configuration information for all servers\&. "
 .ti -1c
 .RI "std::string \fBget_value\fP (std::string line, const std::string &key)"
 .br
-.RI "Extracts the value associated with a key in a given line\&. "
+.RI "Extracts a value associated with a specific key from a line\&. "
 .ti -1c
 .RI "std::string \fBclean_line\fP (std::string line)"
 .br
-.RI "Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. "
+.RI "Cleans a line by removing whitespace and special characters\&. "
 .ti -1c
 .RI "bool \fBfind_exact_string\fP (const std::string &line, const std::string &str)"
 .br
+.RI "Checks if a string exists as an exact word match at the start of a line\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBsplit_default_pages\fP (std::string default_pages)"
 .br
-.RI "Splits a string of default pages into a vector of strings, separated by spaces\&. "
+.RI "Splits a string of default pages into a vector of strings\&. "
 .ti -1c
 .RI "std::map< int, std::string > \fBsplit_error_pages\fP (std::string error_pages)"
 .br
-.RI "Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. "
+.RI "Splits a string of error pages into a map associating error codes with file paths\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBget_raw_lines\fP (std::string file)"
 .br
-.RI "Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. "
+.RI "Reads and processes a file line by line\&. "
 .ti -1c
 .RI "std::string \fBdelete_brackets_clean\fP (std::string line)"
 .br
-.RI "Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. "
+.RI "Removes curly braces from a line and cleans whitespace\&. "
 .ti -1c
 .RI "std::string \fBdelete_first_slash\fP (std::string path)"
 .br
-.RI "Removes the first slash from a path if it exists\&. "
+.RI "Removes the leading slash from a path if present\&. "
 .ti -1c
 .RI "std::string \fBget_server_root\fP ()"
 .br
+.RI "Gets the current working directory of the server\&. "
 .ti -1c
 .RI "std::vector< std::string >::iterator \fBskip_block\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 .br
+.RI "Skips over a block of code between matching brackets\&. "
 .ti -1c
 .RI "std::vector< std::string >::iterator \fBfind_block_end\fP (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 .br
+.RI "Finds the end of a block marked by matching brackets\&. "
 .ti -1c
 .RI "std::string \fBget_location_path\fP (std::string line)"
 .br
+.RI "Extracts the path from a location directive\&. "
 .ti -1c
 .RI "\fBt_mode\fP \fBstring_to_error_mode\fP (std::string error_mode)"
 .br
+.RI "Converts an error mode string to its enumerated type\&. "
 .ti -1c
 .RI "std::string \fBjoin_paths\fP (std::string path1, std::string path2)"
 .br
+.RI "Joins two paths together, handling slashes appropriately\&. "
 .ti -1c
 .RI "std::vector< std::string > \fBsplit_string\fP (std::string str)"
 .br
+.RI "Splits a string into a vector of substrings based on whitespace\&. "
 .ti -1c
 .RI "unsigned char \fBmethod_bitwise\fP (std::string parsed)"
 .br
+.RI "Converts HTTP method string to its corresponding bitmask\&. "
 .ti -1c
 .RI "std::string \fBget_first_word\fP (const std::string &str)"
 .br
+.RI "Extracts the first word from a string\&. "
 .ti -1c
 .RI "std::map< int, std::string > \fBsplit_redirections\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger)"
 .br
+.RI "Splits redirection directives into status code and URL pairs\&. "
 .ti -1c
 .RI "std::string \fBget_redirection_url\fP (std::string redirection, \fBLogger\fP *logger)"
 .br
+.RI "Processes and validates a redirection URL\&. "
 .ti -1c
 .RI "int \fBget_status_code\fP (std::string status_code, \fBLogger\fP *logger)"
 .br
+.RI "Validates and converts a status code string to integer\&. "
 .ti -1c
 .RI "bool \fBcompare_paths\fP (std::string path1, std::string path2)"
 .br
+.RI "Compares two paths for equality, handling special cases\&. "
 .ti -1c
 .RI "size_t \fBstring_to_bytes\fP (std::string client_max_body_size)"
 .br
+.RI "Converts a size string with units to bytes\&. "
 .ti -1c
 .RI "bool \fBcheck_args\fP (int argc, char **argv)"
 .br
-.RI "Validates the command line arguments\&. "
+.RI "Validates command line arguments for the webserver\&. "
 .ti -1c
 .RI "bool \fBcheck_root\fP (std::string root)"
 .br
@@ -336,7 +356,7 @@ websrv/inc/webserver.hpp
 .ti -1c
 .RI "int \fBcheck_port\fP (std::string port)"
 .br
-.RI "Validates a port number\&. "
+.RI "Validates a port number string\&. "
 .ti -1c
 .RI "bool \fBcheck_server_name\fP (std::string server_name)"
 .br
@@ -361,6 +381,7 @@ websrv/inc/webserver.hpp
 .ti -1c
 .RI "\fBt_allowed_methods\fP \fBstring_to_method\fP (std::string method)"
 .br
+.RI "Converts a string method name to its enumerated type\&. "
 .ti -1c
 .RI "bool \fBcheck_error_mode\fP (std::string error_mode)"
 .br
@@ -374,59 +395,84 @@ websrv/inc/webserver.hpp
 .RI "bool \fBcheck_obligatory_params\fP (\fBServerConfig\fP &server, \fBLogger\fP *logger)"
 .br
 .ti -1c
+.RI "bool \fBcheck_server_brackets\fP (std::string server_name)"
+.br
+.RI "Validates the syntax of a server block declaration\&. "
+.ti -1c
+.RI "bool \fBcheck_duplicate_location\fP (const std::string &location_path, const std::map< std::string, \fBLocationConfig\fP > &locations)"
+.br
+.ti -1c
 .RI "void \fBparse_location\fP (std::vector< std::string >::iterator &it, std::vector< std::string >::iterator end, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a location directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a template error page directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_port\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a port directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_server_name\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a server name directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a root directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an index directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_client_max_body_size\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses a client max body size directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an error page directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an autoindex directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_error_mode\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBServerConfig\fP &server)"
 .br
+.RI "Parses an error mode directive within a server block\&. "
 .ti -1c
 .RI "void \fBparse_location_index\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses index directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_location_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses error page directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_root\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses root directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_autoindex\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses autoindex directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_cgi\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses CGI directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_template_error_page\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses template error page directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_accept_only\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses accept only directive in a location block\&. "
 .ti -1c
 .RI "void \fBparse_redirection\fP (std::vector< std::string >::iterator &it, \fBLogger\fP *logger, \fBLocationConfig\fP &location)"
 .br
+.RI "Parses redirection directive in a location block\&. "
 .in -1c
 .SH "Macro Definition Documentation"
 .PP 
@@ -480,7 +526,6 @@ websrv/inc/webserver.hpp
 
 .PP
 Checks if a given file path has a disallowed extension\&. This function determines whether the file extension of the provided path is part of a predefined blacklist of disallowed extensions\&. If the extension is blacklisted, the function returns \fRtrue\fP; otherwise, it returns \fRfalse\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -503,18 +548,27 @@ If no \fR\&.\fP character is found in the path, or if the extension is not in th
 .SS "bool check_args (int argc, char ** argv)"
 
 .PP
-Validates the command line arguments\&. 
+Validates command line arguments for the webserver\&. Performs comprehensive validation of command line arguments including:
+.IP "\(bu" 2
+Checking for correct number of arguments
+.IP "\(bu" 2
+Handling help command
+.IP "\(bu" 2
+Validating configuration file existence and format
+.IP "\(bu" 2
+Checking file extension (\&.conf)
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIargc\fP Argument count\&. 
+\fIargc\fP Number of command line arguments\&. 
 .br
-\fIargv\fP Argument vector\&. 
+\fIargv\fP Array of command line argument strings\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-true if arguments are valid, false otherwise\&. 
+true if all arguments are valid, false otherwise\&. 
 .RE
 .PP
 
@@ -525,18 +579,18 @@ true if arguments are valid, false otherwise\&.
 .SS "bool check_brackets (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 
 .PP
-Checks if the brackets in the given range are balanced\&. 
+Checks if the brackets in the given range are balanced\&. This function iterates through a range of strings and counts opening and closing brackets to ensure they are properly balanced\&. It's essential for validating configuration file syntax\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIstart\fP Iterator to the start of the range\&. 
+\fIstart\fP Iterator to the start of the range to check\&. 
 .br
-\fIend\fP Iterator to the end of the range\&. 
+\fIend\fP Iterator to the end of the range to check\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-true if brackets are balanced, false otherwise\&. 
+true if brackets are balanced (equal number of opening and closing brackets), false otherwise\&. 
 .RE
 .PP
 
@@ -560,6 +614,8 @@ true if the default page is valid, false otherwise\&.
 .RE
 .PP
 
+.SS "bool check_duplicate_location (const std::string & location_path, const std::map< std::string, \fBLocationConfig\fP > & locations)"
+
 .SS "bool check_duplicate_servers (std::vector< \fBServerConfig\fP > servers)"
 
 .SS "bool check_error_mode (std::string error_mode)"
@@ -571,20 +627,41 @@ true if the default page is valid, false otherwise\&.
 .SS "int check_port (std::string port)"
 
 .PP
-Validates a port number\&. 
+Validates a port number string\&. Checks if the provided string represents a valid port number:
+.IP "\(bu" 2
+Contains only digits
+.IP "\(bu" 2
+Within valid port range (1-65535)
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIport\fP The port number as a string\&. 
+\fIport\fP String containing the port number to validate\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-The port number as an integer if valid, -1 otherwise\&. 
+The port number as an integer if valid, -1 if invalid\&. 
 .RE
 .PP
 
 .SS "bool check_root (std::string root)"
+
+.SS "bool check_server_brackets (std::string server_name)"
+
+.PP
+Validates the syntax of a server block declaration\&. Checks if there are no alphanumeric characters between the 'server' keyword and the opening curly brace '{'\&. This ensures the server block follows the correct syntax format: 'server {' with only whitespace allowed between them\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIserver_name\fP The string containing the server block declaration to validate\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if the syntax is valid (no alphanumeric characters between 'server' and '{'), false if invalid or if 'server' keyword is not found\&. 
+.RE
+.PP
 
 .SS "bool check_server_name (std::string server_name)"
 
@@ -613,7 +690,6 @@ Stripping port numbers appended with a colon (e\&.g\&., ':8080')\&.
 .IP "3." 4
 Removing any path segments following the hostname (e\&.g\&., '/path/to/resource')\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -638,7 +714,6 @@ Iteratively removes any leading \fR/\fP characters and paths\&.
 .IP "\(bu" 2
 If the input string does not contain these patterns, it is returned as-is\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -653,33 +728,54 @@ The function performs string operations such as \fRfind\fP and \fRsubstr\fP, whi
 .SS "std::string clean_line (std::string line)"
 
 .PP
-Cleans a line by trimming whitespace, removing a trailing semicolon, and returning an empty string if the line is empty or starts with '#'\&. 
+Cleans a line by removing whitespace and special characters\&. This function performs several cleaning operations on a string:
+.IP "\(bu" 2
+Removes leading and trailing whitespace
+.IP "\(bu" 2
+Removes trailing semicolons
+.IP "\(bu" 2
+Handles empty lines and comments
+.PP
 .PP
 \fBParameters\fP
 .RS 4
-\fIline\fP The line to be cleaned\&. 
+\fIline\fP The input string to be cleaned\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A cleaned version of the line\&. 
+The cleaned string, or empty string if the input is a comment or empty\&. 
 .RE
 .PP
 
 .SS "bool compare_paths (std::string path1, std::string path2)"
 
+.PP
+Compares two paths for equality, handling special cases\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath1\fP First path to compare\&. 
+.br
+\fIpath2\fP Second path to compare\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if paths are equivalent, false otherwise\&. 
+.RE
+.PP
+
 .SS "std::map< std::string, std::string > create_mime_types ()"
 
 .PP
 Creates and returns a map of file extensions to MIME types\&. This method generates a map that associates common file extensions (e\&.g\&., '\&.html', '\&.jpg') with their corresponding MIME types (e\&.g\&., 'text/html', 'image/jpeg')\&. The map is used to determine the \fRContent-Type\fP header when serving files\&.
-
 .PP
 .IP "\(bu" 2
 The method ensures that the map is initialized only once, using a static map to avoid recreating the map on each call\&. If additional MIME types are required, they can be added to the map\&.
 .IP "\(bu" 2
 Common MIME types such as \fRtext/html\fP, \fRapplication/javascript\fP, and \fRimage/jpeg\fP are included\&.
 .PP
-
 .PP
 \fBReturns\fP
 .RS 4
@@ -690,23 +786,23 @@ std::map<std::string, std::string> A map that associates file extensions with th
 .SS "std::string delete_brackets_clean (std::string line)"
 
 .PP
-Removes curly braces '{' and '}' from a line and cleans it of whitespace\&. 
+Removes curly braces from a line and cleans whitespace\&. 
 .PP
 \fBParameters\fP
 .RS 4
-\fIline\fP The line to be cleaned\&. 
+\fIline\fP The line to process\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-The cleaned line without braces\&. 
+The cleaned line with braces removed\&. 
 .RE
 .PP
 
 .SS "std::string delete_first_slash (std::string path)"
 
 .PP
-Removes the first slash from a path if it exists\&. 
+Removes the leading slash from a path if present\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -723,7 +819,6 @@ The path without the leading slash\&.
 
 .PP
 Finds the end of the HTTP header in a string\&. This function locates the end of the HTTP header in the given string by searching for the sequence \fR\\\\r\\\\n\\\\r\\\\n\fP or \fR\\\\n\\\\n\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -738,15 +833,60 @@ The position where the header ends\&. If no header end is found, returns \fRstd:
 
 .SS "std::vector< std::string >::iterator find_block_end (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 
+.PP
+Finds the end of a block marked by matching brackets\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the block\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Iterator pointing to the closing bracket\&. 
+.RE
+.PP
+
 .SS "bool find_exact_string (const std::string & line, const std::string & str)"
 
+.PP
+Checks if a string exists as an exact word match at the start of a line\&. Performs a case-sensitive search for an exact word match, ensuring the string is not part of a larger word\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The line to search in\&. 
+.br
+\fIstr\fP The string to search for\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true if exact match is found, false otherwise\&. 
+.RE
+.PP
+
 .SS "std::string get_first_word (const std::string & str)"
+
+.PP
+Extracts the first word from a string\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP The input string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The first word found in the string\&. 
+.RE
+.PP
 
 .SS "std::string get_header_value (std::string & haystack, std::string needle, const std::string & sep)"
 
 .PP
 Extracts the value of a specific HTTP header field\&. This method searches the provided header string for a specific key and returns the associated value\&. The search is case-insensitive, and it assumes the format \fRkey: value\fP\&.
-
 .PP
 .IP "\(bu" 2
 The method first converts the key and the header string to lowercase for a case-insensitive search\&.
@@ -755,7 +895,6 @@ The value is extracted by searching for the next occurrence of \fR\\r\\n\fP, whi
 .IP "\(bu" 2
 If the key is not found, the method returns an empty string\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -772,11 +911,24 @@ std::string The value associated with the key, or an empty string if the key is 
 
 .SS "std::string get_location_path (std::string line)"
 
+.PP
+Extracts the path from a location directive\&. Processes a location directive line to extract and clean the path component\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP The location directive line\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The cleaned location path\&. 
+.RE
+.PP
+
 .SS "std::string get_mime_type (const std::string & path)"
 
 .PP
 Retrieves the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, the associated MIME type is returned\&. If the extension is not recognized, it defaults to \fRtext/plain\fP\&.
-
 .PP
 .IP "\(bu" 2
 The method extracts the file extension by searching for the last '\&.' character in the path\&.
@@ -785,7 +937,6 @@ If the extension is found in the \fRmime_types\fP map, the corresponding MIME ty
 .IP "\(bu" 2
 If no recognized extension is found, the default MIME type \fRtext/plain\fP is returned\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -801,29 +952,75 @@ std::string The MIME type corresponding to the file extension, or \fRtext/plain\
 .SS "std::vector< std::string > get_raw_lines (std::string path)"
 
 .PP
-Reads a file line by line, cleaning each line and returning a vector of non-empty lines\&. 
+Reads and processes a file line by line\&. Opens a file, reads each line, cleans it, and stores non-empty lines in a vector\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIpath\fP The path to the file\&. 
+\fIpath\fP Path to the file to read\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A vector of cleaned, non-empty lines\&. 
+Vector containing all non-empty, cleaned lines from the file\&. 
 .RE
 .PP
 
 .SS "std::string get_redirection_url (std::string redirection, \fBLogger\fP * logger)"
 
+.PP
+Processes and validates a redirection URL\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIredirection\fP The redirection directive\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The processed redirection URL\&. 
+.RE
+.PP
+
 .SS "std::string get_server_root ()"
 
+.PP
+Gets the current working directory of the server\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current working directory with trailing slash, or empty string on error\&. 
+.RE
+.PP
+
 .SS "int get_status_code (std::string status_code, \fBLogger\fP * logger)"
+
+.PP
+Validates and converts a status code string to integer\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstatus_code\fP The status code as string\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The validated status code as integer\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if status code is invalid\&. 
+.RE
+.PP
 
 .SS "std::string get_value (std::string line, const std::string & key)"
 
 .PP
-Extracts the value associated with a key in a given line\&. 
+Extracts a value associated with a specific key from a line\&. Searches for a key in the given line and extracts the value that follows it\&. Handles trailing slashes and whitespace in the extracted value\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -834,7 +1031,7 @@ Extracts the value associated with a key in a given line\&.
 .PP
 \fBReturns\fP
 .RS 4
-The value associated with the key, or an empty string if not found\&. 
+The extracted value, or empty string if key not found\&. 
 .RE
 .PP
 
@@ -871,7 +1068,6 @@ short standard message associated with the http code\&.
 
 .PP
 Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -880,17 +1076,7 @@ Converts an integer to a string\&. This function converts an integer to its stri
 .PP
 \fBReturns\fP
 .RS 4
-A string representation of the provided integer\&.
-.RE
-.PP
-\fBParameters\fP
-.RS 4
-\fInumber\fP The integer to convert\&. 
-.RE
-.PP
-\fBReturns\fP
-.RS 4
-A string representation of the integer\&. 
+A string representation of the provided integer\&. 
 .RE
 .PP
 
@@ -898,7 +1084,6 @@ A string representation of the integer\&.
 
 .PP
 Checks if a file is a CGI script based on its extension\&. This function checks whether the given filename corresponds to a CGI script by looking at its extension\&. It checks for extensions such as \fR\&.py\fP and \fR\&.php\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -915,7 +1100,6 @@ Checks if a file is a CGI script based on its extension\&. This function checks 
 
 .PP
 Checks if a given path is a directory\&. This function checks if the provided path corresponds to a directory by using the \fRstat()\fP system call\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -932,7 +1116,6 @@ Checks if a given path is a directory\&. This function checks if the provided pa
 
 .PP
 Checks if a given path is a regular file\&. This function checks if the provided path corresponds to a regular file by using the \fRstat()\fP system call\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -949,7 +1132,6 @@ Checks if a given path is a regular file\&. This function checks if the provided
 
 .PP
 Validates if a string represents a valid \fRsize_t\fP value\&. This function checks whether the provided string contains only numeric characters (digits), which would make it a valid positive integer for conversion to \fRsize_t\fP\&.
-
 .PP
 .IP "\(bu" 2
 The function first checks if the string is empty\&. An empty string is not considered valid\&.
@@ -960,7 +1142,6 @@ If all characters are digits and the string is not empty, the function returns \
 .IP "\(bu" 2
 Otherwise, it returns \fRfalse\fP\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -975,41 +1156,309 @@ bool True if the string contains only digits, false otherwise\&.
 
 .SS "std::string join_paths (std::string path1, std::string path2)"
 
+.PP
+Joins two paths together, handling slashes appropriately\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath1\fP First path component\&. 
+.br
+\fIpath2\fP Second path component\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The combined path\&. 
+.RE
+.PP
+
 .SS "unsigned char method_bitwise (std::string parsed)"
+
+.PP
+Converts HTTP method string to its corresponding bitmask\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparsed\fP The HTTP method as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The method's bitmask value\&. 
+.RE
+.PP
 
 .SS "std::string normalize_host (const std::string & host)"
 
 .SS "void parse_accept_only (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses accept only directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&.
+.RE
+.PP
+Sets allowed HTTP methods for the location using bitwise operations\&. 
 .SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses autoindex directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if autoindex value is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_autoindex (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses an autoindex directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if autoindex value is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_cgi (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses CGI directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if CGI value is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_client_max_body_size (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a client max body size directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if client max body size is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_error_mode (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses an error mode directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error mode is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
-.SS "std::vector< \fBServerConfig\fP > parse_file (std::string file, \fBLogger\fP * logger)"
+.PP
+Parses an error page directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error page configuration is invalid or duplicated\&. 
+.RE
+.PP
+
+.SS "std::vector< \fBServerConfig\fP > parse_file (std::string path, \fBLogger\fP * logger)"
+
+.PP
+Parses a configuration file and returns server configurations\&. Entry point for configuration file parsing\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIpath\fP Path to the configuration file\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<ServerConfig> Vector of parsed server configurations\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if file cannot be parsed or no servers are found\&. 
+.RE
+.PP
 
 .SS "void parse_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses an index directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if default page is invalid\&. 
+.RE
+.PP
+
 .SS "void parse_location (std::vector< std::string >::iterator & it, std::vector< std::string >::iterator end, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a location directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIend\fP Iterator to end of configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if location path is invalid\&. 
+.RE
+.PP
 
 .SS "\fBLocationConfig\fP parse_location_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end, \fBLogger\fP * logger)"
 
+.PP
+Parses a location block configuration from the config file\&. Processes location-specific directives and builds a \fBLocationConfig\fP object\&. Handles various location settings including index files, error pages, root paths, and access controls\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstart\fP Iterator to the start of the location block\&. 
+.br
+\fIend\fP Iterator to the end of the configuration file\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBLocationConfig\fP Parsed location configuration\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if invalid parameters are encountered\&. 
+.RE
+.PP
+
 .SS "void parse_location_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses error page directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error page is invalid or redefined\&. 
+.RE
+.PP
+
 .SS "void parse_location_index (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses index directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if default page is invalid\&. 
+.RE
+.PP
 
 .SS "\fBt_methods\fP parse_method (const std::string & method)"
 
 .PP
 Parses an HTTP method string and returns the corresponding method mask\&. This function maps a given HTTP method string (e\&.g\&., 'GET', 'POST') to its corresponding predefined method mask (\fRt_methods\fP)\&. If the method is not recognized, it returns 0\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1028,7 +1477,6 @@ The map is initialized only once, ensuring efficiency for subsequent calls\&.
 .IP "\(bu" 2
 If the provided method string is not found in the map, the function returns 0, indicating an unrecognized or unsupported method\&.
 .PP
-
 .PP
 \fBNote\fP
 .RS 4
@@ -1042,41 +1490,192 @@ This function is case-sensitive\&. Ensure that the input method string matches t
 
 .SS "void parse_port (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a port directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if port is invalid or already defined\&. 
+.RE
+.PP
+
 .SS "void parse_redirection (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
 
+.PP
+Parses redirection directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&.
+.RE
+.PP
+Processes and stores HTTP redirection configurations\&. 
 .SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses root directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if root path is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_root (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a root directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if root is invalid or already defined\&. 
+.RE
+.PP
+
 .SS "void parse_server_name (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
+
+.PP
+Parses a server name directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if server name is invalid\&. 
+.RE
+.PP
 
 .SS "std::vector< \fBServerConfig\fP > parse_servers (std::vector< std::string > rawLines, \fBLogger\fP * logger)"
 
+.PP
+Parses all server configurations from the raw configuration lines\&. Processes the entire configuration file and extracts all server blocks\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIrawLines\fP Vector of configuration file lines\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<ServerConfig> Vector of parsed server configurations\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if no valid servers are found or if duplicates exist\&. 
+.RE
+.PP
+
 .SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBLocationConfig\fP & location)"
+
+.PP
+Parses template error page directive in a location block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIlocation\fP Reference to location configuration being built\&. 
+.RE
+.PP
+\fBExceptions\fP
+.RS 4
+\fI\fBLogger::fatal_log\fP\fP if error mode value is invalid\&. 
+.RE
+.PP
 
 .SS "void parse_template_error_page (std::vector< std::string >::iterator & it, \fBLogger\fP * logger, \fBServerConfig\fP & server)"
 
+.PP
+Parses a template error page directive within a server block\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIit\fP Current iterator position in configuration\&. 
+.br
+\fIlogger\fP Pointer to logger instance\&. 
+.br
+\fIserver\fP Reference to server configuration being built\&. 
+.RE
+.PP
+
 .SS "std::string print_bitwise_method (unsigned char method)"
+
+.PP
+Converts a bitwise method mask to a human-readable string\&. Translates the binary representation of HTTP methods into their corresponding string names (GET, POST, etc\&.)\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP Unsigned char representing the method bitmask\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string Space-separated string of HTTP method names\&. 
+.RE
+.PP
 
 .SS "void print_location_config (\fBLocationConfig\fP location)"
 
 .PP
-Prints the location configuration\&. 
+Prints detailed location block configuration information\&. Displays all location-specific configuration parameters including root path, default pages, error pages, and allowed methods\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIlocation\fP The location configuration to print\&. 
+\fIlocation\fP \fBLocationConfig\fP object containing location configuration\&. 
 .RE
 .PP
 
 .SS "void print_raw_lines (std::vector< std::string > rawLines)"
 
 .PP
-Prints raw lines from a vector of strings\&. 
+Prints raw configuration lines for debugging purposes\&. Outputs each line from the configuration file with gray coloring for better readability\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIrawLines\fP The vector of strings to print\&. 
+\fIrawLines\fP Vector of configuration file lines\&. 
 .RE
 .PP
 
@@ -1085,15 +1684,24 @@ Prints raw lines from a vector of strings\&.
 .SS "void print_server_config (\fBServerConfig\fP server)"
 
 .PP
-Prints the server configuration\&. 
+Prints detailed server configuration information\&. Displays all server configuration parameters including port, server name, error pages, client limits, and location blocks\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIserver\fP The server configuration to print\&. 
+\fIserver\fP \fBServerConfig\fP object containing server configuration\&. 
 .RE
 .PP
 
 .SS "void print_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.PP
+Prints configuration information for all servers\&. Iterates through all server configurations and prints their details\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIservers\fP Vector of \fBServerConfig\fP objects to print\&. 
+.RE
+.PP
 
 .SS "void print_vector_config (const std::vector< \fBServerConfig\fP > & config, std::string location)"
 
@@ -1101,7 +1709,6 @@ Prints the server configuration\&.
 
 .PP
 Replaces all occurrences of a key in the content with a given value\&. This method searches the provided content for all occurrences of the key and replaces each one with the specified value\&. It returns the modified content with all replacements made\&.
-
 .PP
 .IP "\(bu" 2
 The method iterates through the content, finding each occurrence of the key using \fRstd::string::find()\fP\&.
@@ -1110,7 +1717,6 @@ For each occurrence, it replaces the key with the value using \fRstd::string::re
 .IP "\(bu" 2
 If the value contains the key (which could cause an infinite loop), the method does not perform any replacements\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1129,63 +1735,94 @@ std::string The content with all occurrences of the key replaced by the value\&.
 
 .SS "std::vector< std::string >::iterator skip_block (std::vector< std::string >::iterator start, std::vector< std::string >::iterator end)"
 
-.SS "std::vector< std::string > split_default_pages (std::string default_pages)"
-
 .PP
-Splits a string of default pages into a vector of strings, separated by spaces\&. 
+Skips over a block of code between matching brackets\&. 
 .PP
 \fBParameters\fP
 .RS 4
-\fIdefault_pages\fP The string containing default pages\&. 
+\fIstart\fP Iterator to the start of the block\&. 
+.br
+\fIend\fP Iterator to the end of the range\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A vector of default page strings\&. 
+Iterator pointing after the closing bracket of the block\&. 
+.RE
+.PP
+
+.SS "std::vector< std::string > split_default_pages (std::string default_pages)"
+
+.PP
+Splits a string of default pages into a vector of strings\&. Parses a space-separated string of default page paths into individual components\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIdefault_pages\fP String containing space-separated default page paths\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<std::string> Vector containing individual default page paths\&. 
 .RE
 .PP
 
 .SS "std::map< int, std::string > split_error_pages (std::string error_pages)"
 
 .PP
-Splits a string of error pages into a map associating error codes with file paths, replacing 'x' in the path with the last digit of the error code\&. 
+Splits a string of error pages into a map associating error codes with file paths\&. This function parses a string containing error page definitions and creates a mapping between HTTP error codes and their corresponding error page file paths\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIerror_pages\fP The string containing error pages\&. 
+\fIerror_pages\fP String containing space-separated error codes followed by a file path\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A map of error codes to file paths\&. 
+std::map<int, std::string> Map of error codes to their corresponding file paths\&. 
 .RE
 .PP
 
 .SS "std::map< int, std::string > split_redirections (std::vector< std::string >::iterator & it, \fBLogger\fP * logger)"
 
-.SS "std::vector< std::string > split_string (std::string str)"
-
-.SS "bool starts_with (const std::string & str, const std::string & prefix)"
-
 .PP
-Converts an integer to a string\&. This function converts an integer to its string representation using a stringstream\&.
-
+Splits redirection directives into status code and URL pairs\&. 
 .PP
 \fBParameters\fP
 .RS 4
-\fInumber\fP The integer to be converted\&. 
+\fIit\fP Iterator to the redirection directive\&. 
+.br
+\fIlogger\fP Pointer to the logger instance\&. 
 .RE
 .PP
 \fBReturns\fP
 .RS 4
-A string representation of the provided integer\&.
+Map of status codes to their corresponding redirection URLs\&. 
 .RE
 .PP
-Checks if a string starts with a given prefix\&.
+
+.SS "std::vector< std::string > split_string (std::string str)"
 
 .PP
-This function checks whether the provided string begins with the specified prefix\&.
+Splits a string into a vector of substrings based on whitespace\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP Input string to be split\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::vector<std::string> Vector containing individual tokens\&. 
+.RE
+.PP
 
+.SS "bool starts_with (const std::string & str, const std::string & prefix)"
+
+.PP
+** Checks if a string starts with a given prefix\&.
+.PP
+This function checks whether the provided string begins with the specified prefix\&.
 .PP
 \fBParameters\fP
 .RS 4
@@ -1204,7 +1841,6 @@ This function checks whether the provided string begins with the specified prefi
 
 .PP
 Converts a valid numeric string to \fRsize_t\fP\&. This function converts a valid numeric string (verified externally) to a \fRsize_t\fP value\&. It assumes that the input string contains only digits, as it should be validated by \fR\fBis_valid_size_t()\fP\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1219,15 +1855,56 @@ size_t The converted \fRsize_t\fP value\&.
 
 .SS "size_t string_to_bytes (std::string client_max_body_size)"
 
+.PP
+Converts a size string with units to bytes\&. Handles size specifications with K/M/G suffixes\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIclient_max_body_size\fP Size string with optional unit suffix\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The size in bytes\&. 
+.RE
+.PP
+
 .SS "\fBt_mode\fP string_to_error_mode (std::string error_mode)"
 
+.PP
+Converts an error mode string to its enumerated type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIerror_mode\fP The error mode as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding t_mode enum value\&. 
+.RE
+.PP
+
 .SS "\fBt_allowed_methods\fP string_to_method (std::string method)"
+
+.PP
+Converts a string method name to its enumerated type\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImethod\fP The HTTP method name as string\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The corresponding t_allowed_methods enum value\&. 
+.RE
+.PP
 
 .SS "std::string to_lowercase (const std::string & input)"
 
 .PP
 Converts a string to lowercase\&. This function iterates through each character in the input string and converts it to lowercase using \fRstd::tolower()\fP\&. It handles characters safely by casting them to \fRunsigned char\fP\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1244,7 +1921,6 @@ std::string A new string where all characters are lowercase\&.
 
 .PP
 Checks if a character should be trimmed\&. This function checks if the provided character exists within a set of characters designated for trimming\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1263,7 +1939,6 @@ Checks if a character should be trimmed\&. This function checks if the provided 
 
 .PP
 Trims characters from both ends of a string\&. This function removes any characters found in \fRchars_to_trim\fP from the beginning and end of the input string\&.
-
 .PP
 \fBParameters\fP
 .RS 4
@@ -1282,12 +1957,10 @@ A new string with the specified characters trimmed from both ends\&.
 
 .PP
 Validate the MIME type based on the file extension\&. This method looks up the MIME type corresponding to the file extension in the provided path\&. If the file extension is recognized, true is returned\&. If the extension is not recognized, false
-
 .PP
 .IP "\(bu" 2
 The method extracts the file extension by searching for the last '\&.' character in the path\&.
 .PP
-
 .PP
 \fBParameters\fP
 .RS 4

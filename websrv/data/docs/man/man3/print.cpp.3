@@ -15,60 +15,85 @@ websrv/srcs/parse/print.cpp
 .ti -1c
 .RI "void \fBprint_raw_lines\fP (std::vector< std::string > rawLines)"
 .br
-.RI "Prints raw lines from a vector of strings\&. "
+.RI "Prints raw configuration lines for debugging purposes\&. "
 .ti -1c
 .RI "void \fBprint_server_config\fP (\fBServerConfig\fP server)"
 .br
-.RI "Prints the server configuration\&. "
+.RI "Prints detailed server configuration information\&. "
 .ti -1c
 .RI "void \fBprint_location_config\fP (\fBLocationConfig\fP location)"
 .br
-.RI "Prints the location configuration\&. "
+.RI "Prints detailed location block configuration information\&. "
 .ti -1c
 .RI "std::string \fBprint_bitwise_method\fP (unsigned char method)"
 .br
+.RI "Converts a bitwise method mask to a human-readable string\&. "
 .ti -1c
 .RI "void \fBprint_servers\fP (std::vector< \fBServerConfig\fP > servers)"
 .br
+.RI "Prints configuration information for all servers\&. "
 .in -1c
 .SH "Function Documentation"
 .PP 
 .SS "std::string print_bitwise_method (unsigned char method)"
 
-.SS "void print_location_config (\fBLocationConfig\fP location)"
-
 .PP
-Prints the location configuration\&. 
+Converts a bitwise method mask to a human-readable string\&. Translates the binary representation of HTTP methods into their corresponding string names (GET, POST, etc\&.)\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIlocation\fP The location configuration to print\&. 
+\fImethod\fP Unsigned char representing the method bitmask\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+std::string Space-separated string of HTTP method names\&. 
+.RE
+.PP
+
+.SS "void print_location_config (\fBLocationConfig\fP location)"
+
+.PP
+Prints detailed location block configuration information\&. Displays all location-specific configuration parameters including root path, default pages, error pages, and allowed methods\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIlocation\fP \fBLocationConfig\fP object containing location configuration\&. 
 .RE
 .PP
 
 .SS "void print_raw_lines (std::vector< std::string > rawLines)"
 
 .PP
-Prints raw lines from a vector of strings\&. 
+Prints raw configuration lines for debugging purposes\&. Outputs each line from the configuration file with gray coloring for better readability\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIrawLines\fP The vector of strings to print\&. 
+\fIrawLines\fP Vector of configuration file lines\&. 
 .RE
 .PP
 
 .SS "void print_server_config (\fBServerConfig\fP server)"
 
 .PP
-Prints the server configuration\&. 
+Prints detailed server configuration information\&. Displays all server configuration parameters including port, server name, error pages, client limits, and location blocks\&.
 .PP
 \fBParameters\fP
 .RS 4
-\fIserver\fP The server configuration to print\&. 
+\fIserver\fP \fBServerConfig\fP object containing server configuration\&. 
 .RE
 .PP
 
 .SS "void print_servers (std::vector< \fBServerConfig\fP > servers)"
+
+.PP
+Prints configuration information for all servers\&. Iterates through all server configurations and prints their details\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIservers\fP Vector of \fBServerConfig\fP objects to print\&. 
+.RE
+.PP
 
 .SH "Author"
 .PP 
